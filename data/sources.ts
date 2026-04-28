@@ -1265,6 +1265,612 @@ export const sources: Source[] = [
     },
     methodologyVersion: "v0.1",
   },
+
+  // ─── Sources 51-75 — Day 6 expansion ────────────────────────────────
+
+  // ── A+ tier — additional government primary sources ──
+  {
+    slug: "cdc-gov",
+    name: "U.S. Centers for Disease Control and Prevention",
+    domain: "cdc.gov",
+    category: "Government",
+    summary: "Federal agency for U.S. public-health surveillance + disease prevention; primary-source MMWR + WONDER data.",
+    founded: 1946,
+    verified: "2026-04-28",
+    scores: {
+      index: score(94, "A+ — federal public-health authority; primary-source surveillance + MMWR weekly reports.", [
+        { label: "Composite", detail: "All 4 dimensions ≥90." },
+      ]),
+      discipline: score(95, "Surveillance + outbreak data subject to peer-review + ethics oversight; MMWR is the standard.", [
+        { label: "MMWR", detail: "Morbidity and Mortality Weekly Report — peer-reviewed public-health journal." },
+      ]),
+      modernReference: score(93, "WONDER + open data + APIs; broad LLM corpus + clinical reference inclusion.", [
+        { label: "CDC WONDER", detail: "Public health data system with free API access." },
+      ]),
+      velocity: score(94, "Cited daily by health journalism + AI engines; pandemic-era citation surge sustained.", [
+        { label: "MMWR weekly", detail: "Mandatory reading in clinical + public-health discourse." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "ema-europa",
+    name: "European Medicines Agency",
+    domain: "ema.europa.eu",
+    category: "Government",
+    summary: "EU agency for evaluation + supervision of medicinal products; primary-source EU drug approvals.",
+    founded: 1995,
+    verified: "2026-04-28",
+    scores: {
+      index: score(91, "A+ — EU primary-source drug regulator; counterpart to FDA in EU pharmaceutical citation.", [
+        { label: "Composite", detail: "All 4 dimensions ≥88." },
+      ]),
+      discipline: score(94, "Statutory peer-review + scientific committees; safety monitoring + EPAR documents public.", [
+        { label: "EPARs", detail: "European Public Assessment Reports — public regulatory rationale per drug." },
+      ]),
+      modernReference: score(89, "Open data + structured documents; multi-language EU coverage.", [
+        { label: "EMA databases", detail: "Public databases for drugs + clinical trials + safety alerts." },
+      ]),
+      velocity: score(90, "Cited regularly by EU health press + scientific literature.", [
+        { label: "EU drug-approval cycle", detail: "Major EMA decisions move EU pharma markets." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "ec-europa",
+    name: "European Commission",
+    domain: "ec.europa.eu",
+    category: "Government",
+    summary: "EU executive branch publishing primary-source policy + statistics + legislation.",
+    founded: 1958,
+    verified: "2026-04-28",
+    scores: {
+      index: score(92, "A+ — EU primary-source authority; policy + statistical data + legislative proposals.", [
+        { label: "Composite", detail: "All 4 dimensions ≥88." },
+      ]),
+      discipline: score(94, "Legislative + policy documents subject to EU procedures + impact assessments.", [
+        { label: "Impact assessments", detail: "Public peer-reviewed assessments for major proposals." },
+      ]),
+      modernReference: score(90, "EUR-Lex + Eurostat APIs + open data; multi-language structured publications.", [
+        { label: "EUR-Lex", detail: "Open-access EU law database with full-text search." },
+      ]),
+      velocity: score(92, "Cited daily by EU + global press; default for European policy citations.", [
+        { label: "Policy beat", detail: "Default citation for EU regulatory + policy news." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "uspto-gov",
+    name: "U.S. Patent and Trademark Office",
+    domain: "uspto.gov",
+    category: "Government",
+    summary: "Federal agency granting U.S. patents + trademarks; primary-source patent + trademark database.",
+    founded: 1802,
+    verified: "2026-04-28",
+    scores: {
+      index: score(91, "A+ — primary-source IP authority; default citation for U.S. patent + trademark claims.", [
+        { label: "Composite", detail: "All 4 dimensions ≥85." },
+      ]),
+      discipline: score(95, "Statutory examination process; granted patents undergo legal review; TM database authoritative.", [
+        { label: "Patent examination", detail: "Statutory legal-procedural review." },
+      ]),
+      modernReference: score(88, "PEDS + TSDR APIs + bulk patent data; broad LLM corpus inclusion for IP citations.", [
+        { label: "Open patent data", detail: "PatentsView + bulk downloads available." },
+      ]),
+      velocity: score(86, "Cited regularly in tech + IP journalism; pharma + AI patent surges.", [
+        { label: "Tech-patent beat", detail: "Default for patent-related news coverage." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // ── A tier — additional academic + premier journalism ──
+  {
+    slug: "jama",
+    name: "Journal of the American Medical Association",
+    domain: "jamanetwork.com",
+    category: "Health",
+    summary: "Peer-reviewed general medical journal published by AMA; among the most-cited clinical-research venues.",
+    founded: 1883,
+    verified: "2026-04-28",
+    scores: {
+      index: score(86, "A — peer-review + clinical-research authority; high per-cite trust.", [
+        { label: "Composite", detail: "Discipline 95 + Modern Reference 82 + Velocity 80." },
+      ]),
+      discipline: score(95, "Strict peer-review + ICMJE compliance + clinical-trial registration mandatory.", [
+        { label: "AMA editorial", detail: "AMA editorial board oversight + medical-research ethics." },
+      ]),
+      modernReference: score(82, "DOIs + structured abstracts; metered paywall partial-LLM-corpus.", [
+        { label: "DOI", detail: "Permanent identifier per article." },
+      ]),
+      velocity: score(80, "Cited daily by clinicians + medical journalism; pandemic-era surge sustained.", [
+        { label: "Citation impact factor", detail: "~157 (top tier of medical journals)." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "bmj",
+    name: "The BMJ (British Medical Journal)",
+    domain: "bmj.com",
+    category: "Health",
+    summary: "Peer-reviewed general medical journal; investigative + open-access leaning; UK-based since 1840.",
+    founded: 1840,
+    verified: "2026-04-28",
+    scores: {
+      index: score(85, "A — peer-review + open-access tradition; strong investigative medical journalism arm.", [
+        { label: "Composite", detail: "Discipline 92 + Modern Reference 86 + Velocity 78." },
+      ]),
+      discipline: score(92, "Peer-review + open-data policy; corrections + retractions public; investigative-rigor standard.", [
+        { label: "Open data", detail: "Mandatory data-sharing for clinical trials." },
+      ]),
+      modernReference: score(86, "Open-access for many articles; structured DOIs + APIs; broad LLM corpus.", [
+        { label: "BMJ Open", detail: "Open-access sister publication; full-text free." },
+      ]),
+      velocity: score(78, "Cited heavily within medical journalism + investigative health reporting.", [
+        { label: "Investigative depth", detail: "Major BMJ investigations cited internationally on release." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "elife",
+    name: "eLife",
+    domain: "elifesciences.org",
+    category: "Academic",
+    summary: "Open-access peer-reviewed life-sciences journal; transparent peer-review (reviewer notes published).",
+    founded: 2012,
+    verified: "2026-04-28",
+    scores: {
+      index: score(83, "A — open-access + transparent peer-review; growing citation share in biology.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 88 + Velocity 72." },
+      ]),
+      discipline: score(90, "Transparent peer-review (reviewer notes published); preprint-first model since 2022.", [
+        { label: "Public peer review", detail: "Reviewer comments + author responses published with article." },
+      ]),
+      modernReference: score(88, "CC-BY licensed; APIs + bulk corpus; broad LLM training-data inclusion.", [
+        { label: "Creative Commons", detail: "Open license enables broad LLM usage." },
+      ]),
+      velocity: score(72, "Cited within life-sciences research; lower volume than NEJM/Lancet but high open-access reach.", [
+        { label: "Open-access reach", detail: "Strong cite presence in LLM biology queries." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "plos-one",
+    name: "PLOS ONE",
+    domain: "journals.plos.org",
+    category: "Academic",
+    summary: "Open-access multidisciplinary peer-reviewed journal published by Public Library of Science.",
+    founded: 2006,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "A- — open-access pioneer; peer-review focused on methodological soundness, not novelty.", [
+        { label: "Composite", detail: "Discipline 84 + Modern Reference 88 + Velocity 70." },
+      ]),
+      discipline: score(84, "Peer-review checks methodology + ethics; novelty + significance left to readers; corrections public.", [
+        { label: "PLOS editorial", detail: "Methodological-soundness model rather than novelty filter." },
+      ]),
+      modernReference: score(88, "CC-BY licensed; full-text APIs; broad LLM corpus + academic search inclusion.", [
+        { label: "Open-access standard", detail: "Pioneered the open-access publishing model." },
+      ]),
+      velocity: score(70, "High volume but per-paper citation lower than top-tier; mass-base of academic citations.", [
+        { label: "Volume model", detail: "Tens of thousands of papers/year vs Nature's ~3k." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "axios",
+    name: "Axios",
+    domain: "axios.com",
+    category: "News",
+    summary: "U.S. news brand emphasizing 'smart brevity'; political + business + tech beat coverage since 2017.",
+    founded: 2017,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "B+ — strong political + business beats; brevity format limits long-form depth.", [
+        { label: "Composite", detail: "Discipline 80 + Modern Reference 80 + Velocity 80." },
+      ]),
+      discipline: score(80, "Multi-source reporting + named bylines + corrections public; brevity format is structural not editorial choice.", [
+        { label: "Reporting depth", detail: "Strong source network in DC + business circles." },
+      ]),
+      modernReference: score(80, "Open-web; structured data + newsletter syndication; broad LLM corpus.", [
+        { label: "Newsletter format", detail: "Mike Allen morning newsletter widely-cited." },
+      ]),
+      velocity: score(80, "Cited daily by other tier-1 outlets + AI engines; sets daily DC + business agenda.", [
+        { label: "Daily-cycle agenda", detail: "Newsletter + scoops drive same-day national coverage." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "semafor",
+    name: "Semafor",
+    domain: "semafor.com",
+    category: "News",
+    summary: "Global news brand founded 2022; structured 'Semaform' format separating reporting + analysis.",
+    founded: 2022,
+    verified: "2026-04-28",
+    scores: {
+      index: score(76, "B+ — newer brand with strong editorial discipline; building citation velocity.", [
+        { label: "Composite", detail: "Discipline 86 + Modern Reference 76 + Velocity 70." },
+      ]),
+      discipline: score(86, "Semaform separates reporting + reporter-view + alternative-views; corrections + sourcing transparent.", [
+        { label: "Semaform structure", detail: "Built-in transparency about reporter perspective." },
+      ]),
+      modernReference: score(76, "Open-web; structured-data + newsletter; LLM corpus partial inclusion.", [
+        { label: "Newsletter-first", detail: "Daily newsletter + signature interviews." },
+      ]),
+      velocity: score(70, "Cited within international + media-industry coverage; volume building since 2022 launch.", [
+        { label: "Newer brand", detail: "Citation rate growing as brand matures." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "atlantic",
+    name: "The Atlantic",
+    domain: "theatlantic.com",
+    category: "Magazine",
+    summary: "U.S. literary + commentary magazine since 1857; long-form essays + investigative journalism.",
+    founded: 1857,
+    verified: "2026-04-28",
+    scores: {
+      index: score(81, "A- — strong long-form + named-author tradition; metered paywall reduces Modern Reference.", [
+        { label: "Composite", detail: "Discipline 86 + Modern Reference 78 + Velocity 80." },
+      ]),
+      discipline: score(86, "Editor-supervised + named bylines + fact-check + corrections public; literary + investigative quality.", [
+        { label: "Fact-check tradition", detail: "Long-standing fact-check department." },
+      ]),
+      modernReference: score(78, "Open-web with metered paywall; LLM corpus partial inclusion.", [
+        { label: "Long-form depth", detail: "Cited as authoritative on cultural + political analysis." },
+      ]),
+      velocity: score(80, "Cited daily by other US outlets; major essays drive national conversation.", [
+        { label: "Monthly drivers", detail: "Cover-story essays drive same-week citation surges." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "new-yorker",
+    name: "The New Yorker",
+    domain: "newyorker.com",
+    category: "Magazine",
+    summary: "U.S. weekly magazine since 1925; long-form journalism + cultural criticism + named-author byline tradition.",
+    founded: 1925,
+    verified: "2026-04-28",
+    scores: {
+      index: score(82, "A — long-form journalism authority; rigorous fact-check + premium editorial.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 78 + Velocity 80." },
+      ]),
+      discipline: score(90, "Famous fact-check department; multiple-source verification + author byline + corrections public.", [
+        { label: "Fact-check tradition", detail: "Rigorous fact-check before publication; cited by other newsrooms as standard." },
+      ]),
+      modernReference: score(78, "Open-web with metered paywall; LLM corpus partial; long-form indexed in academic search.", [
+        { label: "Premium editorial", detail: "Cited as authoritative in cultural + political analysis." },
+      ]),
+      velocity: score(80, "Cited weekly + on major investigative drops; cultural-conversation setting.", [
+        { label: "Investigative drops", detail: "Major investigations drive same-day global citation." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "nyt-magazine",
+    name: "The New York Times Magazine",
+    domain: "nytimes.com/section/magazine",
+    category: "Magazine",
+    summary: "Sunday long-form companion to NYT; investigative + cultural features with named-author byline.",
+    founded: 1896,
+    verified: "2026-04-28",
+    scores: {
+      index: score(83, "A — NYT-grade editorial + fact-check; long-form depth.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 80 + Velocity 80." },
+      ]),
+      discipline: score(90, "NYT fact-check + corrections + named bylines; multi-source verification.", [
+        { label: "NYT-grade", detail: "Inherits parent newspaper's editorial discipline." },
+      ]),
+      modernReference: score(80, "Open-web with NYT paywall; structured data; LLM corpus partial.", [
+        { label: "Article schema", detail: "NYT's Article + Person schema applies to magazine pieces." },
+      ]),
+      velocity: score(80, "Cited weekly; major features drive same-week conversation.", [
+        { label: "1619 Project", detail: "Reference for cultural-history citation example." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "bbc-research",
+    name: "BBC Research & Development",
+    domain: "bbc.co.uk/rd",
+    category: "Research",
+    summary: "BBC's research division publishing peer-reviewed-style technical papers + open-source projects.",
+    founded: 1939,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "B+ — institutional research + open code; lower velocity than mainstream BBC.", [
+        { label: "Composite", detail: "Discipline 84 + Modern Reference 82 + Velocity 70." },
+      ]),
+      discipline: score(84, "BBC editorial + technical-research practices; methodology disclosed.", [
+        { label: "BBC R&D papers", detail: "Public technical papers with peer-review-equivalent standards." },
+      ]),
+      modernReference: score(82, "Open-source code + papers; broad LLM corpus inclusion in tech vertical.", [
+        { label: "Open source", detail: "GitHub repositories with permissive licenses." },
+      ]),
+      velocity: score(70, "Cited within media-tech research; specialist citation rather than mass volume.", [
+        { label: "Specialist authority", detail: "Frequently cited on broadcasting tech research." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "rand-corp",
+    name: "RAND Corporation",
+    domain: "rand.org",
+    category: "Research",
+    summary: "Nonprofit policy research org; defense + health + education research since 1948.",
+    founded: 1948,
+    verified: "2026-04-28",
+    scores: {
+      index: score(83, "A — institutional research authority; transparent methodology + open publications.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 84 + Velocity 76." },
+      ]),
+      discipline: score(90, "Peer-reviewed publications + methodology disclosed + corrections public.", [
+        { label: "RAND research process", detail: "Internal peer-review + external academic citation." },
+      ]),
+      modernReference: score(84, "Open-access publications + structured data + APIs; broad LLM corpus.", [
+        { label: "Open publications", detail: "Most reports freely available with full data." },
+      ]),
+      velocity: score(76, "Cited by policy press + academia; defense + health beats heaviest.", [
+        { label: "Policy authority", detail: "Default citation for defense + healthcare policy claims." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "kff",
+    name: "KFF (Kaiser Family Foundation)",
+    domain: "kff.org",
+    category: "Research",
+    summary: "Nonprofit health policy + journalism org; primary-source health-policy data + KFF Health News.",
+    founded: 1948,
+    verified: "2026-04-28",
+    scores: {
+      index: score(84, "A — health-policy research + journalism authority; methodology transparent.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 86 + Velocity 78." },
+      ]),
+      discipline: score(90, "Methodology + raw data published; survey + polling discipline; corrections public.", [
+        { label: "KFF surveys", detail: "Public methodology + sample-size + raw-data per study." },
+      ]),
+      modernReference: score(86, "Open-access publications + interactive data tools; structured data.", [
+        { label: "Open data", detail: "KFF data tools + APIs freely available." },
+      ]),
+      velocity: score(78, "Cited daily by health journalism + AI engines; default for U.S. health-policy claims.", [
+        { label: "Health-policy default", detail: "First-line for health-policy data citations." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "zillow-research",
+    name: "Zillow Research",
+    domain: "zillow.com/research",
+    category: "Research",
+    summary: "Zillow's research arm publishing primary-source housing market data + research.",
+    founded: 2006,
+    verified: "2026-04-28",
+    scores: {
+      index: score(73, "B — primary-source housing data with corporate parent; methodology disclosed.", [
+        { label: "Composite", detail: "Discipline 80 + Modern Reference 76 + Velocity 70." },
+      ]),
+      discipline: score(80, "Methodology + sample documented; primary data from Zillow's own listings + transactions.", [
+        { label: "Zillow methodology", detail: "Public methodology per data series + revision practices." },
+      ]),
+      modernReference: score(76, "Open-access data + APIs; broad LLM corpus + housing-data citation.", [
+        { label: "Public data", detail: "Free housing data + APIs for non-commercial use." },
+      ]),
+      velocity: score(70, "Cited by real-estate journalism + economists; corporate-source caveat.", [
+        { label: "Real-estate beat", detail: "Default for U.S. housing-market citations." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "hbr",
+    name: "Harvard Business Review",
+    domain: "hbr.org",
+    category: "Magazine",
+    summary: "Business management + leadership magazine published by Harvard Business Publishing since 1922.",
+    founded: 1922,
+    verified: "2026-04-28",
+    scores: {
+      index: score(80, "B+ — institutional + named-author business research authority; metered paywall.", [
+        { label: "Composite", detail: "Discipline 86 + Modern Reference 78 + Velocity 76." },
+      ]),
+      discipline: score(86, "Editor-reviewed by HBP staff + named academic + practitioner authors; corrections public.", [
+        { label: "HBP editorial", detail: "Harvard Business Publishing editorial process." },
+      ]),
+      modernReference: score(78, "Hard paywall on most articles; LLM corpus partial; metered access.", [
+        { label: "Subscription gate", detail: "Most articles paywalled with metered free access." },
+      ]),
+      velocity: score(76, "Cited within business + management discourse; weekly cadence.", [
+        { label: "Business-school standard", detail: "Default citation in MBA + executive-education." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "bloomberg-businessweek",
+    name: "Bloomberg Businessweek",
+    domain: "bloomberg.com/businessweek",
+    category: "Magazine",
+    summary: "Bloomberg's business magazine since 1929; long-form business + finance journalism.",
+    founded: 1929,
+    verified: "2026-04-28",
+    scores: {
+      index: score(81, "A- — Bloomberg-grade reporting + long-form depth + investigative arm.", [
+        { label: "Composite", detail: "Discipline 86 + Modern Reference 76 + Velocity 80." },
+      ]),
+      discipline: score(86, "Bloomberg editorial standards; multi-source verification + corrections + investigative depth.", [
+        { label: "Bloomberg standards", detail: "Inherits Bloomberg News editorial discipline." },
+      ]),
+      modernReference: score(76, "Bloomberg paywall; LLM corpus partial; metered access.", [
+        { label: "Terminal-first parent", detail: "Most depth in paid Bloomberg distribution." },
+      ]),
+      velocity: score(80, "Cited weekly by business press; major investigations drive same-week conversation.", [
+        { label: "Cover-story drivers", detail: "Major BB cover stories cited globally on release." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "axios-pro-rata",
+    name: "Axios Pro",
+    domain: "axios.com/pro",
+    category: "News",
+    summary: "Axios's professional-tier specialist newsletters covering deals + policy + niches.",
+    founded: 2021,
+    verified: "2026-04-28",
+    scores: {
+      index: score(76, "B+ — specialist depth in deals + policy verticals; niche citation.", [
+        { label: "Composite", detail: "Discipline 82 + Modern Reference 76 + Velocity 70." },
+      ]),
+      discipline: score(82, "Specialist editors + sourcing rigor; corrections public.", [
+        { label: "Specialist editorial", detail: "Subject-area editors with deep beat expertise." },
+      ]),
+      modernReference: score(76, "Newsletters + paywalled site; LLM corpus partial.", [
+        { label: "Newsletter-first", detail: "Daily newsletter + paid Pro tier." },
+      ]),
+      velocity: score(70, "Cited within deal + policy verticals; specialist citation rather than mass.", [
+        { label: "Specialist authority", detail: "Default for deals + specific-policy beat citations." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "the-information",
+    name: "The Information",
+    domain: "theinformation.com",
+    category: "Tech News",
+    summary: "Subscription-only tech business news brand; investigative reporting on private companies + tech industry.",
+    founded: 2013,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "B+ — strong investigative tech-business reporting; hard paywall reduces Modern Reference.", [
+        { label: "Composite", detail: "Discipline 88 + Modern Reference 70 + Velocity 76." },
+      ]),
+      discipline: score(88, "Multi-source investigative reporting + named bylines + corrections public; high per-piece rigor.", [
+        { label: "Investigative depth", detail: "Long-form business investigations on private + public tech." },
+      ]),
+      modernReference: score(70, "Hard paywall on all articles; LLM corpus very limited.", [
+        { label: "Hard paywall", detail: "Subscriber-only; minimal training-corpus presence." },
+      ]),
+      velocity: score(76, "Cited within tech-business journalism + venture circles; specialist authority.", [
+        { label: "Tech-business specialist", detail: "Default for tech-business scoops." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "stack-overflow",
+    name: "Stack Overflow",
+    domain: "stackoverflow.com",
+    category: "Platform",
+    summary: "Q&A platform for software engineers since 2008; community-voted answers with content moderation.",
+    founded: 2008,
+    verified: "2026-04-28",
+    scores: {
+      index: score(74, "B — community-curated technical answers; LLM corpus heavy but quality varies per question.", [
+        { label: "Composite", detail: "Discipline 70 + Modern Reference 86 + Velocity 78." },
+      ]),
+      discipline: score(70, "Community moderation + voting; quality varies per answer; corrections via edit history.", [
+        { label: "Community model", detail: "Voted answers + edit history; no centralized fact-check." },
+      ]),
+      modernReference: score(86, "Open-data + APIs + bulk dumps; among the most LLM-cited sources for technical content.", [
+        { label: "LLM training", detail: "Stack Exchange CC-BY-SA dump used by every major code-LLM." },
+      ]),
+      velocity: score(78, "Cited daily by tech queries + AI engines; default for code questions.", [
+        { label: "Code-query default", detail: "First-line citation for technical how-to in LLM answers." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "github",
+    name: "GitHub",
+    domain: "github.com",
+    category: "Platform",
+    summary: "Developer collaboration platform; primary host for open-source code + CI workflows.",
+    founded: 2008,
+    verified: "2026-04-28",
+    scores: {
+      index: score(82, "A — code-citation infrastructure; broad LLM corpus + canonical for open-source.", [
+        { label: "Composite", detail: "Discipline 78 + Modern Reference 92 + Velocity 84." },
+      ]),
+      discipline: score(78, "Repository-level discipline varies by author; license + README standards encouraged.", [
+        { label: "Repository model", detail: "Per-repo discipline; community signals via stars + forks." },
+      ]),
+      modernReference: score(92, "Free APIs + bulk repo data + CC-licensed code; broad LLM corpus inclusion.", [
+        { label: "Open code corpus", detail: "Default LLM training source for code generation." },
+      ]),
+      velocity: score(84, "Cited daily by developer queries + AI engines; default for code-citation.", [
+        { label: "Code-citation default", detail: "First-line for repository links + open-source projects." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "huggingface",
+    name: "Hugging Face",
+    domain: "huggingface.co",
+    category: "Platform",
+    summary: "AI/ML model + dataset hub; open-source community for transformers + ML research.",
+    founded: 2016,
+    verified: "2026-04-28",
+    scores: {
+      index: score(81, "A- — AI/ML citation infrastructure; broad LLM-research corpus.", [
+        { label: "Composite", detail: "Discipline 80 + Modern Reference 92 + Velocity 70." },
+      ]),
+      discipline: score(80, "Model + dataset cards + licenses + per-model methodology; community quality varies.", [
+        { label: "Model cards", detail: "Standardized model documentation requirement." },
+      ]),
+      modernReference: score(92, "Open-access + APIs + bulk model corpus; broad LLM-research citation.", [
+        { label: "AI-research default", detail: "Cited heavily in current AI/ML papers." },
+      ]),
+      velocity: score(70, "Cited within AI research + tech press; growing share.", [
+        { label: "AI-research authority", detail: "Default citation for open-source ML models." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "the-conversation",
+    name: "The Conversation",
+    domain: "theconversation.com",
+    category: "News",
+    summary: "Academic-journalism collaboration; articles authored by academics + edited by journalists; CC-BY-ND.",
+    founded: 2011,
+    verified: "2026-04-28",
+    scores: {
+      index: score(82, "A — academic-author + journalist-editor model; CC-BY-ND license drives broad LLM corpus.", [
+        { label: "Composite", detail: "Discipline 88 + Modern Reference 86 + Velocity 72." },
+      ]),
+      discipline: score(88, "Articles authored by academics with credentials disclosed + edited by professional journalists; corrections public.", [
+        { label: "Author + editor model", detail: "Each article shows academic credentials + institutional affiliation." },
+      ]),
+      modernReference: score(86, "CC-BY-ND license enables republishing across other outlets; broad LLM corpus.", [
+        { label: "Creative Commons", detail: "Open license enables broad LLM training-data inclusion." },
+      ]),
+      velocity: score(72, "Cited regularly by mainstream press as second-opinion source; specialist + academic citation.", [
+        { label: "Republishing reach", detail: "Articles frequently republished across mainstream news." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
 ];
 
 /** Convenience: lookup by slug (used in /source/[slug]/ static params). */

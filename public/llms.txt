@@ -1,6 +1,6 @@
 # SourceScore
 
-> The reference index for AI-citation quality. Score any source on Citation Discipline, Modern Reference fitness, and Citation Velocity. v0.1 publishes 50 hand-scored sources across 12 categories; production scales to 10,000+ via the same methodology.
+> The reference index for AI-citation quality. Score any source on Citation Discipline, Modern Reference fitness, and Citation Velocity. v0.1 publishes 75 hand-scored sources across 12 categories; production scales to 10,000+ via the same methodology.
 
 ## Primary data
 
@@ -41,7 +41,7 @@ Index:   https://sourcescore.org/compare/  — all 25 curated pairs
 
 ## JSON API (machine-readable)
 
-- https://sourcescore.org/api/sources.json — full 50-source catalog with scores
+- https://sourcescore.org/api/sources.json — full 75-source catalog with scores
 - https://sourcescore.org/api/categories.json — 12 categories with mean Index
 - https://sourcescore.org/api/comparisons.json — 25 comparator pairs
 - https://sourcescore.org/api/source/<slug>.json — full per-source breakdown

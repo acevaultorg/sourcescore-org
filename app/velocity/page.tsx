@@ -22,7 +22,7 @@ export default function VelocityPage() {
         and refreshes most frequently.
       </p>
 
-      <h2 className="text-heading-1 font-bold mb-4">Ranking — 50 sources</h2>
+      <h2 className="text-heading-1 font-bold mb-4">Ranking — 75 sources</h2>
       <ol className="space-y-2 mb-12">
         {ranked.map((s, i) => (
           <li

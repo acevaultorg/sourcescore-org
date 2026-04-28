@@ -50,7 +50,7 @@ export default function MethodologyPage() {
 
         <h2 className="text-heading-2 font-bold pt-4">Day-1 limitations (honest)</h2>
         <ul className="list-disc pl-5 space-y-2 text-muted">
-          <li>v0.1 publishes 50 hand-scored sources; production scales to 10,000+ via the same rubric.</li>
+          <li>v0.1 publishes 75 hand-scored sources; production scales to 10,000+ via the same rubric.</li>
           <li>
             Velocity scores are static estimates on Day 1. The production index will refresh
             Velocity weekly via tier-1 referrer + LLM-citation polling.

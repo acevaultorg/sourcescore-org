@@ -25,10 +25,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const list = sourcesInCategory(category);
   const top = list[0];
+  const ogImage = `https://sourcescore.org/og/category/${slug}.svg`;
+  const description = `${list.length} ${category.toLowerCase()} sources scored across Citation Discipline, Modern Reference, and Citation Velocity. Top source: ${top?.name} (${top?.scores.index.grade} ${top?.scores.index.value}).`;
   return {
     title: `${category} — sources scored on the SourceScore Index`,
-    description: `${list.length} ${category.toLowerCase()} sources scored across Citation Discipline, Modern Reference, and Citation Velocity. Top source: ${top?.name} (${top?.scores.index.grade} ${top?.scores.index.value}).`,
+    description,
     alternates: { canonical: `https://sourcescore.org/category/${slug}/` },
+    openGraph: {
+      title: `${category} — SourceScore`,
+      description,
+      url: `https://sourcescore.org/category/${slug}/`,
+      type: "article",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: `${category} on SourceScore` }],
+    },
+    twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
 

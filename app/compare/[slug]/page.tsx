@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const b = getSource(pair.b)!;
   const title = `${a.name} vs ${b.name} — SourceScore comparison`;
   const description = `${a.name} (${a.scores.index.grade} ${a.scores.index.value}) vs ${b.name} (${b.scores.index.grade} ${b.scores.index.value}) on the SourceScore Index. ${comp.summary}`;
+  const ogImage = `https://sourcescore.org/og/compare/${slug}.svg`;
   return {
     title,
     description,
@@ -38,7 +39,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description,
       url: `https://sourcescore.org/compare/${slug}/`,
       type: "article",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: `${a.name} vs ${b.name}` }],
     },
+    twitter: { card: "summary_large_image", title, description, images: [ogImage] },
   };
 }
 
