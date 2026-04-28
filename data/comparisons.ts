@@ -197,6 +197,103 @@ export const comparisons: Comparison[] = [
     b: "daily-mail",
     summary: "Two high-volume low-discipline outlets — discipline floor illustrated.",
   },
+
+  // ─── Day 8 expansion: 15 new comparator pairs from Day-7 additions ─
+
+  // Central banks
+  {
+    a: "ecb",
+    b: "federal-reserve",
+    summary: "The two most-watched central banks — Atlantic counterparts compared.",
+  },
+  {
+    a: "bank-of-england",
+    b: "federal-reserve",
+    summary: "Oldest + youngest of the major central banks — UK vs US monetary authority.",
+  },
+  {
+    a: "bank-of-england",
+    b: "ecb",
+    summary: "UK vs euro-area central banks — sterling vs euro monetary policy compared.",
+  },
+
+  // Space agencies
+  {
+    a: "esa",
+    b: "nasa-gov",
+    summary: "Atlantic counterparts in space exploration — research, missions, and openness compared.",
+  },
+
+  // AI research labs
+  {
+    a: "anthropic-research",
+    b: "openai-research",
+    summary: "Two top-tier AI labs — research transparency + safety + publication practices compared.",
+  },
+  {
+    a: "deepmind-research",
+    b: "openai-research",
+    summary: "Google DeepMind vs OpenAI — flagship AI labs compared on publication discipline.",
+  },
+  {
+    a: "anthropic-research",
+    b: "deepmind-research",
+    summary: "Anthropic vs DeepMind — safety-research lab vs flagship-publication lab compared.",
+  },
+
+  // Long-form reviews
+  {
+    a: "lrb",
+    b: "nyrb",
+    summary: "Atlantic counterparts in long-form intellectual review — UK vs US literary criticism.",
+  },
+
+  // Multilaterals
+  {
+    a: "oecd",
+    b: "wto",
+    summary: "International economic + trade organizations — different mandates, similar trust tier.",
+  },
+
+  // US Science / Stats
+  {
+    a: "noaa-gov",
+    b: "usgs-gov",
+    summary: "US scientific agencies — atmospheric vs geological — both A+ primary sources.",
+  },
+  {
+    a: "fred-stlouisfed",
+    b: "bls-gov",
+    summary: "Two pillars of US economic data — FRED data hub vs BLS primary statistics.",
+  },
+
+  // Think tanks / research
+  {
+    a: "brookings",
+    b: "cfr",
+    summary: "Two flagship US policy think tanks — domestic vs foreign-policy emphasis compared.",
+  },
+
+  // Science journalism
+  {
+    a: "aeon",
+    b: "quanta-magazine",
+    summary: "Two long-form science venues — philosophy/society breadth vs hard-science depth.",
+  },
+
+  // CS academic infrastructure
+  {
+    a: "acm",
+    b: "doi-org",
+    summary: "Two citation-infrastructure pillars — CS-specific ACM vs universal DOI resolver.",
+  },
+
+  // International primary vs domestic primary
+  {
+    a: "imf",
+    b: "federal-reserve",
+    summary: "Multilateral monetary org vs national central bank — different scopes, both authoritative.",
+  },
 ];
 
 /** All slugs derived from the comparisons set */
