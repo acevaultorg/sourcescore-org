@@ -17,6 +17,49 @@ export default function MethodologyPage() {
         the v0.1 scoring rubric so anyone can re-derive a score from the underlying signals.
       </p>
 
+      <section className="mb-10 grid sm:grid-cols-2 gap-3">
+        <a
+          href="/methodology/sourcescore-index/"
+          className="block p-5 rounded-card-lg border border-brand/40 bg-surface-brand hover:bg-brand/15 transition-colors"
+        >
+          <div className="text-eyebrow text-brand mb-1">Composite · 35/30/35 weights</div>
+          <div className="font-semibold text-text mb-1">SourceScore Index</div>
+          <div className="text-body-sm text-muted">
+            How the composite is calculated, with per-grade anchors + worked examples.
+          </div>
+        </a>
+        <a
+          href="/methodology/citation-discipline/"
+          className="block p-5 rounded-card-lg border border-border bg-panel hover:bg-panel-hi transition-colors"
+        >
+          <div className="text-eyebrow text-brand mb-1">Sub-score 1 · 35% weight</div>
+          <div className="font-semibold text-text mb-1">Citation Discipline</div>
+          <div className="text-body-sm text-muted">
+            How rigorously a source backs each factual claim with verifiable evidence.
+          </div>
+        </a>
+        <a
+          href="/methodology/modern-reference/"
+          className="block p-5 rounded-card-lg border border-border bg-panel hover:bg-panel-hi transition-colors"
+        >
+          <div className="text-eyebrow text-brand mb-1">Sub-score 2 · 30% weight</div>
+          <div className="font-semibold text-text mb-1">Modern Reference</div>
+          <div className="text-body-sm text-muted">
+            Fitness as a citation in AI-era writing — schema, freshness, machine-readability.
+          </div>
+        </a>
+        <a
+          href="/methodology/citation-velocity/"
+          className="block p-5 rounded-card-lg border border-border bg-panel hover:bg-panel-hi transition-colors"
+        >
+          <div className="text-eyebrow text-brand mb-1">Sub-score 3 · 35% weight</div>
+          <div className="font-semibold text-text mb-1">Citation Velocity</div>
+          <div className="text-body-sm text-muted">
+            How often tier-1 publications and AI engines cite a source per week.
+          </div>
+        </a>
+      </section>
+
       <section className="prose prose-invert max-w-none text-body text-text leading-relaxed space-y-6">
         <h2 className="text-heading-2 font-bold">The four sub-scores</h2>
         <ol className="list-decimal pl-5 space-y-2 text-muted">

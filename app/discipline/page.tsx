@@ -15,12 +15,18 @@ export default function DisciplinePage() {
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <div className="text-eyebrow text-brand mb-3">SourceScore sub-tool · 1 of 4</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Citation Discipline Score</h1>
-      <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-10">
+      <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-6">
         Citation Discipline measures how rigorously a source backs each factual claim with a verifiable
         external source. High-discipline sources cite primary evidence inline; low-discipline sources
         opine without sourcing. AI engines weigh discipline heavily — uncited claims are increasingly
         skipped by retrieval models.
       </p>
+      <a
+        href="/methodology/citation-discipline/"
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-btn border border-brand/40 bg-surface-brand text-brand hover:bg-brand/15 transition-colors text-body-sm font-semibold mb-10"
+      >
+        Full methodology + worked examples →
+      </a>
 
       <h2 className="text-heading-1 font-bold mb-4">Ranking — 101 sources</h2>
       <ol className="space-y-2 mb-12">

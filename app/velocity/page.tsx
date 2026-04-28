@@ -15,12 +15,18 @@ export default function VelocityPage() {
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <div className="text-eyebrow text-brand mb-3">SourceScore sub-tool · 3 of 4</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Citation Velocity Tracker</h1>
-      <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-10">
+      <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-6">
         Citation Velocity tracks how often tier-1 publications and AI engines cite a source per
         week. High velocity = the source is part of the active citation network; low velocity = the
         source exists but is rarely surfaced. Velocity is the most volatile of the three sub-scores
         and refreshes most frequently.
       </p>
+      <a
+        href="/methodology/citation-velocity/"
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-btn border border-brand/40 bg-surface-brand text-brand hover:bg-brand/15 transition-colors text-body-sm font-semibold mb-10"
+      >
+        Full methodology + worked examples →
+      </a>
 
       <h2 className="text-heading-1 font-bold mb-4">Ranking — 101 sources</h2>
       <ol className="space-y-2 mb-12">
