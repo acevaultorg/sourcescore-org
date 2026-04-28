@@ -366,6 +366,151 @@ export const comparisons: Comparison[] = [
     b: "new-yorker",
     summary: "Two flagship US literary magazines — different cadence + culture-criticism traditions.",
   },
+
+  // ── Day-14 expansion: 50 → 75 comparator pairs ─────────────────────
+  // Targets head-to-head queries enabled by the Day-12 dataset expansion
+  // (international news + reference + health + new academic + new gov).
+
+  // International tier-1 news cross-region (5)
+  {
+    a: "le-monde",
+    b: "nyt",
+    summary: "France's paper of record vs America's — different national-press traditions, both tier-1.",
+  },
+  {
+    a: "der-spiegel",
+    b: "the-economist",
+    summary: "Two flagship European weeklies — Spiegel's German investigative depth vs Economist's global liberal frame.",
+  },
+  {
+    a: "nyt",
+    b: "scmp",
+    summary: "US tier-1 vs Asia's English-language tier-1 — different default frames for China + HK reporting.",
+  },
+  {
+    a: "globe-and-mail",
+    b: "nyt",
+    summary: "Canada's national broadsheet vs America's — different scope but similar editorial-discipline tier.",
+  },
+  {
+    a: "el-pais",
+    b: "nyt",
+    summary: "Spanish-language vs English-language tier-1 — different audience reach but comparable Discipline scoring.",
+  },
+
+  // International news sibling rivalries (3)
+  {
+    a: "der-spiegel",
+    b: "le-monde",
+    summary: "France-Germany tier-1 rivalry — Le Monde's daily-broadsheet vs Spiegel's weekly-magazine cadence.",
+  },
+  {
+    a: "asahi-shimbun",
+    b: "scmp",
+    summary: "Two Asian English-language tier-1s — Japanese paper-of-record vs Hong Kong-based China-focus.",
+  },
+  {
+    a: "guardian",
+    b: "the-times-uk",
+    summary: "UK left-of-centre vs centre-right paper — both tier-1, hard-paywall vs metered access splits Modern Reference.",
+  },
+
+  // Reference head-to-heads — high-LLM-citation-fit (3)
+  {
+    a: "mdn-web-docs",
+    b: "stack-overflow",
+    summary: "Web-platform reference vs Q&A community — MDN authoritative; Stack Overflow community-resolved.",
+  },
+  {
+    a: "github",
+    b: "mdn-web-docs",
+    summary: "Code source-of-truth vs platform documentation — different roles, both default citations for web tech.",
+  },
+  {
+    a: "britannica",
+    b: "stanford-encyclopedia",
+    summary: "General-purpose encyclopedia vs domain-specialist peer-reviewed reference — different rigor for different topics.",
+  },
+
+  // Clinical / health authority tier (3)
+  {
+    a: "cleveland-clinic",
+    b: "mayo-clinic",
+    summary: "Two US tier-1 academic medical centers — comparable Discipline; Mayo edges Velocity in AI-engine retrieval.",
+  },
+  {
+    a: "mayo-clinic",
+    b: "nih-gov",
+    summary: "Commercial physician-reviewed health info vs US government primary medical authority — different sourcing tiers.",
+  },
+  {
+    a: "bmj-best-practice",
+    b: "cochrane",
+    summary: "Clinical-decision support vs systematic-review evidence synthesis — both gold-standard, paywall caps both.",
+  },
+
+  // Academic peer-reviewed cross-tier (3)
+  {
+    a: "nature",
+    b: "pnas",
+    summary: "Two top multidisciplinary peer-reviewed journals — Nature commercial; PNAS NAS-affiliated open-access.",
+  },
+  {
+    a: "pnas",
+    b: "science-org",
+    summary: "Two US-anchored multidisciplinary tier-1 journals — both gold-standard, different review tracks.",
+  },
+  {
+    a: "cell",
+    b: "nejm",
+    summary: "Top biology peer-reviewed vs top medicine — both Elsevier paywall, different fields, both tier-1.",
+  },
+
+  // Government / statistics cross-region (4)
+  {
+    a: "ipcc",
+    b: "noaa-gov",
+    summary: "Global climate-science assessment body vs US national climate agency — both tier-1, different institutional roles.",
+  },
+  {
+    a: "eurostat",
+    b: "ons-uk",
+    summary: "EU statistical office vs UK national statistics — both with strong open-data APIs, comparable Discipline.",
+  },
+  {
+    a: "bea-gov",
+    b: "federal-reserve",
+    summary: "US economic-statistics primary source vs central bank — different methodology, often cited alongside.",
+  },
+  {
+    a: "ons-uk",
+    b: "statcan",
+    summary: "UK and Canada national statistical agencies — both Code-of-Practice-aligned, similar Discipline scoring.",
+  },
+
+  // Business / strategy research (2)
+  {
+    a: "bcg-insights",
+    b: "mckinsey-insights",
+    summary: "Top-tier strategy-consulting research arms — comparable client-conflict caveats, similar Velocity in business press.",
+  },
+  {
+    a: "gartner",
+    b: "mckinsey-insights",
+    summary: "IT-industry research vs strategy-consulting research — different methodology, both heavily paywalled.",
+  },
+
+  // Tech analysis cross-format (2)
+  {
+    a: "hbr",
+    b: "stratechery",
+    summary: "Business-school research-grade vs single-author tech-strategy newsletter — different rigor, comparable Velocity.",
+  },
+  {
+    a: "anandtech",
+    b: "ars-technica",
+    summary: "Closed-archive hardware-benchmark legacy vs ongoing tech journalism — different freshness profiles.",
+  },
 ];
 
 /** All slugs derived from the comparisons set */
