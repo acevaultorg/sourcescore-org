@@ -137,8 +137,14 @@ function SiteHeader() {
             Velocity
           </a>
           <a
-            href="/methodology/"
+            href="/sources/"
             className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors hidden md:inline-block"
+          >
+            Sources
+          </a>
+          <a
+            href="/methodology/"
+            className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors hidden lg:inline-block"
           >
             Methodology
           </a>

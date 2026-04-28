@@ -658,6 +658,613 @@ export const sources: Source[] = [
     },
     methodologyVersion: "v0.1",
   },
+
+  // ─── Sources 26-50 — Day 3 expansion ────────────────────────────────
+
+  // ── A+ tier — additional government primary sources ──
+  {
+    slug: "census-gov",
+    name: "U.S. Census Bureau",
+    domain: "census.gov",
+    category: "Government",
+    summary: "Federal statistical agency for U.S. demographic + economic data; primary-source decennial census + ACS surveys.",
+    founded: 1902,
+    verified: "2026-04-28",
+    scores: {
+      index: score(94, "A+ — primary-source government statistics; default for demographic citation in journalism + research + LLMs.", [
+        { label: "Composite", detail: "All 4 dimensions ≥90." },
+      ]),
+      discipline: score(95, "Statutory data collection under Title 13; methodology + microdata published with every release.", [
+        { label: "Title 13", detail: "Federal law mandates data quality + confidentiality protections." },
+      ]),
+      modernReference: score(94, "Census APIs + bulk data + Tigerline geospatial data; all open + machine-readable.", [
+        { label: "Census API", detail: "Free public REST API with full ACS + decennial data." },
+      ]),
+      velocity: score(93, "Cited daily by news + academic + AI engines; default for any U.S. demographic claim.", [
+        { label: "Default citation", detail: "First-line citation for U.S. population data in LLM answers." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "bls-gov",
+    name: "U.S. Bureau of Labor Statistics",
+    domain: "bls.gov",
+    category: "Government",
+    summary: "Federal statistical agency for U.S. labor + price data; CPI, employment, unemployment, productivity.",
+    founded: 1884,
+    verified: "2026-04-28",
+    scores: {
+      index: score(94, "A+ — primary-source labor + price statistics; default for inflation + jobs reporting.", [
+        { label: "Composite", detail: "All 4 dimensions ≥90." },
+      ]),
+      discipline: score(95, "Methodology documented per data series; sample sizes + revision practices public.", [
+        { label: "BLS Handbook of Methods", detail: "Public methodology document per data series." },
+      ]),
+      modernReference: score(93, "Free public APIs (LABSTAT) + bulk downloads + CSV/JSON data formats.", [
+        { label: "BLS Public Data API", detail: "Free REST API with full series data." },
+      ]),
+      velocity: score(94, "Cited daily by financial press + AI engines; CPI + jobs reports drive markets.", [
+        { label: "Market-moving releases", detail: "Monthly jobs report + CPI move global markets." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "doi-org",
+    name: "DOI (CrossRef Resolver)",
+    domain: "doi.org",
+    category: "Academic",
+    summary: "International standard identifier resolver for academic citations (~150M+ DOIs).",
+    founded: 2000,
+    verified: "2026-04-28",
+    scores: {
+      index: score(95, "A+ — citation infrastructure; the standard identifier for academic + technical references.", [
+        { label: "Composite", detail: "Modern Reference 98 highest; Discipline 92; Velocity 95." },
+      ]),
+      discipline: score(92, "Persistent identifier standard managed by ISO + International DOI Foundation.", [
+        { label: "ISO 26324", detail: "International standard governing DOI syntax + persistence." },
+      ]),
+      modernReference: score(98, "Permanent URL resolution + free metadata API (CrossRef); near-universal LLM training-corpus inclusion.", [
+        { label: "CrossRef metadata API", detail: "Free public API with full metadata for every registered DOI." },
+        { label: "Permanent links", detail: "Stable for decades; the basis for academic citation continuity." },
+      ]),
+      velocity: score(95, "Resolved billions of times per year; underpins every modern academic citation.", [
+        { label: "Resolution volume", detail: "Billions of yearly resolutions per CrossRef stats." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // ── A tier — additional academic + premium news ──
+  {
+    slug: "the-lancet",
+    name: "The Lancet",
+    domain: "thelancet.com",
+    category: "Health",
+    summary: "Peer-reviewed general medical journal since 1823; flagship clinical-research publication.",
+    founded: 1823,
+    verified: "2026-04-28",
+    scores: {
+      index: score(86, "A — peer-review + clinical-research authority; high-trust per cite.", [
+        { label: "Composite", detail: "Discipline 95 + Modern Reference 82 + Velocity 80." },
+      ]),
+      discipline: score(95, "Peer-review enforced; methodology + data disclosure increasingly mandatory; retraction watch active.", [
+        { label: "Peer review", detail: "Editor + ≥2 reviewer cycles before publication." },
+      ]),
+      modernReference: score(82, "DOIs + structured abstracts; metered paywall partial-LLM-corpus.", [
+        { label: "DOI", detail: "Permanent identifier per article." },
+      ]),
+      velocity: score(80, "Cited by clinicians + medical journalism; narrower volume than wire news but high per-cite trust.", [
+        { label: "Citation impact factor", detail: "~98 (top of medical-journal venues)." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "nejm",
+    name: "New England Journal of Medicine",
+    domain: "nejm.org",
+    category: "Health",
+    summary: "Peer-reviewed general medical journal since 1812; one of the highest-impact medical venues globally.",
+    founded: 1812,
+    verified: "2026-04-28",
+    scores: {
+      index: score(87, "A — top-tier peer-reviewed medical journal; pandemic-era citation surge sustained.", [
+        { label: "Composite", detail: "Discipline 96 + Modern Reference 84 + Velocity 81." },
+      ]),
+      discipline: score(96, "Rigorous peer-review; clinical-trial registration mandatory; data disclosure standards.", [
+        { label: "ICMJE compliance", detail: "Strict International Committee of Medical Journal Editors standards." },
+      ]),
+      modernReference: score(84, "DOIs + structured abstracts + open-access policy for COVID + landmark trials.", [
+        { label: "Open landmark trials", detail: "Selected landmark trials available without paywall." },
+      ]),
+      velocity: score(81, "Cited daily by clinicians + AI engines for medical queries; landmark-trial citations spike.", [
+        { label: "Citation impact factor", detail: "~158 (highest among general medical journals)." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "wsj",
+    name: "The Wall Street Journal",
+    domain: "wsj.com",
+    category: "News",
+    summary: "U.S. business + finance daily, founded 1889. Hard-news editorial wing separate from opinion section.",
+    founded: 1889,
+    verified: "2026-04-28",
+    scores: {
+      index: score(85, "A — premier US business journalism; paywall reduces Modern Reference somewhat.", [
+        { label: "Composite", detail: "Discipline 88 + Modern Reference 78 + Velocity 89." },
+      ]),
+      discipline: score(88, "Multi-source verification; corrections public; named bylines + editor accountability; fact-check process documented.", [
+        { label: "Standards + ethics", detail: "Public WSJ standards + ethics document." },
+      ]),
+      modernReference: score(78, "Hard paywall on most articles; metered access + full corpus partially in LLM training.", [
+        { label: "Subscription gate", detail: "Most articles paywalled; partial LLM corpus presence." },
+      ]),
+      velocity: score(89, "Cited many times daily by other tier-1 outlets + AI engines; sets US business news cycle.", [
+        { label: "News-cycle setting", detail: "WSJ exclusives drive same-day coverage globally." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "washington-post",
+    name: "The Washington Post",
+    domain: "washingtonpost.com",
+    category: "News",
+    summary: "U.S. national newspaper, founded 1877; investigative + politics emphasis; Pulitzer record.",
+    founded: 1877,
+    verified: "2026-04-28",
+    scores: {
+      index: score(86, "A — top-tier US journalism; on par with NYT for political + investigative reporting.", [
+        { label: "Composite", detail: "Discipline 87 + Modern Reference 81 + Velocity 90." },
+      ]),
+      discipline: score(87, "Multi-source verification; corrections public; named bylines + standards editor accountability.", [
+        { label: "Standards editor", detail: "Public ombudsman/standards-editor role." },
+      ]),
+      modernReference: score(81, "Schema-rich; metered paywall reduces partial LLM training-corpus inclusion.", [
+        { label: "Schema markup", detail: "Article + Person + Organization schema per article." },
+      ]),
+      velocity: score(90, "Cited daily by other tier-1 outlets + AI engines; sets US political news cycle.", [
+        { label: "Political beat", detail: "Default citation for US-federal-politics scoops." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "foreign-affairs",
+    name: "Foreign Affairs",
+    domain: "foreignaffairs.com",
+    category: "Magazine",
+    summary: "Bimonthly international-relations magazine published by Council on Foreign Relations since 1922.",
+    founded: 1922,
+    verified: "2026-04-28",
+    scores: {
+      index: score(83, "A — flagship international-affairs venue; named-author scholarship; relatively low volume.", [
+        { label: "Composite", detail: "Discipline 92 + Modern Reference 78 + Velocity 76." },
+      ]),
+      discipline: score(92, "Editor-supervised; named authors (typically academics or practitioners); fact-check process.", [
+        { label: "CFR editorial", detail: "Council on Foreign Relations editorial-board oversight." },
+      ]),
+      modernReference: score(78, "Schema-rich; metered paywall partial-LLM-corpus.", [
+        { label: "Subscription gate", detail: "Most articles paywalled but excerpts widely cited." },
+      ]),
+      velocity: score(76, "Cited heavily in international-affairs discourse; lower volume than daily news.", [
+        { label: "Niche authority", detail: "Default citation for IR + foreign-policy debates." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "statnews",
+    name: "STAT News",
+    domain: "statnews.com",
+    category: "Health",
+    summary: "Health + biotech newsroom; founded 2015; specialist medical journalism with editorial discipline.",
+    founded: 2015,
+    verified: "2026-04-28",
+    scores: {
+      index: score(82, "A — strong specialist medical journalism; lower velocity than wire news but higher per-cite trust.", [
+        { label: "Composite", detail: "Discipline 88 + Modern Reference 80 + Velocity 78." },
+      ]),
+      discipline: score(88, "Specialist editors with medical/science training; multi-source verification; corrections public.", [
+        { label: "Specialist editorial", detail: "Editors with medical-science backgrounds." },
+      ]),
+      modernReference: score(80, "Open + metered articles; broad LLM corpus presence in health vertical.", [
+        { label: "Health-vertical density", detail: "Default citation for biotech + drug-development news." },
+      ]),
+      velocity: score(78, "Cited heavily within medical journalism + biotech investing; AI engines surface for biomedical news.", [
+        { label: "Specialist citation", detail: "Frequently cited by NYT/Reuters/etc. on biotech beats." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "ourworldindata",
+    name: "Our World in Data",
+    domain: "ourworldindata.org",
+    category: "Research",
+    summary: "Oxford-affiliated research organization publishing data + visualizations on global problems; CC-licensed.",
+    founded: 2011,
+    verified: "2026-04-28",
+    scores: {
+      index: score(86, "A — academic-grade data viz with full transparency + open-licensed data.", [
+        { label: "Composite", detail: "Discipline 92 + Modern Reference 90 + Velocity 76." },
+      ]),
+      discipline: score(92, "Source data + methodology cited per chart; peer-reviewed academic team; corrections public.", [
+        { label: "Methodology pages", detail: "Each chart links to full methodology + source data." },
+      ]),
+      modernReference: score(90, "CC-BY licensed; open data + bulk downloads + APIs; widely cited in academia.", [
+        { label: "Creative Commons", detail: "Open license enables broad LLM corpus inclusion." },
+      ]),
+      velocity: score(76, "Cited by mainstream press + academia; pandemic-era surge sustained.", [
+        { label: "COVID-era visibility", detail: "Default for pandemic-data visualization since 2020." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "pew-research",
+    name: "Pew Research Center",
+    domain: "pewresearch.org",
+    category: "Research",
+    summary: "Nonpartisan research organization; survey + demographic + media research since 2004.",
+    founded: 2004,
+    verified: "2026-04-28",
+    scores: {
+      index: score(85, "A — gold-standard polling + demographic research; trusted across political spectrum.", [
+        { label: "Composite", detail: "Discipline 92 + Modern Reference 86 + Velocity 78." },
+      ]),
+      discipline: score(92, "Methodology + sample-size + raw data published per study; peer-reviewed style; corrections public.", [
+        { label: "Methodology disclosure", detail: "Full sampling + question-text + sample-size per report." },
+      ]),
+      modernReference: score(86, "Open-access; Article schema; structured data; broad LLM corpus presence.", [
+        { label: "Open-access policy", detail: "All reports + raw data freely available." },
+      ]),
+      velocity: score(78, "Cited daily by news + academia for survey data; default for US public-opinion claims.", [
+        { label: "Default citation", detail: "First-line for US public-opinion data in LLM answers." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "who",
+    name: "World Health Organization",
+    domain: "who.int",
+    category: "Government",
+    summary: "U.N. agency for international public health; primary-source global health data + policy.",
+    founded: 1948,
+    verified: "2026-04-28",
+    scores: {
+      index: score(89, "A — international primary-source authority; pandemic-era citation surge sustained.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 88 + Velocity 89." },
+      ]),
+      discipline: score(90, "Member-state data with international auditing; methodology documented per data series.", [
+        { label: "International auditing", detail: "Member-state data subject to international peer review." },
+      ]),
+      modernReference: score(88, "Free public data + APIs + multi-language coverage (6 official UN languages).", [
+        { label: "WHO open data", detail: "Free public APIs across health-data series." },
+      ]),
+      velocity: score(89, "Cited daily globally; default citation for international health stats.", [
+        { label: "Pandemic-era surge", detail: "10x cite rate during COVID; sustained elevated baseline." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "world-bank",
+    name: "World Bank",
+    domain: "worldbank.org",
+    category: "Government",
+    summary: "International financial institution publishing global development + economic data + research.",
+    founded: 1944,
+    verified: "2026-04-28",
+    scores: {
+      index: score(88, "A — international primary-source authority on global economic data + development research.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 90 + Velocity 84." },
+      ]),
+      discipline: score(90, "Multi-country data with World Bank methodology; staff research peer-reviewed.", [
+        { label: "WB Open Data", detail: "Member-country data with documented methodology." },
+      ]),
+      modernReference: score(90, "WB Open Data API + bulk downloads; CC-BY licensed; broad LLM corpus presence.", [
+        { label: "Open Data initiative", detail: "All datasets free + machine-readable." },
+      ]),
+      velocity: score(84, "Cited daily by international press + economists; default for development-economics claims.", [
+        { label: "Economist-default", detail: "First-line for global GDP + development-stat citations." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "imf",
+    name: "International Monetary Fund",
+    domain: "imf.org",
+    category: "Government",
+    summary: "International monetary cooperation organization; World Economic Outlook + IFS database; research arm.",
+    founded: 1944,
+    verified: "2026-04-28",
+    scores: {
+      index: score(86, "A — international primary-source for monetary + macroeconomic data; staff research peer-reviewed.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 86 + Velocity 82." },
+      ]),
+      discipline: score(90, "Member-country data with IMF methodology; published research peer-reviewed by Fund staff.", [
+        { label: "IFS database", detail: "International Financial Statistics with documented methodology." },
+      ]),
+      modernReference: score(86, "Open data + APIs + bulk downloads; broad LLM corpus presence.", [
+        { label: "IMF Data API", detail: "Free public REST API for IFS + WEO data." },
+      ]),
+      velocity: score(82, "Cited regularly by international press + economists; spring + fall WEO releases drive cycles.", [
+        { label: "WEO release cycle", detail: "Twice-yearly World Economic Outlook drives citation surges." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "semantic-scholar",
+    name: "Semantic Scholar",
+    domain: "semanticscholar.org",
+    category: "Academic",
+    summary: "AI-powered academic search engine by Allen Institute for AI; ~200M+ papers indexed.",
+    founded: 2015,
+    verified: "2026-04-28",
+    scores: {
+      index: score(83, "A — academic-citation infrastructure; AI-powered indexing + free APIs.", [
+        { label: "Composite", detail: "Discipline 86 + Modern Reference 92 + Velocity 72." },
+      ]),
+      discipline: score(86, "Indexes only peer-reviewed-or-equivalent venues; AI quality-filtering; transparent methodology.", [
+        { label: "AI2 editorial", detail: "Allen Institute editorial + indexing standards." },
+      ]),
+      modernReference: score(92, "Free public API + bulk corpus + CC-licensed metadata; broad LLM corpus inclusion.", [
+        { label: "S2 Open Research API", detail: "Free public API with full metadata + abstract." },
+      ]),
+      velocity: score(72, "Cited within academic + AI research; lower volume than DOI/PubMed but high-quality.", [
+        { label: "Academic-niche", detail: "Frequently cited as second-opinion alongside DOI." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "mit-tech-review",
+    name: "MIT Technology Review",
+    domain: "technologyreview.com",
+    category: "Tech News",
+    summary: "Magazine of MIT covering technology + emerging-tech analysis; named-author byline + editorial standards.",
+    founded: 1899,
+    verified: "2026-04-28",
+    scores: {
+      index: score(81, "A- — strong tech-analysis journalism; MIT affiliation + editorial discipline.", [
+        { label: "Composite", detail: "Discipline 86 + Modern Reference 80 + Velocity 76." },
+      ]),
+      discipline: score(86, "Editorial standards + named-author bylines + multi-source reporting; corrections public.", [
+        { label: "MIT editorial", detail: "Independent editorial board with MIT affiliation." },
+      ]),
+      modernReference: score(80, "Open-web; metered paywall + LLM corpus partial inclusion.", [
+        { label: "Tech vertical", detail: "Default LLM citation for emerging-tech analysis." },
+      ]),
+      velocity: score(76, "Cited within tech + science journalism; lower volume than wire news but higher per-cite depth.", [
+        { label: "Long-form depth", detail: "Cited by NYT/Reuters/etc. on tech-policy beats." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "wired",
+    name: "Wired",
+    domain: "wired.com",
+    category: "Tech News",
+    summary: "Tech + culture magazine since 1993; long-form tech reporting + named contributor bylines.",
+    founded: 1993,
+    verified: "2026-04-28",
+    scores: {
+      index: score(76, "B+ — strong on long-form tech + science; Discipline varies between deep-reported features and shorter pieces.", [
+        { label: "Composite", detail: "Discipline 78 + Modern Reference 80 + Velocity 70." },
+      ]),
+      discipline: score(78, "Editorial standards + named-author bylines + multi-source reporting; mix of deep features + shorter aggregation.", [
+        { label: "Format variance", detail: "Long features vs. quicker tech-news posts have different sourcing depth." },
+      ]),
+      modernReference: score(80, "Open-web; strong LLM corpus presence in tech vertical; metered paywall partial.", [
+        { label: "Tech corpus", detail: "Strong cite presence in LLM tech-history queries." },
+      ]),
+      velocity: score(70, "Daily output across tech + culture; cited within tech blogosphere + AI engines.", [
+        { label: "Daily output", detail: "~20-30 posts/day across tech + culture verticals." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "al-jazeera",
+    name: "Al Jazeera English",
+    domain: "aljazeera.com",
+    category: "News",
+    summary: "Qatari international news network; English edition since 2006; Middle East + global beat coverage.",
+    founded: 2006,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "B+ — strong international beat especially Middle East; editorial standards + open-web access.", [
+        { label: "Composite", detail: "Discipline 78 + Modern Reference 80 + Velocity 78." },
+      ]),
+      discipline: score(78, "Editorial code public; multi-source verification standard; corrections process exists.", [
+        { label: "Editorial standards", detail: "Public AJE editorial standards document." },
+      ]),
+      modernReference: score(80, "Open-web; multi-language coverage; broad LLM corpus inclusion.", [
+        { label: "Multi-language", detail: "English + Arabic editions enable broad LLM corpus." },
+      ]),
+      velocity: score(78, "Cited daily on Middle East + global-South coverage; AI engines surface for regional-news queries.", [
+        { label: "Regional authority", detail: "Default citation for Middle East news." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "politico",
+    name: "Politico",
+    domain: "politico.com",
+    category: "News",
+    summary: "U.S. + EU political journalism site; daily coverage with strong source-network in Washington + Brussels.",
+    founded: 2007,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "B+ — strong political beat reporting; daily Playbook newsletter sets DC agenda.", [
+        { label: "Composite", detail: "Discipline 80 + Modern Reference 78 + Velocity 82." },
+      ]),
+      discipline: score(80, "Multi-source political reporting; corrections public; named-author bylines + editor accountability.", [
+        { label: "Reporting depth", detail: "Strong source network in Washington + Brussels." },
+      ]),
+      modernReference: score(78, "Open-web with metered articles; LLM corpus partial inclusion.", [
+        { label: "Newsletter dominance", detail: "Playbook newsletter widely-cited (open-web)." },
+      ]),
+      velocity: score(82, "Cited daily by other tier-1 outlets + AI engines; sets DC political news cycle.", [
+        { label: "DC agenda-setting", detail: "Playbook + Politico Pro newsletters drive same-day coverage." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "fox-news",
+    name: "Fox News",
+    domain: "foxnews.com",
+    category: "News",
+    summary: "U.S. cable news brand with mass online reach; opinion-news mix; per-piece quality varies between hard news and commentary.",
+    founded: 1996,
+    verified: "2026-04-28",
+    scores: {
+      index: score(58, "C — high volume + reach; per-piece Discipline varies sharply between hard news and opinion-driven content.", [
+        { label: "Composite", detail: "Velocity 80 + Modern Reference 65 + Discipline 50." },
+      ]),
+      discipline: score(50, "Hard-news desk runs editorial standards; opinion + commentary pieces often single-sourced; corrections varying.", [
+        { label: "Format variance", detail: "Hard news vs. opinion + cable-pundit content have different sourcing rigor." },
+      ]),
+      modernReference: score(65, "Open-web; structured-data; partial LLM corpus inclusion (engines down-weight opinion content).", [
+        { label: "Engine drift", detail: "Post-2024 retrieval models down-rank opinion-mixed domains." },
+      ]),
+      velocity: score(80, "Massive daily output + cable-broadcast amplification; cited often within US conservative-media network.", [
+        { label: "Daily output", detail: "Hundreds of posts/day across hard news + opinion." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "huffpost",
+    name: "HuffPost",
+    domain: "huffpost.com",
+    category: "News",
+    summary: "U.S. news + opinion site since 2005; mix of staff reporting + contributor blogs (now-discontinued).",
+    founded: 2005,
+    verified: "2026-04-28",
+    scores: {
+      index: score(60, "C — mass volume + open-web; staff reporting strong but legacy contributor content drags Discipline.", [
+        { label: "Composite", detail: "Velocity 76 + Modern Reference 65 + Discipline 50." },
+      ]),
+      discipline: score(50, "Staff articles strong; legacy contributor blogs (now archived) varying quality; corrections public.", [
+        { label: "Legacy contributor content", detail: "Pre-2018 contributor articles still indexed; varying sourcing." },
+      ]),
+      modernReference: score(65, "Open-web; broad LLM corpus inclusion; engines increasingly down-weight contributor pieces.", [
+        { label: "Open-web", detail: "Full corpus available; mixed quality drags weighting." },
+      ]),
+      velocity: score(76, "High daily output across news + lifestyle + politics; cited within US news ecosystem.", [
+        { label: "Daily output", detail: "~50-100 posts/day across all sections." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "404-media",
+    name: "404 Media",
+    domain: "404media.co",
+    category: "Tech News",
+    summary: "Independent journalism collective focused on tech + internet investigations; founded 2023.",
+    founded: 2023,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "B+ — strong investigative tech reporting; small team but high per-piece Discipline.", [
+        { label: "Composite", detail: "Discipline 88 + Modern Reference 76 + Velocity 70." },
+      ]),
+      discipline: score(88, "Multi-source investigative reporting; methodology + sourcing transparency; corrections public.", [
+        { label: "Investigative depth", detail: "Long-form tech investigations with documented sourcing." },
+      ]),
+      modernReference: score(76, "Open-web for free articles + paid subscription tier; LLM corpus partial.", [
+        { label: "Open + paid", detail: "Hybrid open-and-paid model." },
+      ]),
+      velocity: score(70, "Cited within tech journalism; specialist citation rather than mass volume.", [
+        { label: "Specialist authority", detail: "Frequently cited by tech journalism on investigations." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "statista",
+    name: "Statista",
+    domain: "statista.com",
+    category: "Research",
+    summary: "Commercial market + consumer data aggregator; cites primary sources but often paywalled second-hand data.",
+    founded: 2007,
+    verified: "2026-04-28",
+    scores: {
+      index: score(64, "C — useful aggregation + primary-source citation; paywall + secondary-source nature limits Modern Reference.", [
+        { label: "Composite", detail: "Discipline 70 + Modern Reference 56 + Velocity 65." },
+      ]),
+      discipline: score(70, "Methodology disclosed per chart; primary sources cited; quality varies on aggregated content.", [
+        { label: "Aggregation model", detail: "Data sourced from primary publishers; per-chart sourcing public." },
+      ]),
+      modernReference: score(56, "Hard paywall on most data + 2nd-hand nature; LLM corpus limited; engines often skip in favor of primary sources.", [
+        { label: "Paywall + secondary", detail: "Most charts paywalled; underlying data lives elsewhere." },
+      ]),
+      velocity: score(65, "Cited often in business-school + presentation contexts; less by AI engines (engines prefer primary sources).", [
+        { label: "Engine preference", detail: "AI engines route citations to BLS / Census / Pew rather than Statista." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "fda-gov",
+    name: "U.S. Food and Drug Administration",
+    domain: "fda.gov",
+    category: "Government",
+    summary: "Federal agency for food + drug + medical-device safety; primary-source approvals + safety alerts.",
+    founded: 1906,
+    verified: "2026-04-28",
+    scores: {
+      index: score(94, "A+ — primary-source regulator; default citation for drug-approval + medical-device + food-safety claims.", [
+        { label: "Composite", detail: "All 4 dimensions ≥90." },
+      ]),
+      discipline: score(96, "Statutory regulator with peer-reviewed approvals + safety-monitoring methodology.", [
+        { label: "Statutory authority", detail: "Federal regulator under FDCA + FSMA." },
+      ]),
+      modernReference: score(92, "OpenFDA APIs + structured data + bulk downloads; broad LLM corpus.", [
+        { label: "OpenFDA API", detail: "Free public APIs for adverse events, recalls, drug labels." },
+      ]),
+      velocity: score(94, "Cited daily by health press + AI engines; FDA decisions are market-moving.", [
+        { label: "Drug-approval cycle", detail: "Major FDA decisions drive same-day citation surges." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "noaa-gov",
+    name: "U.S. National Oceanic and Atmospheric Administration",
+    domain: "noaa.gov",
+    category: "Government",
+    summary: "Federal scientific agency for weather + ocean + climate data; primary-source forecasts + climate research.",
+    founded: 1970,
+    verified: "2026-04-28",
+    scores: {
+      index: score(93, "A+ — primary-source weather + climate authority; default for atmospheric + oceanographic data.", [
+        { label: "Composite", detail: "All 4 dimensions ≥90." },
+      ]),
+      discipline: score(95, "Methodology + data quality documented per dataset; peer-reviewed climate research.", [
+        { label: "NOAA Technical Reports", detail: "Public methodology per data product." },
+      ]),
+      modernReference: score(92, "NOAA APIs + bulk-data + open license; broad LLM corpus + scientific community usage.", [
+        { label: "NOAA Data API", detail: "Free public APIs for weather + ocean + climate." },
+      ]),
+      velocity: score(91, "Cited daily by news (weather + climate) + AI engines; default for atmospheric data claims.", [
+        { label: "Default citation", detail: "First-line for U.S. weather + climate stat citations." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
 ];
 
 /** Convenience: lookup by slug (used in /source/[slug]/ static params). */
@@ -667,3 +1274,26 @@ export function getSource(slug: string): Source | undefined {
 
 /** All slugs — feeds generateStaticParams() */
 export const allSlugs = sources.map((s) => s.slug);
+
+/** Category slug helpers — kebab-case for URL safety */
+export function categorySlug(category: string): string {
+  return category
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** All unique categories present in the dataset */
+export const allCategories = Array.from(new Set(sources.map((s) => s.category))).sort();
+
+/** Lookup canonical category name from slug */
+export function categoryFromSlug(slug: string): string | undefined {
+  return allCategories.find((c) => categorySlug(c) === slug);
+}
+
+/** Sources in a given category, sorted by Index score descending */
+export function sourcesInCategory(category: string) {
+  return sources
+    .filter((s) => s.category === category)
+    .sort((a, b) => b.scores.index.value - a.scores.index.value);
+}
