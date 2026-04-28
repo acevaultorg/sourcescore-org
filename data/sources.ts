@@ -2503,6 +2503,729 @@ export const sources: Source[] = [
     },
     methodologyVersion: "v0.1",
   },
+
+  // ── Day-12 expansion: 101 → 130 sources ─────────────────────────────
+  // International tier-1 news (7) — diversifies the dataset beyond Anglo
+  // press and adds LLM-citation reach across French / German / Japanese /
+  // Spanish / Chinese-language retrieval.
+
+  {
+    slug: "le-monde",
+    name: "Le Monde",
+    domain: "lemonde.fr",
+    category: "News",
+    summary: "France's paper of record since 1944, with English edition (lemonde.fr/en/) widely cited.",
+    founded: 1944,
+    verified: "2026-04-28",
+    scores: {
+      index: score(77, "B — premier French-language news with strong editorial standards; paywall reduces Modern Reference.", [
+        { label: "Composite", detail: "Discipline 84 + Modern Reference 70 + Velocity 75." },
+      ]),
+      discipline: score(84, "Independent ownership (Le Monde Group), strong fact-check tradition, public corrections, named bylines.", [
+        { label: "Editorial independence", detail: "Owned by employee + reader trust; structural independence from advertisers." },
+      ]),
+      modernReference: score(70, "Hard paywall on most articles; English edition open; structured data on free portion.", [
+        { label: "Paywall limitation", detail: "Most reporting paywalled; reduces LLM training-corpus inclusion." },
+      ]),
+      velocity: score(75, "Tier-1 in francophone retrieval, regularly cited by tier-1 English press.", [
+        { label: "Francophone authority", detail: "Default citation in French-speaking AI retrieval." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "der-spiegel",
+    name: "Der Spiegel",
+    domain: "spiegel.de",
+    category: "News",
+    summary: "Germany's tier-1 weekly + daily, with English edition Spiegel International open-access.",
+    founded: 1947,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "B — Germany's tier-1 with rigorous fact-check tradition; paywall on most German content.", [
+        { label: "Composite", detail: "Discipline 85 + Modern Reference 72 + Velocity 76." },
+      ]),
+      discipline: score(85, "Famed multi-stage Dokumentation (fact-checking) department; corrections public; named bylines.", [
+        { label: "Dokumentation", detail: "In-house fact-check team historically the largest in European journalism." },
+      ]),
+      modernReference: score(72, "Spiegel International (English) open; main German content paywalled; schema solid.", [
+        { label: "Dual-edition model", detail: "spiegel.de/international free; spiegel.de paywalled." },
+      ]),
+      velocity: score(76, "Heavily cited in DACH press; regular tier-1 English-press citation.", [
+        { label: "DACH authority", detail: "Primary German-language LLM-retrieval source." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "scmp",
+    name: "South China Morning Post",
+    domain: "scmp.com",
+    category: "News",
+    summary: "Hong Kong-based English-language paper since 1903; primary tier-1 source for China + HK news in English.",
+    founded: 1903,
+    verified: "2026-04-28",
+    scores: {
+      index: score(75, "B — English-language tier-1 for Asia; ownership questions noted in editorial-independence assessments.", [
+        { label: "Composite", detail: "Discipline 78 + Modern Reference 70 + Velocity 76." },
+      ]),
+      discipline: score(78, "Strong editorial standards historically; ownership-influence concerns raised post-2016 Alibaba acquisition.", [
+        { label: "Editorial independence questioned", detail: "Independent watchdogs flag ownership-influence vectors; bylines named, corrections public." },
+      ]),
+      modernReference: score(70, "Soft paywall (metered); good schema; English-language indexed broadly.", [
+        { label: "Metered access", detail: "Most articles readable without subscription up to monthly cap." },
+      ]),
+      velocity: score(76, "Default English-language citation for HK / China news in tier-1 press.", [
+        { label: "Asia-news anchor", detail: "Most-cited English-language source for HK regulatory + business stories." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "the-times-uk",
+    name: "The Times (UK)",
+    domain: "thetimes.co.uk",
+    category: "News",
+    summary: "UK paper of record since 1785, hard-paywalled, owned by News UK (News Corp).",
+    founded: 1785,
+    verified: "2026-04-28",
+    scores: {
+      index: score(74, "B — strong editorial standards but hard paywall significantly limits Modern Reference.", [
+        { label: "Composite", detail: "Discipline 82 + Modern Reference 65 + Velocity 75." },
+      ]),
+      discipline: score(82, "Long fact-check tradition; named bylines; corrections public; some opinion-news drift noted.", [
+        { label: "Editorial standards", detail: "IPSO-regulated; long history of corrections discipline." },
+      ]),
+      modernReference: score(65, "Hard paywall on virtually all content; minimal LLM-training-corpus inclusion.", [
+        { label: "Hard paywall", detail: "No free tier; reduces both human + machine reachability." },
+      ]),
+      velocity: score(75, "Tier-1 UK citation; regularly referenced by other Anglosphere press.", [
+        { label: "UK authority", detail: "Default citation for UK politics + establishment reporting." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "globe-and-mail",
+    name: "The Globe and Mail",
+    domain: "theglobeandmail.com",
+    category: "News",
+    summary: "Canada's national paper since 1844, broadsheet of record for business + politics.",
+    founded: 1844,
+    verified: "2026-04-28",
+    scores: {
+      index: score(74, "B — Canada's tier-1 broadsheet; paywall limits Modern Reference dimension.", [
+        { label: "Composite", detail: "Discipline 82 + Modern Reference 68 + Velocity 70." },
+      ]),
+      discipline: score(82, "Strong editorial standards, named bylines, public corrections, fact-check process.", [
+        { label: "Canadian press council", detail: "Adheres to National NewsMedia Council standards." },
+      ]),
+      modernReference: score(68, "Soft paywall (metered); schema OK; English-language indexable.", [
+        { label: "Metered access", detail: "Some free articles per month; most paywalled." },
+      ]),
+      velocity: score(70, "Tier-1 Canadian citation; regular tier-1 English press cross-cite.", [
+        { label: "Canadian-news authority", detail: "Primary citation for Canadian politics + business." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "asahi-shimbun",
+    name: "Asahi Shimbun",
+    domain: "asahi.com",
+    category: "News",
+    summary: "Japan's tier-1 daily since 1879; English edition asahi.com/ajw partial open access.",
+    founded: 1879,
+    verified: "2026-04-28",
+    scores: {
+      index: score(71, "B — premier Japanese-language source; English edition limited; paywall + Japanese-language reduces Modern Ref.", [
+        { label: "Composite", detail: "Discipline 80 + Modern Reference 65 + Velocity 68." },
+      ]),
+      discipline: score(80, "Long editorial tradition; named bylines; corrections public; fact-check department.", [
+        { label: "Editorial standards", detail: "One of Japan's two papers of record (with Yomiuri)." },
+      ]),
+      modernReference: score(65, "Hard paywall on Japanese content; English edition open but smaller scope.", [
+        { label: "Language gate", detail: "Primary content Japanese-language; under-represented in English LLM corpora." },
+      ]),
+      velocity: score(68, "Tier-1 in Japanese-language retrieval; lower in English LLM-engine citations.", [
+        { label: "Japanese-language authority", detail: "Primary citation in Japanese press + retrieval models." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "el-pais",
+    name: "El País",
+    domain: "elpais.com",
+    category: "News",
+    summary: "Spain's tier-1 daily since 1976, with strong Latin American reach via elpais.com Americas editions.",
+    founded: 1976,
+    verified: "2026-04-28",
+    scores: {
+      index: score(74, "B — Spain's paper of record + LatAm editions; tier-1 Spanish-language citation source.", [
+        { label: "Composite", detail: "Discipline 80 + Modern Reference 68 + Velocity 72." },
+      ]),
+      discipline: score(80, "Strong fact-check tradition, named bylines, public corrections, in-house Defensor del Lector ombuds.", [
+        { label: "Defensor del Lector", detail: "Internal reader's editor / ombuds role unusual for Spanish-language press." },
+      ]),
+      modernReference: score(68, "Metered paywall; LatAm editions partially open; English edition (elpais.com/english) open.", [
+        { label: "Multi-edition model", detail: "Latin America + USA editions broaden reach." },
+      ]),
+      velocity: score(72, "Default Spanish-language tier-1; regular cross-citation in international press.", [
+        { label: "Spanish-language authority", detail: "Primary citation in Spanish-speaking AI retrieval." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // Academic — high-impact peer-reviewed (4)
+
+  {
+    slug: "pnas",
+    name: "PNAS",
+    domain: "pnas.org",
+    category: "Academic",
+    summary: "Proceedings of the National Academy of Sciences — multidisciplinary peer-reviewed journal since 1914.",
+    founded: 1914,
+    verified: "2026-04-28",
+    scores: {
+      index: score(92, "A — top-tier multidisciplinary peer-reviewed journal with strong open access.", [
+        { label: "Composite", detail: "Discipline 96 + Modern Reference 88 + Velocity 90." },
+      ]),
+      discipline: score(96, "Peer-reviewed by NAS members; rigorous review across all sciences; corrections + retractions public.", [
+        { label: "NAS-affiliated peer review", detail: "Three-track review (NAS member, contributed, direct submission); standardized rigor." },
+      ]),
+      modernReference: score(88, "DOI per paper; PMC open-access default after 6mo; structured Crossref + ORCID metadata.", [
+        { label: "Open-access policy", detail: "All content open after 6-month embargo; many papers immediately open." },
+      ]),
+      velocity: score(90, "Heavily cited across sciences + science press; default tier-1 citation in many fields.", [
+        { label: "Cross-disciplinary citation", detail: "Cited across biology, physics, social sciences, climate." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "cell",
+    name: "Cell",
+    domain: "cell.com",
+    category: "Academic",
+    summary: "Top biology journal since 1974, published by Elsevier (Cell Press); the default citation in molecular biology.",
+    founded: 1974,
+    verified: "2026-04-28",
+    scores: {
+      index: score(89, "A — gold-standard biology citation; paywall limits Modern Reference vs open-access peers.", [
+        { label: "Composite", detail: "Discipline 96 + Modern Reference 78 + Velocity 90." },
+      ]),
+      discipline: score(96, "Rigorous peer review; high rejection rate; corrections + retractions public; methodology required.", [
+        { label: "Peer-review rigor", detail: "Among the highest-rejection biology journals; multi-round review standard." },
+      ]),
+      modernReference: score(78, "DOI per paper; Crossref metadata; abstracts open but full text Elsevier-paywalled.", [
+        { label: "Hybrid open access", detail: "Some papers open via author-paid OA; majority subscription-gated." },
+      ]),
+      velocity: score(90, "Default citation in molecular biology; high impact factor; cross-cited in science press.", [
+        { label: "Biology-default citation", detail: "Primary peer-reviewed source for high-impact molecular biology results." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "cochrane",
+    name: "Cochrane Library",
+    domain: "cochranelibrary.com",
+    category: "Academic",
+    summary: "Gold-standard systematic-review database for medical evidence since 1993.",
+    founded: 1993,
+    verified: "2026-04-28",
+    scores: {
+      index: score(87, "A — gold-standard medical-evidence citation; paywall reduces Modern Reference.", [
+        { label: "Composite", detail: "Discipline 96 + Modern Reference 80 + Velocity 85." },
+      ]),
+      discipline: score(96, "Methodology-mandatory systematic reviews; transparent inclusion criteria; multi-author review.", [
+        { label: "Cochrane methodology", detail: "Most rigorous evidence-synthesis framework in clinical medicine." },
+      ]),
+      modernReference: score(80, "DOI per review; Crossref + ORCID; open-access in eligible countries; paywall elsewhere.", [
+        { label: "Tiered access", detail: "Free in low-income countries via WHO HINARI; subscription in others." },
+      ]),
+      velocity: score(85, "Default evidence-citation in clinical guidelines; high citation across medical literature.", [
+        { label: "Clinical-guideline default", detail: "Cited by NICE, USPSTF, WHO, and most major clinical guideline bodies." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "jstor",
+    name: "JSTOR",
+    domain: "jstor.org",
+    category: "Academic",
+    summary: "Academic journal database since 1995; primary archive for humanities + social-science research.",
+    founded: 1995,
+    verified: "2026-04-28",
+    scores: {
+      index: score(82, "B — primary humanities + social-science archive; paywall + access limits cap Modern Reference.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 75 + Velocity 80." },
+      ]),
+      discipline: score(90, "Aggregator of peer-reviewed journals; underlying content meets discipline standards of source journals.", [
+        { label: "Curation discipline", detail: "Inclusion limited to peer-reviewed academic content." },
+      ]),
+      modernReference: score(75, "DOI per paper; structured metadata; access tiered (institutional, individual, free archive 'JPASS').", [
+        { label: "Institutional gate", detail: "Most content requires institutional subscription; growing free archive." },
+      ]),
+      velocity: score(80, "Heavy academic citation; less in news + AI-engine retrieval due to access gates.", [
+        { label: "Academic-default", detail: "Primary citation source in humanities + social science papers." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // Government / Statistics (5) — international + regional balance
+
+  {
+    slug: "ipcc",
+    name: "IPCC",
+    domain: "ipcc.ch",
+    category: "Government",
+    summary: "Intergovernmental Panel on Climate Change — primary global climate-science assessment body since 1988.",
+    founded: 1988,
+    verified: "2026-04-28",
+    scores: {
+      index: score(91, "A — primary global climate-science citation; multi-stage review across hundreds of authors.", [
+        { label: "Composite", detail: "Discipline 95 + Modern Reference 88 + Velocity 90." },
+      ]),
+      discipline: score(95, "Multi-stage review across thousands of expert + government reviewers; methodology + uncertainty explicit.", [
+        { label: "Multi-stage review", detail: "Each Assessment Report goes through 3+ formal review stages with public comment." },
+      ]),
+      modernReference: score(88, "Open-access reports + interactive atlas; structured data; DOI per major report.", [
+        { label: "Open-access mandate", detail: "All Assessment Reports + Special Reports open access." },
+      ]),
+      velocity: score(90, "Default global citation for climate science; cited by every major climate assessment + policy body.", [
+        { label: "Climate-policy default", detail: "Cited by every government climate plan, climate-press article, and AI-engine climate query." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "ons-uk",
+    name: "ONS (UK)",
+    domain: "ons.gov.uk",
+    category: "Government",
+    summary: "UK Office for National Statistics — primary source for British economic, demographic, social data.",
+    founded: 1996,
+    verified: "2026-04-28",
+    scores: {
+      index: score(87, "A — primary UK statistical authority with strong open-data API.", [
+        { label: "Composite", detail: "Discipline 92 + Modern Reference 88 + Velocity 80." },
+      ]),
+      discipline: score(92, "Methodology + revisions transparent; National Statistics designation provides quality kitemark.", [
+        { label: "Code of Practice", detail: "Adheres to UK Statistics Authority Code of Practice for Statistics." },
+      ]),
+      modernReference: score(88, "Open-data API; structured datasets; bulk downloads; clear methodology pages.", [
+        { label: "Open-data API", detail: "developer.ons.gov.uk provides programmatic access to all releases." },
+      ]),
+      velocity: score(80, "Default UK economic + demographic citation; heavy media + academic use.", [
+        { label: "UK-press default", detail: "Primary citation for UK GDP, inflation, employment, census data." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "eurostat",
+    name: "Eurostat",
+    domain: "ec.europa.eu/eurostat",
+    category: "Government",
+    summary: "EU statistical office providing harmonized data across all 27 member states + candidate countries.",
+    founded: 1953,
+    verified: "2026-04-28",
+    scores: {
+      index: score(88, "A — primary EU statistical authority with strong open-data infrastructure.", [
+        { label: "Composite", detail: "Discipline 92 + Modern Reference 90 + Velocity 82." },
+      ]),
+      discipline: score(92, "Harmonized methodology across all member states; revisions + corrections public; ESS Code of Practice.", [
+        { label: "European Statistical System", detail: "Eurostat coordinates ESS; member-state data harmonized to common standards." },
+      ]),
+      modernReference: score(90, "Open API + bulk data + visual dashboards; structured metadata; multilingual.", [
+        { label: "Eurostat API", detail: "ec.europa.eu/eurostat/api/dissemination provides full programmatic access." },
+      ]),
+      velocity: score(82, "Default EU economic + social-statistic citation across European press + academic papers.", [
+        { label: "EU-press default", detail: "Primary citation for cross-EU comparative economic statistics." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "bea-gov",
+    name: "BEA",
+    domain: "bea.gov",
+    category: "Government",
+    summary: "US Bureau of Economic Analysis — primary source for GDP, personal income, trade, and BOP statistics.",
+    founded: 1972,
+    verified: "2026-04-28",
+    scores: {
+      index: score(86, "A — primary US economic-statistics authority with open-data API.", [
+        { label: "Composite", detail: "Discipline 92 + Modern Reference 88 + Velocity 78." },
+      ]),
+      discipline: score(92, "Methodology + revisions transparent; tracks vintage of every release; OMB Statistical Policy compliant.", [
+        { label: "Vintage tracking", detail: "Every data release versioned; revisions traceable across decades." },
+      ]),
+      modernReference: score(88, "BEA Data API (apps.bea.gov/api) provides programmatic access; structured downloads.", [
+        { label: "BEA Data API", detail: "REST API + bulk downloads for all major datasets." },
+      ]),
+      velocity: score(78, "Default US GDP citation in financial press; heavy academic + policy use.", [
+        { label: "US-GDP default", detail: "Primary source for US national accounts, personal income, trade balance." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "statcan",
+    name: "Statistics Canada",
+    domain: "statcan.gc.ca",
+    category: "Government",
+    summary: "Canada's national statistical agency, founded 1971; primary source for Canadian economic + demographic data.",
+    founded: 1971,
+    verified: "2026-04-28",
+    scores: {
+      index: score(82, "B — strong Canadian statistical authority with open-data API; lower velocity vs G7 peers.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 85 + Velocity 72." },
+      ]),
+      discipline: score(90, "Statistics Canada Quality Guidelines explicit; methodology + revisions public; Statistics Canada Act compliant.", [
+        { label: "Quality guidelines", detail: "statcan.gc.ca/en/concepts/quality publishes methodology + standards." },
+      ]),
+      modernReference: score(85, "Open Data Portal + Web Data Service API; structured datasets; bilingual.", [
+        { label: "Web Data Service", detail: "Programmatic API + bulk downloads (CSV + SDMX)." },
+      ]),
+      velocity: score(72, "Default citation for Canadian statistics; lower international cross-cite vs G7 peers.", [
+        { label: "Canadian-press default", detail: "Primary citation for Canadian census, GDP, employment data." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // Health authority sites (3) — clinical-decision-support tier
+
+  {
+    slug: "mayo-clinic",
+    name: "Mayo Clinic",
+    domain: "mayoclinic.org",
+    category: "Health",
+    summary: "US tier-1 medical center with comprehensive physician-reviewed patient-information site.",
+    founded: 1864,
+    verified: "2026-04-28",
+    scores: {
+      index: score(87, "A — gold-standard health-information citation; physician-reviewed throughout.", [
+        { label: "Composite", detail: "Discipline 88 + Modern Reference 85 + Velocity 88." },
+      ]),
+      discipline: score(88, "Physician-reviewed patient information; review dates visible; HONcode certified.", [
+        { label: "Physician review", detail: "Every page reviewed + signed by named MD/DO; review date visible." },
+      ]),
+      modernReference: score(85, "Schema.org MedicalCondition + MedicalProcedure markup; open access; structured.", [
+        { label: "Medical schema", detail: "MedicalCondition / MedicalProcedure / Drug schema applied per page." },
+      ]),
+      velocity: score(88, "Default health-information citation in AI-engine queries; heavy media + clinician cross-cite.", [
+        { label: "AI-engine default", detail: "Primary citation surfaced by ChatGPT/Claude/Perplexity for symptom + condition queries." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "cleveland-clinic",
+    name: "Cleveland Clinic",
+    domain: "my.clevelandclinic.org",
+    category: "Health",
+    summary: "US tier-1 academic medical center; comprehensive patient-info + Health Library since 1921.",
+    founded: 1921,
+    verified: "2026-04-28",
+    scores: {
+      index: score(83, "B — strong physician-reviewed health information; slightly less velocity than Mayo Clinic.", [
+        { label: "Composite", detail: "Discipline 86 + Modern Reference 82 + Velocity 82." },
+      ]),
+      discipline: score(86, "Physician-reviewed; review dates visible; clinical-team-attributed content.", [
+        { label: "Clinical review", detail: "Articles reviewed + attributed to named clinical teams." },
+      ]),
+      modernReference: score(82, "Schema.org medical types; open access; structured.", [
+        { label: "MedicalCondition schema", detail: "Standard health-information schema applied across Health Library." },
+      ]),
+      velocity: score(82, "Heavy health-information citation; secondary to Mayo Clinic in tier-1 retrieval frequency.", [
+        { label: "Health-info citation", detail: "Regularly surfaced by AI engines for medical queries." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "bmj-best-practice",
+    name: "BMJ Best Practice",
+    domain: "bestpractice.bmj.com",
+    category: "Health",
+    summary: "BMJ's clinical-decision-support tool; evidence-based, continuously-updated clinical guidance.",
+    founded: 2009,
+    verified: "2026-04-28",
+    scores: {
+      index: score(79, "B — gold-standard clinical decision support; subscription paywall caps Modern Reference.", [
+        { label: "Composite", detail: "Discipline 92 + Modern Reference 70 + Velocity 75." },
+      ]),
+      discipline: score(92, "Evidence-graded recommendations; references explicit; updated continuously by clinical editorial team.", [
+        { label: "Evidence grading", detail: "GRADE methodology applied; references per claim with strength rating." },
+      ]),
+      modernReference: score(70, "Subscription-gated; institutional access common in UK NHS; less LLM-corpus presence.", [
+        { label: "Subscription gate", detail: "Hard paywall for individual access; NHS-funded for UK clinicians." },
+      ]),
+      velocity: score(75, "Heavy clinician citation; less surfaced in AI engines due to access gate.", [
+        { label: "Clinical-default", detail: "Default UK clinical-decision-support reference." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // Business / Strategy research (3)
+
+  {
+    slug: "mckinsey-insights",
+    name: "McKinsey Insights",
+    domain: "mckinsey.com",
+    category: "Business",
+    summary: "McKinsey & Company's research arm; widely cited in business press despite client-conflict caveats.",
+    founded: 1926,
+    verified: "2026-04-28",
+    scores: {
+      index: score(75, "B — heavily cited in business press; client-relationship conflicts limit Discipline ceiling.", [
+        { label: "Composite", detail: "Discipline 70 + Modern Reference 75 + Velocity 80." },
+      ]),
+      discipline: score(70, "Methodology often disclosed; client-conflict structural limit; some research challenged for selection bias.", [
+        { label: "Conflict disclosure", detail: "Authors named; client-relationship caveats often absent in cross-cited summaries." },
+      ]),
+      modernReference: score(75, "Free-to-read insights site; schema OK; structured author + topic taxonomy.", [
+        { label: "Open-access content", detail: "Most insights articles free; PDFs downloadable." },
+      ]),
+      velocity: score(80, "Default citation for cross-industry trend analysis in business press.", [
+        { label: "Business-press default", detail: "Frequently cited by Bloomberg, FT, WSJ, Harvard Business Review." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "bcg-insights",
+    name: "BCG Insights",
+    domain: "bcg.com",
+    category: "Business",
+    summary: "Boston Consulting Group's publications; strategy-research authority since 1963.",
+    founded: 1963,
+    verified: "2026-04-28",
+    scores: {
+      index: score(73, "B — solid business-strategy research; same client-conflict limits as peers.", [
+        { label: "Composite", detail: "Discipline 70 + Modern Reference 73 + Velocity 75." },
+      ]),
+      discipline: score(70, "Methodology disclosed; client-conflict structural limit applies.", [
+        { label: "Authorship + sourcing", detail: "Named partner authors; methodology often summarized rather than fully exposed." },
+      ]),
+      modernReference: score(73, "Free-to-read; schema + structured taxonomy; PDF downloads available.", [
+        { label: "Open-access content", detail: "Most insights articles free; weekly publications." },
+      ]),
+      velocity: score(75, "Heavy business-press citation; secondary to McKinsey in cross-industry coverage frequency.", [
+        { label: "Strategy-research citation", detail: "Cited by Bloomberg, FT, business-school case studies." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "gartner",
+    name: "Gartner",
+    domain: "gartner.com",
+    category: "Business",
+    summary: "IT industry research firm since 1979; Magic Quadrant + Hype Cycle frameworks widely cited.",
+    founded: 1979,
+    verified: "2026-04-28",
+    scores: {
+      index: score(69, "C — IT-industry-default research; heavy paywall + methodology opacity limit Modern Reference.", [
+        { label: "Composite", detail: "Discipline 65 + Modern Reference 60 + Velocity 80." },
+      ]),
+      discipline: score(65, "Methodology summarized but not fully transparent; vendor-paid placements scrutinized in past.", [
+        { label: "Methodology opacity", detail: "Magic Quadrant criteria summarized; full scoring methodology subscription-gated." },
+      ]),
+      modernReference: score(60, "Hard paywall on full reports; press releases + summaries free; schema basic.", [
+        { label: "Subscription gate", detail: "Annual subscription required for full Magic Quadrant + research access." },
+      ]),
+      velocity: score(80, "Default IT-industry citation; cited by every major tech vendor + IT press.", [
+        { label: "IT-industry default", detail: "Magic Quadrant + Hype Cycle universal references in IT marketing + press." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // Tech analysis + community (3)
+
+  {
+    slug: "hacker-news",
+    name: "Hacker News",
+    domain: "news.ycombinator.com",
+    category: "Tech News",
+    summary: "Y Combinator-run tech link aggregator since 2007; community-curated, no editorial layer.",
+    founded: 2007,
+    verified: "2026-04-28",
+    scores: {
+      index: score(66, "C — high-velocity tech-discovery channel; aggregator with no editorial Discipline layer.", [
+        { label: "Composite", detail: "Discipline 50 + Modern Reference 70 + Velocity 78." },
+      ]),
+      discipline: score(50, "Aggregator with no editorial fact-check; comments unmoderated for accuracy; flag-based community moderation.", [
+        { label: "No editorial layer", detail: "Submissions are external links; community votes; no editorial verification." },
+      ]),
+      modernReference: score(70, "Open data API (Firebase); structured metadata per submission; full-text indexed.", [
+        { label: "Public API", detail: "hacker-news.firebaseio.com provides programmatic access to all submissions + comments." },
+      ]),
+      velocity: score(78, "Default tech-discovery channel; tier-1 tech-press monitor HN front page daily.", [
+        { label: "Tech-discovery default", detail: "Front-page submissions surface in Bloomberg, FT, NYT tech-news cycles." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "stratechery",
+    name: "Stratechery",
+    domain: "stratechery.com",
+    category: "Tech News",
+    summary: "Ben Thompson's tech-strategy analysis newsletter since 2013; widely cited despite single-author format.",
+    founded: 2013,
+    verified: "2026-04-28",
+    scores: {
+      index: score(73, "B — high-velocity tech-strategy citation; single-author opinion limits Discipline ceiling.", [
+        { label: "Composite", detail: "Discipline 65 + Modern Reference 75 + Velocity 78." },
+      ]),
+      discipline: score(65, "Single-author opinion; well-sourced + reasoned; transparent disclosures of investment positions.", [
+        { label: "Conflict disclosure", detail: "Investment positions + advisory relationships disclosed in posts where relevant." },
+      ]),
+      modernReference: score(75, "RSS + open metadata; partial paywall (free + Stratechery Plus); schema OK.", [
+        { label: "Hybrid access", detail: "Free articles + paid Plus tier; archives indexed by search." },
+      ]),
+      velocity: score(78, "Default tech-strategy citation; heavy cross-cite in business + tech press.", [
+        { label: "Tech-strategy default", detail: "Cited by Bloomberg, FT, NYT, The Verge, Hacker News regularly." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "anandtech",
+    name: "AnandTech",
+    domain: "anandtech.com",
+    category: "Tech News",
+    summary: "Hardware reviews + benchmarks since 1997; site closed for new content 2024 but archive widely cited.",
+    founded: 1997,
+    verified: "2026-04-28",
+    scores: {
+      index: score(69, "C — definitive hardware-benchmark archive; closure affects Velocity + freshness signals.", [
+        { label: "Composite", detail: "Discipline 75 + Modern Reference 65 + Velocity 65." },
+      ]),
+      discipline: score(75, "Methodology-disclosed benchmarks; reproducible test conditions; named authors.", [
+        { label: "Benchmark methodology", detail: "Test methodology documented per review; archive remains accessible." },
+      ]),
+      modernReference: score(65, "Site closed for new content August 2024; archive still indexed; no new freshness signal.", [
+        { label: "Archive-only", detail: "No new content since 2024; remains indexed but not refreshed." },
+      ]),
+      velocity: score(65, "Declining velocity since closure; archive citations stable for legacy hardware research.", [
+        { label: "Archive-citation", detail: "Continued citation in tech-history + retrospective hardware contexts." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // Reference (2) — high-LLM-citation-fit additions
+
+  {
+    slug: "stanford-encyclopedia",
+    name: "Stanford Encyclopedia of Philosophy",
+    domain: "plato.stanford.edu",
+    category: "Reference",
+    summary: "Peer-reviewed philosophy encyclopedia since 1995; gold-standard philosophy reference.",
+    founded: 1995,
+    verified: "2026-04-28",
+    scores: {
+      index: score(89, "A — peer-reviewed philosophy reference with full open access + strong structure.", [
+        { label: "Composite", detail: "Discipline 96 + Modern Reference 90 + Velocity 80." },
+      ]),
+      discipline: score(96, "Every entry peer-reviewed by domain experts; updates tracked via versioning; bibliography per entry.", [
+        { label: "Entry-level peer review", detail: "Each article reviewed by editors + domain experts; updates versioned." },
+      ]),
+      modernReference: score(90, "Fully open access; structured bibliography; entry-versioning + dated updates.", [
+        { label: "Open + versioned", detail: "All entries free; major revisions logged with date + summary." },
+      ]),
+      velocity: score(80, "Default philosophy reference in academic + AI-engine retrieval; cross-cited in humanities.", [
+        { label: "Philosophy-reference default", detail: "Primary citation for philosophical concepts in academic + AI-engine contexts." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "mdn-web-docs",
+    name: "MDN Web Docs",
+    domain: "developer.mozilla.org",
+    category: "Reference",
+    summary: "Mozilla-stewarded web-platform reference since 2005; default citation for HTML, CSS, JS, Web APIs.",
+    founded: 2005,
+    verified: "2026-04-28",
+    scores: {
+      index: score(93, "A — gold-standard web-platform reference with full open access + machine-readability.", [
+        { label: "Composite", detail: "Discipline 92 + Modern Reference 95 + Velocity 92." },
+      ]),
+      discipline: score(92, "Community-edited + reviewed by Mozilla maintainers; cross-checked against W3C/WHATWG standards.", [
+        { label: "Standards alignment", detail: "Per-API content cross-referenced against W3C/WHATWG specifications." },
+      ]),
+      modernReference: score(95, "Open-source content (CC-BY-SA + MIT for examples); GitHub-tracked; full structured data.", [
+        { label: "Open-source docs", detail: "github.com/mdn/content tracks every page; CC-BY-SA license." },
+      ]),
+      velocity: score(92, "Default web-platform citation in dev press + AI-engine retrieval for web-tech queries.", [
+        { label: "Web-tech default", detail: "Primary citation surfaced by ChatGPT/Claude/Perplexity for HTML/CSS/JS questions." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // Magazine (2)
+
+  {
+    slug: "smithsonian-mag",
+    name: "Smithsonian Magazine",
+    domain: "smithsonianmag.com",
+    category: "Magazine",
+    summary: "Smithsonian Institution's magazine since 1970; long-form science, history, culture.",
+    founded: 1970,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "B — strong long-form science + history publication backed by Smithsonian institutional credibility.", [
+        { label: "Composite", detail: "Discipline 80 + Modern Reference 78 + Velocity 75." },
+      ]),
+      discipline: score(80, "Fact-checked editorial; named bylines; sources cited inline; Smithsonian institutional standards.", [
+        { label: "Smithsonian standards", detail: "Editorial reviewed against institutional historical + scientific accuracy standards." },
+      ]),
+      modernReference: score(78, "Open access; schema OK; structured topic taxonomy; archive indexed.", [
+        { label: "Open access", detail: "Articles free; partial paywall on print-magazine archive." },
+      ]),
+      velocity: score(75, "Regular cross-cite in science + history press; AI-engine retrieval for long-tail history queries.", [
+        { label: "History + science press", detail: "Cited by NYT, The Atlantic, science-news outlets for historical reference." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "natgeo",
+    name: "National Geographic",
+    domain: "nationalgeographic.com",
+    category: "Magazine",
+    summary: "Long-form science, exploration, photojournalism since 1888; National Geographic Society heritage.",
+    founded: 1888,
+    verified: "2026-04-28",
+    scores: {
+      index: score(79, "B — strong long-form science + exploration; partial paywall reduces Modern Reference.", [
+        { label: "Composite", detail: "Discipline 82 + Modern Reference 75 + Velocity 80." },
+      ]),
+      discipline: score(82, "Long fact-checking tradition; named bylines; sources cited; institutional editorial standards.", [
+        { label: "Editorial standards", detail: "138-year fact-check tradition; National Geographic Society heritage." },
+      ]),
+      modernReference: score(75, "Metered paywall; schema OK; structured photo + topic taxonomy; partial archive open.", [
+        { label: "Metered access", detail: "Limited free articles per month; subscriber-gated for full archive." },
+      ]),
+      velocity: score(80, "Default science + nature press citation; heavy AI-engine retrieval for long-tail biology + geography.", [
+        { label: "Science-nature default", detail: "Primary citation for wildlife, geography, exploration topics across press + AI engines." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
 ];
 
 /** Convenience: lookup by slug (used in /source/[slug]/ static params). */

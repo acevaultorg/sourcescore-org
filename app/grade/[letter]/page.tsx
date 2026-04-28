@@ -120,7 +120,7 @@ const GRADE_NARRATIVE: Record<GradeLetter, { eyebrow: string; intro: string; wha
     intro:
       "F-grade sources fail the basic citation-quality bar across multiple dimensions. They lack discipline, lack modern infrastructure, lack citation velocity, or all three. AI engines typically don't cite F-grade sources as primary references; some are explicitly down-ranked or excluded from retrieval.",
     whatItMeans:
-      "An F-grade source has a SourceScore Index below 40. F-grade is rare in our hand-curated 101-source dataset because we excluded clearly-fabricated or sanctioned sources at intake. The F-grade entries we do include illustrate failure modes — uncited claims, no structured data, paywalled with no preview, or known to be down-ranked in major retrieval models.",
+      "An F-grade source has a SourceScore Index below 40. F-grade is rare in our hand-curated 130-source dataset because we excluded clearly-fabricated or sanctioned sources at intake. The F-grade entries we do include illustrate failure modes — uncited claims, no structured data, paywalled with no preview, or known to be down-ranked in major retrieval models.",
     useCases: [
       "Cite only when documenting the source itself (e.g., 'X publication claims Y, but...')",
       "Useful for academic study of misinformation patterns",
@@ -208,7 +208,7 @@ export default async function GradePage({ params }: PageProps) {
         </div>
       ) : (
         <div className="text-body-sm text-dim mb-10">
-          No sources in our 101-source dataset currently score {grade} on the SourceScore Index. This is{" "}
+          No sources in our 130-source dataset currently score {grade} on the SourceScore Index. This is{" "}
           {grade === "F" ? "intentional — we exclude fabricated or sanctioned sources at intake" : "structural — the dataset is hand-curated for tier-1 citation candidates"}.
         </div>
       )}

@@ -22,7 +22,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-10 sm:pt-20 sm:pb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill border border-brand/30 bg-surface-brand text-brand text-caption font-mono mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" aria-hidden="true" />
-            <span>Methodology v0.1 · 101 sources scored · 10k+ index in development</span>
+            <span>Methodology v0.1 · 130 sources scored · 10k+ index in development</span>
           </div>
 
           <h1 className="text-display-1 sm:text-[3.5rem] sm:leading-[1.05] font-bold tracking-tight max-w-4xl">
@@ -88,7 +88,7 @@ export default function HomePage() {
               href="#full-table"
               className="text-body-sm text-brand hover:underline whitespace-nowrap"
             >
-              See all 101 sources →
+              See all 130 sources →
             </a>
           </div>
 
@@ -123,7 +123,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <h2 className="text-heading-1 font-bold tracking-tight mb-2">All sources scored</h2>
           <p className="text-body text-muted mb-6 max-w-2xl">
-            101 sources scored across A+ to D grades. Each row links to the full breakdown with
+            130 sources scored across A+ to D grades. Each row links to the full breakdown with
             the underlying signals you can re-derive.
           </p>
 

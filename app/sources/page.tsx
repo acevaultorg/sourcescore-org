@@ -6,7 +6,7 @@ import { allGrades, gradeSlug, gradeRange, gradeColorClass } from "@/lib/types";
 export const metadata: Metadata = {
   title: "All sources scored — SourceScore",
   description:
-    "Browse every source scored by SourceScore. 101 hand-scored sources across 12 categories, each with full breakdown across Citation Discipline, Modern Reference, and Citation Velocity.",
+    "Browse every source scored by SourceScore. 130 hand-scored sources across 12 categories, each with full breakdown across Citation Discipline, Modern Reference, and Citation Velocity.",
   alternates: { canonical: "https://sourcescore.org/sources/" },
 };
 

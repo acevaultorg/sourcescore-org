@@ -35,7 +35,7 @@ export default function GradeLandingPage() {
         Every source on SourceScore earns a letter grade from A+ to F based on its composite
         SourceScore Index. Grades are intentionally familiar so the meaning is obvious to a reader
         who has never visited the site before. Below: what each grade band represents, how many of
-        our 101 sources score there, and the per-grade ranking pages.
+        our 130 sources score there, and the per-grade ranking pages.
       </p>
 
       {/* Grade-band cards */}
@@ -115,7 +115,7 @@ export default function GradeLandingPage() {
             href="/sources/"
             className="block p-5 rounded-card-lg border border-border bg-panel hover:bg-panel-hi transition-colors"
           >
-            <div className="text-eyebrow text-brand mb-1">All 101 sources</div>
+            <div className="text-eyebrow text-brand mb-1">All 130 sources</div>
             <div className="font-semibold text-text mb-1">Full ranked source list</div>
             <div className="text-body-sm text-muted">
               Every source in the dataset, ranked by composite Index, filterable by category.
