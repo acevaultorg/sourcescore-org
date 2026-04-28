@@ -179,6 +179,22 @@ export default async function SourceDetailPage({ params }: PageProps) {
           </a>
         </div>
       </footer>
+
+      {/* Embed snippet — Layer 5 archetype embeddable_widget × +80 */}
+      <section className="mt-10 p-5 rounded-card-lg border border-border bg-panel">
+        <div className="flex items-baseline justify-between mb-3 gap-3">
+          <h2 className="text-heading-3 font-bold">Embed this score</h2>
+          <a href="/embed/" className="text-caption text-brand hover:underline whitespace-nowrap">
+            All embed options →
+          </a>
+        </div>
+        <p className="text-body-sm text-muted mb-3">
+          Drop on your blog or dashboard. Free, no signup.
+        </p>
+        <pre className="p-3 rounded-card border border-border bg-bg text-caption font-mono text-text overflow-x-auto leading-relaxed">
+          {`<iframe src="https://sourcescore.org/embed/${source.slug}/" width="100%" height="380" loading="lazy" style="border:0;max-width:480px;" title="SourceScore: ${source.name}"></iframe>`}
+        </pre>
+      </section>
     </article>
   );
 }

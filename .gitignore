@@ -29,3 +29,6 @@ Thumbs.db
 
 # Operator-generated archive
 .stale-out-trash/
+
+# IndexNow private key snapshot — public key already in /public/<KEY>.txt
+.indexnow-key.txt

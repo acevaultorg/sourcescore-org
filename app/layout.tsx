@@ -143,6 +143,14 @@ function SiteHeader() {
             Sources
           </a>
           <a
+            href="/search/"
+            className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors"
+            aria-label="Search sources"
+          >
+            <span aria-hidden="true">⌕</span>
+            <span className="sr-only sm:not-sr-only sm:ml-1">Search</span>
+          </a>
+          <a
             href="/methodology/"
             className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors hidden lg:inline-block"
           >
