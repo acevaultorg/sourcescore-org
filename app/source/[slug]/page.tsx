@@ -180,6 +180,22 @@ export default async function SourceDetailPage({ params }: PageProps) {
         </div>
       </footer>
 
+      {/* Cite this score — supports the LLM-citation 10-characteristic
+          checklist's "Transactable" + "Recognizable" dimensions */}
+      <section className="mt-10 p-5 rounded-card-lg border border-border bg-panel">
+        <h2 className="text-heading-3 font-bold mb-3">Cite this score</h2>
+        <p className="text-body-sm text-muted mb-3">
+          Copy a citation snippet for an article, post, or research note.
+        </p>
+        <CiteSnippets
+          name={source.name}
+          slug={source.slug}
+          score={idx.value}
+          grade={idx.grade}
+          methodologyVersion={source.methodologyVersion}
+        />
+      </section>
+
       {/* Embed snippet — Layer 5 archetype embeddable_widget × +80 */}
       <section className="mt-10 p-5 rounded-card-lg border border-border bg-panel">
         <div className="flex items-baseline justify-between mb-3 gap-3">
@@ -218,6 +234,44 @@ function SubScoreCard({
       <a href={subTool} className="text-caption text-brand hover:underline">
         About this sub-score →
       </a>
+    </div>
+  );
+}
+
+function CiteSnippets({
+  name,
+  slug,
+  score,
+  grade,
+  methodologyVersion,
+}: {
+  name: string;
+  slug: string;
+  score: number;
+  grade: string;
+  methodologyVersion: string;
+}) {
+  const url = `https://sourcescore.org/source/${slug}/`;
+  const apa = `SourceScore (${methodologyVersion}). (${new Date().getFullYear()}). ${name}: SourceScore Index ${score} (${grade}). Retrieved from ${url}`;
+  const md = `[${name} — SourceScore Index ${score} (${grade})](${url})`;
+  const html = `<a href="${url}">${name} — SourceScore Index ${score} (${grade})</a>`;
+
+  return (
+    <div className="space-y-3">
+      <CiteRow label="Markdown" snippet={md} />
+      <CiteRow label="HTML" snippet={html} />
+      <CiteRow label="APA" snippet={apa} />
+    </div>
+  );
+}
+
+function CiteRow({ label, snippet }: { label: string; snippet: string }) {
+  return (
+    <div>
+      <div className="text-eyebrow text-dim mb-1">{label}</div>
+      <pre className="p-3 rounded-card border border-border bg-bg text-caption font-mono text-text overflow-x-auto leading-relaxed whitespace-pre-wrap break-words">
+        {snippet}
+      </pre>
     </div>
   );
 }

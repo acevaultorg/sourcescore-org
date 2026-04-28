@@ -8,7 +8,13 @@
  */
 import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { sources } from "../data/sources";
+import {
+  sources,
+  allCategories,
+  categorySlug,
+  sourcesInCategory,
+} from "../data/sources";
+import { comparisons, comparisonSlug } from "../data/comparisons";
 
 const OUT_DIR = "out";
 const API_DIR = join(OUT_DIR, "api");
@@ -71,6 +77,65 @@ const catalogBody = {
 };
 writeFileSync(join(API_DIR, "sources.json"), JSON.stringify(catalogBody, null, 2));
 
+// /api/categories.json — category-level summary with mean Index per group
+const categoriesBody = {
+  apiVersion,
+  methodology: "https://sourcescore.org/methodology/",
+  generated: new Date().toISOString(),
+  count: allCategories.length,
+  categories: allCategories.map((cat) => {
+    const list = sourcesInCategory(cat);
+    const mean = list.length
+      ? Math.round(list.reduce((a, s) => a + s.scores.index.value, 0) / list.length)
+      : 0;
+    const top = list[0];
+    return {
+      name: cat,
+      slug: categorySlug(cat),
+      canonical: `https://sourcescore.org/category/${categorySlug(cat)}/`,
+      count: list.length,
+      meanIndex: mean,
+      topSource: top
+        ? { slug: top.slug, name: top.name, index: top.scores.index.value, grade: top.scores.index.grade }
+        : null,
+    };
+  }),
+};
+writeFileSync(join(API_DIR, "categories.json"), JSON.stringify(categoriesBody, null, 2));
+
+// /api/comparisons.json — all comparison pairs in canonical order
+const comparisonsBody = {
+  apiVersion,
+  methodology: "https://sourcescore.org/methodology/",
+  generated: new Date().toISOString(),
+  count: comparisons.length,
+  comparisons: comparisons.map((c) => {
+    const slug = comparisonSlug(c.a, c.b);
+    const a = sources.find((s) => s.slug === c.a)!;
+    const b = sources.find((s) => s.slug === c.b)!;
+    return {
+      slug,
+      canonical: `https://sourcescore.org/compare/${slug}/`,
+      summary: c.summary,
+      a: {
+        slug: a.slug,
+        name: a.name,
+        domain: a.domain,
+        index: a.scores.index.value,
+        grade: a.scores.index.grade,
+      },
+      b: {
+        slug: b.slug,
+        name: b.name,
+        domain: b.domain,
+        index: b.scores.index.value,
+        grade: b.scores.index.grade,
+      },
+    };
+  }),
+};
+writeFileSync(join(API_DIR, "comparisons.json"), JSON.stringify(comparisonsBody, null, 2));
+
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length} files) + /api/sources.json (catalog)`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json (${allCategories.length}) + /api/comparisons.json (${comparisons.length})`
 );

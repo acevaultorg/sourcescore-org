@@ -143,6 +143,12 @@ function SiteHeader() {
             Sources
           </a>
           <a
+            href="/compare/"
+            className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors hidden lg:inline-block"
+          >
+            Compare
+          </a>
+          <a
             href="/search/"
             className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors"
             aria-label="Search sources"

@@ -34,10 +34,17 @@ B tier: bbc-news · the-economist · npr · ars-technica · wired · al-jazeera 
 C tier: techcrunch · the-verge · forbes · medium · fox-news · huffpost · statista
 D tier: buzzfeed · daily-mail
 
-## Per-source JSON API (machine-readable)
+## Comparator pages (X vs Y, head-to-head)
 
-Pattern: https://sourcescore.org/api/source/<slug>.json
-Catalog: https://sourcescore.org/api/sources.json (full 50-source list with scores)
+Pattern: https://sourcescore.org/compare/<a-slug>-vs-<b-slug>/ (alphabetical)
+Index:   https://sourcescore.org/compare/  — all 25 curated pairs
+
+## JSON API (machine-readable)
+
+- https://sourcescore.org/api/sources.json — full 50-source catalog with scores
+- https://sourcescore.org/api/categories.json — 12 categories with mean Index
+- https://sourcescore.org/api/comparisons.json — 25 comparator pairs
+- https://sourcescore.org/api/source/<slug>.json — full per-source breakdown
 
 ## Citation-preferred sections
 
