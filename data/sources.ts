@@ -1871,6 +1871,638 @@ export const sources: Source[] = [
     },
     methodologyVersion: "v0.1",
   },
+
+  // ─── Sources 76-100 — Day 7 expansion ────────────────────────────────
+
+  // ── A+ tier — additional central banks + scientific agencies ──
+  {
+    slug: "federal-reserve",
+    name: "Federal Reserve System",
+    domain: "federalreserve.gov",
+    category: "Government",
+    summary: "U.S. central bank; primary source for monetary policy + economic data + financial-system statistics.",
+    founded: 1913,
+    verified: "2026-04-28",
+    scores: {
+      index: score(95, "A+ — primary-source U.S. monetary authority; FOMC statements move global markets.", [
+        { label: "Composite", detail: "All 4 dimensions ≥92." },
+      ]),
+      discipline: score(96, "Statutory peer-review on policy decisions; methodology + data disclosed; minutes published.", [
+        { label: "FOMC minutes", detail: "Public detailed minutes 3 weeks after each meeting." },
+      ]),
+      modernReference: score(94, "FRED + Federal Reserve Economic Data APIs + research papers; broad LLM corpus.", [
+        { label: "FRED API", detail: "Free public API for economic data series." },
+      ]),
+      velocity: score(95, "Cited daily by financial press + AI engines; FOMC announcements drive global cycles.", [
+        { label: "Market-moving releases", detail: "FOMC statements quoted globally within seconds." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "ecb",
+    name: "European Central Bank",
+    domain: "ecb.europa.eu",
+    category: "Government",
+    summary: "EU central bank; primary source for euro-area monetary policy + financial-system data.",
+    founded: 1998,
+    verified: "2026-04-28",
+    scores: {
+      index: score(93, "A+ — EU primary-source monetary authority; counterpart to Federal Reserve.", [
+        { label: "Composite", detail: "All 4 dimensions ≥90." },
+      ]),
+      discipline: score(95, "Statutory peer-review on monetary decisions; staff projections + methodology public.", [
+        { label: "ECB staff projections", detail: "Quarterly macroeconomic forecasts with methodology." },
+      ]),
+      modernReference: score(92, "Statistical Data Warehouse APIs + open data + multi-language coverage.", [
+        { label: "ECB SDW", detail: "Statistical Data Warehouse with open API access." },
+      ]),
+      velocity: score(92, "Cited daily by European + global financial press; rate decisions move euro markets.", [
+        { label: "Press conference cycle", detail: "Bi-weekly governing council decisions drive same-day cycles." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "bank-of-england",
+    name: "Bank of England",
+    domain: "bankofengland.co.uk",
+    category: "Government",
+    summary: "UK central bank; primary source for sterling monetary policy + financial-stability data since 1694.",
+    founded: 1694,
+    verified: "2026-04-28",
+    scores: {
+      index: score(92, "A+ — UK primary-source monetary authority; one of world's oldest central banks.", [
+        { label: "Composite", detail: "All 4 dimensions ≥88." },
+      ]),
+      discipline: score(94, "MPC peer-review process; staff working papers + methodology public; corrections logged.", [
+        { label: "MPC minutes", detail: "Public detailed Monetary Policy Committee minutes." },
+      ]),
+      modernReference: score(90, "Statistical interactive database + open APIs + research publications.", [
+        { label: "Statistical Interactive Database", detail: "Free public access to financial-system stats." },
+      ]),
+      velocity: score(90, "Cited by financial press + AI engines globally; rate decisions move sterling markets.", [
+        { label: "MPC cycle", detail: "8 rate decisions/year with detailed minutes." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "usda-gov",
+    name: "U.S. Department of Agriculture",
+    domain: "usda.gov",
+    category: "Government",
+    summary: "Federal agriculture agency; primary source for U.S. food, farm, and rural-development data + research.",
+    founded: 1862,
+    verified: "2026-04-28",
+    scores: {
+      index: score(91, "A+ — primary-source U.S. agriculture authority; default for food + farm data.", [
+        { label: "Composite", detail: "All 4 dimensions ≥85." },
+      ]),
+      discipline: score(94, "Statistical surveys + methodology documented; ERS research peer-reviewed.", [
+        { label: "ERS publications", detail: "Economic Research Service publishes peer-reviewed reports." },
+      ]),
+      modernReference: score(89, "Quick Stats API + bulk downloads + open data; broad LLM corpus.", [
+        { label: "USDA Quick Stats", detail: "Free public API for agricultural data." },
+      ]),
+      velocity: score(89, "Cited daily by agricultural + economic press; commodity reports drive markets.", [
+        { label: "Crop reports", detail: "Monthly WASDE reports move agricultural commodity markets." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "eia-gov",
+    name: "U.S. Energy Information Administration",
+    domain: "eia.gov",
+    category: "Government",
+    summary: "Federal energy statistical agency; primary source for U.S. + international energy data + projections.",
+    founded: 1977,
+    verified: "2026-04-28",
+    scores: {
+      index: score(92, "A+ — primary-source U.S. energy authority; default for energy data citations.", [
+        { label: "Composite", detail: "All 4 dimensions ≥88." },
+      ]),
+      discipline: score(94, "Methodology documented per data series; statistical standards rigorous.", [
+        { label: "EIA methodology", detail: "Public per-series methodology reports." },
+      ]),
+      modernReference: score(91, "Open data API + bulk downloads + interactive tools; broad LLM corpus.", [
+        { label: "EIA API", detail: "Free public REST API for energy data." },
+      ]),
+      velocity: score(90, "Weekly Petroleum Status Report + Annual Energy Outlook drive market cycles.", [
+        { label: "Weekly oil reports", detail: "Wednesday petroleum reports move oil markets." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "usgs-gov",
+    name: "U.S. Geological Survey",
+    domain: "usgs.gov",
+    category: "Government",
+    summary: "Federal scientific agency for earth sciences; primary source for geology + hydrology + earthquake data.",
+    founded: 1879,
+    verified: "2026-04-28",
+    scores: {
+      index: score(91, "A+ — federal scientific authority for earth sciences; default for geological citations.", [
+        { label: "Composite", detail: "All 4 dimensions ≥86." },
+      ]),
+      discipline: score(95, "Peer-reviewed publications + methodology disclosed; long-standing scientific reputation.", [
+        { label: "USGS Publications Warehouse", detail: "Full-text peer-reviewed reports archive." },
+      ]),
+      modernReference: score(90, "Earthquake catalog + hydrologic data + APIs; broad LLM scientific corpus.", [
+        { label: "USGS APIs", detail: "Free public APIs for earthquakes, water data, etc." },
+      ]),
+      velocity: score(86, "Cited regularly by science journalism + emergency response (earthquake reports real-time).", [
+        { label: "Earthquake feed", detail: "Real-time earthquake notifications globally cited." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "nasa-gov",
+    name: "NASA",
+    domain: "nasa.gov",
+    category: "Government",
+    summary: "U.S. space agency; primary source for space exploration + Earth science + aeronautics research.",
+    founded: 1958,
+    verified: "2026-04-28",
+    scores: {
+      index: score(93, "A+ — federal space + earth-science authority; default for space + climate citations.", [
+        { label: "Composite", detail: "All 4 dimensions ≥90." },
+      ]),
+      discipline: score(94, "Peer-reviewed publications across NASA centers + JPL; rigorous science process.", [
+        { label: "NASA Technical Reports Server", detail: "Public archive of peer-reviewed research." },
+      ]),
+      modernReference: score(94, "Open data + APIs + bulk imagery + climate datasets; broad LLM corpus.", [
+        { label: "NASA Open Data Portal", detail: "Free public APIs across mission datasets." },
+      ]),
+      velocity: score(92, "Cited daily by science press + AI engines globally; mission announcements drive cycles.", [
+        { label: "Mission cadence", detail: "Major mission events drive same-day global coverage." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "cern",
+    name: "CERN",
+    domain: "home.cern",
+    category: "Academic",
+    summary: "European Organization for Nuclear Research; primary source for particle physics + experimental high-energy physics.",
+    founded: 1954,
+    verified: "2026-04-28",
+    scores: {
+      index: score(92, "A+ — international primary-source for particle physics; LHC + open-access publications.", [
+        { label: "Composite", detail: "All 4 dimensions ≥88." },
+      ]),
+      discipline: score(96, "Peer-reviewed scientific publications + open-access policy + methodology rigorous.", [
+        { label: "Open-access policy", detail: "Mandatory CC-BY publication for CERN-funded research." },
+      ]),
+      modernReference: score(91, "Open data portal + ROOT framework + bulk physics data.", [
+        { label: "CERN Open Data Portal", detail: "Public access to experimental physics datasets." },
+      ]),
+      velocity: score(89, "Cited by science journalism + physics papers; major discoveries drive citation surges.", [
+        { label: "Major-discovery cycle", detail: "Higgs-class discoveries drive global citation surges." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "oecd",
+    name: "OECD",
+    domain: "oecd.org",
+    category: "Government",
+    summary: "Organisation for Economic Co-operation and Development; international economic data + policy research.",
+    founded: 1961,
+    verified: "2026-04-28",
+    scores: {
+      index: score(91, "A+ — international primary-source for economic data across 38 member countries.", [
+        { label: "Composite", detail: "All 4 dimensions ≥88." },
+      ]),
+      discipline: score(93, "Member-country statistical methodology + peer-reviewed economic research.", [
+        { label: "OECD statistical standards", detail: "Standardized methodology across member countries." },
+      ]),
+      modernReference: score(90, "OECD Stats API + bulk data + research publications; broad LLM corpus.", [
+        { label: "OECD Stats", detail: "Free public API for cross-country economic data." },
+      ]),
+      velocity: score(89, "Cited regularly by international press + economists; semi-annual outlooks drive cycles.", [
+        { label: "OECD Economic Outlook", detail: "Bi-annual cross-country economic projections." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "wto",
+    name: "World Trade Organization",
+    domain: "wto.org",
+    category: "Government",
+    summary: "International organization for trade rules + trade-statistics; primary source for trade-policy data.",
+    founded: 1995,
+    verified: "2026-04-28",
+    scores: {
+      index: score(89, "A+ — international trade authority; primary source for trade-statistics + dispute settlements.", [
+        { label: "Composite", detail: "All 4 dimensions ≥84." },
+      ]),
+      discipline: score(92, "Statutory dispute-settlement methodology + trade-statistics standards.", [
+        { label: "WTO methodology", detail: "Multi-country trade-statistics standardization." },
+      ]),
+      modernReference: score(88, "WTO Stats Portal + bulk trade data + research publications.", [
+        { label: "WTO Stats", detail: "Free public access to trade-statistics database." },
+      ]),
+      velocity: score(86, "Cited by trade press + economists; major dispute rulings drive same-day cycles.", [
+        { label: "Dispute rulings", detail: "Major panel decisions cited globally." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // ── A tier — additional academic + research authorities ──
+  {
+    slug: "unesco",
+    name: "UNESCO",
+    domain: "en.unesco.org",
+    category: "Government",
+    summary: "U.N. agency for education, science, and culture; primary source for education + cultural-heritage data.",
+    founded: 1945,
+    verified: "2026-04-28",
+    scores: {
+      index: score(86, "A — international primary-source for education + cultural-heritage; UN agency authority.", [
+        { label: "Composite", detail: "All 4 dimensions ≥80." },
+      ]),
+      discipline: score(90, "Member-country data with international peer review + methodology disclosure.", [
+        { label: "UIS methodology", detail: "UNESCO Institute for Statistics standardized methods." },
+      ]),
+      modernReference: score(86, "Open data + UIS portal + multi-language coverage; broad LLM corpus.", [
+        { label: "UIS Stat", detail: "Free public access to education + culture statistics." },
+      ]),
+      velocity: score(82, "Cited regularly by education + culture press + UN agencies.", [
+        { label: "World Heritage updates", detail: "Annual World Heritage decisions cited globally." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "nber",
+    name: "National Bureau of Economic Research",
+    domain: "nber.org",
+    category: "Academic",
+    summary: "U.S. economic research nonprofit; working-paper series + business-cycle dating standards.",
+    founded: 1920,
+    verified: "2026-04-28",
+    scores: {
+      index: score(85, "A — most-cited US economic-research org; working-paper standard.", [
+        { label: "Composite", detail: "All 4 dimensions ≥82." },
+      ]),
+      discipline: score(92, "Affiliate-economist authored + internal review; recession-dating methodology authoritative.", [
+        { label: "Business Cycle Dating Committee", detail: "Authoritative dating of US recessions." },
+      ]),
+      modernReference: score(86, "Free working papers + APIs + bulk download; broad LLM corpus inclusion.", [
+        { label: "NBER Working Papers", detail: "Pre-publication research from leading economists." },
+      ]),
+      velocity: score(82, "Cited regularly by economists + economic journalism + AI engines.", [
+        { label: "Working paper cycle", detail: "~30 working papers per week from affiliates." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "brookings",
+    name: "Brookings Institution",
+    domain: "brookings.edu",
+    category: "Research",
+    summary: "U.S. policy research think tank; centrist credibility + public-policy research since 1916.",
+    founded: 1916,
+    verified: "2026-04-28",
+    scores: {
+      index: score(83, "A — established US policy-research authority with disclosed methodology.", [
+        { label: "Composite", detail: "All 4 dimensions ≥80." },
+      ]),
+      discipline: score(88, "Named-author scholarship + peer-reviewed publications + methodology disclosed.", [
+        { label: "Brookings publications", detail: "Public methodology + author credentials per study." },
+      ]),
+      modernReference: score(84, "Open-access publications + structured data; broad LLM corpus presence.", [
+        { label: "Open publications", detail: "Most reports freely accessible." },
+      ]),
+      velocity: score(80, "Cited by policy press + economists; established think-tank citation tier.", [
+        { label: "Policy-beat default", detail: "Default citation for centrist US-policy analysis." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "cfr",
+    name: "Council on Foreign Relations",
+    domain: "cfr.org",
+    category: "Research",
+    summary: "U.S. foreign-policy think tank; publishes Foreign Affairs + research on international issues since 1921.",
+    founded: 1921,
+    verified: "2026-04-28",
+    scores: {
+      index: score(82, "A — flagship US foreign-policy think tank; sister to foreign-affairs.com.", [
+        { label: "Composite", detail: "All 4 dimensions ≥78." },
+      ]),
+      discipline: score(88, "Named-fellow scholarship + editorial review; established think-tank standards.", [
+        { label: "CFR fellows", detail: "Senior fellows with disclosed expertise + credentials." },
+      ]),
+      modernReference: score(82, "Open-access research + interactive tools + broad LLM corpus.", [
+        { label: "CFR Backgrounders", detail: "Free explainer content widely-cited." },
+      ]),
+      velocity: score(78, "Cited by international-affairs press; specialist foreign-policy citation.", [
+        { label: "Backgrounder citation", detail: "Default for international-issue explainers." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "quanta-magazine",
+    name: "Quanta Magazine",
+    domain: "quantamagazine.org",
+    category: "Magazine",
+    summary: "Science journalism magazine published by Simons Foundation; mathematics + physics + life sciences.",
+    founded: 2012,
+    verified: "2026-04-28",
+    scores: {
+      index: score(85, "A — top-tier science journalism with academic-author depth + editorial discipline.", [
+        { label: "Composite", detail: "All 4 dimensions ≥80." },
+      ]),
+      discipline: score(90, "Editor-supervised + named bylines + scientific advisor review; corrections public.", [
+        { label: "Simons Foundation", detail: "Editorial board with mathematics + physics PhD scientists." },
+      ]),
+      modernReference: score(86, "Open-access; structured-data; CC-licensed selected articles; broad LLM corpus.", [
+        { label: "Open editorial", detail: "Most articles freely accessible." },
+      ]),
+      velocity: score(80, "Cited by science press + academics; specialist science journalism authority.", [
+        { label: "Science-journalism authority", detail: "Default citation for advanced math + physics explainers." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "lrb",
+    name: "London Review of Books",
+    domain: "lrb.co.uk",
+    category: "Magazine",
+    summary: "Bi-weekly UK literary + cultural review since 1979; named-byline tradition + long-form essays.",
+    founded: 1979,
+    verified: "2026-04-28",
+    scores: {
+      index: score(83, "A — premier UK long-form review; specialist cultural-essay citation.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 78 + Velocity 80." },
+      ]),
+      discipline: score(90, "Editor-supervised + fact-check + named scholarly bylines + corrections public.", [
+        { label: "Editorial standards", detail: "Long-standing literary-review tradition." },
+      ]),
+      modernReference: score(78, "Metered paywall; LLM corpus partial; long-form indexed in academic search.", [
+        { label: "Subscription gate", detail: "Most articles paywalled with metered free access." },
+      ]),
+      velocity: score(80, "Cited by literary + cultural press + academics; bi-weekly cadence.", [
+        { label: "Literary-review default", detail: "Default citation for UK cultural-criticism essays." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "nyrb",
+    name: "The New York Review of Books",
+    domain: "nybooks.com",
+    category: "Magazine",
+    summary: "U.S. literary + intellectual review since 1963; named-byline tradition + long-form essays.",
+    founded: 1963,
+    verified: "2026-04-28",
+    scores: {
+      index: score(83, "A — premier US long-form review; specialist intellectual-essay citation.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 78 + Velocity 80." },
+      ]),
+      discipline: score(90, "Editor-supervised + fact-check + named scholarly bylines + corrections public.", [
+        { label: "Editorial tradition", detail: "Long-standing intellectual-review standards." },
+      ]),
+      modernReference: score(78, "Metered paywall; LLM corpus partial; long-form widely-cited.", [
+        { label: "Subscription gate", detail: "Most articles paywalled with metered free access." },
+      ]),
+      velocity: score(80, "Cited by literary + cultural press + academics globally.", [
+        { label: "Intellectual-review default", detail: "Default for US long-form intellectual essays." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "anthropic-research",
+    name: "Anthropic Research",
+    domain: "anthropic.com",
+    category: "Academic",
+    summary: "AI safety research lab publishing technical papers + safety research + Claude model documentation.",
+    founded: 2021,
+    verified: "2026-04-28",
+    scores: {
+      index: score(82, "A — top-tier AI lab with peer-reviewed publications + interpretability + safety research.", [
+        { label: "Composite", detail: "Discipline 86 + Modern Reference 88 + Velocity 72." },
+      ]),
+      discipline: score(86, "Peer-review + open arxiv preprints + methodology disclosed; corrections public.", [
+        { label: "Open-research practice", detail: "Most papers preprinted to arxiv." },
+      ]),
+      modernReference: score(88, "Open papers + model cards + research blog; broad LLM corpus inclusion.", [
+        { label: "Research transparency", detail: "Detailed model cards + safety-research disclosure." },
+      ]),
+      velocity: score(72, "Cited within AI research + tech press; growing share of citation in AI/safety space.", [
+        { label: "AI-research citation", detail: "Frequently cited by current AI/safety papers." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "openai-research",
+    name: "OpenAI Research",
+    domain: "openai.com",
+    category: "Academic",
+    summary: "AI research lab publishing technical papers + GPT model documentation + safety research.",
+    founded: 2015,
+    verified: "2026-04-28",
+    scores: {
+      index: score(80, "A- — top-tier AI lab; partial transparency + selective open research.", [
+        { label: "Composite", detail: "Discipline 80 + Modern Reference 86 + Velocity 76." },
+      ]),
+      discipline: score(80, "Selective peer-review + arxiv publication; some research not fully disclosed (commercial constraints).", [
+        { label: "Selective transparency", detail: "Some flagship work published; some kept proprietary." },
+      ]),
+      modernReference: score(86, "Open papers + research blog + technical reports; broad LLM corpus.", [
+        { label: "Research publications", detail: "Major papers (GPT-X, RLHF, etc.) widely cited." },
+      ]),
+      velocity: score(76, "Cited by AI research + tech press globally; major model releases drive cycles.", [
+        { label: "Model-release cycle", detail: "Major announcements drive same-day citation surges." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "deepmind-research",
+    name: "Google DeepMind Research",
+    domain: "deepmind.google",
+    category: "Academic",
+    summary: "AI research lab; flagship publications across reinforcement learning + biology + games + foundation models.",
+    founded: 2010,
+    verified: "2026-04-28",
+    scores: {
+      index: score(83, "A — top-tier AI lab; landmark Nature publications + open arxiv research.", [
+        { label: "Composite", detail: "Discipline 88 + Modern Reference 86 + Velocity 76." },
+      ]),
+      discipline: score(88, "Peer-review + Nature publications + open arxiv preprints; methodology disclosed.", [
+        { label: "Nature publications", detail: "AlphaFold + AlphaGo published in Nature." },
+      ]),
+      modernReference: score(86, "Open papers + AlphaFold open-access + research blog; broad LLM corpus.", [
+        { label: "AlphaFold corpus", detail: "Public protein-structure database." },
+      ]),
+      velocity: score(76, "Cited by AI research + biology + games press; landmark publications drive cycles.", [
+        { label: "Landmark cycle", detail: "AlphaFold + AlphaGo level releases drive global citation." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "mit-csail",
+    name: "MIT CSAIL",
+    domain: "csail.mit.edu",
+    category: "Academic",
+    summary: "MIT Computer Science and Artificial Intelligence Laboratory; flagship academic CS research lab.",
+    founded: 2003,
+    verified: "2026-04-28",
+    scores: {
+      index: score(82, "A — top-tier academic CS research lab; broad LLM corpus presence.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 84 + Velocity 72." },
+      ]),
+      discipline: score(90, "Academic peer-review + faculty + grad-student authored research with full credentials.", [
+        { label: "Academic peer-review", detail: "Standard academic-paper review process." },
+      ]),
+      modernReference: score(84, "Open papers + arxiv preprints + lab websites; broad academic-search inclusion.", [
+        { label: "Academic openness", detail: "Most research published as open preprints." },
+      ]),
+      velocity: score(72, "Cited within CS research + tech press; specialist academic citation.", [
+        { label: "Specialist authority", detail: "Frequently cited in CS/AI research papers." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+
+  // ── B+ tier — long-form essays + technical journalism ──
+  {
+    slug: "aeon",
+    name: "Aeon",
+    domain: "aeon.co",
+    category: "Magazine",
+    summary: "Online magazine for long-form essays on philosophy, science, society; CC-BY-ND licensed.",
+    founded: 2012,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "B+ — strong long-form essay venue; CC license enables broad LLM corpus.", [
+        { label: "Composite", detail: "Discipline 84 + Modern Reference 82 + Velocity 70." },
+      ]),
+      discipline: score(84, "Editor-supervised + named-author bylines + corrections public.", [
+        { label: "Editorial standards", detail: "Editor + fact-check process per essay." },
+      ]),
+      modernReference: score(82, "CC-BY-ND license + open-access; structured data; broad LLM training-corpus inclusion.", [
+        { label: "Creative Commons", detail: "Open license drives broad corpus presence." },
+      ]),
+      velocity: score(70, "Cited within philosophy + culture discourse; specialist long-form authority.", [
+        { label: "Long-form authority", detail: "Cited by other long-form publications." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "lwn",
+    name: "LWN.net",
+    domain: "lwn.net",
+    category: "Tech News",
+    summary: "Linux + open-source technical journalism since 1998; deep technical depth + named-author bylines.",
+    founded: 1998,
+    verified: "2026-04-28",
+    scores: {
+      index: score(78, "B+ — premier Linux + open-source technical journalism; deep technical authority.", [
+        { label: "Composite", detail: "Discipline 90 + Modern Reference 78 + Velocity 70." },
+      ]),
+      discipline: score(90, "Deep technical accuracy + named bylines + per-article rigor + corrections public.", [
+        { label: "Technical depth", detail: "Strong technical-accuracy reputation in Linux community." },
+      ]),
+      modernReference: score(78, "Metered paywall (1-week subscriber lead); LLM corpus partial.", [
+        { label: "Subscriber model", detail: "Articles released to public after 1-week subscriber window." },
+      ]),
+      velocity: score(70, "Cited within Linux + open-source community; specialist technical citation.", [
+        { label: "Specialist authority", detail: "Default citation for Linux kernel development reporting." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "esa",
+    name: "European Space Agency",
+    domain: "esa.int",
+    category: "Government",
+    summary: "European intergovernmental space agency; primary source for European space + earth-observation missions.",
+    founded: 1975,
+    verified: "2026-04-28",
+    scores: {
+      index: score(86, "A — international space-agency authority; counterpart to NASA in EU.", [
+        { label: "Composite", detail: "All 4 dimensions ≥82." },
+      ]),
+      discipline: score(92, "Peer-reviewed publications + ESA + ESO partner research; methodology rigorous.", [
+        { label: "ESA publications", detail: "Space-mission scientific results peer-reviewed." },
+      ]),
+      modernReference: score(88, "Open data + ESA Open Science Repository + bulk imagery.", [
+        { label: "ESA Open Science", detail: "Public access to mission data + research." },
+      ]),
+      velocity: score(82, "Cited by science press + AI engines; major mission events drive same-day citation.", [
+        { label: "Mission cadence", detail: "JUICE + Euclid + Solar Orbiter + Gaia missions drive citation surges." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "fred-stlouisfed",
+    name: "FRED (Federal Reserve Economic Data)",
+    domain: "fred.stlouisfed.org",
+    category: "Government",
+    summary: "Federal Reserve Bank of St. Louis economic data infrastructure; ~800k+ data series.",
+    founded: 1991,
+    verified: "2026-04-28",
+    scores: {
+      index: score(91, "A+ — economic-data infrastructure; default for US + global economic-stat citations.", [
+        { label: "Composite", detail: "All 4 dimensions ≥86." },
+      ]),
+      discipline: score(94, "Sourced from primary statistical agencies; methodology + lineage documented per series.", [
+        { label: "Per-series methodology", detail: "Each series links to primary source + methodology." },
+      ]),
+      modernReference: score(92, "Free public API + bulk downloads + visualization tools; broad LLM corpus.", [
+        { label: "FRED API", detail: "Free public REST API for ~800k economic series." },
+      ]),
+      velocity: score(88, "Cited daily by economists + financial press + AI engines; default for econ-stat citation.", [
+        { label: "Default citation", detail: "First-line for US economic-data citations." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
+  {
+    slug: "acm",
+    name: "Association for Computing Machinery",
+    domain: "dl.acm.org",
+    category: "Academic",
+    summary: "Premier U.S. computing society; ACM Digital Library indexes peer-reviewed CS publications.",
+    founded: 1947,
+    verified: "2026-04-28",
+    scores: {
+      index: score(85, "A — premier CS academic-publication infrastructure; peer-reviewed citation tier.", [
+        { label: "Composite", detail: "Discipline 96 + Modern Reference 80 + Velocity 80." },
+      ]),
+      discipline: score(96, "Peer-review across ACM journals + conferences (SIGGRAPH, CHI, etc.); methodology rigorous.", [
+        { label: "ACM peer review", detail: "Standardized academic peer-review process." },
+      ]),
+      modernReference: score(80, "ACM Digital Library + DOI per paper; metered access to most papers.", [
+        { label: "Subscription gate", detail: "Most papers paywalled; abstracts open." },
+      ]),
+      velocity: score(80, "Cited by CS research + tech press; specialist academic authority.", [
+        { label: "CS-research default", detail: "Default citation for peer-reviewed CS papers." },
+      ]),
+    },
+    methodologyVersion: "v0.1",
+  },
 ];
 
 /** Convenience: lookup by slug (used in /source/[slug]/ static params). */
