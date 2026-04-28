@@ -1,0 +1,35 @@
+# Cloudflare Pages — security + caching headers (mirrors holdlens defaults)
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+
+# Long-cache static assets
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/og.svg
+  Cache-Control: public, max-age=86400
+
+# Short cache for HTML — rebuild on deploy
+/*.html
+  Cache-Control: public, max-age=300, s-maxage=600
+
+# AI-discovery files — short cache
+/robots.txt
+  Cache-Control: public, max-age=300
+
+/llms.txt
+  Cache-Control: public, max-age=300
+
+/sitemap.xml
+  Cache-Control: public, max-age=300
+
+/sitemap-ai.xml
+  Cache-Control: public, max-age=300
+
+/ads.txt
+  Cache-Control: public, max-age=300

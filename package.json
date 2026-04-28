@@ -1,0 +1,30 @@
+{
+  "name": "sourcescore",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "postbuild": "node scripts/generate-sitemap.mjs",
+    "start": "next start",
+    "lint": "next lint",
+    "indexnow": "node scripts/ping-indexnow.mjs",
+    "clean": "rm -rf .next out 2>/dev/null; find . -name '.DS_Store' -not -path './node_modules/*' -delete 2>/dev/null; true",
+    "deploy": "npm run clean && npm run build && npx wrangler pages deploy out --project-name sourcescore --branch main --commit-dirty=true && npm run indexnow"
+  },
+  "dependencies": {
+    "next": "15.1.12",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3",
+    "wrangler": "^4.85.0"
+  }
+}

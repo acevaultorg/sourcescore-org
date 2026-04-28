@@ -1,0 +1,4 @@
+# sourcescore.org — ads.txt
+# AdSense publisher ID will replace this placeholder after approval.
+# Placeholder is acceptable during AdSense review per Google policy.
+placeholder.example.com, placeholder, DIRECT, placeholder

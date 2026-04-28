@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Cloudflare
+.wrangler/
+.dev.vars
+
+# Local env
+.env
+.env.local
+.env*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Claude state — kept for brain context but not tracked in git
+.claude/state/
+
+# Operator-generated archive
+.stale-out-trash/

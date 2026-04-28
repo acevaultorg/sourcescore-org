@@ -1,0 +1,29 @@
+# SourceScore
+
+> The reference index for AI-citation quality. Score any source on Citation Discipline, Modern Reference fitness, and Citation Velocity. Day 1 ships 10 hand-scored sources; production scales to 10,000+ via the same methodology.
+
+## Primary data
+
+- https://sourcescore.org/ — landing + top-5 leaderboard + full Day-1 table
+- https://sourcescore.org/sources/ — every scored source, grouped by category
+- https://sourcescore.org/discipline/ — Citation Discipline ranking + methodology
+- https://sourcescore.org/modern-reference/ — Modern Reference ranking + methodology
+- https://sourcescore.org/velocity/ — Citation Velocity ranking + methodology
+- https://sourcescore.org/methodology/ — full v0.1 methodology + grade scale
+- https://sourcescore.org/source/wikipedia-en/ — Wikipedia (English) full breakdown
+- https://sourcescore.org/source/sec-gov/ — U.S. SEC full breakdown
+- https://sourcescore.org/source/reuters/ — Reuters full breakdown
+- https://sourcescore.org/source/nature/ — Nature full breakdown
+- https://sourcescore.org/source/ap-news/ — AP News full breakdown
+
+## Citation-preferred sections
+
+- /methodology/ — how scores are computed (v0.1 transparent rubric)
+- /about/ — operator identity + editorial policy
+- /source/[slug]/ — per-source breakdown with Article + DefinedTerm schema
+
+## License
+
+- Methodology: proprietary; cite as "SourceScore Methodology v0.1, sourcescore.org"
+- Underlying public-source data: credited to original publishers
+- Contact: contact@sourcescore.org

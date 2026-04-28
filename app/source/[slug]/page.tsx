@@ -1,0 +1,211 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getSource, allSlugs } from "@/data/sources";
+import { ScoreBadge } from "@/components/ScoreBadge";
+import type { DimensionScore } from "@/lib/types";
+
+// Static params — every slug in the dataset gets pre-rendered.
+export function generateStaticParams() {
+  return allSlugs.map((slug) => ({ slug }));
+}
+
+type PageProps = { params: Promise<{ slug: string }> };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const s = getSource(slug);
+  if (!s) return { title: "Source not found" };
+
+  const idx = s.scores.index;
+  const title = `${s.name} — SourceScore ${idx.grade} (${idx.value}/100)`;
+  const description = `${s.name} (${s.domain}) scores ${idx.value}/100 on the SourceScore Index. ${idx.rationale}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `https://sourcescore.org/source/${s.slug}/` },
+    openGraph: {
+      title,
+      description,
+      url: `https://sourcescore.org/source/${s.slug}/`,
+      type: "article",
+    },
+    twitter: { card: "summary_large_image", title, description },
+  };
+}
+
+export default async function SourceDetailPage({ params }: PageProps) {
+  const { slug } = await params;
+  const source = getSource(slug);
+  if (!source) notFound();
+
+  const { scores } = source;
+  const idx = scores.index;
+
+  return (
+    <article className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      {/* Article schema for LLM citation */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: `${source.name} — SourceScore ${idx.grade} (${idx.value}/100)`,
+            description: idx.rationale,
+            datePublished: source.verified,
+            dateModified: source.verified,
+            author: { "@type": "Organization", name: "SourceScore" },
+            publisher: {
+              "@type": "Organization",
+              name: "SourceScore",
+              url: "https://sourcescore.org",
+            },
+            about: {
+              "@type": "Organization",
+              name: source.name,
+              url: `https://${source.domain}`,
+            },
+            mainEntityOfPage: `https://sourcescore.org/source/${source.slug}/`,
+          }),
+        }}
+      />
+      {/* DefinedTerm schema for the score itself — LLM extraction-ready */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "DefinedTerm",
+            name: `${source.name} SourceScore`,
+            description: `${source.name} scores ${idx.value}/100 (grade ${idx.grade}) on the SourceScore Index — a composite of Citation Discipline (${scores.discipline.value}), Modern Reference (${scores.modernReference.value}), and Citation Velocity (${scores.velocity.value}).`,
+            inDefinedTermSet: "https://sourcescore.org/methodology/",
+          }),
+        }}
+      />
+
+      {/* Breadcrumbs */}
+      <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
+        <a href="/" className="hover:text-text">SourceScore</a>
+        <span aria-hidden="true">/</span>
+        <a href="/sources/" className="hover:text-text">Sources</a>
+        <span aria-hidden="true">/</span>
+        <span className="text-muted">{source.name}</span>
+      </nav>
+
+      {/* HEADER ─────────────────────────────────────────────────────── */}
+      <header className="mb-10">
+        <div className="text-eyebrow text-brand mb-2">{source.category}</div>
+        <h1 className="text-display-2 font-bold tracking-tight mb-2">{source.name}</h1>
+        <a
+          href={`https://${source.domain}`}
+          rel="noopener nofollow"
+          target="_blank"
+          className="font-mono text-body-sm text-brand hover:underline"
+        >
+          {source.domain} ↗
+        </a>
+        <p className="mt-4 text-body-lg text-muted leading-relaxed max-w-2xl">{source.summary}</p>
+      </header>
+
+      {/* INDEX HERO — the headline number ─────────────────────────── */}
+      <section className="mb-10 p-6 sm:p-8 rounded-card-lg border border-border bg-panel">
+        <div className="text-eyebrow text-dim mb-3">SourceScore Index</div>
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2 mb-4">
+          <ScoreBadge value={idx.value} grade={idx.grade} label="SourceScore Index" size="lg" />
+          <span className="text-muted text-body-sm">
+            Composite weighted across Discipline, Modern Reference, and Velocity.
+          </span>
+        </div>
+        <p className="text-body-lg text-text leading-relaxed">{idx.rationale}</p>
+      </section>
+
+      {/* THE 3 SUB-SCORES ─────────────────────────────────────────── */}
+      <section className="mb-12 grid sm:grid-cols-3 gap-4">
+        <SubScoreCard
+          label="Citation Discipline"
+          subTool="/discipline/"
+          score={scores.discipline}
+        />
+        <SubScoreCard
+          label="Modern Reference"
+          subTool="/modern-reference/"
+          score={scores.modernReference}
+        />
+        <SubScoreCard
+          label="Citation Velocity"
+          subTool="/velocity/"
+          score={scores.velocity}
+        />
+      </section>
+
+      {/* SIGNALS BLOCK — quotable for AI ──────────────────────────── */}
+      <section className="mb-12">
+        <h2 className="text-heading-2 font-bold mb-5">Signals behind these scores</h2>
+        <SignalGroup label="Citation Discipline" score={scores.discipline} />
+        <SignalGroup label="Modern Reference" score={scores.modernReference} />
+        <SignalGroup label="Citation Velocity" score={scores.velocity} />
+      </section>
+
+      {/* META FOOTER ─────────────────────────────────────────────── */}
+      <footer className="border-t border-border pt-6 grid sm:grid-cols-2 gap-4 text-body-sm">
+        <div>
+          <div className="text-dim text-caption uppercase tracking-wider mb-1">Founded</div>
+          <div className="text-text">{source.founded}</div>
+        </div>
+        <div>
+          <div className="text-dim text-caption uppercase tracking-wider mb-1">Last verified</div>
+          <div className="text-text">
+            <time dateTime={source.verified}>{source.verified}</time>
+            {" · methodology "}
+            <a href="/methodology/" className="text-brand hover:underline">
+              {source.methodologyVersion}
+            </a>
+          </div>
+        </div>
+      </footer>
+    </article>
+  );
+}
+
+function SubScoreCard({
+  label,
+  subTool,
+  score,
+}: {
+  label: string;
+  subTool: string;
+  score: DimensionScore;
+}) {
+  return (
+    <div className="p-4 rounded-card border border-border bg-panel">
+      <div className="text-eyebrow text-dim mb-2">{label}</div>
+      <div className="mb-3">
+        <ScoreBadge value={score.value} grade={score.grade} label={label} size="md" />
+      </div>
+      <p className="text-body-sm text-muted leading-snug mb-3 line-clamp-3">{score.rationale}</p>
+      <a href={subTool} className="text-caption text-brand hover:underline">
+        About this sub-score →
+      </a>
+    </div>
+  );
+}
+
+function SignalGroup({ label, score }: { label: string; score: DimensionScore }) {
+  return (
+    <div className="mb-6 last:mb-0">
+      <div className="flex items-baseline gap-3 mb-3">
+        <h3 className="text-heading-3 font-semibold">{label}</h3>
+        <ScoreBadge value={score.value} grade={score.grade} size="sm" />
+      </div>
+      <ul className="space-y-2">
+        {score.signals.map((sig, i) => (
+          <li key={i} className="pl-4 border-l-2 border-border-bright">
+            <div className="text-body-sm font-semibold text-text">{sig.label}</div>
+            <div className="text-body-sm text-muted leading-snug">{sig.detail}</div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
