@@ -192,6 +192,7 @@ function SiteFooter() {
           <ul className="space-y-1 text-muted">
             <li><a href="/sources/" className="hover:text-text">All sources</a></li>
             <li><a href="/grade/" className="hover:text-text">By grade (A+ → F)</a></li>
+            <li><a href="/best/" className="hover:text-text">Best-of lists</a></li>
             <li><a href="/methodology/" className="hover:text-text">Methodology</a></li>
             <li><a href="/about/" className="hover:text-text">About</a></li>
             <li><a href="/contact/" className="hover:text-text">Contact</a></li>

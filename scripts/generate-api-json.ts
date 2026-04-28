@@ -15,6 +15,7 @@ import {
   sourcesInCategory,
 } from "../data/sources";
 import { comparisons, comparisonSlug } from "../data/comparisons";
+import { bestLists } from "../data/best-lists";
 import {
   allGrades,
   gradeSlug,
@@ -27,10 +28,12 @@ const API_DIR = join(OUT_DIR, "api");
 const SOURCES_DIR = join(API_DIR, "source");
 const GRADE_DIR = join(API_DIR, "grade");
 const CATEGORY_DIR = join(API_DIR, "category");
+const BEST_DIR = join(API_DIR, "best");
 
 mkdirSync(SOURCES_DIR, { recursive: true });
 mkdirSync(GRADE_DIR, { recursive: true });
 mkdirSync(CATEGORY_DIR, { recursive: true });
+mkdirSync(BEST_DIR, { recursive: true });
 
 const apiVersion = "v0.1";
 
@@ -380,6 +383,80 @@ for (const cat of allCategories) {
   }
 }
 
+// /api/best.json — overview catalog of all curated best-lists
+const bestCatalogBody = {
+  apiVersion,
+  methodology: "https://sourcescore.org/methodology/",
+  generated: new Date().toISOString(),
+  count: bestLists.length,
+  lists: bestLists.map((b) => {
+    const items = b.select();
+    const top = items[0];
+    return {
+      slug: b.slug,
+      title: b.title,
+      intent: b.intent,
+      description: b.description,
+      signalCriterion: b.signalCriterion,
+      count: items.length,
+      canonical: `https://sourcescore.org/best/${b.slug}/`,
+      api: `https://sourcescore.org/api/best/${b.slug}.json`,
+      topSource: top
+        ? {
+            slug: top.slug,
+            name: top.name,
+            index: top.scores.index.value,
+            grade: top.scores.index.grade,
+          }
+        : null,
+    };
+  }),
+};
+writeFileSync(join(API_DIR, "best.json"), JSON.stringify(bestCatalogBody, null, 2));
+
+// /api/best/<slug>.json × N — per-best-list JSON twin
+let bestTwinsWritten = 0;
+for (const b of bestLists) {
+  const items = b.select();
+  const body = {
+    apiVersion,
+    methodology: "https://sourcescore.org/methodology/",
+    canonical: `https://sourcescore.org/best/${b.slug}/`,
+    list: {
+      slug: b.slug,
+      title: b.title,
+      intent: b.intent,
+      description: b.description,
+      rationale: b.rationale,
+      signalCriterion: b.signalCriterion,
+    },
+    count: items.length,
+    sources: items.map((s, i) => ({
+      rank: i + 1,
+      slug: s.slug,
+      name: s.name,
+      domain: s.domain,
+      category: s.category,
+      summary: s.summary,
+      canonical: `https://sourcescore.org/source/${s.slug}/`,
+      api: `https://sourcescore.org/api/source/${s.slug}.json`,
+      scores: {
+        index: s.scores.index.value,
+        indexGrade: s.scores.index.grade,
+        discipline: s.scores.discipline.value,
+        modernReference: s.scores.modernReference.value,
+        velocity: s.scores.velocity.value,
+      },
+    })),
+    license: {
+      methodology: "Cite as: SourceScore Methodology v0.1, sourcescore.org",
+      data: "Underlying public-source data credited to original publishers",
+    },
+  };
+  writeFileSync(join(BEST_DIR, `${b.slug}.json`), JSON.stringify(body, null, 2));
+  bestTwinsWritten++;
+}
+
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten})`
 );

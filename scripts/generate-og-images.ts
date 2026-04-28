@@ -23,6 +23,7 @@ import {
   sourcesInCategory,
 } from "../data/sources";
 import { comparisons, comparisonSlug } from "../data/comparisons";
+import { bestLists } from "../data/best-lists";
 import { allGrades, gradeSlug, gradeRange, gradeLabel } from "../lib/types";
 import type { GradeLetter } from "../lib/types";
 
@@ -32,6 +33,7 @@ mkdirSync(join(OG_DIR, "source"), { recursive: true });
 mkdirSync(join(OG_DIR, "category"), { recursive: true });
 mkdirSync(join(OG_DIR, "compare"), { recursive: true });
 mkdirSync(join(OG_DIR, "grade"), { recursive: true });
+mkdirSync(join(OG_DIR, "best"), { recursive: true });
 
 // Grade-color tokens mirror tailwind.config.ts; if those change, update here.
 const gradeColor: Record<GradeLetter, string> = {
@@ -208,6 +210,33 @@ function gradeOg(grade: GradeLetter): string {
 </svg>`;
 }
 
+// ───── Best-of OG card (top-3 names + ranking signal) ────────────
+function bestOg(slug: string): string {
+  const list = bestLists.find((b) => b.slug === slug)!;
+  const items = list.select();
+  const topThree = items.slice(0, 3);
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">${BG_GRADIENT}${BRAND_MARK}
+  <text x="80" y="180" ${FONT_FAMILY} font-size="20" fill="#9499a8" font-weight="500" letter-spacing="2">BEST-OF · ${items.length} SOURCES</text>
+  <text x="80" y="265" ${FONT_FAMILY} font-size="56" font-weight="700" fill="#e5e7ee" letter-spacing="-1">${esc(clamp(list.title, 38))}</text>
+  <text x="80" y="305" ${FONT_FAMILY} font-size="22" fill="url(#brand)">${esc(clamp(list.intent, 60))}</text>
+  ${topThree
+    .map((s, i) => {
+      const color = gradeColor[s.scores.index.grade];
+      const y = 370 + i * 65;
+      return `<g transform="translate(80, ${y})">
+    <rect x="0" y="0" width="1040" height="55" rx="10" fill="#141420" stroke="#262638" stroke-width="1"/>
+    <text x="22" y="36" ${FONT_FAMILY} font-size="26" font-weight="700" fill="#818cf8">#${i + 1}</text>
+    <text x="78" y="36" ${FONT_FAMILY} font-size="24" font-weight="700" fill="#e5e7ee">${esc(clamp(s.name, 38))}</text>
+    <text x="900" y="36" ${FONT_FAMILY} font-size="20" font-weight="700" fill="${color}" text-anchor="end">${s.scores.index.grade} · ${s.scores.index.value}</text>
+    <text x="1020" y="36" ${FONT_FAMILY} font-size="14" fill="#7a8198" text-anchor="end">/source/${esc(s.slug)}/</text>
+  </g>`;
+    })
+    .join("")}
+  <text x="1120" y="595" ${FONT_FAMILY} font-size="16" font-weight="600" fill="#818cf8" text-anchor="end">sourcescore.org</text>
+</svg>`;
+}
+
 // ───── Generate ──────────────────────────────────────────────────
 let n = 0;
 for (const s of sources) {
@@ -227,7 +256,11 @@ for (const g of allGrades) {
   writeFileSync(join(OG_DIR, "grade", `${gradeSlug(g)}.svg`), gradeOg(g));
   n++;
 }
+for (const b of bestLists) {
+  writeFileSync(join(OG_DIR, "best", `${b.slug}.svg`), bestOg(b.slug));
+  n++;
+}
 
 console.log(
-  `✓ /og/source/<slug>.svg (${sources.length}) + /og/category/<slug>.svg (${allCategories.length}) + /og/compare/<slug>.svg (${comparisons.length}) + /og/grade/<letter>.svg (${allGrades.length}) = ${n} OG images`
+  `✓ /og/source/<slug>.svg (${sources.length}) + /og/category/<slug>.svg (${allCategories.length}) + /og/compare/<slug>.svg (${comparisons.length}) + /og/grade/<letter>.svg (${allGrades.length}) + /og/best/<slug>.svg (${bestLists.length}) = ${n} OG images`
 );
