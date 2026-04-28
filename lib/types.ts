@@ -89,3 +89,51 @@ export function gradeSurfaceClass(grade: GradeLetter): string {
   };
   return map[grade];
 }
+
+/** All letter grades, ordered top-to-bottom for programmatic /grade/ pages. */
+export const allGrades: GradeLetter[] = ["A+", "A", "B", "C", "D", "F"];
+
+/** Letter-grade → URL slug ("A+" → "a-plus"). Used for /grade/[letter]/ routing. */
+export function gradeSlug(grade: GradeLetter): string {
+  if (grade === "A+") return "a-plus";
+  return grade.toLowerCase();
+}
+
+/** Inverse of gradeSlug. Returns undefined for unknown slugs. */
+export function gradeFromSlug(slug: string): GradeLetter | undefined {
+  const map: Record<string, GradeLetter> = {
+    "a-plus": "A+",
+    a: "A",
+    b: "B",
+    c: "C",
+    d: "D",
+    f: "F",
+  };
+  return map[slug];
+}
+
+/** Plain-language label for a grade band (used in copy + meta descriptions). */
+export function gradeLabel(grade: GradeLetter): string {
+  const map: Record<GradeLetter, string> = {
+    "A+": "exceptional",
+    A: "strong",
+    B: "solid",
+    C: "mixed",
+    D: "weak",
+    F: "failing",
+  };
+  return map[grade];
+}
+
+/** Numeric range for a grade band, formatted for display. */
+export function gradeRange(grade: GradeLetter): string {
+  const map: Record<GradeLetter, string> = {
+    "A+": "95–100",
+    A: "85–94",
+    B: "70–84",
+    C: "55–69",
+    D: "40–54",
+    F: "< 40",
+  };
+  return map[grade];
+}

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { sources, categorySlug } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { allGrades, gradeSlug, gradeRange, gradeColorClass } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "All sources scored — SourceScore",
-  description: "Browse every source scored by SourceScore. Day 1 ships 10 hand-scored examples.",
+  description:
+    "Browse every source scored by SourceScore. 101 hand-scored sources across 12 categories, each with full breakdown across Citation Discipline, Modern Reference, and Citation Velocity.",
   alternates: { canonical: "https://sourcescore.org/sources/" },
 };
 
@@ -14,14 +16,41 @@ export default function SourcesIndexPage() {
     return acc;
   }, {});
   const categories = Object.keys(groupedByCategory).sort();
+  const gradeCounts = Object.fromEntries(
+    allGrades.map((g) => [g, sources.filter((s) => s.scores.index.grade === g).length])
+  );
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <h1 className="text-display-2 font-bold tracking-tight mb-3">All sources</h1>
-      <p className="text-body-lg text-muted leading-relaxed mb-10 max-w-2xl">
+      <p className="text-body-lg text-muted leading-relaxed mb-6 max-w-2xl">
         {sources.length} hand-scored sources across {categories.length} categories.
         Each links to a full SourceScore breakdown.
       </p>
+
+      {/* Browse by grade — quick filter chips */}
+      <section className="mb-10">
+        <div className="text-eyebrow text-brand mb-3">Browse by grade</div>
+        <div className="flex flex-wrap gap-2">
+          {allGrades.map((g) => (
+            <a
+              key={g}
+              href={`/grade/${gradeSlug(g)}/`}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm transition-colors"
+            >
+              <span className={`font-bold ${gradeColorClass(g)}`}>{g}</span>
+              <span className="text-dim font-mono text-caption">{gradeRange(g)}</span>
+              <span className="text-muted">{gradeCounts[g]}</span>
+            </a>
+          ))}
+          <a
+            href="/grade/"
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-pill border border-brand/40 bg-surface-brand hover:bg-brand/15 text-body-sm font-semibold text-brand transition-colors"
+          >
+            How grades work →
+          </a>
+        </div>
+      </section>
 
       {categories.map((cat) => {
         const list = groupedByCategory[cat]!.sort((a, b) => b.scores.index.value - a.scores.index.value);

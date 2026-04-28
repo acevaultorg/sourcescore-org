@@ -88,7 +88,14 @@ export default function MethodologyPage() {
         <p className="text-muted">
           Scores 0–100 map to letter grades on an academic-style scale: A+ ≥ 95, A ≥ 85, B ≥ 70,
           C ≥ 55, D ≥ 40, F &lt; 40. Grade letters are intentionally familiar so the meaning is
-          obvious to a reader who has never visited the site before.
+          obvious to a reader who has never visited the site before. Per-grade source rankings:{" "}
+          <a href="/grade/a-plus/" className="text-brand hover:underline">A+</a>,{" "}
+          <a href="/grade/a/" className="text-brand hover:underline">A</a>,{" "}
+          <a href="/grade/b/" className="text-brand hover:underline">B</a>,{" "}
+          <a href="/grade/c/" className="text-brand hover:underline">C</a>,{" "}
+          <a href="/grade/d/" className="text-brand hover:underline">D</a>,{" "}
+          <a href="/grade/f/" className="text-brand hover:underline">F</a> — or see the{" "}
+          <a href="/grade/" className="text-brand hover:underline">grading-scale overview</a>.
         </p>
 
         <h2 className="text-heading-2 font-bold pt-4">Day-1 limitations (honest)</h2>

@@ -9,9 +9,10 @@
  * universal /og.svg.
  *
  * Output:
- *   out/og/source/<slug>.svg     × 50
+ *   out/og/source/<slug>.svg     × 101
  *   out/og/category/<slug>.svg   × 12
- *   out/og/compare/<slug>.svg    × 25
+ *   out/og/compare/<slug>.svg    × 50
+ *   out/og/grade/<letter>.svg    × 6
  */
 import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
@@ -22,6 +23,7 @@ import {
   sourcesInCategory,
 } from "../data/sources";
 import { comparisons, comparisonSlug } from "../data/comparisons";
+import { allGrades, gradeSlug, gradeRange, gradeLabel } from "../lib/types";
 import type { GradeLetter } from "../lib/types";
 
 const OUT_DIR = "out";
@@ -29,6 +31,7 @@ const OG_DIR = join(OUT_DIR, "og");
 mkdirSync(join(OG_DIR, "source"), { recursive: true });
 mkdirSync(join(OG_DIR, "category"), { recursive: true });
 mkdirSync(join(OG_DIR, "compare"), { recursive: true });
+mkdirSync(join(OG_DIR, "grade"), { recursive: true });
 
 // Grade-color tokens mirror tailwind.config.ts; if those change, update here.
 const gradeColor: Record<GradeLetter, string> = {
@@ -178,6 +181,33 @@ function compareOg(aSlug: string, bSlug: string): string {
 </svg>`;
 }
 
+// ───── Grade OG card (A+, A, B, C, D, F band) ────────────────────
+function gradeOg(grade: GradeLetter): string {
+  const list = sources
+    .filter((s) => s.scores.index.grade === grade)
+    .sort((a, b) => b.scores.index.value - a.scores.index.value);
+  const color = gradeColor[grade];
+  const top = list[0];
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">${BG_GRADIENT}${BRAND_MARK}
+  <text x="80" y="180" ${FONT_FAMILY} font-size="20" fill="#9499a8" font-weight="500" letter-spacing="2">SOURCESCORE GRADE · ${esc(gradeLabel(grade).toUpperCase())}</text>
+  <text x="80" y="320" ${FONT_FAMILY} font-size="180" font-weight="700" fill="${color}" letter-spacing="-3">${esc(grade)}</text>
+  <text x="80" y="370" ${FONT_FAMILY} font-size="28" fill="#9499a8">Score range ${esc(gradeRange(grade))}</text>
+  <g transform="translate(80, 420)">
+    <rect x="0" y="0" width="320" height="100" rx="14" fill="#141420" stroke="#262638" stroke-width="1"/>
+    <text x="20" y="32" ${FONT_FAMILY} font-size="14" fill="#9499a8" letter-spacing="1.5">SOURCES IN BAND</text>
+    <text x="20" y="78" ${FONT_FAMILY} font-size="42" font-weight="700" fill="#818cf8">${list.length}</text>
+  </g>
+  ${top ? `<g transform="translate(420, 420)">
+    <rect x="0" y="0" width="640" height="100" rx="14" fill="#141420" stroke="#262638" stroke-width="1"/>
+    <text x="20" y="32" ${FONT_FAMILY} font-size="14" fill="#9499a8" letter-spacing="1.5">TOP SOURCE IN ${esc(grade)}</text>
+    <text x="20" y="65" ${FONT_FAMILY} font-size="22" font-weight="700" fill="#e5e7ee">${esc(clamp(top.name, 36))}</text>
+    <text x="20" y="88" ${FONT_FAMILY} font-size="16" fill="${color}">${top.scores.index.grade} · ${top.scores.index.value}</text>
+  </g>` : ""}
+  <text x="1120" y="595" ${FONT_FAMILY} font-size="16" font-weight="600" fill="#818cf8" text-anchor="end">sourcescore.org</text>
+</svg>`;
+}
+
 // ───── Generate ──────────────────────────────────────────────────
 let n = 0;
 for (const s of sources) {
@@ -193,7 +223,11 @@ for (const cmp of comparisons) {
   writeFileSync(join(OG_DIR, "compare", `${slug}.svg`), compareOg(cmp.a, cmp.b));
   n++;
 }
+for (const g of allGrades) {
+  writeFileSync(join(OG_DIR, "grade", `${gradeSlug(g)}.svg`), gradeOg(g));
+  n++;
+}
 
 console.log(
-  `✓ /og/source/<slug>.svg (${sources.length}) + /og/category/<slug>.svg (${allCategories.length}) + /og/compare/<slug>.svg (${comparisons.length}) = ${n} OG images`
+  `✓ /og/source/<slug>.svg (${sources.length}) + /og/category/<slug>.svg (${allCategories.length}) + /og/compare/<slug>.svg (${comparisons.length}) + /og/grade/<letter>.svg (${allGrades.length}) = ${n} OG images`
 );
