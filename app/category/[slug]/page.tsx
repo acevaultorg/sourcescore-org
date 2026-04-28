@@ -7,6 +7,7 @@ import {
   sourcesInCategory,
 } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { allGrades, gradeSlug, gradeRange, gradeColorClass } from "@/lib/types";
 
 // Programmatic-SEO category pages — one per unique category in the dataset.
 // Each is a fully static page rendered at build time with generateStaticParams.
@@ -68,10 +69,31 @@ export default async function CategoryPage({ params }: PageProps) {
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         {category} — scored on the SourceScore Index
       </h1>
-      <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-8">
+      <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-6">
         {list.length} sources in the {category.toLowerCase()} category, ranked by SourceScore Index.
         Average Index across this category: <strong className="text-text">{avgIndex}</strong>.
       </p>
+
+      {/* Grade-faceted children — only show grades that have ≥1 source in this category */}
+      <section className="mb-10">
+        <div className="text-eyebrow text-brand mb-3">Filter {category.toLowerCase()} by grade</div>
+        <div className="flex flex-wrap gap-2">
+          {allGrades
+            .map((g) => ({ g, count: list.filter((s) => s.scores.index.grade === g).length }))
+            .filter(({ count }) => count > 0)
+            .map(({ g, count }) => (
+              <a
+                key={g}
+                href={`/category/${slug}/grade/${gradeSlug(g)}/`}
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm transition-colors"
+              >
+                <span className={`font-bold ${gradeColorClass(g)}`}>{g}</span>
+                <span className="text-dim font-mono text-caption">{gradeRange(g)}</span>
+                <span className="text-muted">{count}</span>
+              </a>
+            ))}
+        </div>
+      </section>
 
       <ol className="space-y-2 mb-12">
         {list.map((s, i) => (
