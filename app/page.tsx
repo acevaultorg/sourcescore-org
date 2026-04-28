@@ -22,7 +22,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-10 sm:pt-20 sm:pb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill border border-brand/30 bg-surface-brand text-brand text-caption font-mono mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" aria-hidden="true" />
-            <span>Methodology v0.1 · Day 1 sample (10 sources) · 10k+ index in development</span>
+            <span>Methodology v0.1 · 25 sources scored · 10k+ index in development</span>
           </div>
 
           <h1 className="text-display-1 sm:text-[3.5rem] sm:leading-[1.05] font-bold tracking-tight max-w-4xl">
@@ -88,7 +88,7 @@ export default function HomePage() {
               href="#full-table"
               className="text-body-sm text-brand hover:underline whitespace-nowrap"
             >
-              See all 10 sources →
+              See all 25 sources →
             </a>
           </div>
 
@@ -123,8 +123,8 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <h2 className="text-heading-1 font-bold tracking-tight mb-2">All sources scored</h2>
           <p className="text-body text-muted mb-6 max-w-2xl">
-            10 sources scored on Day 1. Each row links to the full breakdown across all four sub-scores
-            with the underlying signals.
+            25 sources scored across A+ to D grades. Each row links to the full breakdown with
+            the underlying signals you can re-derive.
           </p>
 
           <div className="overflow-x-auto -mx-4 sm:mx-0 rounded-card border border-border bg-panel">
@@ -210,7 +210,7 @@ export default function HomePage() {
               <strong className="text-text"> SourceScore Index</strong> &mdash; a single 0&ndash;100 grade per source.
             </p>
             <p>
-              Day 1 ships a hand-scored sample of 10 well-known sources. Methodology v0.1 is intentionally
+              We ship 25 hand-scored sources at this stage of v0.1. Methodology is intentionally
               transparent: every score has explicit signals you can re-derive. The production index will
               expand to 10,000+ sources via the same methodology, with weekly velocity refreshes and
               quarterly discipline re-audits.

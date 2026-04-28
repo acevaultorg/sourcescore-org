@@ -23,7 +23,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description,
-    alternates: { canonical: `https://sourcescore.org/source/${s.slug}/` },
+    alternates: {
+      canonical: `https://sourcescore.org/source/${s.slug}/`,
+      types: {
+        "application/json": `https://sourcescore.org/api/source/${s.slug}.json`,
+      },
+    },
     openGraph: {
       title,
       description,
@@ -148,7 +153,7 @@ export default async function SourceDetailPage({ params }: PageProps) {
       </section>
 
       {/* META FOOTER ─────────────────────────────────────────────── */}
-      <footer className="border-t border-border pt-6 grid sm:grid-cols-2 gap-4 text-body-sm">
+      <footer className="border-t border-border pt-6 grid sm:grid-cols-3 gap-4 text-body-sm">
         <div>
           <div className="text-dim text-caption uppercase tracking-wider mb-1">Founded</div>
           <div className="text-text">{source.founded}</div>
@@ -162,6 +167,16 @@ export default async function SourceDetailPage({ params }: PageProps) {
               {source.methodologyVersion}
             </a>
           </div>
+        </div>
+        <div>
+          <div className="text-dim text-caption uppercase tracking-wider mb-1">JSON API</div>
+          <a
+            href={`/api/source/${source.slug}.json`}
+            className="text-brand hover:underline font-mono text-body-sm break-all"
+            data-citation="json-twin"
+          >
+            /api/source/{source.slug}.json
+          </a>
         </div>
       </footer>
     </article>
