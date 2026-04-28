@@ -130,6 +130,12 @@ function altApiFor(u) {
   const bestMatch = u.match(/\/best\/([^/]+)\/$/);
   if (bestMatch) return `${SITE}/api/best/${bestMatch[1]}.json`;
 
+  // /discipline/<slug>/  →  /api/discipline/<slug>.json
+  // /modern-reference/<slug>/  →  /api/modern-reference/<slug>.json
+  // /velocity/<slug>/  →  /api/velocity/<slug>.json
+  const dimMatch = u.match(/\/(discipline|modern-reference|velocity)\/([^/]+)\/$/);
+  if (dimMatch) return `${SITE}/api/${dimMatch[1]}/${dimMatch[2]}.json`;
+
   return null;
 }
 

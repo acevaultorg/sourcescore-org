@@ -383,6 +383,129 @@ for (const cat of allCategories) {
   }
 }
 
+// /api/discipline/<slug>.json + /api/modern-reference/<slug>.json + /api/velocity/<slug>.json
+// — 390 per-source-per-dimension JSON twins, mirroring app/<dim>/[slug]/page.tsx.
+const DIMENSION_DIRS: Array<{
+  key: "discipline" | "modernReference" | "velocity";
+  pathSegment: string;
+  label: string;
+  weight: string;
+  methodology: string;
+}> = [
+  {
+    key: "discipline",
+    pathSegment: "discipline",
+    label: "Citation Discipline",
+    weight: "35%",
+    methodology: "https://sourcescore.org/methodology/citation-discipline/",
+  },
+  {
+    key: "modernReference",
+    pathSegment: "modern-reference",
+    label: "Modern Citation Reference",
+    weight: "30%",
+    methodology: "https://sourcescore.org/methodology/modern-reference/",
+  },
+  {
+    key: "velocity",
+    pathSegment: "velocity",
+    label: "Citation Velocity",
+    weight: "35%",
+    methodology: "https://sourcescore.org/methodology/citation-velocity/",
+  },
+];
+let dimensionDetailTwinsWritten = 0;
+for (const d of DIMENSION_DIRS) {
+  const dir = join(API_DIR, d.pathSegment);
+  mkdirSync(dir, { recursive: true });
+  const sortedDesc = [...sources].sort(
+    (a, b) => b.scores[d.key].value - a.scores[d.key].value
+  );
+  const totalCount = sources.length;
+  for (const s of sources) {
+    const score = s.scores[d.key];
+    const rank = sortedDesc.findIndex((x) => x.slug === s.slug) + 1;
+    // In-category rank
+    const peers = sources
+      .filter((x) => x.category === s.category)
+      .sort((a, b) => b.scores[d.key].value - a.scores[d.key].value);
+    const catRank = peers.findIndex((x) => x.slug === s.slug) + 1;
+    const catMean = peers.length
+      ? Math.round(peers.reduce((a, x) => a + x.scores[d.key].value, 0) / peers.length)
+      : 0;
+    const globalMean = Math.round(
+      sources.reduce((a, x) => a + x.scores[d.key].value, 0) / sources.length
+    );
+
+    const body = {
+      apiVersion,
+      methodology: d.methodology,
+      canonical: `https://sourcescore.org/${d.pathSegment}/${s.slug}/`,
+      dimension: {
+        key: d.key,
+        label: d.label,
+        weightInComposite: d.weight,
+      },
+      source: {
+        slug: s.slug,
+        name: s.name,
+        domain: s.domain,
+        category: s.category,
+        canonical: `https://sourcescore.org/source/${s.slug}/`,
+        api: `https://sourcescore.org/api/source/${s.slug}.json`,
+      },
+      score: {
+        value: score.value,
+        grade: score.grade,
+        rationale: score.rationale,
+        signals: score.signals,
+      },
+      rank: {
+        global: rank,
+        globalTotal: totalCount,
+        category: catRank,
+        categoryTotal: peers.length,
+      },
+      means: {
+        category: catMean,
+        global: globalMean,
+        deltaVsCategory: score.value - catMean,
+        deltaVsGlobal: score.value - globalMean,
+      },
+      otherDimensions: {
+        index: { value: s.scores.index.value, grade: s.scores.index.grade },
+        ...(d.key !== "discipline" && {
+          discipline: {
+            value: s.scores.discipline.value,
+            grade: s.scores.discipline.grade,
+            canonical: `https://sourcescore.org/discipline/${s.slug}/`,
+          },
+        }),
+        ...(d.key !== "modernReference" && {
+          modernReference: {
+            value: s.scores.modernReference.value,
+            grade: s.scores.modernReference.grade,
+            canonical: `https://sourcescore.org/modern-reference/${s.slug}/`,
+          },
+        }),
+        ...(d.key !== "velocity" && {
+          velocity: {
+            value: s.scores.velocity.value,
+            grade: s.scores.velocity.grade,
+            canonical: `https://sourcescore.org/velocity/${s.slug}/`,
+          },
+        }),
+      },
+      license: {
+        methodology: "Cite as: SourceScore Methodology v0.1, sourcescore.org",
+        data: "Underlying public-source data credited to original publishers",
+      },
+    };
+    writeFileSync(join(dir, `${s.slug}.json`), JSON.stringify(body, null, 2));
+    dimensionDetailTwinsWritten++;
+  }
+}
+
 // /api/best.json — overview catalog of all curated best-lists
 const bestCatalogBody = {
   apiVersion,
@@ -458,5 +581,5 @@ for (const b of bestLists) {
 }
 
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten})`
 );
