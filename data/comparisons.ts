@@ -294,6 +294,78 @@ export const comparisons: Comparison[] = [
     b: "federal-reserve",
     summary: "Multilateral monetary org vs national central bank — different scopes, both authoritative.",
   },
+
+  // ─── Day 9 expansion: 10 more pairs covering remaining Day-7 sources ─
+
+  // Big science (physics vs space)
+  {
+    a: "cern",
+    b: "nasa-gov",
+    summary: "International physics research vs U.S. space agency — both A+ tier, different scientific frontiers.",
+  },
+
+  // U.S. regulator vs regulator
+  {
+    a: "fda-gov",
+    b: "usda-gov",
+    summary: "Two U.S. food + drug + ag regulators — overlapping safety mandates, distinct domains.",
+  },
+
+  // U.S. scientific stat agencies (energy vs atmospheric)
+  {
+    a: "eia-gov",
+    b: "noaa-gov",
+    summary: "Two U.S. scientific data agencies — energy production vs atmospheric + ocean — both A+ primary.",
+  },
+
+  // U.S. economic research peers
+  {
+    a: "brookings",
+    b: "nber",
+    summary: "Think tank vs academic research bureau — both flagship US economic-research authorities.",
+  },
+
+  // Academic AI vs commercial AI lab
+  {
+    a: "anthropic-research",
+    b: "mit-csail",
+    summary: "Commercial AI safety lab vs academic CS lab — different incentive structures + research depth.",
+  },
+
+  // Academic CS lab vs platform AI
+  {
+    a: "huggingface",
+    b: "mit-csail",
+    summary: "Open-source ML platform vs academic CS lab — community-driven vs peer-review-driven.",
+  },
+
+  // Multilateral development institutions
+  {
+    a: "unesco",
+    b: "world-bank",
+    summary: "Two UN-system institutions — culture/education vs development finance.",
+  },
+
+  // Multilaterals (trade + monetary)
+  {
+    a: "imf",
+    b: "wto",
+    summary: "Two Bretton Woods-era institutions — IMF monetary policy vs WTO trade rules.",
+  },
+
+  // Technical journalism comparison
+  {
+    a: "ars-technica",
+    b: "lwn",
+    summary: "Tech journalism brands — Ars Technica's broad-tech-news vs LWN's deep-Linux-kernel-only.",
+  },
+
+  // Premium magazine vs long-form weekly
+  {
+    a: "atlantic",
+    b: "new-yorker",
+    summary: "Two flagship US literary magazines — different cadence + culture-criticism traditions.",
+  },
 ];
 
 /** All slugs derived from the comparisons set */
