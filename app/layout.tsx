@@ -41,6 +41,20 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large", "max-video-preview": -1 },
   },
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+  },
+  verification: {
+    // Set NEXT_PUBLIC_GSC_VERIFICATION in env to a value like
+    // "abc123XYZ..." (the content from GSC's HTML-tag verification step).
+    // When unset (e.g. local dev), the meta tag is omitted.
+    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || undefined,
+  },
 };
 
 export default function RootLayout({
@@ -62,7 +76,7 @@ export default function RootLayout({
               url: "https://sourcescore.org",
               description:
                 "Score any source on Discipline, Modern Reference fitness, and Citation Velocity. The reference index for AI-citation quality.",
-              logo: "https://sourcescore.org/og.png",
+              logo: "https://sourcescore.org/logo-wordmark.svg",
             }),
           }}
         />
@@ -105,9 +119,14 @@ function SiteHeader() {
         >
           <span
             aria-hidden="true"
-            className="inline-flex items-center justify-center w-7 h-7 rounded-btn bg-surface-brand border border-brand/30 text-brand font-mono text-sm font-bold"
+            className="inline-flex items-center justify-center w-7 h-7 rounded-btn bg-surface-brand border border-brand/30 text-brand"
           >
-            ★
+            {/* Mark — 3 ascending bars = 3 sub-scores (Discipline · Modern Reference · Velocity) */}
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+              <rect x="3"  y="14" width="4" height="7"  rx="1" opacity="0.55"/>
+              <rect x="10" y="10" width="4" height="11" rx="1" opacity="0.78"/>
+              <rect x="17" y="5"  width="4" height="16" rx="1"/>
+            </svg>
           </span>
           <span className="font-semibold tracking-tight">SourceScore</span>
         </a>

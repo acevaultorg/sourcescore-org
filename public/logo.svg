@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <!-- SourceScore mark — 3 ascending bars = 3 sub-scores (Discipline / Modern Reference / Velocity).
+       Reads as a chart/index/leaderboard. Uses currentColor so the parent's text class drives the fill. -->
+  <rect x="3"  y="14" width="4" height="7"  rx="1" opacity="0.55"/>
+  <rect x="10" y="10" width="4" height="11" rx="1" opacity="0.78"/>
+  <rect x="17" y="5"  width="4" height="16" rx="1"/>
+</svg>
