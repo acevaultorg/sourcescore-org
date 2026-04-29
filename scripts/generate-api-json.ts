@@ -643,6 +643,108 @@ for (const d of DIMENSION_DIRS) {
   }
 }
 
+// /api/<dim>/grade/<letter>.json × ≤18 — per-dim-per-grade JSON twin (Day 21).
+// Only writes non-empty intersections (matches generateStaticParams filter on
+// app/<dim>/grade/[letter]/page.tsx).
+let dimensionGradeTwinsWritten = 0;
+for (const d of DIMENSION_DIRS) {
+  for (const g of allGrades) {
+    const list = sources
+      .filter((s) => s.scores[d.key].grade === g)
+      .sort((a, b) => b.scores[d.key].value - a.scores[d.key].value);
+    if (list.length === 0) continue;
+
+    const meanInGrade = Math.round(
+      list.reduce((a, s) => a + s.scores[d.key].value, 0) / list.length
+    );
+    const globalMean = Math.round(
+      sources.reduce((a, s) => a + s.scores[d.key].value, 0) / sources.length
+    );
+    const sharePct = Math.round((list.length / sources.length) * 100);
+    const top = list[0];
+
+    const dir = join(API_DIR, d.pathSegment, "grade");
+    mkdirSync(dir, { recursive: true });
+
+    const body = {
+      apiVersion,
+      methodology: d.methodology,
+      canonical: `https://sourcescore.org/${d.pathSegment}/grade/${gradeSlug(g)}/`,
+      facet: {
+        dimension: {
+          key: d.key,
+          pathSegment: d.pathSegment,
+          label: d.label,
+          weightInComposite: d.weight,
+        },
+        grade: g,
+        gradeSlug: gradeSlug(g),
+        gradeRange: gradeRange(g),
+        gradeLabel: gradeLabel(g),
+      },
+      count: list.length,
+      means: {
+        inGrade: meanInGrade,
+        global: globalMean,
+        deltaVsGlobal: meanInGrade - globalMean,
+      },
+      shareOfDataset: { count: list.length, total: sources.length, percent: sharePct },
+      leader: top
+        ? {
+            slug: top.slug,
+            name: top.name,
+            domain: top.domain,
+            value: top.scores[d.key].value,
+            grade: top.scores[d.key].grade,
+            canonical: `https://sourcescore.org/source/${top.slug}/`,
+            dimensionDetail: `https://sourcescore.org/${d.pathSegment}/${top.slug}/`,
+          }
+        : null,
+      sources: list.map((s, i) => ({
+        rank: i + 1,
+        slug: s.slug,
+        name: s.name,
+        domain: s.domain,
+        category: s.category,
+        canonical: `https://sourcescore.org/source/${s.slug}/`,
+        dimensionDetail: `https://sourcescore.org/${d.pathSegment}/${s.slug}/`,
+        api: `https://sourcescore.org/api/source/${s.slug}.json`,
+        score: {
+          value: s.scores[d.key].value,
+          grade: s.scores[d.key].grade,
+          rationale: s.scores[d.key].rationale,
+        },
+      })),
+      otherDimensionsAtSameGrade: DIMENSION_DIRS
+        .filter((od) => od.pathSegment !== d.pathSegment)
+        .map((od) => {
+          const c = sources.filter((s) => s.scores[od.key].grade === g).length;
+          return {
+            pathSegment: od.pathSegment,
+            label: od.label,
+            count: c,
+            canonical: `https://sourcescore.org/${od.pathSegment}/grade/${gradeSlug(g)}/`,
+            api:
+              c > 0
+                ? `https://sourcescore.org/api/${od.pathSegment}/grade/${gradeSlug(g)}.json`
+                : null,
+          };
+        }),
+      compositeIndexAtSameGrade: {
+        canonical: `https://sourcescore.org/grade/${gradeSlug(g)}/`,
+        api: `https://sourcescore.org/api/grade/${gradeSlug(g)}.json`,
+        count: sources.filter((s) => s.scores.index.grade === g).length,
+      },
+      license: {
+        methodology: "Cite as: SourceScore Methodology v0.1, sourcescore.org",
+        data: "Underlying public-source data credited to original publishers",
+      },
+    };
+    writeFileSync(join(dir, `${gradeSlug(g)}.json`), JSON.stringify(body, null, 2));
+    dimensionGradeTwinsWritten++;
+  }
+}
+
 // /api/category/<slug>/<dim>.json × 36 — per-category-per-dimension JSON twin
 // (Day 20). Mirrors app/category/[slug]/[dimension]/page.tsx — ranked
 // leaderboard of sources in this category × this dimension.
@@ -812,5 +914,5 @@ for (const b of bestLists) {
 }
 
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten})`
 );

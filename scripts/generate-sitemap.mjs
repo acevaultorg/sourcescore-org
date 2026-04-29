@@ -130,8 +130,10 @@ function altApiFor(u) {
   // /grade/  →  /api/grades.json (catalog)
   if (u === `${SITE}/grade/`) return `${SITE}/api/grades.json`;
 
-  // /grade/<letter>/  →  /api/grade/<letter>.json
-  const gradeMatch = u.match(/\/grade\/([^/]+)\/$/);
+  // /grade/<letter>/  →  /api/grade/<letter>.json (composite-Index grade only;
+  // Day 21 added /<dim>/grade/<letter>/ which must NOT match this regex —
+  // anchor to start of URL to keep the match composite-only).
+  const gradeMatch = u.match(/^https?:\/\/[^/]+\/grade\/([^/]+)\/$/);
   if (gradeMatch) return `${SITE}/api/grade/${gradeMatch[1]}.json`;
 
   // /sources/  →  /api/sources.json
@@ -143,6 +145,14 @@ function altApiFor(u) {
   // /best/<slug>/  →  /api/best/<slug>.json
   const bestMatch = u.match(/\/best\/([^/]+)\/$/);
   if (bestMatch) return `${SITE}/api/best/${bestMatch[1]}.json`;
+
+  // /<dim>/grade/<letter>/  →  /api/<dim>/grade/<letter>.json (Day 21)
+  // Must come before the catch-all dim-slug match below.
+  const dimGradeMatch = u.match(
+    /\/(discipline|modern-reference|velocity)\/grade\/([^/]+)\/$/
+  );
+  if (dimGradeMatch)
+    return `${SITE}/api/${dimGradeMatch[1]}/grade/${dimGradeMatch[2]}.json`;
 
   // /discipline/<slug>/  →  /api/discipline/<slug>.json
   // /modern-reference/<slug>/  →  /api/modern-reference/<slug>.json

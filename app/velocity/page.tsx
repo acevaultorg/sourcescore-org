@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import {
+  allGrades,
+  gradeColorClass,
+  gradeRange,
+  gradeSlug,
+} from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "Citation Velocity Tracker — how often a source is cited per week",
@@ -11,6 +17,9 @@ export const metadata: Metadata = {
 
 export default function VelocityPage() {
   const ranked = [...sources].sort((a, b) => b.scores.velocity.value - a.scores.velocity.value);
+  const gradeBuckets = allGrades
+    .map((g) => ({ g, count: ranked.filter((s) => s.scores.velocity.grade === g).length }))
+    .filter(({ count }) => count > 0);
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <div className="text-eyebrow text-brand mb-3">SourceScore sub-tool · 3 of 4</div>
@@ -27,6 +36,24 @@ export default function VelocityPage() {
       >
         Full methodology + worked examples →
       </a>
+
+      {/* Grade-faceted children — Day 21 per-dim grade pages */}
+      <section className="mb-10">
+        <div className="text-eyebrow text-brand mb-3">Filter Velocity by grade</div>
+        <div className="flex flex-wrap gap-2">
+          {gradeBuckets.map(({ g, count }) => (
+            <a
+              key={g}
+              href={`/velocity/grade/${gradeSlug(g)}/`}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm transition-colors"
+            >
+              <span className={`font-bold ${gradeColorClass(g)}`}>{g}</span>
+              <span className="text-dim font-mono text-caption">{gradeRange(g)}</span>
+              <span className="text-muted">{count}</span>
+            </a>
+          ))}
+        </div>
+      </section>
 
       <h2 className="text-heading-1 font-bold mb-4">Ranking — 130 sources</h2>
       <ol className="space-y-2 mb-12">
