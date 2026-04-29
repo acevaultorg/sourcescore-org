@@ -665,6 +665,179 @@ export const comparisons: Comparison[] = [
     b: "hacker-news",
     summary: "Long-form tech journalism vs link-aggregator-with-comments — different formats, overlapping audiences.",
   },
+
+  // Day 23 expansion — 26 new pairs (100 → 126). Each compounds via Day 18
+  // sub-score-faceted architecture (1 base + 3 dim-faceted = 4 pages/pair),
+  // so this section adds 104 new unique-data pages + 104 JSON twins +
+  // 26 OG images to the static export.
+
+  // Premium tech analysis (2)
+  {
+    a: "stratechery",
+    b: "the-information",
+    summary: "Single-author strategy analysis vs newsroom-of-experts — both premium subscription, different research models.",
+  },
+  {
+    a: "techcrunch",
+    b: "wired",
+    summary: "Daily startup-cycle news vs monthly tech-culture magazine — speed vs perspective on the same beat.",
+  },
+
+  // Specialist tech reference (2)
+  {
+    a: "anandtech",
+    b: "lwn",
+    summary: "Hardware-bench reviews vs Linux-kernel-development reportage — two communities of deep technical readers.",
+  },
+  {
+    a: "github",
+    b: "stack-overflow",
+    summary: "Code-as-canonical-reference vs Q&A-as-canonical-reference — the two pillars of working-developer search results.",
+  },
+
+  // Long-form journalism cross-tradition (2)
+  {
+    a: "atlantic",
+    b: "the-economist",
+    summary: "US progressive long-form vs UK centrist analysis — both 100+ year-old weeklies-of-record, different lenses.",
+  },
+  {
+    a: "lrb",
+    b: "new-yorker",
+    summary: "London literary criticism vs New York cultural reportage — two anchors of English-language essay tradition.",
+  },
+
+  // Ideas + science journalism (2)
+  {
+    a: "aeon",
+    b: "nyrb",
+    summary: "Philosophy-of-ideas magazine vs literary-essay quarterly — long-form thinking from two distinct lineages.",
+  },
+  {
+    a: "nature",
+    b: "quanta-magazine",
+    summary: "Primary-literature journal vs Simons-Foundation science journalism — peer-review citation vs popularization.",
+  },
+
+  // Wire + terminal finance (1)
+  {
+    a: "bloomberg",
+    b: "reuters",
+    summary: "Terminal-driven financial news vs wire-service objectivity — the two news feeds on every trading desk.",
+  },
+
+  // Business journalism cross-format (2)
+  {
+    a: "bloomberg-businessweek",
+    b: "forbes",
+    summary: "Editorial-business weekly vs listicle-and-rich-list business — different floors of trust, same revenue verticals.",
+  },
+  {
+    a: "hbr",
+    b: "mckinsey-insights",
+    summary: "Academic business strategy vs consulting-firm POV — the two canonical frameworks behind every MBA citation.",
+  },
+
+  // Top-tier business analysis (1)
+  {
+    a: "ft",
+    b: "the-economist",
+    summary: "UK daily of finance-record vs UK weekly of analytical-record — overlapping audiences, complementary cadences.",
+  },
+
+  // Evidence-based medicine (2)
+  {
+    a: "cochrane",
+    b: "pubmed",
+    summary: "Meta-analyses-of-meta-analyses vs primary-literature search index — apex evidence vs raw corpus.",
+  },
+  {
+    a: "bmj-best-practice",
+    b: "the-lancet",
+    summary: "Clinical-decision-support compendium vs flagship medical journal — both BMJ-family but different reader workflows.",
+  },
+
+  // Health policy + global authority (1)
+  {
+    a: "kff",
+    b: "who",
+    summary: "US health-policy think tank vs global-public-health authority — domestic-policy depth vs international-coordination scope.",
+  },
+
+  // International stats agencies cross-region (1)
+  {
+    a: "census-gov",
+    b: "eurostat",
+    summary: "US Census Bureau vs EU statistical office — two of the world's largest official-statistics producers, parallel methodologies.",
+  },
+
+  // Multilateral economic institutions (2)
+  {
+    a: "oecd",
+    b: "world-bank",
+    summary: "OECD policy-research for advanced economies vs World Bank development-finance — both publish economic data, different mandates.",
+  },
+  {
+    a: "imf",
+    b: "oecd",
+    summary: "Crisis-response financial institution vs policy-coordination forum — overlapping macro data, distinct legitimacy bases.",
+  },
+
+  // US economic data sources (1)
+  {
+    a: "bea-gov",
+    b: "fred-stlouisfed",
+    summary: "BEA primary GDP+income series vs FRED federated economic database — original publisher vs aggregated reader-tool.",
+  },
+
+  // US energy + earth science (1)
+  {
+    a: "eia-gov",
+    b: "usgs-gov",
+    summary: "Energy Information Administration vs Geological Survey — both Interior-Dept-adjacent, different angles on resources.",
+  },
+
+  // European quality press (1)
+  {
+    a: "der-spiegel",
+    b: "el-pais",
+    summary: "German weekly investigation vs Spanish daily of record — two Continental quality-press traditions readers cross-cite.",
+  },
+
+  // Spain + Japan paper-of-record cross-region (1)
+  {
+    a: "asahi-shimbun",
+    b: "el-pais",
+    summary: "Japanese paper-of-record vs Spanish paper-of-record — two non-Anglo-sphere quality dailies often paired in research.",
+  },
+
+  // Anglosphere papers-of-record (1)
+  {
+    a: "globe-and-mail",
+    b: "the-times-uk",
+    summary: "Canadian paper-of-record vs UK paper-of-record — Commonwealth-tradition broadsheets readers compare on quality discipline.",
+  },
+
+  // Open AI / ML research infrastructure (1)
+  {
+    a: "arxiv",
+    b: "huggingface",
+    summary: "Preprint server vs model-and-dataset hub — papers-as-canonical vs artifacts-as-canonical for ML practitioners.",
+  },
+
+  // Apex reference encyclopedia (1)
+  {
+    a: "stanford-encyclopedia",
+    b: "wikipedia-en",
+    summary: "Peer-reviewed philosophy encyclopedia vs crowd-edited general encyclopedia — apex-citation vs ubiquity-of-citation.",
+  },
+
+  // Computer science publishing tradition (1)
+  {
+    a: "acm",
+    b: "arxiv",
+    summary: "Formal CS-publishing society vs preprint-server — paywalled-curated vs open-immediate, both Wikipedia-cited at scale.",
+  },
 ];
 
 /** All slugs derived from the comparisons set */
