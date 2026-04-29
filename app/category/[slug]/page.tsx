@@ -74,6 +74,46 @@ export default async function CategoryPage({ params }: PageProps) {
         Average Index across this category: <strong className="text-text">{avgIndex}</strong>.
       </p>
 
+      {/* Dimension-faceted children — Day 20 leaderboards per sub-score */}
+      <section className="mb-8">
+        <div className="text-eyebrow text-brand mb-3">
+          Rank {category.toLowerCase()} by sub-score
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {(
+            [
+              { path: "discipline", short: "Citation Discipline", key: "discipline" },
+              { path: "modern-reference", short: "Modern Reference", key: "modernReference" },
+              { path: "velocity", short: "Citation Velocity", key: "velocity" },
+            ] as const
+          ).map((d) => {
+            const sortedTop = [...list].sort(
+              (a, b) => b.scores[d.key].value - a.scores[d.key].value
+            )[0];
+            return (
+              <a
+                key={d.path}
+                href={`/category/${slug}/${d.path}/`}
+                className="inline-flex items-baseline gap-2 px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 text-body-sm transition-colors"
+              >
+                <span className="font-semibold text-text">{d.short}</span>
+                {sortedTop && (
+                  <>
+                    <span className="text-dim">·</span>
+                    <span className="text-muted">
+                      <span className="text-brand font-semibold">
+                        {sortedTop.name.split(" ")[0]}
+                      </span>{" "}
+                      leads
+                    </span>
+                  </>
+                )}
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
       {/* Grade-faceted children — only show grades that have ≥1 source in this category */}
       <section className="mb-10">
         <div className="text-eyebrow text-brand mb-3">Filter {category.toLowerCase()} by grade</div>

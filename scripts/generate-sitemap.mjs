@@ -116,6 +116,13 @@ function altApiFor(u) {
   const facetMatch = u.match(/\/category\/([^/]+)\/grade\/([^/]+)\/$/);
   if (facetMatch) return `${SITE}/api/category/${facetMatch[1]}/grade/${facetMatch[2]}.json`;
 
+  // /category/<cat>/<dim>/  →  /api/category/<cat>/<dim>.json (Day 20)
+  const categoryDimMatch = u.match(
+    /\/category\/([^/]+)\/(discipline|modern-reference|velocity)\/$/
+  );
+  if (categoryDimMatch)
+    return `${SITE}/api/category/${categoryDimMatch[1]}/${categoryDimMatch[2]}.json`;
+
   // /category/<cat>/  →  /api/category/<cat>.json
   const categoryMatch = u.match(/\/category\/([^/]+)\/$/);
   if (categoryMatch) return `${SITE}/api/category/${categoryMatch[1]}.json`;
