@@ -37,6 +37,26 @@ export default function DisciplinePage() {
         Full methodology + worked examples →
       </a>
 
+      {/* Rank-band leaderboards — Day 22 fixed-N */}
+      <section className="mb-6">
+        <div className="text-eyebrow text-brand mb-3">Discipline rank bands</div>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { slug: "top-10", label: "Top 10" },
+            { slug: "top-25", label: "Top 25" },
+            { slug: "bottom-10", label: "Bottom 10" },
+          ].map((b) => (
+            <a
+              key={b.slug}
+              href={`/discipline/rank/${b.slug}/`}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 text-body-sm transition-colors"
+            >
+              <span className="font-semibold text-text">{b.label}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* Grade-faceted children — Day 21 per-dim grade pages */}
       <section className="mb-10">
         <div className="text-eyebrow text-brand mb-3">Filter Discipline by grade</div>

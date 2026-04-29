@@ -643,6 +643,115 @@ for (const d of DIMENSION_DIRS) {
   }
 }
 
+// /api/<dim>/rank/<band>.json × 9 — per-dim-per-rank-band JSON twin (Day 22).
+// 3 dims × 3 bands (top-10, top-25, bottom-10) = 9 fixed-N leaderboards.
+const RANK_BANDS_API: Array<{ slug: string; n: number; direction: "top" | "bottom"; label: string }> = [
+  { slug: "top-10", n: 10, direction: "top", label: "Top 10" },
+  { slug: "top-25", n: 25, direction: "top", label: "Top 25" },
+  { slug: "bottom-10", n: 10, direction: "bottom", label: "Bottom 10" },
+];
+let dimensionRankBandTwinsWritten = 0;
+for (const d of DIMENSION_DIRS) {
+  for (const b of RANK_BANDS_API) {
+    const sortedDesc = [...sources].sort(
+      (a, c) => c.scores[d.key].value - a.scores[d.key].value
+    );
+    const list = b.direction === "top"
+      ? sortedDesc.slice(0, b.n)
+      : sortedDesc.slice(-b.n);
+    const startRank = b.direction === "top" ? 1 : sources.length - b.n + 1;
+
+    const bandMean = list.length > 0
+      ? Math.round(list.reduce((a, s) => a + s.scores[d.key].value, 0) / list.length)
+      : 0;
+    const globalMean = Math.round(
+      sources.reduce((a, s) => a + s.scores[d.key].value, 0) / sources.length
+    );
+    const leader = b.direction === "top" ? list[0] : list[list.length - 1];
+    const trailer = b.direction === "top" ? list[list.length - 1] : list[0];
+
+    const dir = join(API_DIR, d.pathSegment, "rank");
+    mkdirSync(dir, { recursive: true });
+
+    const body = {
+      apiVersion,
+      methodology: d.methodology,
+      canonical: `https://sourcescore.org/${d.pathSegment}/rank/${b.slug}/`,
+      facet: {
+        dimension: {
+          key: d.key,
+          pathSegment: d.pathSegment,
+          label: d.label,
+          weightInComposite: d.weight,
+        },
+        band: b.slug,
+        bandLabel: b.label,
+        n: b.n,
+        direction: b.direction,
+      },
+      count: list.length,
+      means: {
+        inBand: bandMean,
+        global: globalMean,
+        deltaVsGlobal: bandMean - globalMean,
+      },
+      leader: leader
+        ? {
+            slug: leader.slug,
+            name: leader.name,
+            domain: leader.domain,
+            value: leader.scores[d.key].value,
+            grade: leader.scores[d.key].grade,
+            canonical: `https://sourcescore.org/source/${leader.slug}/`,
+            dimensionDetail: `https://sourcescore.org/${d.pathSegment}/${leader.slug}/`,
+          }
+        : null,
+      sources: list.map((s, i) => ({
+        rank: startRank + i,
+        slug: s.slug,
+        name: s.name,
+        domain: s.domain,
+        category: s.category,
+        canonical: `https://sourcescore.org/source/${s.slug}/`,
+        dimensionDetail: `https://sourcescore.org/${d.pathSegment}/${s.slug}/`,
+        api: `https://sourcescore.org/api/source/${s.slug}.json`,
+        score: {
+          value: s.scores[d.key].value,
+          grade: s.scores[d.key].grade,
+          rationale: s.scores[d.key].rationale,
+        },
+      })),
+      verdict: leader
+        ? b.direction === "top"
+          ? `${leader.name} leads the ${b.label.toLowerCase()} ${d.label.toLowerCase()} sources at ${leader.scores[d.key].value} (${leader.scores[d.key].grade}).`
+          : `${trailer.name} sits at the bottom of ${d.label.toLowerCase()} at ${trailer.scores[d.key].value} (${trailer.scores[d.key].grade}). Cite cautiously.`
+        : null,
+      otherBandsOnSameDim: RANK_BANDS_API
+        .filter((ob) => ob.slug !== b.slug)
+        .map((ob) => ({
+          slug: ob.slug,
+          label: ob.label,
+          canonical: `https://sourcescore.org/${d.pathSegment}/rank/${ob.slug}/`,
+          api: `https://sourcescore.org/api/${d.pathSegment}/rank/${ob.slug}.json`,
+        })),
+      otherDimsAtSameBand: DIMENSION_DIRS
+        .filter((od) => od.pathSegment !== d.pathSegment)
+        .map((od) => ({
+          pathSegment: od.pathSegment,
+          label: od.label,
+          canonical: `https://sourcescore.org/${od.pathSegment}/rank/${b.slug}/`,
+          api: `https://sourcescore.org/api/${od.pathSegment}/rank/${b.slug}.json`,
+        })),
+      license: {
+        methodology: "Cite as: SourceScore Methodology v0.1, sourcescore.org",
+        data: "Underlying public-source data credited to original publishers",
+      },
+    };
+    writeFileSync(join(dir, `${b.slug}.json`), JSON.stringify(body, null, 2));
+    dimensionRankBandTwinsWritten++;
+  }
+}
+
 // /api/<dim>/grade/<letter>.json × ≤18 — per-dim-per-grade JSON twin (Day 21).
 // Only writes non-empty intersections (matches generateStaticParams filter on
 // app/<dim>/grade/[letter]/page.tsx).
@@ -914,5 +1023,5 @@ for (const b of bestLists) {
 }
 
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten})`
 );

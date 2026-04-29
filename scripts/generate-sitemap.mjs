@@ -154,6 +154,14 @@ function altApiFor(u) {
   if (dimGradeMatch)
     return `${SITE}/api/${dimGradeMatch[1]}/grade/${dimGradeMatch[2]}.json`;
 
+  // /<dim>/rank/<band>/  →  /api/<dim>/rank/<band>.json (Day 22)
+  // Must come before the catch-all dim-slug match below.
+  const dimRankMatch = u.match(
+    /\/(discipline|modern-reference|velocity)\/rank\/([^/]+)\/$/
+  );
+  if (dimRankMatch)
+    return `${SITE}/api/${dimRankMatch[1]}/rank/${dimRankMatch[2]}.json`;
+
   // /discipline/<slug>/  →  /api/discipline/<slug>.json
   // /modern-reference/<slug>/  →  /api/modern-reference/<slug>.json
   // /velocity/<slug>/  →  /api/velocity/<slug>.json
