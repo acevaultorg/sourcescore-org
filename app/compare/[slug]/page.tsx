@@ -111,9 +111,48 @@ export default async function CompareDetailPage({ params }: PageProps) {
       <p className="text-body-lg text-muted leading-relaxed max-w-3xl mb-10">{comp.summary}</p>
 
       {/* SUMMARY ROW ──────────────────────────────────────────── */}
-      <section className="mb-10 grid sm:grid-cols-2 gap-3">
+      <section className="mb-8 grid sm:grid-cols-2 gap-3">
         <SourceCard source={a} highlight={winner("index") === "a"} />
         <SourceCard source={b} highlight={winner("index") === "b"} />
+      </section>
+
+      {/* DIMENSION CHIP ROW — Day 18 sub-score-faceted comparators */}
+      <section className="mb-10">
+        <div className="text-eyebrow text-brand mb-3">
+          Compare on a single dimension
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { path: "discipline", label: "Citation Discipline", short: "Discipline", key: "discipline" as const },
+            { path: "modern-reference", label: "Modern Reference", short: "Modern Reference", key: "modernReference" as const },
+            { path: "velocity", label: "Citation Velocity", short: "Velocity", key: "velocity" as const },
+          ].map((d) => {
+            const w = winner(d.key);
+            const av = a.scores[d.key].value;
+            const bv = b.scores[d.key].value;
+            const delta = Math.abs(av - bv);
+            return (
+              <a
+                key={d.path}
+                href={`/compare/${slug}/${d.path}/`}
+                className="px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 transition-colors text-body-sm flex items-baseline gap-2"
+              >
+                <span className="font-semibold text-text">{d.short}</span>
+                <span className="text-dim">·</span>
+                {w === "tie" ? (
+                  <span className="text-dim">tie</span>
+                ) : (
+                  <span className="text-muted">
+                    <span className="text-brand font-semibold">
+                      {(w === "a" ? a.name : b.name).split(" ")[0]}
+                    </span>{" "}
+                    +{delta}
+                  </span>
+                )}
+              </a>
+            );
+          })}
+        </div>
       </section>
 
       {/* PER-DIMENSION TABLE ─────────────────────────────────── */}

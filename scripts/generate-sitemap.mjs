@@ -101,6 +101,13 @@ function altApiFor(u) {
   const sourceMatch = u.match(/\/source\/([^/]+)\/$/);
   if (sourceMatch) return `${SITE}/api/source/${sourceMatch[1]}.json`;
 
+  // /compare/<slug>/<dim>/  →  /api/compare/<slug>/<dim>.json (Day 18)
+  const compareDimMatch = u.match(
+    /\/compare\/([^/]+)\/(discipline|modern-reference|velocity)\/$/
+  );
+  if (compareDimMatch)
+    return `${SITE}/api/compare/${compareDimMatch[1]}/${compareDimMatch[2]}.json`;
+
   // /compare/<slug>/  →  /api/compare/<slug>.json
   const compareMatch = u.match(/\/compare\/([^/]+)\/$/);
   if (compareMatch) return `${SITE}/api/compare/${compareMatch[1]}.json`;

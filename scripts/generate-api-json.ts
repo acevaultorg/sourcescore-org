@@ -240,6 +240,143 @@ for (const c of comparisons) {
   compareTwinsWritten++;
 }
 
+// /api/compare/<slug>/<dimension>.json × 225 — per-pair-per-dimension JSON twin,
+// mirroring app/compare/[slug]/[dimension]/page.tsx (Day 18).
+const COMPARE_DIMENSION_DIRS: Array<{
+  pathSegment: "discipline" | "modern-reference" | "velocity";
+  key: "discipline" | "modernReference" | "velocity";
+  label: string;
+  weight: string;
+  methodology: string;
+}> = [
+  {
+    pathSegment: "discipline",
+    key: "discipline",
+    label: "Citation Discipline",
+    weight: "35%",
+    methodology: "https://sourcescore.org/methodology/citation-discipline/",
+  },
+  {
+    pathSegment: "modern-reference",
+    key: "modernReference",
+    label: "Modern Citation Reference",
+    weight: "30%",
+    methodology: "https://sourcescore.org/methodology/modern-reference/",
+  },
+  {
+    pathSegment: "velocity",
+    key: "velocity",
+    label: "Citation Velocity",
+    weight: "35%",
+    methodology: "https://sourcescore.org/methodology/citation-velocity/",
+  },
+];
+let compareDimensionTwinsWritten = 0;
+for (const c of comparisons) {
+  const slug = comparisonSlug(c.a, c.b);
+  const a = sources.find((s) => s.slug === c.a)!;
+  const b = sources.find((s) => s.slug === c.b)!;
+  for (const d of COMPARE_DIMENSION_DIRS) {
+    const aScore = a.scores[d.key];
+    const bScore = b.scores[d.key];
+    const sortedDesc = [...sources].sort(
+      (x, y) => y.scores[d.key].value - x.scores[d.key].value
+    );
+    const aRank = sortedDesc.findIndex((x) => x.slug === a.slug) + 1;
+    const bRank = sortedDesc.findIndex((x) => x.slug === b.slug) + 1;
+    const totalCount = sources.length;
+    const delta = Math.abs(aScore.value - bScore.value);
+    const winnerSlug =
+      aScore.value > bScore.value
+        ? a.slug
+        : bScore.value > aScore.value
+          ? b.slug
+          : null;
+
+    const dir = join(COMPARE_DIR, slug);
+    mkdirSync(dir, { recursive: true });
+
+    const body = {
+      apiVersion,
+      methodology: d.methodology,
+      canonical: `https://sourcescore.org/compare/${slug}/${d.pathSegment}/`,
+      summary: c.summary,
+      dimension: {
+        key: d.key,
+        pathSegment: d.pathSegment,
+        label: d.label,
+        weightInComposite: d.weight,
+      },
+      a: {
+        slug: a.slug,
+        name: a.name,
+        domain: a.domain,
+        category: a.category,
+        canonical: `https://sourcescore.org/source/${a.slug}/`,
+        api: `https://sourcescore.org/api/source/${a.slug}.json`,
+        dimensionDetail: `https://sourcescore.org/${d.pathSegment}/${a.slug}/`,
+        dimensionDetailApi: `https://sourcescore.org/api/${d.pathSegment}/${a.slug}.json`,
+        score: {
+          value: aScore.value,
+          grade: aScore.grade,
+          rationale: aScore.rationale,
+          signals: aScore.signals,
+        },
+        rank: { global: aRank, globalTotal: totalCount },
+      },
+      b: {
+        slug: b.slug,
+        name: b.name,
+        domain: b.domain,
+        category: b.category,
+        canonical: `https://sourcescore.org/source/${b.slug}/`,
+        api: `https://sourcescore.org/api/source/${b.slug}.json`,
+        dimensionDetail: `https://sourcescore.org/${d.pathSegment}/${b.slug}/`,
+        dimensionDetailApi: `https://sourcescore.org/api/${d.pathSegment}/${b.slug}.json`,
+        score: {
+          value: bScore.value,
+          grade: bScore.grade,
+          rationale: bScore.rationale,
+          signals: bScore.signals,
+        },
+        rank: { global: bRank, globalTotal: totalCount },
+      },
+      verdict: {
+        winner: winnerSlug,
+        delta,
+        claim: winnerSlug
+          ? `${winnerSlug === a.slug ? a.name : b.name} outscores ${winnerSlug === a.slug ? b.name : a.name} on ${d.label} by ${delta} points.`
+          : `${a.name} and ${b.name} tie on ${d.label} (${aScore.grade} · ${aScore.value}).`,
+      },
+      otherDimensions: COMPARE_DIMENSION_DIRS
+        .filter((od) => od.pathSegment !== d.pathSegment)
+        .map((od) => ({
+          pathSegment: od.pathSegment,
+          label: od.label,
+          canonical: `https://sourcescore.org/compare/${slug}/${od.pathSegment}/`,
+          api: `https://sourcescore.org/api/compare/${slug}/${od.pathSegment}.json`,
+        }))
+        .concat([
+          {
+            pathSegment: "index" as never,
+            label: "SourceScore Index (composite)",
+            canonical: `https://sourcescore.org/compare/${slug}/`,
+            api: `https://sourcescore.org/api/compare/${slug}.json`,
+          },
+        ]),
+      license: {
+        methodology: "Cite as: SourceScore Methodology v0.1, sourcescore.org",
+        data: "Underlying public-source data credited to original publishers",
+      },
+    };
+    writeFileSync(
+      join(dir, `${d.pathSegment}.json`),
+      JSON.stringify(body, null, 2)
+    );
+    compareDimensionTwinsWritten++;
+  }
+}
+
 // /api/grades.json — overview catalog of all letter grades + counts + range
 const gradesBody = {
   apiVersion,
@@ -581,5 +718,5 @@ for (const b of bestLists) {
 }
 
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten})`
 );
