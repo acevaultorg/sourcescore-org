@@ -511,6 +511,160 @@ export const comparisons: Comparison[] = [
     b: "ars-technica",
     summary: "Closed-archive hardware-benchmark legacy vs ongoing tech journalism — different freshness profiles.",
   },
+
+  // Day 19 expansion — 25 new pairs targeting high-search-intent "X vs Y"
+  // queries. Each compounds with Day 17 dim pages + Day 18 dim-faceted
+  // comparators (1 base + 3 facets = 4 pages per pair), so 25 new pairs
+  // add 100 new unique-data pages to the static export.
+
+  // Medical journals (4) — high RPM, primary-source heavy, recurring search
+  {
+    a: "jama",
+    b: "nejm",
+    summary: "Two flagship US general-medicine journals — JAMA Network reach vs NEJM tier-1 trial home.",
+  },
+  {
+    a: "bmj",
+    b: "jama",
+    summary: "UK vs US flagship general-medicine journals — open-access leanings vs traditional model.",
+  },
+  {
+    a: "bmj",
+    b: "the-lancet",
+    summary: "Two UK-based tier-1 general-medicine journals — both Elsevier-adjacent, scored head-to-head.",
+  },
+  {
+    a: "nejm",
+    b: "statnews",
+    summary: "Primary medical journal vs medical-news outlet — peer-reviewed source vs reporting on it.",
+  },
+
+  // Public health agencies (3) — government tier, heavy LLM citation
+  {
+    a: "cdc-gov",
+    b: "nih-gov",
+    summary: "Top two US public-health agencies — operational disease-control vs research-funding-and-output.",
+  },
+  {
+    a: "cdc-gov",
+    b: "who",
+    summary: "US national vs global public-health body — domestic-policy reach vs multilateral guidance.",
+  },
+  {
+    a: "ema-europa",
+    b: "fda-gov",
+    summary: "EU vs US drug regulators — centralized European authorization vs FDA's domestic gatekeeping.",
+  },
+
+  // Open-access + academic search (2)
+  {
+    a: "elife",
+    b: "plos-one",
+    summary: "Two open-access journal traditions — eLife's curated rigor vs PLOS ONE's volume-first model.",
+  },
+  {
+    a: "jstor",
+    b: "semantic-scholar",
+    summary: "Closed humanities archive vs AI-augmented research-paper graph — discovery, not publication.",
+  },
+
+  // Top-tier journals not yet paired (1)
+  {
+    a: "cell",
+    b: "nature",
+    summary: "Top-tier biology vs general-science venue — Cell Press depth vs Nature breadth, scored.",
+  },
+
+  // Business journalism (3)
+  {
+    a: "bloomberg",
+    b: "wsj",
+    summary: "Two US business-news flagships — Bloomberg Terminal-fed reporting vs WSJ broadsheet tradition.",
+  },
+  {
+    a: "bloomberg",
+    b: "ft",
+    summary: "US-rooted vs UK-rooted global business-journalism flagships — comparable paywalls, different beats.",
+  },
+  {
+    a: "bloomberg-businessweek",
+    b: "hbr",
+    summary: "Weekly business magazine vs business-school research-grade outlet — news cadence vs framework depth.",
+  },
+
+  // News briefings + DC-coverage (2)
+  {
+    a: "axios",
+    b: "semafor",
+    summary: "Two newer briefing-style political-news outlets — Axios bullet format vs Semafor explanatory style.",
+  },
+  {
+    a: "axios",
+    b: "politico",
+    summary: "Two DC-focused news outlets — Axios's brevity vs Politico's policy-detail depth.",
+  },
+
+  // Broadcast + cable pair (1)
+  {
+    a: "fox-news",
+    b: "npr",
+    summary: "Right-leaning cable vs publicly funded broadcast — opposite editorial models, scored on the same axis.",
+  },
+
+  // Digital-native (1)
+  {
+    a: "buzzfeed",
+    b: "huffpost",
+    summary: "Two digital-native pioneers from the same era — different paths after the listicle wave.",
+  },
+
+  // Long-form magazines (2)
+  {
+    a: "atlantic",
+    b: "the-conversation",
+    summary: "Essay-driven generalist magazine vs academic-popularizer co-op — different sourcing models, similar audiences.",
+  },
+  {
+    a: "natgeo",
+    b: "smithsonian-mag",
+    summary: "Two flagship popular-science magazines — NatGeo expedition reporting vs Smithsonian institutional depth.",
+  },
+  {
+    a: "new-yorker",
+    b: "nyt-magazine",
+    summary: "Two flagship US long-form magazines — New Yorker editorial tradition vs NYT-Magazine reach.",
+  },
+
+  // Think tanks + research orgs (2)
+  {
+    a: "brookings",
+    b: "rand-corp",
+    summary: "Two major US think tanks — Brookings policy-essay tradition vs RAND quantitative-research output.",
+  },
+  {
+    a: "kff",
+    b: "pew-research",
+    summary: "Health-policy specialist vs generalist polling-and-research org — comparable rigor, different beats.",
+  },
+
+  // Visual-data platforms (1)
+  {
+    a: "ourworldindata",
+    b: "statista",
+    summary: "Open-data scholarship vs paywalled data-aggregation platform — citation-friendly vs license-heavy.",
+  },
+
+  // Indie + premium tech (2)
+  {
+    a: "404-media",
+    b: "the-information",
+    summary: "Two premium-subscription tech-news outlets — 404's investigative model vs The Information's enterprise-tech beat.",
+  },
+  {
+    a: "ars-technica",
+    b: "hacker-news",
+    summary: "Long-form tech journalism vs link-aggregator-with-comments — different formats, overlapping audiences.",
+  },
 ];
 
 /** All slugs derived from the comparisons set */
