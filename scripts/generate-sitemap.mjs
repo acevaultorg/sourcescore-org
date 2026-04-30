@@ -55,6 +55,7 @@ const aiPriorityPaths = [
   "/sources/",
   "/grade/",
   "/best/",
+  "/insights/",
   "/discipline/",
   "/modern-reference/",
   "/velocity/",
@@ -66,7 +67,8 @@ const aiHumanUrls = urls.filter(
     u.includes("/category/") ||
     u.includes("/compare/") ||
     u.includes("/grade/") ||
-    u.includes("/best/")
+    u.includes("/best/") ||
+    u.includes("/insights/")
 );
 
 // Discover EVERY .json under /api/ (source twins, grade twins, facet
@@ -173,6 +175,13 @@ function altApiFor(u) {
 
   // /sources/  →  /api/sources.json
   if (u === `${SITE}/sources/`) return `${SITE}/api/sources.json`;
+
+  // /insights/  →  /api/insights.json (Day 30 catalog)
+  if (u === `${SITE}/insights/`) return `${SITE}/api/insights.json`;
+
+  // /insights/<slug>/  →  /api/insights/<slug>.json (Day 30)
+  const insightMatch = u.match(/\/insights\/([^/]+)\/$/);
+  if (insightMatch) return `${SITE}/api/insights/${insightMatch[1]}.json`;
 
   // /best/  →  /api/best.json (catalog)
   if (u === `${SITE}/best/`) return `${SITE}/api/best.json`;

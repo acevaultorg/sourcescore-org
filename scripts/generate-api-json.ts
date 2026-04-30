@@ -27,6 +27,7 @@ import {
   ALL_DIMENSIONS,
   DIMENSION_META,
 } from "../data/best-lists";
+import { INSIGHTS, rowsForInsight, signalLabel } from "../data/insights";
 import {
   allGrades,
   gradeSlug,
@@ -1656,6 +1657,124 @@ for (const me of sources) {
   sourcePeersTwinsWritten++;
 }
 
+// ────────────────────────────────────────────────────────
+// Day 30 — Insights JSON twins.
+// 1 catalog (/api/insights.json) + 8 per-insight twins. Each twin holds
+// the top-5 rows + the cite-ready answer to a specific question.
+// ────────────────────────────────────────────────────────
+const INSIGHTS_DIR = join(API_DIR, "insights");
+mkdirSync(INSIGHTS_DIR, { recursive: true });
+
+// Catalog
+const insightsCatalogBody = {
+  apiVersion: "v1",
+  methodology: "v0.1",
+  canonical: "https://sourcescore.org/insights/",
+  generated: new Date().toISOString(),
+  count: INSIGHTS.length,
+  insights: INSIGHTS.map((i) => {
+    const rows = rowsForInsight(i);
+    const leader = rows[0];
+    return {
+      slug: i.slug,
+      title: i.title,
+      question: i.question,
+      summary: i.summary,
+      kind: i.kind,
+      dim: i.kind === "dim-vs-composite" ? i.dim : null,
+      direction: i.kind === "dim-vs-composite" ? i.direction : null,
+      shape: i.kind === "score-shape" ? i.shape : null,
+      canonical: `https://sourcescore.org/insights/${i.slug}/`,
+      api: `https://sourcescore.org/api/insights/${i.slug}.json`,
+      leader: leader
+        ? {
+            slug: leader.source.slug,
+            name: leader.source.name,
+            signal: leader.signal,
+            spread: leader.spread,
+          }
+        : null,
+    };
+  }),
+  license: "CC-BY-4.0",
+};
+writeFileSync(
+  join(API_DIR, "insights.json"),
+  JSON.stringify(insightsCatalogBody, null, 2),
+);
+
+// Per-insight twins
+let insightsTwinsWritten = 0;
+for (const insight of INSIGHTS) {
+  const rows = rowsForInsight(insight);
+  if (rows.length === 0) continue;
+  const leader = rows[0];
+
+  const body = {
+    apiVersion: "v1",
+    methodology: "v0.1",
+    canonical: `https://sourcescore.org/insights/${insight.slug}/`,
+    facet: { type: "insight", slug: insight.slug },
+    insight: {
+      slug: insight.slug,
+      title: insight.title,
+      question: insight.question,
+      summary: insight.summary,
+      kind: insight.kind,
+      ...(insight.kind === "dim-vs-composite"
+        ? { dim: insight.dim, direction: insight.direction }
+        : { shape: insight.shape }),
+      signalDefinition: signalLabel(insight),
+    },
+    count: rows.length,
+    answer: {
+      sourceSlug: leader.source.slug,
+      sourceName: leader.source.name,
+      signal: leader.signal,
+      spread: leader.spread,
+      verdict:
+        insight.kind === "dim-vs-composite"
+          ? `${leader.source.name} has the largest ${
+              insight.direction === "lead" ? "positive" : "negative"
+            } gap on ${DIMENSION_META[insight.dim].label}: ${
+              leader.signal >= 0 ? "+" : ""
+            }${leader.signal} points vs the composite Index.`
+          : `${leader.source.name} has the ${
+              insight.shape === "balanced" ? "smallest" : "largest"
+            } sub-score spread (${leader.spread} points across all three dimensions).`,
+    },
+    rows: rows.map((r, i) => ({
+      rank: i + 1,
+      slug: r.source.slug,
+      name: r.source.name,
+      domain: r.source.domain,
+      category: r.source.category,
+      summary: r.source.summary,
+      canonical: `https://sourcescore.org/source/${r.source.slug}/`,
+      api: `https://sourcescore.org/api/source/${r.source.slug}.json`,
+      composite: r.source.scores.index.value,
+      compositeGrade: r.source.scores.index.grade,
+      values: r.values,
+      signal: r.signal,
+      spread: r.spread,
+    })),
+    siblingInsights: INSIGHTS.filter((i) => i.slug !== insight.slug).map(
+      (i) => ({
+        slug: i.slug,
+        title: i.title,
+        canonical: `https://sourcescore.org/insights/${i.slug}/`,
+      }),
+    ),
+    license: "CC-BY-4.0",
+  };
+
+  writeFileSync(
+    join(INSIGHTS_DIR, `${insight.slug}.json`),
+    JSON.stringify(body, null, 2),
+  );
+  insightsTwinsWritten++;
+}
+
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/grade/<letter>/<dim>.json (${gradeDimensionTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/category/<cat>/top-10.json (${categoryTopNTwinsWritten}) + /api/category/<cat>/top-10/<dim>.json (${categoryTopNDimTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/best/<slug>/<dim>.json (${bestDimensionTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten}) + /api/source/<slug>/peers.json (${sourcePeersTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/grade/<letter>/<dim>.json (${gradeDimensionTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/category/<cat>/top-10.json (${categoryTopNTwinsWritten}) + /api/category/<cat>/top-10/<dim>.json (${categoryTopNDimTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/best/<slug>/<dim>.json (${bestDimensionTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten}) + /api/source/<slug>/peers.json (${sourcePeersTwinsWritten}) + /api/insights.json + /api/insights/<slug>.json (${insightsTwinsWritten})`
 );
