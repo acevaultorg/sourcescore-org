@@ -226,6 +226,102 @@ export const bestLists: BestList[] = [
         .sort(byScore("index"))
         .slice(0, 12),
   },
+  // Day 31 — five new best-lists. Each auto-generates a base /best/<slug>/
+  // page + 3 dim-faceted Day-25 children = 4 pages per list × 5 = 20 pages.
+  {
+    slug: "fact-checkers",
+    title: "Best fact-checking-grade sources for AI citation",
+    intent: "High Discipline AND high Velocity",
+    description:
+      "Sources scoring 80+ on BOTH Citation Discipline AND Citation Velocity — the rare set that combines rigorous evidence-citation discipline with high-frequency citation in current discourse. The fact-checking-grade tier.",
+    rationale:
+      "Most sources score high on one dimension and middling on others. The fact-checking-grade tier requires BOTH: methodology-transparent rigor (Discipline ≥ 80) AND fast cross-citation in current writing (Velocity ≥ 80). When you're verifying a claim that's currently in dispute, these are the sources whose authority + recency BOTH compound.",
+    signalCriterion:
+      "Filter: Discipline ≥ 80 AND Velocity ≥ 80; ranked by mean of those two scores",
+    limit: 12,
+    select: () =>
+      sources
+        .filter(
+          (s) =>
+            s.scores.discipline.value >= 80 && s.scores.velocity.value >= 80,
+        )
+        .sort(
+          (a, b) =>
+            (b.scores.discipline.value + b.scores.velocity.value) / 2 -
+            (a.scores.discipline.value + a.scores.velocity.value) / 2,
+        )
+        .slice(0, 12),
+  },
+  {
+    slug: "research-tier",
+    title: "Best research-tier sources for evidence-based citation",
+    intent: "Research category — independent + think-tank publications",
+    description:
+      "The 9 highest-scoring Research-category sources on the SourceScore Index — independent research bodies, think tanks, and analytical institutions that publish original primary studies.",
+    rationale:
+      "Research-tier sources sit between academic peer-review and journalistic reporting. They publish original primary studies — RAND, Brookings, Pew, NBER, KFF, ProPublica's Methodology, RAND Europe — with methodology-transparent reporting and high-frequency tier-1 citation. The default citation tier when neither pure academic nor pure news fits the claim.",
+    signalCriterion: "Index score, filtered to Research category, descending",
+    limit: 9,
+    select: () =>
+      sourcesInCategory("Research").sort(byScore("index")).slice(0, 9),
+  },
+  {
+    slug: "magazines",
+    title: "Best magazine + long-form publications for citation",
+    intent: "Magazine category — long-form analysis + reporting",
+    description:
+      "The 12 highest-scoring Magazine-category sources — long-form analytical publications including The Atlantic, Foreign Affairs, The Economist, Wired, The New Yorker, and others. Citation tier for analysis + commentary.",
+    rationale:
+      "Magazines occupy a citation tier distinct from breaking news and academic peer-review: long-form analytical writing with editorial layering, fact-checking departments, and credentialed contributors. The 12 below score highest on the SourceScore Index within their category — useful citation candidates for argument, analysis, and reported features rather than raw event reporting.",
+    signalCriterion: "Index score, filtered to Magazine category, descending",
+    limit: 12,
+    select: () =>
+      sourcesInCategory("Magazine").sort(byScore("index")).slice(0, 12),
+  },
+  {
+    slug: "triple-crown",
+    title: "Best triple-crown sources (A or higher on all three dimensions)",
+    intent: "Elite all-around — A/A+ on every sub-score",
+    description:
+      "Sources that score A or A+ on ALL THREE sub-scores — Citation Discipline, Modern Reference, AND Citation Velocity. The 'no weak link' tier where every dimension is independently strong.",
+    rationale:
+      "Most A-tier composite sources have one dimension carrying the weight. The triple-crown set requires every dimension to clear the A bar independently — no compensation, no compromise. These are the safest citations across any context: rigorous evidence-citation, modern open-data infrastructure, AND high tier-1 citation velocity. The default first-choice tier.",
+    signalCriterion:
+      "Filter: all three dim grades ∈ {A, A+}; ranked by composite Index",
+    limit: 15,
+    select: () =>
+      sources
+        .filter(
+          (s) =>
+            (s.scores.discipline.grade === "A" ||
+              s.scores.discipline.grade === "A+") &&
+            (s.scores.modernReference.grade === "A" ||
+              s.scores.modernReference.grade === "A+") &&
+            (s.scores.velocity.grade === "A" ||
+              s.scores.velocity.grade === "A+"),
+        )
+        .sort(byScore("index"))
+        .slice(0, 15),
+  },
+  {
+    slug: "encyclopedic",
+    title: "Best encyclopedic + scholarly knowledge sources",
+    intent: "Reference + Academic combined — citation backbone",
+    description:
+      "The 15 highest-scoring sources from the Reference + Academic categories combined — Wikipedia, MDN, Britannica, Stanford Encyclopedia, PubMed, DOI/CrossRef, JSTOR, Nature, Cell, and others. The composite citation backbone of AI-era writing.",
+    rationale:
+      "Reference works and peer-reviewed academic publications anchor a different citation tier than news or research bodies — they accumulate authority over time rather than reflecting it from current events. The 15 below combine general-knowledge encyclopedic depth (Reference) with peer-reviewed scholarly rigor (Academic) into one curated tier.",
+    signalCriterion:
+      "Index score, filtered to Reference + Academic categories, descending",
+    limit: 15,
+    select: () =>
+      sources
+        .filter(
+          (s) => s.category === "Reference" || s.category === "Academic",
+        )
+        .sort(byScore("index"))
+        .slice(0, 15),
+  },
 ];
 
 /** Convenience: lookup by slug for /best/[slug]/ routing */
