@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import {
+  methodologyArticleSchema,
+  methodologyVersionStamp,
+} from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: "Citation Velocity — how often a source is cited per week",
@@ -17,8 +21,19 @@ export default function CitationVelocityPage() {
     .sort((a, b) => a.scores.velocity.value - b.scores.velocity.value)
     .slice(0, 3);
 
+  const articleSchema = methodologyArticleSchema({
+    headline: "Citation Velocity — how often a source is cited per week",
+    description:
+      "Citation Velocity tracks how often tier-1 publications and AI engines cite a source per week. Methodology + worked examples.",
+    url: "https://sourcescore.org/methodology/citation-velocity/",
+  });
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>
         <span aria-hidden="true">/</span>
@@ -31,6 +46,7 @@ export default function CitationVelocityPage() {
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         Citation Velocity
       </h1>
+      <p className="text-caption text-dim mb-4 font-mono">{methodologyVersionStamp}</p>
       <p className="text-body-lg text-muted leading-relaxed mb-10">
         Citation Velocity tracks how often a source is cited by other tier-1 publications and AI
         engines per week. Velocity is the most volatile of the three sub-scores and refreshes most
