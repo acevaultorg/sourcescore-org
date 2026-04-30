@@ -138,6 +138,14 @@ function altApiFor(u) {
   // /grade/  →  /api/grades.json (catalog)
   if (u === `${SITE}/grade/`) return `${SITE}/api/grades.json`;
 
+  // /grade/<letter>/<dim>/  →  /api/grade/<letter>/<dim>.json (Day 27)
+  // Must come BEFORE the /grade/<letter>/ catch-all below.
+  const gradeDimMatch = u.match(
+    /^https?:\/\/[^/]+\/grade\/([^/]+)\/(discipline|modern-reference|velocity)\/$/,
+  );
+  if (gradeDimMatch)
+    return `${SITE}/api/grade/${gradeDimMatch[1]}/${gradeDimMatch[2]}.json`;
+
   // /grade/<letter>/  →  /api/grade/<letter>.json (composite-Index grade only;
   // Day 21 added /<dim>/grade/<letter>/ which must NOT match this regex —
   // anchor to start of URL to keep the match composite-only).

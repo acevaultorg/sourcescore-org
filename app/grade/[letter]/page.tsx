@@ -260,6 +260,41 @@ export default async function GradePage({ params }: PageProps) {
         </ul>
       </section>
 
+      {/* Day 27 — re-rank this grade tier by sub-score (only when ≥3 sources) */}
+      {list.length >= 3 && (
+        <section className="mb-12 p-5 rounded-card-lg border border-brand/30 bg-surface-brand">
+          <div className="text-eyebrow text-brand mb-3">
+            Same {grade} tier, different signal
+          </div>
+          <p className="text-body-sm text-muted mb-4 leading-relaxed">
+            The SourceScore composite Index averages all three sub-scores.
+            Re-rank these {list.length} {grade}-tier sources by ONE sub-score
+            to surface different leaders + rank deltas vs the composite
+            ranking.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={`/grade/${letter}/discipline/`}
+              className="px-3 py-1.5 rounded-btn border border-brand/40 bg-panel text-body-sm text-text hover:text-brand hover:border-brand"
+            >
+              By Discipline →
+            </a>
+            <a
+              href={`/grade/${letter}/modern-reference/`}
+              className="px-3 py-1.5 rounded-btn border border-brand/40 bg-panel text-body-sm text-text hover:text-brand hover:border-brand"
+            >
+              By Modern Reference →
+            </a>
+            <a
+              href={`/grade/${letter}/velocity/`}
+              className="px-3 py-1.5 rounded-btn border border-brand/40 bg-panel text-body-sm text-text hover:text-brand hover:border-brand"
+            >
+              By Velocity →
+            </a>
+          </div>
+        </section>
+      )}
+
       {/* Cross-link other grade pages */}
       <section className="mb-12 border-t border-border pt-8">
         <h2 className="text-heading-2 font-bold mb-4">Other grades on the SourceScore Index</h2>

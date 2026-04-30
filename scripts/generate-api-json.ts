@@ -1033,6 +1033,103 @@ for (const b of bestLists) {
 }
 
 // ────────────────────────────────────────────────────────
+// Day 27 — Composite-grade × per-dim JSON twins.
+// 4 viable grades (≥3 sources: A+, A, B, C) × 3 dims = 12 twins.
+// URL: /grade/<letter>/<dim>/  →  twin: /api/grade/<letter>/<dim>.json
+// Distinct from Day 21 (/<dim>/grade/<letter>/) which redefines grade
+// based on dim score; Day 27 keeps composite-grade definition.
+// ────────────────────────────────────────────────────────
+const GRADE_DIM_MIN = 3;
+let gradeDimensionTwinsWritten = 0;
+for (const grade of allGrades) {
+  const tier = sources.filter((s) => s.scores.index.grade === grade);
+  if (tier.length < GRADE_DIM_MIN) continue;
+  for (const dim of ALL_DIMENSIONS) {
+    const dimMeta = DIMENSION_META[dim];
+    const items = [...tier].sort(
+      (a, b) => b.scores[dim].value - a.scores[dim].value,
+    );
+    const baseList = [...tier].sort(
+      (a, b) => b.scores.index.value - a.scores.index.value,
+    );
+    const baseRankBySlug = new Map(baseList.map((s, i) => [s.slug, i + 1]));
+
+    const dimMean = Math.round(
+      items.reduce((a, s) => a + s.scores[dim].value, 0) / items.length,
+    );
+    const compositeMean = Math.round(
+      items.reduce((a, s) => a + s.scores.index.value, 0) / items.length,
+    );
+    const leader = items[0];
+
+    const body = {
+      apiVersion: "v1",
+      methodology: "v0.1",
+      canonical: `https://sourcescore.org/grade/${gradeSlug(grade)}/${dimMeta.routeSegment}/`,
+      facet: {
+        type: "grade-by-dimension",
+        compositeGrade: grade,
+        dimension: dim,
+      },
+      gradeRange: gradeRange(grade),
+      dimension: {
+        key: dim,
+        label: dimMeta.label,
+        short: dimMeta.short,
+        routeSegment: dimMeta.routeSegment,
+      },
+      count: items.length,
+      means: {
+        dimension: dimMean,
+        composite: compositeMean,
+        deltaVsComposite: dimMean - compositeMean,
+      },
+      leader: {
+        slug: leader.slug,
+        name: leader.name,
+        score: leader.scores[dim].value,
+        grade: leader.scores[dim].grade,
+      },
+      sources: items.map((s, i) => {
+        const baseRank = baseRankBySlug.get(s.slug) ?? i + 1;
+        return {
+          dimRank: i + 1,
+          compositeRank: baseRank,
+          rankDelta: baseRank - (i + 1),
+          slug: s.slug,
+          name: s.name,
+          domain: s.domain,
+          category: s.category,
+          summary: s.summary,
+          canonical: `https://sourcescore.org/source/${s.slug}/`,
+          score: s.scores[dim].value,
+          grade: s.scores[dim].grade,
+          compositeScore: s.scores.index.value,
+          compositeGrade: s.scores.index.grade,
+        };
+      }),
+      siblingViews: {
+        composite: `https://sourcescore.org/grade/${gradeSlug(grade)}/`,
+        otherDimensions: ALL_DIMENSIONS.filter((d) => d !== dim).map((d) => ({
+          dimension: d,
+          url: `https://sourcescore.org/grade/${gradeSlug(grade)}/${DIMENSION_META[d].routeSegment}/`,
+        })),
+      },
+      verdict: `${leader.name} leads composite-${grade} sources on ${dimMeta.label} at ${leader.scores[dim].grade} (${leader.scores[dim].value}/100). Mean ${dimMeta.short}: ${dimMean}; mean composite: ${compositeMean}.`,
+      license: "CC-BY-4.0",
+    };
+
+    const gradeDimDir = join(GRADE_DIR, gradeSlug(grade));
+    mkdirSync(gradeDimDir, { recursive: true });
+    writeFileSync(
+      join(gradeDimDir, `${dimMeta.routeSegment}.json`),
+      JSON.stringify(body, null, 2),
+    );
+    gradeDimensionTwinsWritten++;
+  }
+}
+
+// ────────────────────────────────────────────────────────
 // Day 25 — Per-best-list × per-dim JSON twins.
 // Cartesian product of 12 best-lists × 3 dimensions = 36 twins.
 // URL: /best/<slug>/<dim>/  →  twin: /api/best/<slug>/<dim>.json
@@ -1234,5 +1331,5 @@ for (const slug of sourcesWithComparators) {
 }
 
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/best/<slug>/<dim>.json (${bestDimensionTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/grade/<letter>/<dim>.json (${gradeDimensionTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/best/<slug>/<dim>.json (${bestDimensionTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten})`
 );
