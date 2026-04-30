@@ -235,3 +235,66 @@ export function getBestList(slug: string): BestList | undefined {
 
 /** All slugs — feeds generateStaticParams() */
 export const bestListSlugs = bestLists.map((b) => b.slug);
+
+/**
+ * Day 25 — Best-list × dimension facet.
+ * Same source pool as the parent best-list, RE-SORTED by the specified
+ * sub-score (discipline / modernReference / velocity) instead of the
+ * composite index. Surfaces a different leader per dim because real
+ * search-intent is "best academic journals BY CITATION VELOCITY" or
+ * "best news sources BY DISCIPLINE" — different question, different
+ * answer.
+ */
+export type DimensionKey = "discipline" | "modernReference" | "velocity";
+
+export const DIMENSION_META: Record<
+  DimensionKey,
+  { label: string; short: string; routeSegment: string }
+> = {
+  discipline: {
+    label: "Citation Discipline",
+    short: "Discipline",
+    routeSegment: "discipline",
+  },
+  modernReference: {
+    label: "Modern Citation Reference",
+    short: "Modern Reference",
+    routeSegment: "modern-reference",
+  },
+  velocity: {
+    label: "Citation Velocity",
+    short: "Velocity",
+    routeSegment: "velocity",
+  },
+};
+
+export const ALL_DIMENSIONS: DimensionKey[] = [
+  "discipline",
+  "modernReference",
+  "velocity",
+];
+
+/** Map URL path segment back to dimension key. */
+export function dimFromSegment(segment: string): DimensionKey | undefined {
+  for (const [key, meta] of Object.entries(DIMENSION_META)) {
+    if (meta.routeSegment === segment) return key as DimensionKey;
+  }
+  return undefined;
+}
+
+/**
+ * Returns the SAME source pool as the parent best-list, re-sorted by
+ * the specified sub-score descending. Truncated to the parent list's
+ * limit so the leaderboard is comparable in size.
+ */
+export function bestListSourcesByDim(
+  bestSlug: string,
+  dim: DimensionKey,
+): Source[] | undefined {
+  const list = getBestList(bestSlug);
+  if (!list) return undefined;
+  const baseList = list.select();
+  return [...baseList]
+    .sort((a, b) => b.scores[dim].value - a.scores[dim].value)
+    .slice(0, list.limit);
+}

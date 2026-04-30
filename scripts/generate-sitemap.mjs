@@ -150,6 +150,14 @@ function altApiFor(u) {
   // /best/  →  /api/best.json (catalog)
   if (u === `${SITE}/best/`) return `${SITE}/api/best.json`;
 
+  // /best/<slug>/<dim>/  →  /api/best/<slug>/<dim>.json (Day 25)
+  // Must come BEFORE the /best/<slug>/ catch-all below.
+  const bestDimMatch = u.match(
+    /\/best\/([^/]+)\/(discipline|modern-reference|velocity)\/$/,
+  );
+  if (bestDimMatch)
+    return `${SITE}/api/best/${bestDimMatch[1]}/${bestDimMatch[2]}.json`;
+
   // /best/<slug>/  →  /api/best/<slug>.json
   const bestMatch = u.match(/\/best\/([^/]+)\/$/);
   if (bestMatch) return `${SITE}/api/best/${bestMatch[1]}.json`;

@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ScoreBadge } from "@/components/ScoreBadge";
-import { bestLists, bestListSlugs, getBestList } from "@/data/best-lists";
+import {
+  bestLists,
+  bestListSlugs,
+  getBestList,
+  ALL_DIMENSIONS,
+  DIMENSION_META,
+} from "@/data/best-lists";
 import { categorySlug } from "@/data/sources";
 import { gradeColorClass } from "@/lib/types";
 
@@ -165,6 +171,29 @@ export default async function BestListPage({ params }: PageProps) {
           </li>
         ))}
       </ol>
+
+      {/* Day 25 — dim-faceted variants */}
+      <section className="mb-12 p-5 rounded-card-lg border border-brand/30 bg-surface-brand">
+        <div className="text-eyebrow text-brand mb-3">
+          Same list, different signal
+        </div>
+        <p className="text-body-sm text-muted mb-4 leading-relaxed">
+          The composite SourceScore Index averages all three sub-scores. View
+          this list re-sorted by ONE sub-score for a precision lens —
+          different leader, different ranking, different deltas.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {ALL_DIMENSIONS.map((d) => (
+            <a
+              key={d}
+              href={`/best/${slug}/${DIMENSION_META[d].routeSegment}/`}
+              className="px-3 py-1.5 rounded-btn border border-brand/40 bg-panel text-body-sm text-text hover:text-brand hover:border-brand"
+            >
+              By {DIMENSION_META[d].short} →
+            </a>
+          ))}
+        </div>
+      </section>
 
       {/* Editorial rationale */}
       <section className="prose prose-invert max-w-none text-body text-muted leading-relaxed space-y-4 mb-12">
