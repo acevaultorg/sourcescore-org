@@ -1330,6 +1330,179 @@ for (const slug of sourcesWithComparators) {
   sourceComparatorHubTwinsWritten++;
 }
 
+// ────────────────────────────────────────────────────────
+// Day 28 — Per-category top-10 JSON twins (base + dim facets).
+// Eligibility: categories with ≥10 sources. As of Day 28: 5 of 12
+// categories qualify (Academic 19, Government 30, Magazine 12, News 27,
+// Tech News 11). 5 base + 5×3 dim = 20 twins total.
+// URL base:  /category/<cat>/top-10/        →  /api/category/<cat>/top-10.json
+// URL dim:   /category/<cat>/top-10/<dim>/  →  /api/category/<cat>/top-10/<dim>.json
+// ────────────────────────────────────────────────────────
+const TOP_N_API = 10;
+const MIN_CAT_SIZE_API = 10;
+let categoryTopNTwinsWritten = 0;
+let categoryTopNDimTwinsWritten = 0;
+for (const cat of allCategories) {
+  const fullList = sourcesInCategory(cat);
+  if (fullList.length < MIN_CAT_SIZE_API) continue;
+  const cSlug = categorySlug(cat);
+  const pool = fullList.slice(0, TOP_N_API);
+
+  // ── Base composite-ranked twin
+  const indexMean = Math.round(
+    pool.reduce((a, s) => a + s.scores.index.value, 0) / pool.length,
+  );
+  const categoryMean = Math.round(
+    fullList.reduce((a, s) => a + s.scores.index.value, 0) / fullList.length,
+  );
+  const leader = pool[0];
+  const tenth = pool[pool.length - 1];
+
+  const baseBody = {
+    apiVersion: "v1",
+    methodology: "v0.1",
+    canonical: `https://sourcescore.org/category/${cSlug}/top-10/`,
+    facet: { type: "category-top-n", category: cSlug, n: TOP_N_API },
+    category: cat,
+    categorySlug: cSlug,
+    n: TOP_N_API,
+    fullCategoryCount: fullList.length,
+    means: {
+      topN: indexMean,
+      category: categoryMean,
+      liftVsCategory: indexMean - categoryMean,
+    },
+    leader: {
+      slug: leader.slug,
+      name: leader.name,
+      index: leader.scores.index.value,
+      grade: leader.scores.index.grade,
+    },
+    tenthPlace: {
+      slug: tenth.slug,
+      name: tenth.name,
+      index: tenth.scores.index.value,
+      grade: tenth.scores.index.grade,
+    },
+    sources: pool.map((s, i) => ({
+      rank: i + 1,
+      slug: s.slug,
+      name: s.name,
+      domain: s.domain,
+      summary: s.summary,
+      canonical: `https://sourcescore.org/source/${s.slug}/`,
+      api: `https://sourcescore.org/api/source/${s.slug}.json`,
+      scores: {
+        index: s.scores.index.value,
+        indexGrade: s.scores.index.grade,
+        discipline: s.scores.discipline.value,
+        modernReference: s.scores.modernReference.value,
+        velocity: s.scores.velocity.value,
+      },
+    })),
+    siblingViews: {
+      fullCategory: `https://sourcescore.org/category/${cSlug}/`,
+      byDimension: ALL_DIMENSIONS.map((d) => ({
+        dimension: d,
+        url: `https://sourcescore.org/category/${cSlug}/top-10/${DIMENSION_META[d].routeSegment}/`,
+        api: `https://sourcescore.org/api/category/${cSlug}/top-10/${DIMENSION_META[d].routeSegment}.json`,
+      })),
+    },
+    verdict: `${leader.name} leads top-10 ${cat.toLowerCase()} sources at ${leader.scores.index.grade} (${leader.scores.index.value}/100). Top-10 mean Index ${indexMean}, +${indexMean - categoryMean} above the full ${cat.toLowerCase()} cohort.`,
+    license: "CC-BY-4.0",
+  };
+
+  const topNDir = join(CATEGORY_DIR, cSlug, "top-10");
+  mkdirSync(topNDir, { recursive: true });
+  writeFileSync(
+    join(CATEGORY_DIR, cSlug, "top-10.json"),
+    JSON.stringify(baseBody, null, 2),
+  );
+  categoryTopNTwinsWritten++;
+
+  // ── Dim-faceted twins (3 per eligible category)
+  for (const dim of ALL_DIMENSIONS) {
+    const dimMeta = DIMENSION_META[dim];
+    const items = [...pool].sort(
+      (a, b) => b.scores[dim].value - a.scores[dim].value,
+    );
+    const baseRankBySlug = new Map(pool.map((s, i) => [s.slug, i + 1]));
+
+    const dimMean = Math.round(
+      items.reduce((a, s) => a + s.scores[dim].value, 0) / items.length,
+    );
+    const compositeMean = Math.round(
+      items.reduce((a, s) => a + s.scores.index.value, 0) / items.length,
+    );
+    const dimLeader = items[0];
+
+    const dimBody = {
+      apiVersion: "v1",
+      methodology: "v0.1",
+      canonical: `https://sourcescore.org/category/${cSlug}/top-10/${dimMeta.routeSegment}/`,
+      facet: {
+        type: "category-top-n-by-dimension",
+        category: cSlug,
+        dimension: dim,
+        n: TOP_N_API,
+      },
+      category: cat,
+      categorySlug: cSlug,
+      dimension: {
+        key: dim,
+        label: dimMeta.label,
+        short: dimMeta.short,
+        routeSegment: dimMeta.routeSegment,
+      },
+      n: TOP_N_API,
+      means: {
+        dimension: dimMean,
+        composite: compositeMean,
+        deltaVsComposite: dimMean - compositeMean,
+      },
+      leader: {
+        slug: dimLeader.slug,
+        name: dimLeader.name,
+        score: dimLeader.scores[dim].value,
+        grade: dimLeader.scores[dim].grade,
+      },
+      sources: items.map((s, i) => {
+        const baseRank = baseRankBySlug.get(s.slug) ?? i + 1;
+        return {
+          dimRank: i + 1,
+          compositeRank: baseRank,
+          rankDelta: baseRank - (i + 1),
+          slug: s.slug,
+          name: s.name,
+          domain: s.domain,
+          summary: s.summary,
+          canonical: `https://sourcescore.org/source/${s.slug}/`,
+          score: s.scores[dim].value,
+          grade: s.scores[dim].grade,
+          compositeScore: s.scores.index.value,
+          compositeGrade: s.scores.index.grade,
+        };
+      }),
+      siblingViews: {
+        composite: `https://sourcescore.org/category/${cSlug}/top-10/`,
+        otherDimensions: ALL_DIMENSIONS.filter((d) => d !== dim).map((d) => ({
+          dimension: d,
+          url: `https://sourcescore.org/category/${cSlug}/top-10/${DIMENSION_META[d].routeSegment}/`,
+        })),
+        fullCategory: `https://sourcescore.org/category/${cSlug}/`,
+      },
+      verdict: `${dimLeader.name} leads top-10 ${cat.toLowerCase()} on ${dimMeta.label} at ${dimLeader.scores[dim].grade} (${dimLeader.scores[dim].value}/100). Mean ${dimMeta.short}: ${dimMean}; mean composite: ${compositeMean}.`,
+      license: "CC-BY-4.0",
+    };
+
+    writeFileSync(
+      join(topNDir, `${dimMeta.routeSegment}.json`),
+      JSON.stringify(dimBody, null, 2),
+    );
+    categoryTopNDimTwinsWritten++;
+  }
+}
+
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/grade/<letter>/<dim>.json (${gradeDimensionTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/best/<slug>/<dim>.json (${bestDimensionTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/grade/<letter>/<dim>.json (${gradeDimensionTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/category/<cat>/top-10.json (${categoryTopNTwinsWritten}) + /api/category/<cat>/top-10/<dim>.json (${categoryTopNDimTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/best/<slug>/<dim>.json (${bestDimensionTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten})`
 );

@@ -161,6 +161,47 @@ export default async function CategoryPage({ params }: PageProps) {
         ))}
       </ol>
 
+      {/* Day 28 — Top-10 leaderboard (only when category has ≥10 sources) */}
+      {list.length >= 10 && (
+        <section className="mb-10 p-6 rounded-card-lg border border-brand/40 bg-surface-brand">
+          <div className="text-eyebrow text-brand mb-2">Top 10 leaderboard</div>
+          <h2 className="text-heading-2 font-bold text-text mb-2">
+            Just want the top 10 {category.toLowerCase()} sources?
+          </h2>
+          <p className="text-body-sm text-muted leading-relaxed mb-4">
+            Drilled-down leaderboard of the 10 highest-scoring{" "}
+            {category.toLowerCase()} sources, with sibling views by Citation
+            Discipline, Modern Reference, and Citation Velocity.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={`/category/${slug}/top-10/`}
+              className="px-4 py-2 rounded-btn border border-brand/40 bg-panel text-body-sm text-brand font-semibold hover:bg-panel-hi"
+            >
+              Top 10 by Index →
+            </a>
+            <a
+              href={`/category/${slug}/top-10/discipline/`}
+              className="px-3 py-2 rounded-btn border border-border bg-panel text-body-sm text-muted hover:text-brand hover:border-brand/40"
+            >
+              By Discipline
+            </a>
+            <a
+              href={`/category/${slug}/top-10/modern-reference/`}
+              className="px-3 py-2 rounded-btn border border-border bg-panel text-body-sm text-muted hover:text-brand hover:border-brand/40"
+            >
+              By Modern Reference
+            </a>
+            <a
+              href={`/category/${slug}/top-10/velocity/`}
+              className="px-3 py-2 rounded-btn border border-border bg-panel text-body-sm text-muted hover:text-brand hover:border-brand/40"
+            >
+              By Velocity
+            </a>
+          </div>
+        </section>
+      )}
+
       <section className="border-t border-border pt-8">
         <h2 className="text-heading-2 font-bold mb-3">Other categories</h2>
         <div className="flex flex-wrap gap-2">
