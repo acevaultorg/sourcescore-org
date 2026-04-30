@@ -1,0 +1,10 @@
+# Cloudflare Pages — path-level redirects.
+# Format: <source> <destination> <status>
+
+# /standard — canonical methodology positioning per the SourceScore brand.
+# The standard IS the methodology; this URL gives the brand a stable
+# "/standard" anchor without forking content. Flip the canonical later
+# (rename /methodology/ → /standard/ + reverse this redirect) if real
+# traffic data shows the /standard URL drawing more inbound links.
+/standard /methodology/ 301
+/standard/ /methodology/ 301
