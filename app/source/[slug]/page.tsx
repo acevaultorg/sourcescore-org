@@ -230,6 +230,27 @@ export default async function SourceDetailPage({ params }: PageProps) {
         </section>
       )}
 
+      {/* Day 29 — Peers hub cross-link (every source has one) */}
+      <section className="mt-6 p-5 rounded-card-lg border border-border bg-panel hover:bg-panel-hi transition-colors">
+        <div className="flex items-baseline justify-between mb-3 gap-3 flex-wrap">
+          <h2 className="text-heading-3 font-bold">
+            5 sources at {source.name}'s tier
+          </h2>
+          <a
+            href={`/source/${source.slug}/peers/`}
+            className="text-caption text-brand hover:underline whitespace-nowrap"
+          >
+            See peer group →
+          </a>
+        </div>
+        <p className="text-body-sm text-muted">
+          Auto-computed nearest-neighbor sources by composite SourceScore
+          distance — discover at-tier peers across all categories, with
+          inline dim deltas surfacing who beats {source.name} on Discipline,
+          Modern Reference, and Velocity.
+        </p>
+      </section>
+
       {/* Embed snippet — Layer 5 archetype embeddable_widget × +80 */}
       <section className="mt-10 p-5 rounded-card-lg border border-border bg-panel">
         <div className="flex items-baseline justify-between mb-3 gap-3">

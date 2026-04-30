@@ -105,6 +105,12 @@ function altApiFor(u) {
   if (sourceComparatorHubMatch)
     return `${SITE}/api/source/${sourceComparatorHubMatch[1]}/comparisons.json`;
 
+  // /source/<slug>/peers/  →  /api/source/<slug>/peers.json (Day 29)
+  // Must come BEFORE the catch-all /source/<slug>/ match below.
+  const sourcePeersMatch = u.match(/\/source\/([^/]+)\/peers\/$/);
+  if (sourcePeersMatch)
+    return `${SITE}/api/source/${sourcePeersMatch[1]}/peers.json`;
+
   // /source/<slug>/  →  /api/source/<slug>.json
   const sourceMatch = u.match(/\/source\/([^/]+)\/$/);
   if (sourceMatch) return `${SITE}/api/source/${sourceMatch[1]}.json`;

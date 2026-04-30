@@ -3258,3 +3258,33 @@ export function sourcesInCategory(category: string) {
     .filter((s) => s.category === category)
     .sort((a, b) => b.scores.index.value - a.scores.index.value);
 }
+
+/**
+ * Day 29 — Returns the N closest sources to the given source by composite
+ * Index distance. Auto-computed nearest-neighbor peer group (vs Day 24
+ * comparisons which are curated head-to-head pairs). Excludes self.
+ *
+ * Tie-break: when distances are equal, prefer the source with the higher
+ * Index (more aspirational), then alphabetical by name (deterministic).
+ */
+export function peersForSource(slug: string, n: number = 5) {
+  const me = sources.find((s) => s.slug === slug);
+  if (!me) return [];
+  const myValue = me.scores.index.value;
+  return sources
+    .filter((s) => s.slug !== slug)
+    .map((s) => ({
+      source: s,
+      distance: Math.abs(s.scores.index.value - myValue),
+    }))
+    .sort((a, b) => {
+      if (a.distance !== b.distance) return a.distance - b.distance;
+      // Same distance: prefer higher Index, then alpha by name
+      if (a.source.scores.index.value !== b.source.scores.index.value) {
+        return b.source.scores.index.value - a.source.scores.index.value;
+      }
+      return a.source.name.localeCompare(b.source.name);
+    })
+    .slice(0, n)
+    .map((p) => p.source);
+}

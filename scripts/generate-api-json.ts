@@ -13,6 +13,7 @@ import {
   allCategories,
   categorySlug,
   sourcesInCategory,
+  peersForSource,
 } from "../data/sources";
 import {
   comparisons,
@@ -1503,6 +1504,158 @@ for (const cat of allCategories) {
   }
 }
 
+// ────────────────────────────────────────────────────────
+// Day 29 — Per-source peers JSON twins.
+// One twin per source (130 total). Auto-computed nearest-neighbor by
+// composite-Index distance, with full dim deltas surfaced inline.
+// URL: /source/<slug>/peers/  → twin: /api/source/<slug>/peers.json
+// Distinct from Day 24 comparator-hub: peers is auto-NN, comparisons
+// is curated head-to-head pairs.
+// ────────────────────────────────────────────────────────
+const PEERS_N_API = 5;
+let sourcePeersTwinsWritten = 0;
+for (const me of sources) {
+  const peers = peersForSource(me.slug, PEERS_N_API);
+  if (peers.length === 0) continue;
+
+  const peerMeanIndex = Math.round(
+    peers.reduce((a, p) => a + p.scores.index.value, 0) / peers.length,
+  );
+  const peerMeanByDim = {
+    discipline: Math.round(
+      peers.reduce((a, p) => a + p.scores.discipline.value, 0) / peers.length,
+    ),
+    modernReference: Math.round(
+      peers.reduce((a, p) => a + p.scores.modernReference.value, 0) /
+        peers.length,
+    ),
+    velocity: Math.round(
+      peers.reduce((a, p) => a + p.scores.velocity.value, 0) / peers.length,
+    ),
+  };
+
+  // Per-dim leader within (me + peers)
+  const combined = [me, ...peers];
+  const leaderByDim = {
+    discipline: [...combined].sort(
+      (a, b) => b.scores.discipline.value - a.scores.discipline.value,
+    )[0],
+    modernReference: [...combined].sort(
+      (a, b) => b.scores.modernReference.value - a.scores.modernReference.value,
+    )[0],
+    velocity: [...combined].sort(
+      (a, b) => b.scores.velocity.value - a.scores.velocity.value,
+    )[0],
+  };
+
+  const closest = peers[0];
+  const closestDelta = closest.scores.index.value - me.scores.index.value;
+
+  const body = {
+    apiVersion: "v1",
+    methodology: "v0.1",
+    canonical: `https://sourcescore.org/source/${me.slug}/peers/`,
+    facet: { type: "source-peers", source: me.slug, n: PEERS_N_API },
+    source: {
+      slug: me.slug,
+      name: me.name,
+      domain: me.domain,
+      category: me.category,
+      index: me.scores.index.value,
+      grade: me.scores.index.grade,
+    },
+    n: PEERS_N_API,
+    means: {
+      indexOfPeers: peerMeanIndex,
+      indexOfMe: me.scores.index.value,
+      deltaVsMe: peerMeanIndex - me.scores.index.value,
+      byDimension: {
+        discipline: {
+          peerMean: peerMeanByDim.discipline,
+          mine: me.scores.discipline.value,
+          delta: peerMeanByDim.discipline - me.scores.discipline.value,
+        },
+        modernReference: {
+          peerMean: peerMeanByDim.modernReference,
+          mine: me.scores.modernReference.value,
+          delta:
+            peerMeanByDim.modernReference - me.scores.modernReference.value,
+        },
+        velocity: {
+          peerMean: peerMeanByDim.velocity,
+          mine: me.scores.velocity.value,
+          delta: peerMeanByDim.velocity - me.scores.velocity.value,
+        },
+      },
+    },
+    closest: {
+      slug: closest.slug,
+      name: closest.name,
+      index: closest.scores.index.value,
+      grade: closest.scores.index.grade,
+      indexDelta: closestDelta,
+    },
+    dimensionLeaders: {
+      discipline: {
+        slug: leaderByDim.discipline.slug,
+        name: leaderByDim.discipline.name,
+        score: leaderByDim.discipline.scores.discipline.value,
+        grade: leaderByDim.discipline.scores.discipline.grade,
+        isMe: leaderByDim.discipline.slug === me.slug,
+      },
+      modernReference: {
+        slug: leaderByDim.modernReference.slug,
+        name: leaderByDim.modernReference.name,
+        score: leaderByDim.modernReference.scores.modernReference.value,
+        grade: leaderByDim.modernReference.scores.modernReference.grade,
+        isMe: leaderByDim.modernReference.slug === me.slug,
+      },
+      velocity: {
+        slug: leaderByDim.velocity.slug,
+        name: leaderByDim.velocity.name,
+        score: leaderByDim.velocity.scores.velocity.value,
+        grade: leaderByDim.velocity.scores.velocity.grade,
+        isMe: leaderByDim.velocity.slug === me.slug,
+      },
+    },
+    peers: peers.map((p, i) => ({
+      rank: i + 1,
+      slug: p.slug,
+      name: p.name,
+      domain: p.domain,
+      category: p.category,
+      summary: p.summary,
+      canonical: `https://sourcescore.org/source/${p.slug}/`,
+      api: `https://sourcescore.org/api/source/${p.slug}.json`,
+      index: p.scores.index.value,
+      grade: p.scores.index.grade,
+      indexDelta: p.scores.index.value - me.scores.index.value,
+      scores: {
+        discipline: p.scores.discipline.value,
+        modernReference: p.scores.modernReference.value,
+        velocity: p.scores.velocity.value,
+      },
+      deltas: {
+        discipline: p.scores.discipline.value - me.scores.discipline.value,
+        modernReference:
+          p.scores.modernReference.value - me.scores.modernReference.value,
+        velocity: p.scores.velocity.value - me.scores.velocity.value,
+      },
+    })),
+    siblingViews: {
+      profile: `https://sourcescore.org/source/${me.slug}/`,
+      comparisons: `https://sourcescore.org/source/${me.slug}/comparisons/`,
+    },
+    verdict: `${me.name} (${me.scores.index.grade} · ${me.scores.index.value}/100) sits closest to ${closest.name} (${closest.scores.index.grade} · ${closest.scores.index.value}, ${closestDelta >= 0 ? "+" : ""}${closestDelta}). Peer-group mean Index ${peerMeanIndex}.`,
+    license: "CC-BY-4.0",
+  };
+
+  const dir = join(SOURCES_DIR, me.slug);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "peers.json"), JSON.stringify(body, null, 2));
+  sourcePeersTwinsWritten++;
+}
+
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/grade/<letter>/<dim>.json (${gradeDimensionTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/category/<cat>/top-10.json (${categoryTopNTwinsWritten}) + /api/category/<cat>/top-10/<dim>.json (${categoryTopNDimTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/best/<slug>/<dim>.json (${bestDimensionTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/grade/<letter>/<dim>.json (${gradeDimensionTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/category/<cat>/top-10.json (${categoryTopNTwinsWritten}) + /api/category/<cat>/top-10/<dim>.json (${categoryTopNDimTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/best/<slug>/<dim>.json (${bestDimensionTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten}) + /api/source/<slug>/peers.json (${sourcePeersTwinsWritten})`
 );
