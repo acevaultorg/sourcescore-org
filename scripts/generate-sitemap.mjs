@@ -179,16 +179,21 @@ function altApiFor(u) {
   return null;
 }
 
+// sitemap-ai.xml — standard sitemap-0.9 namespace ONLY.
+// Per Google sitemap spec: `xhtml:link rel="alternate"` is reserved for
+// hreflang language alternates. Using it for JSON twin association
+// (`type="application/json"`) is non-standard and produces an
+// "Incorrect namespace" error in GSC sitemap audit.
+// JSON twin URLs are listed as their OWN <url> entries below — that's
+// the spec-compliant way to surface them to crawlers, and it's what
+// LLM crawlers (GPTBot, ClaudeBot, etc.) actually parse anyway.
 const aiXml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
-  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap-0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
-  ...aiHumanUrls.map((u) => {
-    const altApi = altApiFor(u);
-    const altLine = altApi
-      ? `\n    <xhtml:link rel="alternate" type="application/json" href="${altApi}"/>`
-      : "";
-    return `  <url><loc>${u}</loc><lastmod>${TODAY}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority>${altLine}</url>`;
-  }),
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap-0.9">',
+  ...aiHumanUrls.map(
+    (u) =>
+      `  <url><loc>${u}</loc><lastmod>${TODAY}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`
+  ),
   ...apiUrls.map(
     (u) =>
       `  <url><loc>${u}</loc><lastmod>${TODAY}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`
