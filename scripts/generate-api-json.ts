@@ -14,7 +14,12 @@ import {
   categorySlug,
   sourcesInCategory,
 } from "../data/sources";
-import { comparisons, comparisonSlug } from "../data/comparisons";
+import {
+  comparisons,
+  comparisonSlug,
+  comparisonsForSource,
+  sourcesWithComparators,
+} from "../data/comparisons";
 import { bestLists } from "../data/best-lists";
 import {
   allGrades,
@@ -1022,6 +1027,112 @@ for (const b of bestLists) {
   bestTwinsWritten++;
 }
 
+// ────────────────────────────────────────────────────────
+// Day 24 — Per-source comparator hub JSON twins.
+// One twin per source that appears in ≥1 comparator pair (124 of 130 as
+// of Day 23). Each lists every "X vs Y" battle the source is in.
+// URL: /source/<slug>/comparisons/  → twin: /api/source/<slug>/comparisons.json
+// ────────────────────────────────────────────────────────
+let sourceComparatorHubTwinsWritten = 0;
+for (const slug of sourcesWithComparators) {
+  const me = sources.find((s) => s.slug === slug);
+  if (!me) continue;
+  const pairs = comparisonsForSource(slug);
+  if (pairs.length === 0) continue;
+
+  // Sort by absolute index-score delta (biggest contrast first)
+  const sortedPairs = [...pairs]
+    .map((p) => {
+      const partner = sources.find((s) => s.slug === p.partner);
+      return partner ? { p, partner } : null;
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null)
+    .sort((a, b) => {
+      const aDelta = Math.abs(me.scores.index.value - a.partner.scores.index.value);
+      const bDelta = Math.abs(me.scores.index.value - b.partner.scores.index.value);
+      if (aDelta !== bDelta) return bDelta - aDelta;
+      return a.partner.name.localeCompare(b.partner.name);
+    });
+
+  const partnerMean =
+    sortedPairs.length > 0
+      ? Math.round(
+          sortedPairs.reduce((acc, x) => acc + x.partner.scores.index.value, 0) /
+            sortedPairs.length,
+        )
+      : 0;
+  const globalMean = Math.round(
+    sources.reduce((acc, s) => acc + s.scores.index.value, 0) / sources.length,
+  );
+
+  const biggest = sortedPairs[0];
+  const biggestDelta = biggest
+    ? me.scores.index.value - biggest.partner.scores.index.value
+    : 0;
+
+  const body = {
+    apiVersion: "v1",
+    methodology: "v0.1",
+    canonical: `https://sourcescore.org/source/${slug}/comparisons/`,
+    facet: { type: "source-comparator-hub", source: slug },
+    source: {
+      slug: me.slug,
+      name: me.name,
+      domain: me.domain,
+      index: me.scores.index.value,
+      grade: me.scores.index.grade,
+    },
+    count: sortedPairs.length,
+    means: {
+      partner: partnerMean,
+      global: globalMean,
+      deltaVsGlobal: partnerMean - globalMean,
+    },
+    biggestContrast: biggest
+      ? {
+          partner: biggest.partner.slug,
+          partnerName: biggest.partner.name,
+          partnerIndex: biggest.partner.scores.index.value,
+          partnerGrade: biggest.partner.scores.index.grade,
+          delta: biggestDelta,
+          comparison: `https://sourcescore.org/compare/${
+            [me.slug, biggest.partner.slug].sort().join("-vs-")
+          }/`,
+        }
+      : null,
+    pairs: sortedPairs.map(({ p, partner }) => ({
+      slug: p.slug,
+      partner: partner.slug,
+      partnerName: partner.name,
+      partnerIndex: partner.scores.index.value,
+      partnerGrade: partner.scores.index.grade,
+      delta: me.scores.index.value - partner.scores.index.value,
+      summary: p.summary,
+      comparisonUrl: `https://sourcescore.org/compare/${p.slug}/`,
+      dimensionFacets: {
+        discipline: `https://sourcescore.org/compare/${p.slug}/discipline/`,
+        modernReference: `https://sourcescore.org/compare/${p.slug}/modern-reference/`,
+        velocity: `https://sourcescore.org/compare/${p.slug}/velocity/`,
+      },
+    })),
+    verdict:
+      sortedPairs.length === 1
+        ? `${me.name} appears in 1 SourceScore comparator pair.`
+        : biggest
+          ? `${me.name} ranges from a ${Math.abs(biggestDelta)}-point gap with ${biggest.partner.name} to direct head-to-heads with ${sortedPairs.length - 1} other sources.`
+          : `${me.name} appears in ${sortedPairs.length} SourceScore comparator pairs.`,
+    license: "CC-BY-4.0",
+  };
+
+  const sourceHubDir = join(SOURCES_DIR, slug);
+  mkdirSync(sourceHubDir, { recursive: true });
+  writeFileSync(
+    join(sourceHubDir, "comparisons.json"),
+    JSON.stringify(body, null, 2),
+  );
+  sourceComparatorHubTwinsWritten++;
+}
+
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten})`
 );

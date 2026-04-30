@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSource, allSlugs } from "@/data/sources";
+import { comparisonsForSource } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import type { DimensionScore } from "@/lib/types";
 
@@ -48,6 +49,10 @@ export default async function SourceDetailPage({ params }: PageProps) {
 
   const { scores } = source;
   const idx = scores.index;
+
+  // Day 24 — comparator-hub cross-link (only when source has ≥1 pair)
+  const compPairs = comparisonsForSource(slug);
+  const hasComparators = compPairs.length > 0;
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
@@ -197,6 +202,33 @@ export default async function SourceDetailPage({ params }: PageProps) {
           methodologyVersion={source.methodologyVersion}
         />
       </section>
+
+      {/* Day 24 — Comparator hub cross-link (when source has pairs) */}
+      {hasComparators && (
+        <section className="mt-10 p-5 rounded-card-lg border border-brand/30 bg-surface-brand">
+          <div className="flex items-baseline justify-between mb-3 gap-3 flex-wrap">
+            <h2 className="text-heading-3 font-bold">
+              {compPairs.length === 1
+                ? `1 head-to-head comparison`
+                : `${compPairs.length} head-to-head comparisons`}
+            </h2>
+            <a
+              href={`/source/${source.slug}/comparisons/`}
+              className="text-caption text-brand hover:underline whitespace-nowrap"
+            >
+              See all {source.name} comparisons →
+            </a>
+          </div>
+          <p className="text-body-sm text-muted">
+            {source.name} appears in{" "}
+            {compPairs.length === 1
+              ? "one canonical SourceScore comparison"
+              : `${compPairs.length} canonical SourceScore comparisons`}{" "}
+            — each scored on Discipline, Modern Reference, and Velocity with a
+            quote-ready verdict and JSON twin.
+          </p>
+        </section>
+      )}
 
       {/* Embed snippet — Layer 5 archetype embeddable_widget × +80 */}
       <section className="mt-10 p-5 rounded-card-lg border border-border bg-panel">

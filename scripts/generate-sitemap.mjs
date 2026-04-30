@@ -97,6 +97,14 @@ function altApiFor(u) {
   // /  →  /api/sources.json (catalog)
   if (u === `${SITE}/`) return `${SITE}/api/sources.json`;
 
+  // /source/<slug>/comparisons/  →  /api/source/<slug>/comparisons.json (Day 24)
+  // Must come BEFORE the catch-all /source/<slug>/ match below.
+  const sourceComparatorHubMatch = u.match(
+    /\/source\/([^/]+)\/comparisons\/$/,
+  );
+  if (sourceComparatorHubMatch)
+    return `${SITE}/api/source/${sourceComparatorHubMatch[1]}/comparisons.json`;
+
   // /source/<slug>/  →  /api/source/<slug>.json
   const sourceMatch = u.match(/\/source\/([^/]+)\/$/);
   if (sourceMatch) return `${SITE}/api/source/${sourceMatch[1]}.json`;

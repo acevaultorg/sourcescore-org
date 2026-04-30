@@ -847,3 +847,37 @@ export const allComparisonSlugs = comparisons.map((c) => comparisonSlug(c.a, c.b
 export function getComparison(slug: string): Comparison | undefined {
   return comparisons.find((c) => comparisonSlug(c.a, c.b) === slug);
 }
+
+/**
+ * All comparator pairs that include the given source slug, on EITHER side.
+ * Returns the pair PLUS a `partner` field — the OTHER source slug — so callers
+ * don't need to re-derive which side is which.
+ *
+ * Used by Day 24 source-comparator-hub pages (`/source/[slug]/comparisons/`).
+ */
+export interface ComparisonForSource extends Comparison {
+  /** The OTHER source slug in this pair (i.e. NOT the one being viewed). */
+  partner: string;
+  /** Canonical slug `<a>-vs-<b>` (alphabetized). */
+  slug: string;
+}
+
+export function comparisonsForSource(sourceSlug: string): ComparisonForSource[] {
+  return comparisons
+    .filter((c) => c.a === sourceSlug || c.b === sourceSlug)
+    .map((c) => ({
+      ...c,
+      partner: c.a === sourceSlug ? c.b : c.a,
+      slug: comparisonSlug(c.a, c.b),
+    }));
+}
+
+/** Slugs of every source that appears in ≥1 comparator pair (124 of 130 as of Day 23). */
+export const sourcesWithComparators: string[] = (() => {
+  const set = new Set<string>();
+  for (const c of comparisons) {
+    set.add(c.a);
+    set.add(c.b);
+  }
+  return [...set].sort();
+})();
