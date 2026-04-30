@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@/components/Analytics";
+import { WebVitals } from "@/components/WebVitals";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sourcescore.org"),
@@ -100,6 +101,7 @@ export default function RootLayout({
         <Analytics />
       </head>
       <body className="bg-bg text-text min-h-screen flex flex-col antialiased">
+        <WebVitals />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
