@@ -1,14 +1,20 @@
 // Privacy-first analytics scaffold — Plausible (primary) + CF Web Analytics
-// (passive). Both are env-gated so non-deploy builds + dev sessions don't
-// leak events. Ships Day 1 per the Day-1 Analytics Mandate (rules/aceusergrowth
-// v3 Part 14) so no future ship has to backfill.
+// (passive). Plausible defaults to the production domain so the script ships
+// even when build env vars are missing in Cloudflare Pages (the failure mode
+// observed 2026-04-30 — env unset, script omitted, Plausible verification
+// failed). CF Web Analytics stays env-gated because its token is account-
+// specific and has no safe fallback.
 //
-// To activate:
-//   - Set NEXT_PUBLIC_PLAUSIBLE_DOMAIN=sourcescore.org in deploy env
-//   - Set NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN=<token> for CF Web Analytics
-// If unset, the scripts no-op cleanly.
+// Plausible's script ignores localhost by default, so dev sessions don't
+// leak events even with the domain hardcoded.
+//
+// To override:
+//   - Set NEXT_PUBLIC_PLAUSIBLE_DOMAIN=<other> for a non-prod domain
+//   - Set NEXT_PUBLIC_PLAUSIBLE_DOMAIN=  (empty) to disable entirely
+//   - Set NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN=<token> to enable CF Web
 
-const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
+const PLAUSIBLE_DOMAIN =
+  process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? "sourcescore.org";
 const CF_TOKEN = process.env.NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN;
 
 export function Analytics() {
