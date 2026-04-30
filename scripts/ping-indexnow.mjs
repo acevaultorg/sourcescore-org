@@ -3,14 +3,50 @@
  * IndexNow — ping search engines on every deploy (per acquisition-engine I-33).
  * Uses a static key file at /<KEY>.txt for verification.
  *
- * Set INDEXNOW_KEY env var to your generated key (32-128 hex chars).
- * If unset, this script no-ops cleanly so non-deploy builds don't fail.
+ * Key resolution order:
+ *   1. INDEXNOW_KEY env var (override; useful for rotation or testing)
+ *   2. Auto-detect from out/<KEY>.txt (the verification file shipped in the
+ *      build — its filename IS the key, that's the IndexNow protocol)
+ *
+ * Auto-detect means deploys ping IndexNow even if the env var was never set
+ * on the build host (the failure mode caught 2026-04-30: 27 prior deploys
+ * silently skipped IndexNow because INDEXNOW_KEY was unset on Cloudflare
+ * Pages env). The verification key file already has to be in /public for
+ * IndexNow to validate ownership, so reusing it as the source of truth
+ * removes the env-var dependency entirely.
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 
-const KEY = process.env.INDEXNOW_KEY;
+let KEY = process.env.INDEXNOW_KEY;
 if (!KEY) {
-  console.log("ℹ INDEXNOW_KEY not set — skipping IndexNow ping (non-fatal).");
+  try {
+    const candidates = readdirSync("out").filter((f) =>
+      /^[0-9a-f]{32,128}\.txt$/.test(f)
+    );
+    if (candidates.length === 1) {
+      const filenameKey = candidates[0].replace(/\.txt$/, "");
+      const content = readFileSync(`out/${candidates[0]}`, "utf8").trim();
+      if (content === filenameKey) {
+        KEY = filenameKey;
+        console.log(`ℹ IndexNow key auto-detected from out/${candidates[0]}.`);
+      } else {
+        console.error(
+          `⚠ IndexNow key file content does not match filename — refusing to ping.`
+        );
+        process.exit(0);
+      }
+    } else if (candidates.length > 1) {
+      console.error(
+        `⚠ Multiple IndexNow-shaped key files in out/ (${candidates.length}). Set INDEXNOW_KEY explicitly to disambiguate.`
+      );
+      process.exit(0);
+    }
+  } catch {
+    /* out/ missing — fall through to skip below */
+  }
+}
+if (!KEY) {
+  console.log("ℹ INDEXNOW_KEY unset + no key file in out/ — skipping IndexNow ping (non-fatal).");
   process.exit(0);
 }
 
