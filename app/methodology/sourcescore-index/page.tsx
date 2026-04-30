@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import {
+  methodologyArticleSchema,
+  methodologyVersionStamp,
+} from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: "SourceScore Index — the composite scoring formula",
@@ -18,8 +22,19 @@ export default function SourceScoreIndexPage() {
   const d = sources.find((s) => s.scores.index.grade === "D");
   const examples = [apPlus, a, b, c, d].filter((x): x is NonNullable<typeof x> => Boolean(x));
 
+  const articleSchema = methodologyArticleSchema({
+    headline: "SourceScore Index — the composite scoring formula",
+    description:
+      "How the SourceScore Index composite is calculated from Citation Discipline, Modern Reference, and Citation Velocity. Worked examples + per-grade anchors.",
+    url: "https://sourcescore.org/methodology/sourcescore-index/",
+  });
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>
         <span aria-hidden="true">/</span>
@@ -32,6 +47,7 @@ export default function SourceScoreIndexPage() {
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         SourceScore Index
       </h1>
+      <p className="text-caption text-dim mb-4 font-mono">{methodologyVersionStamp}</p>
       <p className="text-body-lg text-muted leading-relaxed mb-10">
         The SourceScore Index is the composite headline number on every source page. It&apos;s a
         weighted mean of the three sub-scores plus calibration adjustments. We document the formula

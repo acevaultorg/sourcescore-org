@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import {
+  methodologyArticleSchema,
+  methodologyVersionStamp,
+} from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: "Modern Reference — fitness as a citation in the AI era",
@@ -17,8 +21,19 @@ export default function ModernReferencePage() {
     .sort((a, b) => a.scores.modernReference.value - b.scores.modernReference.value)
     .slice(0, 3);
 
+  const articleSchema = methodologyArticleSchema({
+    headline: "Modern Reference — fitness as a citation in the AI era",
+    description:
+      "Modern Reference measures how fit a source is for AI-citation: machine-readable, schema-marked, freshness-signaled. Methodology + worked examples.",
+    url: "https://sourcescore.org/methodology/modern-reference/",
+  });
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>
         <span aria-hidden="true">/</span>
@@ -31,6 +46,7 @@ export default function ModernReferencePage() {
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         Modern Reference
       </h1>
+      <p className="text-caption text-dim mb-4 font-mono">{methodologyVersionStamp}</p>
       <p className="text-body-lg text-muted leading-relaxed mb-10">
         Modern Reference measures how fit a source is for citation in modern (LLM-era) writing —
         machine-readability, schema-marked structure, freshness signals, and presence in AI training

@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import {
+  methodologyArticleSchema,
+  methodologyVersionStamp,
+} from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: "Citation Discipline — how SourceScore measures evidence rigor",
@@ -17,8 +21,19 @@ export default function CitationDisciplinePage() {
     .sort((a, b) => a.scores.discipline.value - b.scores.discipline.value)
     .slice(0, 3);
 
+  const articleSchema = methodologyArticleSchema({
+    headline: "Citation Discipline — how SourceScore measures evidence rigor",
+    description:
+      "Citation Discipline measures how rigorously a source backs each factual claim with verifiable evidence. The methodology + worked examples.",
+    url: "https://sourcescore.org/methodology/citation-discipline/",
+  });
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>
         <span aria-hidden="true">/</span>
@@ -31,6 +46,7 @@ export default function CitationDisciplinePage() {
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         Citation Discipline
       </h1>
+      <p className="text-caption text-dim mb-4 font-mono">{methodologyVersionStamp}</p>
       <p className="text-body-lg text-muted leading-relaxed mb-10">
         Citation Discipline measures how rigorously a source backs each factual claim with a
         verifiable external source. It&apos;s the most important of the three sub-scores for AI-citation

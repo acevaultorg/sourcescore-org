@@ -1,16 +1,32 @@
 import type { Metadata } from "next";
+import {
+  methodologyArticleSchema,
+  methodologyVersion,
+  methodologyVersionStamp,
+} from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
-  title: "Methodology v0.1 — how SourceScore is computed",
+  title: `Methodology v${methodologyVersion.version} — how SourceScore is computed`,
   description:
     "Transparent methodology for the SourceScore Index, Citation Discipline, Modern Reference, and Citation Velocity sub-scores.",
   alternates: { canonical: "https://sourcescore.org/methodology/" },
 };
 
 export default function MethodologyPage() {
+  const articleSchema = methodologyArticleSchema({
+    headline: "SourceScore Methodology",
+    description:
+      "Transparent methodology for the SourceScore Index, Citation Discipline, Modern Reference, and Citation Velocity sub-scores.",
+    url: "https://sourcescore.org/methodology/",
+  });
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-      <div className="text-eyebrow text-brand mb-3">v0.1 · 2026-04-28</div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <div className="text-eyebrow text-brand mb-3">{methodologyVersionStamp}</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Methodology</h1>
       <p className="text-body-lg text-muted leading-relaxed mb-10">
         Every SourceScore is the product of four publicly described sub-scores. This page documents
