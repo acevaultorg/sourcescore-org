@@ -43,30 +43,34 @@ export default function HomePage() {
                 label: "SourceScore Index",
                 desc: "Composite weighted grade across all three sub-scores.",
                 badge: "Composite",
+                event: "Index",
               },
               {
                 href: "/discipline/",
                 label: "Citation Discipline",
                 desc: "How rigorously a source cites its own evidence.",
                 badge: "Score",
+                event: "Discipline",
               },
               {
                 href: "/modern-reference/",
                 label: "Modern Reference",
                 desc: "Fitness as a citation in 2026+ AI-era writing.",
                 badge: "Reference",
+                event: "ModernReference",
               },
               {
                 href: "/velocity/",
                 label: "Citation Velocity",
                 desc: "How often tier-1 sources cite this URL per week.",
                 badge: "Tracker",
+                event: "Velocity",
               },
             ].map((t) => (
               <a
                 key={t.href}
                 href={t.href}
-                className="group block p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all"
+                className={`group block p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all plausible-event-name=hero_subtool_click plausible-event-tool=${t.event}`}
               >
                 <div className="text-eyebrow text-brand mb-1.5">{t.badge}</div>
                 <div className="font-semibold text-text mb-1.5 group-hover:text-brand transition-colors">
@@ -97,7 +101,7 @@ export default function HomePage() {
               <li key={s.slug}>
                 <a
                   href={`/source/${s.slug}/`}
-                  className="block h-full p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all"
+                  className={`block h-full p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all plausible-event-name=top5_click plausible-event-rank=${i + 1}`}
                 >
                   <div className="flex items-baseline justify-between mb-2">
                     <span className="text-eyebrow text-dim">#{i + 1}</span>
