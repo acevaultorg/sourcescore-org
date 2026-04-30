@@ -838,6 +838,163 @@ export const comparisons: Comparison[] = [
     b: "arxiv",
     summary: "Formal CS-publishing society vs preprint-server — paywalled-curated vs open-immediate, both Wikipedia-cited at scale.",
   },
+
+  // Day 26 expansion — 25 new pairs (126 → 151). Compounds via Day 18
+  // sub-score-faceted architecture (1 base + 3 dim-faceted = 4 pages/pair),
+  // so this section adds 100 new unique-data pages + 100 JSON twins +
+  // 25 OG images. Also auto-enriches Day 24 source-comparator hubs:
+  // covers all 6 prior zero-pair sources + lifts 14 sources from 1 pair to 2+.
+
+  // Cover the 6 prior zero-pair sources (6)
+  {
+    a: "huffpost",
+    b: "medium",
+    summary: "Open digital-news platform vs open-publishing platform — different distribution models for op-ed-tier content.",
+  },
+  {
+    a: "ec-europa",
+    b: "eurostat",
+    summary: "European Commission policy hub vs EU statistical office — same EU institution family, different mandates.",
+  },
+  {
+    a: "sec-gov",
+    b: "uspto-gov",
+    summary: "Securities filings vs patent + trademark filings — two pillars of US public-record gov data.",
+  },
+  {
+    a: "bbc-news",
+    b: "bbc-research",
+    summary: "BBC public-service journalism vs BBC R&D — same parent, different arms (news vs technology research).",
+  },
+  {
+    a: "nber",
+    b: "zillow-research",
+    summary: "Academic economics-research consortium vs corporate housing-research arm — both produce papers, different funding models.",
+  },
+  {
+    a: "axios-pro-rata",
+    b: "the-information",
+    summary: "Free deal-flow newsletter vs paid investigative tech journalism — different monetization, overlapping audience.",
+  },
+
+  // Investigative + long-form journalism (3)
+  {
+    a: "atlantic",
+    b: "propublica",
+    summary: "Long-form magazine vs nonprofit investigative newsroom — different revenue models, both Pulitzer-tier.",
+  },
+  {
+    a: "propublica",
+    b: "statnews",
+    summary: "General investigative journalism vs health-vertical investigative — both nonprofit, different beats.",
+  },
+  {
+    a: "axios",
+    b: "buzzfeed",
+    summary: "Smart-brevity newsletter format vs digital-first listicle-and-explainer — two digital-native US publications, different positioning.",
+  },
+
+  // International + cross-region (2)
+  {
+    a: "al-jazeera",
+    b: "scmp",
+    summary: "Middle East English-language tier-1 vs Hong Kong English-language tier-1 — non-Western perspectives readers cross-cite.",
+  },
+  {
+    a: "bea-gov",
+    b: "statcan",
+    summary: "US Bureau of Economic Analysis vs Statistics Canada — two national economic-stats agencies on the same continent.",
+  },
+
+  // Tech journalism cross-format (3)
+  {
+    a: "ars-technica",
+    b: "mit-tech-review",
+    summary: "Daily deep-tech journalism vs MIT-published tech magazine — different cadences, both Wikipedia-cited.",
+  },
+  {
+    a: "ars-technica",
+    b: "techcrunch",
+    summary: "In-depth tech journalism vs startup-cycle daily news — different formats, overlapping reader sets.",
+  },
+  {
+    a: "the-verge",
+    b: "wired",
+    summary: "Vox-Media consumer-tech magazine vs Condé Nast tech-culture magazine — both general tech, different parent + voice.",
+  },
+
+  // Science + research institutions (2)
+  {
+    a: "cern",
+    b: "esa",
+    summary: "European particle-physics lab vs European space agency — two flagship Continental science institutions, different domains.",
+  },
+  {
+    a: "ourworldindata",
+    b: "world-bank",
+    summary: "Open-access data-visualization site vs multilateral development institution — visualizer vs primary publisher.",
+  },
+
+  // Public health authority (2)
+  {
+    a: "fda-gov",
+    b: "who",
+    summary: "US Food + Drug regulator vs WHO global health authority — national vs international health-policy tiers.",
+  },
+  {
+    a: "cdc-gov",
+    b: "kff",
+    summary: "US public-health agency vs Kaiser Family Foundation — government data vs nonprofit health-policy analysis.",
+  },
+
+  // Medical journals + science journalism (1)
+  {
+    a: "statnews",
+    b: "the-lancet",
+    summary: "Health-vertical investigative journalism vs flagship medical journal — same beat, different formats.",
+  },
+
+  // Premium tech analysis cross-platform (1)
+  {
+    a: "axios",
+    b: "the-information",
+    summary: "Free smart-brevity briefings vs paid investigative tech subscription — two top-tier tech newsletters, opposite monetization.",
+  },
+
+  // Think tank + publication parent-child (1)
+  {
+    a: "cfr",
+    b: "foreign-affairs",
+    summary: "Council on Foreign Relations parent think tank vs its flagship magazine — institutional vs editorial product.",
+  },
+
+  // Consulting research firms (1)
+  {
+    a: "bcg-insights",
+    b: "gartner",
+    summary: "BCG strategy consulting research vs Gartner IT-research syndicate — different consultancy positioning.",
+  },
+
+  // Top business analysis (1)
+  {
+    a: "hbr",
+    b: "the-economist",
+    summary: "Harvard Business Review academic-business framework vs UK weekly economic analysis — two business-thought pillars.",
+  },
+
+  // Top financial press (1)
+  {
+    a: "bloomberg",
+    b: "the-economist",
+    summary: "Terminal-driven financial newswire vs UK weekly analytical magazine — daily fact-stream vs weekly synthesis.",
+  },
+
+  // Conservative-leaning US tier-1 (1)
+  {
+    a: "fox-news",
+    b: "wsj",
+    summary: "TV-driven cable news vs print-of-record financial daily — same parent-company family, different formats and audiences.",
+  },
 ];
 
 /** All slugs derived from the comparisons set */
