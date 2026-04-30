@@ -121,11 +121,13 @@ function SiteHeader() {
             aria-hidden="true"
             className="inline-flex items-center justify-center w-7 h-7 rounded-btn bg-surface-brand border border-brand/30 text-brand"
           >
-            {/* Mark — 3 ascending bars = 3 sub-scores (Discipline · Modern Reference · Velocity) */}
+            {/* Mark v2 — 3 ascending bars (Discipline · Modern Reference · Velocity)
+                + score-dot (the measured outcome) */}
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-              <rect x="3"  y="14" width="4" height="7"  rx="1" opacity="0.55"/>
-              <rect x="10" y="10" width="4" height="11" rx="1" opacity="0.78"/>
-              <rect x="17" y="5"  width="4" height="16" rx="1"/>
+              <rect x="3"  y="15" width="4" height="6"  rx="1" opacity="0.45"/>
+              <rect x="10" y="11" width="4" height="10" rx="1" opacity="0.72"/>
+              <rect x="17" y="6"  width="4" height="15" rx="1"/>
+              <circle cx="19" cy="3" r="1.6"/>
             </svg>
           </span>
           <span className="font-semibold tracking-tight">SourceScore</span>
