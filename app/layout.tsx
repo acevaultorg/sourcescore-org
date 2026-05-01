@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@/components/Analytics";
+import { Clarity } from "@/components/Clarity";
 import { WebVitals } from "@/components/WebVitals";
 import { ScrollDepth } from "@/components/ScrollDepth";
 
@@ -100,6 +101,7 @@ export default function RootLayout({
           }}
         />
         <Analytics />
+        <Clarity />
       </head>
       <body className="bg-bg text-text min-h-screen flex flex-col antialiased">
         <WebVitals />
