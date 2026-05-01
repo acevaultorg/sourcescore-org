@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@/components/Analytics";
 import { Clarity } from "@/components/Clarity";
+import { ClarityRouteTagger } from "@/components/ClarityRouteTagger";
+import { ClarityClickListener } from "@/components/ClarityClickListener";
 import { WebVitals } from "@/components/WebVitals";
 import { ScrollDepth } from "@/components/ScrollDepth";
 import { MobileNav } from "@/components/MobileNav";
@@ -107,6 +109,8 @@ export default function RootLayout({
       <body className="bg-bg text-text min-h-screen flex flex-col antialiased">
         <WebVitals />
         <ScrollDepth />
+        <ClarityRouteTagger />
+        <ClarityClickListener />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
