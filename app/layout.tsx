@@ -4,6 +4,7 @@ import { Analytics } from "@/components/Analytics";
 import { Clarity } from "@/components/Clarity";
 import { WebVitals } from "@/components/WebVitals";
 import { ScrollDepth } from "@/components/ScrollDepth";
+import { MobileNav } from "@/components/MobileNav";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sourcescore.org"),
@@ -138,7 +139,11 @@ function SiteHeader() {
           </span>
           <span className="font-semibold tracking-tight">SourceScore</span>
         </a>
-        <nav className="flex items-center gap-1 sm:gap-2 text-body-sm">
+        {/* Desktop nav — md+ (768px). Mobile users get the hamburger
+            below to restore visibility of items previously hidden by
+            sm:/md:/lg: breakpoints. Modern Reference is one of the 4
+            primary scoring sub-tools — must be reachable on every viewport. */}
+        <nav className="hidden md:flex items-center gap-1 sm:gap-2 text-body-sm">
           <a
             href="/"
             className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors"
@@ -153,7 +158,7 @@ function SiteHeader() {
           </a>
           <a
             href="/modern-reference/"
-            className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors hidden sm:inline-block"
+            className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors"
           >
             Modern&nbsp;Reference
           </a>
@@ -165,7 +170,7 @@ function SiteHeader() {
           </a>
           <a
             href="/sources/"
-            className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors hidden md:inline-block"
+            className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors"
           >
             Sources
           </a>
@@ -181,7 +186,7 @@ function SiteHeader() {
             aria-label="Search sources"
           >
             <span aria-hidden="true">⌕</span>
-            <span className="sr-only sm:not-sr-only sm:ml-1">Search</span>
+            <span className="ml-1">Search</span>
           </a>
           <a
             href="/methodology/"
@@ -190,6 +195,7 @@ function SiteHeader() {
             Methodology
           </a>
         </nav>
+        <MobileNav />
       </div>
     </header>
   );
