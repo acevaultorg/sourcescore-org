@@ -70,6 +70,7 @@ export default function HomePage() {
               <a
                 key={t.href}
                 href={t.href}
+                data-clarity-upgrade={`hero-subtool-${t.event.toLowerCase()}`}
                 className={`group block p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all plausible-event-name=hero_subtool_click plausible-event-tool=${t.event}`}
               >
                 <div className="text-eyebrow text-brand mb-1.5">{t.badge}</div>
@@ -101,6 +102,7 @@ export default function HomePage() {
               <li key={s.slug}>
                 <a
                   href={`/source/${s.slug}/`}
+                  data-clarity-upgrade={`top5-rank-${i + 1}`}
                   className={`block h-full p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all plausible-event-name=top5_click plausible-event-rank=${i + 1}`}
                 >
                   <div className="flex items-baseline justify-between mb-2">
