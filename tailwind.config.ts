@@ -9,7 +9,13 @@ import type { Config } from "tailwindcss";
 // sky (B), amber (C), rose (D/F) — universal academic conventions.
 
 const config: Config = {
-  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+  // lib/ included so JIT picks up grade-color class strings declared in
+  // lib/types.ts (gradeColorClass + gradeSurfaceClass). Without this scan
+  // path, the academic-convention grade palette (emerald A → rose F)
+  // defined below NEVER COMPILED into CSS — every grade badge fell back
+  // to the default text color, killing the visual hierarchy that's the
+  // entire point of a rating system. Caught 2026-05-01 audit.
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   darkMode: "class",
   theme: {
     extend: {
