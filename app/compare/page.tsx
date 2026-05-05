@@ -4,7 +4,7 @@ import { comparisons, comparisonSlug } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
 
 export const metadata: Metadata = {
-  title: "Compare sources — SourceScore",
+  title: { absolute: "Compare sources — SourceScore" },
   description:
     "Side-by-side SourceScore comparisons. 25 curated pairs across academic, news, government, and tech sources.",
   alternates: { canonical: "https://sourcescore.org/compare/" },

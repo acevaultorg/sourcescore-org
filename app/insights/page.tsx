@@ -7,7 +7,7 @@ import { gradeColorClass } from "@/lib/types";
 // to one specific question about score-profile patterns.
 
 export const metadata: Metadata = {
-  title: "Insights — score-profile patterns across the SourceScore dataset",
+  title: { absolute: "Insights — score-profile patterns across the SourceScore dataset" },
   description:
     "Eight cite-ready stat pages surfacing extremes across 130 information sources: which sources punch above their composite Index on each dimension, which lag, which are most balanced, which are most lopsided.",
   alternates: {

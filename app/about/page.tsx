@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About SourceScore",
+  title: { absolute: "About SourceScore" },
   description:
     "SourceScore is the reference index for AI-citation quality. About the project and the operator.",
   alternates: { canonical: "https://sourcescore.org/about/" },

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { bestLists } from "@/data/best-lists";
 
 export const metadata: Metadata = {
-  title: "Best-of lists — SourceScore",
+  title: { absolute: "Best-of lists — SourceScore" },
   description:
     "Curated 'best X for AI citation' lists from the SourceScore Index — best news sources, peer-reviewed journals, government primary data, health authorities, reference works, and more.",
   alternates: { canonical: "https://sourcescore.org/best/" },

@@ -7,7 +7,7 @@ import {
 } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
-  title: "Citation Discipline — how SourceScore measures evidence rigor",
+  title: { absolute: "Citation Discipline — how SourceScore measures evidence rigor" },
   description:
     "Citation Discipline measures how rigorously a source backs each factual claim with verifiable evidence. The methodology + worked examples.",
   alternates: { canonical: "https://sourcescore.org/methodology/citation-discipline/" },

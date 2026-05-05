@@ -7,7 +7,7 @@ import {
 } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
-  title: "SourceScore Index — the composite scoring formula",
+  title: { absolute: "SourceScore Index — the composite scoring formula" },
   description:
     "How the SourceScore Index composite is calculated from Citation Discipline, Modern Reference, and Citation Velocity. Worked examples + per-grade anchors.",
   alternates: { canonical: "https://sourcescore.org/methodology/sourcescore-index/" },

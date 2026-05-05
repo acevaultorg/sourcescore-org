@@ -9,7 +9,7 @@ import {
 } from "@/lib/types";
 
 export const metadata: Metadata = {
-  title: "Source grading scale — A+ to F on the SourceScore Index",
+  title: { absolute: "Source grading scale — A+ to F on the SourceScore Index" },
   description:
     "How sources earn an A+ vs A vs B vs C vs D vs F on the SourceScore Index. Per-grade source lists, score ranges, and what each grade means for AI citation quality.",
   alternates: { canonical: "https://sourcescore.org/grade/" },

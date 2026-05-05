@@ -3,7 +3,7 @@ import { sources } from "@/data/sources";
 import { gradeColorClass, gradeSurfaceClass } from "@/lib/types";
 
 export const metadata: Metadata = {
-  title: "Search sources — SourceScore",
+  title: { absolute: "Search sources — SourceScore" },
   description:
     "Search 50 hand-scored sources by name, domain, category, or grade. Instant filter, no signup.",
   alternates: { canonical: "https://sourcescore.org/search/" },

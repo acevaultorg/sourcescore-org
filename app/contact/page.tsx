@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact SourceScore",
+  title: { absolute: "Contact SourceScore" },
   description: "Contact SourceScore for methodology questions, corrections, or partnership requests.",
   alternates: { canonical: "https://sourcescore.org/contact/" },
 };

@@ -3,7 +3,7 @@ import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
 
 export const metadata: Metadata = {
-  title: "SourceScore — the AI-Citation Quality Index",
+  title: { absolute: "SourceScore — the AI-Citation Quality Index" },
   description:
     "Score any source on Discipline, Modern Reference fitness, and Citation Velocity. Reference index for AI-citation quality.",
   alternates: { canonical: "https://sourcescore.org/" },

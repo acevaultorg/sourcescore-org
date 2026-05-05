@@ -4,7 +4,7 @@ import { ScoreBadge } from "@/components/ScoreBadge";
 import { allGrades, gradeSlug, gradeRange, gradeColorClass } from "@/lib/types";
 
 export const metadata: Metadata = {
-  title: "All sources scored — SourceScore",
+  title: { absolute: "All sources scored — SourceScore" },
   description:
     "Browse every source scored by SourceScore. 130 hand-scored sources across 12 categories, each with full breakdown across Citation Discipline, Modern Reference, and Citation Velocity.",
   alternates: { canonical: "https://sourcescore.org/sources/" },

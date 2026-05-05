@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 
 export const metadata: Metadata = {
-  title: "Embed SourceScore — paste a score on your site",
+  title: { absolute: "Embed SourceScore — paste a score on your site" },
   description:
     "Embed any source's SourceScore Index on your own site with a single iframe snippet. Free, no signup, with attribution.",
   alternates: { canonical: "https://sourcescore.org/embed/" },
