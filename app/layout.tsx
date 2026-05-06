@@ -8,6 +8,15 @@ import { WebVitals } from "@/components/WebVitals";
 import { ScrollDepth } from "@/components/ScrollDepth";
 import { MobileNav } from "@/components/MobileNav";
 
+// Google AdSense client ID. Env-var override available for per-site
+// AdSense accounts; fleet-default is the operator's primary account
+// (same ID used on holdlens.com + readinglist.school + readminute.com +
+// fermentcalc.com). Hardcoded fallback because the AdSense client ID
+// is fully public (exposed in served HTML) and CF Pages env var wiring
+// requires dashboard access — fallback ships the snippet without that.
+const ADSENSE_CLIENT =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-7449214764048186";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://sourcescore.org"),
   title: {
@@ -105,6 +114,16 @@ export default function RootLayout({
         />
         <Analytics />
         <Clarity />
+        {/* Google AdSense — verification snippet. AdSense application
+            requires this loaded on every page in <head> before review.
+            ADSENSE_CLIENT env-var-conditional; fleet-default fallback. */}
+        {ADSENSE_CLIENT ? (
+          <script
+            async
+            crossOrigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          />
+        ) : null}
       </head>
       <body className="bg-bg text-text min-h-screen flex flex-col antialiased">
         <WebVitals />
