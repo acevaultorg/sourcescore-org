@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile horizontal-overflow safety net (fleet-wide pattern, 2026-05-06).
+   Per ~/.claude/rules/mobile-perfection-default.md. Prevents any rogue
+   child element (wide table, marquee, embedded widget, long unbreakable
+   string) from causing the whole page to horizontal-scroll on iPhone-class
+   viewports. `overflow: clip` is preferred over `hidden` because it does
+   NOT create a new scroll container — sticky positioning keeps working.
+   Older browsers fall back to `hidden` via @supports. */
+html, body { overflow-x: clip; }
+@supports not (overflow: clip) {
+  html, body { overflow-x: hidden; }
+}
+body { max-width: 100vw; }
+
+
 :root {
   color-scheme: dark;
   --bg: #0a0a0f;
