@@ -15,8 +15,61 @@ export default function HomePage() {
   // Full sample list (10) for below-fold table.
   const all = [...sources].sort((a, b) => b.scores.index.value - a.scores.index.value);
 
+  // Dataset schema — the homepage IS a leaderboard dataset of scored sources.
+  // Aleyda Solis 10-char LLM-citation checklist #4 (Extractable) + #2 (Useful).
+  // Mirrors the holdlens.com investor-page + secfilingdex.com filer-page +
+  // fermentcalc.com vegetable-page Dataset patterns from 2026-05-08.
+  const datasetSchema = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "@id": "https://sourcescore.org/#dataset",
+    name: "SourceScore Index — AI-Citation Quality Leaderboard",
+    description: `Composite citation-quality score (0–100, A+ to D grade) for ${all.length} reference sources, computed as a weighted mean of Citation Discipline (35%), Modern Reference fitness (30%), and Citation Velocity (35%). Methodology v0.1, sources hand-scored.`,
+    url: "https://sourcescore.org/",
+    creator: {
+      "@type": "Organization",
+      name: "SourceScore",
+      url: "https://sourcescore.org",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "SourceScore",
+      url: "https://sourcescore.org",
+    },
+    isAccessibleForFree: true,
+    keywords: [
+      "AI citation quality",
+      "source ranking",
+      "RAG retrieval",
+      "Citation Discipline",
+      "Modern Reference",
+      "Citation Velocity",
+      "LLM source quality",
+      "structured-data fitness",
+    ],
+    variableMeasured: [
+      { "@type": "PropertyValue", name: "SourceScore Index (composite, 0-100)" },
+      { "@type": "PropertyValue", name: "Citation Discipline sub-score (0-100)" },
+      { "@type": "PropertyValue", name: "Modern Reference sub-score (0-100)" },
+      { "@type": "PropertyValue", name: "Citation Velocity sub-score (0-100)" },
+      { "@type": "PropertyValue", name: "Letter grade (A+ to D)" },
+      { "@type": "PropertyValue", name: "Source category (publisher type)" },
+    ],
+    distribution: [
+      {
+        "@type": "DataDownload",
+        encodingFormat: "text/html",
+        contentUrl: "https://sourcescore.org/sources/",
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+      />
       {/* HERO ────────────────────────────────────────────────────────── */}
       <section className="relative">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-10 sm:pt-20 sm:pb-16">

@@ -124,6 +124,12 @@ export default function RootLayout({
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
           />
         ) : null}
+
+        {/* llms.txt advertise per `rules/bot-harvest.md` Day-1 manifest spec.
+            sourcescore is the heaviest bot-traffic site in the fleet
+            (3,840 AI crawls/30d per fleet/LEARNED.md) — explicit head signal
+            helps Anthropic, OpenAI, Perplexity prioritize the manifest. */}
+        <link rel="llms" type="text/plain" href="/llms.txt" />
       </head>
       <body className="bg-bg text-text min-h-screen flex flex-col antialiased">
         <WebVitals />
