@@ -14,7 +14,9 @@ variables:
   NEXT_PUBLIC_CLARITY_PROJECT_ID: "wk6sqdp5vn"
 
 cache:
-  key: sourcescore-cache
+  # v2 = invalidate when NEXT_PUBLIC_* env-baked vars change (e.g., Clarity ID added 2026-05-08).
+  # Bumping the key forces fresh `.next/cache/` so static-export HTML re-renders with new env.
+  key: sourcescore-cache-v2
   paths:
     - node_modules/
     - .next/cache/
@@ -27,6 +29,7 @@ build:
     - apt-get install -y --no-install-recommends git ca-certificates
   script:
     - npm ci --no-audit --no-fund
+    - rm -rf .next/cache
     - npm run build
     - test -d out
     - test -f out/index.html
