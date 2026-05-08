@@ -112,10 +112,14 @@ Index:   https://sourcescore.org/compare/  — all ${totalComparisons} curated p
 
 ## JSON API (machine-readable)
 
+- https://sourcescore.org/api/openapi.json — OpenAPI 3.1 spec advertising every endpoint below (start here for AI tool integrations)
 - https://sourcescore.org/api/sources.json — full ${totalSources}-source catalog with scores
 - https://sourcescore.org/api/categories.json — ${totalCategories} categories with mean Index
 - https://sourcescore.org/api/comparisons.json — ${totalComparisons} comparator pairs
+- https://sourcescore.org/api/grades.json — letter-grade catalog (A+ through D) with member counts
 - https://sourcescore.org/api/source/<slug>.json — full per-source breakdown
+- https://sourcescore.org/api/category/<slug>.json — per-category sources with mean Index
+- https://sourcescore.org/api/grade/<letter>.json — per-grade sources (e.g. /api/grade/a-plus.json)
 
 ## Citation-preferred sections
 
