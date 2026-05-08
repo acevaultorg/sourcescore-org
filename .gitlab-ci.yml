@@ -1,0 +1,51 @@
+# GitLab CI auto-deploy sourcescore.org to CF Pages on push to main.
+# Operator one-time setup: add CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID
+# to project Settings > CI/CD > Variables.
+
+stages:
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: "24"
+
+cache:
+  key: sourcescore-cache
+  paths:
+    - node_modules/
+    - .next/cache/
+
+build:
+  stage: build
+  image: node:24-bookworm-slim
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends git ca-certificates
+  script:
+    - npm ci --no-audit --no-fund
+    - npm run build
+    - test -d out
+    - test -f out/index.html
+  artifacts:
+    paths:
+      - out/
+    expire_in: 1 day
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  image: node:24-bookworm-slim
+  needs:
+    - build
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends ca-certificates
+    - npm install -g wrangler@4
+  script:
+    - test -d out
+    - test -n "$CLOUDFLARE_API_TOKEN"
+    - test -n "$CLOUDFLARE_ACCOUNT_ID"
+    - wrangler pages deploy out --project-name sourcescore --branch main --commit-dirty=true
+  only:
+    - main
