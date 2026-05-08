@@ -1,0 +1,273 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SourceScore Public API",
+    "summary": "AI-citation quality leaderboard — read-only JSON twins of every public page.",
+    "description": "Static-export JSON catalog of source-quality scores derived from the SourceScore Methodology v0.1 (Citation Discipline 35% + Modern Reference 30% + Citation Velocity 35%). All endpoints return JSON files served from Cloudflare Pages — no rate limit, no auth, no API key. Use freely for AI retrieval-augmented generation, source ranking, and citation analysis. Cite as: 'SourceScore Methodology v0.1, sourcescore.org'.",
+    "version": "0.1.0",
+    "contact": {
+      "name": "SourceScore",
+      "url": "https://sourcescore.org/contact/"
+    },
+    "license": {
+      "name": "Methodology + scoring data: CC-BY 4.0 (cite as above)",
+      "url": "https://sourcescore.org/methodology/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://sourcescore.org",
+      "description": "Production (Cloudflare Pages, static export)"
+    }
+  ],
+  "externalDocs": {
+    "description": "Methodology v0.1 — full transparent rubric",
+    "url": "https://sourcescore.org/methodology/"
+  },
+  "tags": [
+    { "name": "Catalogs", "description": "Top-level catalog endpoints listing every source/category/grade." },
+    { "name": "Sources", "description": "Per-source detailed score breakdowns." },
+    { "name": "Categories", "description": "Sources grouped by publication category (encyclopedia, academic, news, etc.)." },
+    { "name": "Grades", "description": "Sources grouped by letter grade (A+ through D)." },
+    { "name": "Comparisons", "description": "Pre-computed source-vs-source comparison pages." }
+  ],
+  "paths": {
+    "/api/sources.json": {
+      "get": {
+        "tags": ["Catalogs"],
+        "summary": "Full source catalog (light per-source summary)",
+        "description": "Returns the full SourceScore catalog — every scored source with its summary fields and links to per-source detail JSON. ~80KB at 133 sources (May 2026).",
+        "operationId": "getSourcesCatalog",
+        "responses": {
+          "200": {
+            "description": "Catalog wrapper containing all sources.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SourcesCatalog" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/source/{slug}.json": {
+      "get": {
+        "tags": ["Sources"],
+        "summary": "Per-source detailed scores",
+        "description": "Returns the full SourceScore detail for a single source: composite Index + 3 sub-scores (Discipline, Modern Reference, Velocity), each with rationale + signals.",
+        "operationId": "getSourceBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "The source's URL slug (kebab-case).",
+            "schema": { "type": "string", "example": "wikipedia-en" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Source detail wrapper.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SourceDetail" }
+              }
+            }
+          },
+          "404": { "description": "Slug not found in catalog." }
+        }
+      }
+    },
+    "/api/categories.json": {
+      "get": {
+        "tags": ["Catalogs"],
+        "summary": "All source categories with mean Index per group",
+        "operationId": "getCategoriesCatalog",
+        "responses": {
+          "200": {
+            "description": "Catalog of all categories with aggregate stats.",
+            "content": { "application/json": {} }
+          }
+        }
+      }
+    },
+    "/api/category/{slug}.json": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Sources within a single category",
+        "operationId": "getCategoryBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "Category slug (kebab-case, e.g. 'academic', 'reference', 'news').",
+            "schema": { "type": "string", "example": "academic" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Category detail with member sources.", "content": { "application/json": {} } },
+          "404": { "description": "Category slug not found." }
+        }
+      }
+    },
+    "/api/grades.json": {
+      "get": {
+        "tags": ["Catalogs"],
+        "summary": "All letter grades with member counts + score ranges",
+        "operationId": "getGradesCatalog",
+        "responses": {
+          "200": {
+            "description": "Catalog of all grades A+ through D.",
+            "content": { "application/json": {} }
+          }
+        }
+      }
+    },
+    "/api/grade/{letter}.json": {
+      "get": {
+        "tags": ["Grades"],
+        "summary": "Sources at a specific letter grade",
+        "operationId": "getGradeByLetter",
+        "parameters": [
+          {
+            "name": "letter",
+            "in": "path",
+            "required": true,
+            "description": "Grade slug — 'a-plus', 'a', 'b-plus', 'b', 'c', 'd'.",
+            "schema": { "type": "string", "example": "a-plus" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Grade detail with member sources.", "content": { "application/json": {} } },
+          "404": { "description": "Grade slug not found." }
+        }
+      }
+    },
+    "/api/comparisons.json": {
+      "get": {
+        "tags": ["Catalogs"],
+        "summary": "All pre-computed source-vs-source comparisons in canonical order",
+        "operationId": "getComparisonsCatalog",
+        "responses": {
+          "200": {
+            "description": "Catalog of pairwise comparison pages.",
+            "content": { "application/json": {} }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SourcesCatalog": {
+        "type": "object",
+        "required": ["apiVersion", "methodology", "generated", "count", "sources"],
+        "properties": {
+          "apiVersion": { "type": "string", "example": "v0.1" },
+          "methodology": { "type": "string", "format": "uri", "example": "https://sourcescore.org/methodology/" },
+          "generated": { "type": "string", "format": "date-time" },
+          "count": { "type": "integer", "example": 133 },
+          "sources": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SourceSummary" }
+          }
+        }
+      },
+      "SourceSummary": {
+        "type": "object",
+        "required": ["slug", "name", "domain", "category", "scores", "canonical", "api"],
+        "properties": {
+          "slug": { "type": "string", "example": "wikipedia-en" },
+          "name": { "type": "string", "example": "Wikipedia (English)" },
+          "domain": { "type": "string", "example": "en.wikipedia.org" },
+          "category": { "type": "string", "example": "Reference" },
+          "summary": { "type": "string" },
+          "scores": {
+            "type": "object",
+            "properties": {
+              "index": { "$ref": "#/components/schemas/ScoreLight" },
+              "discipline": { "$ref": "#/components/schemas/ScoreLight" },
+              "modernReference": { "$ref": "#/components/schemas/ScoreLight" },
+              "velocity": { "$ref": "#/components/schemas/ScoreLight" }
+            }
+          },
+          "canonical": { "type": "string", "format": "uri" },
+          "api": { "type": "string", "format": "uri" }
+        }
+      },
+      "SourceDetail": {
+        "type": "object",
+        "required": ["apiVersion", "methodology", "canonical", "source", "scores"],
+        "properties": {
+          "apiVersion": { "type": "string", "example": "v0.1" },
+          "methodology": { "type": "string", "format": "uri" },
+          "canonical": { "type": "string", "format": "uri" },
+          "source": {
+            "type": "object",
+            "required": ["slug", "name", "domain", "category"],
+            "properties": {
+              "slug": { "type": "string" },
+              "name": { "type": "string" },
+              "domain": { "type": "string" },
+              "category": { "type": "string" },
+              "summary": { "type": "string" },
+              "founded": { "type": "integer", "nullable": true },
+              "verified": { "type": "string", "format": "date" },
+              "methodologyVersion": { "type": "string" }
+            }
+          },
+          "scores": {
+            "type": "object",
+            "properties": {
+              "index": { "$ref": "#/components/schemas/ScoreFull" },
+              "discipline": { "$ref": "#/components/schemas/ScoreFull" },
+              "modernReference": { "$ref": "#/components/schemas/ScoreFull" },
+              "velocity": { "$ref": "#/components/schemas/ScoreFull" }
+            }
+          },
+          "license": {
+            "type": "object",
+            "properties": {
+              "methodology": { "type": "string", "example": "Cite as: SourceScore Methodology v0.1, sourcescore.org" }
+            }
+          }
+        }
+      },
+      "ScoreLight": {
+        "type": "object",
+        "required": ["value", "grade"],
+        "properties": {
+          "value": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "grade": {
+            "type": "string",
+            "enum": ["A+", "A", "B+", "B", "C", "D"]
+          }
+        }
+      },
+      "ScoreFull": {
+        "type": "object",
+        "required": ["value", "grade"],
+        "properties": {
+          "value": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "grade": {
+            "type": "string",
+            "enum": ["A+", "A", "B+", "B", "C", "D"]
+          },
+          "rationale": { "type": "string" },
+          "signals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "detail"],
+              "properties": {
+                "label": { "type": "string" },
+                "detail": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
