@@ -8,6 +8,10 @@ stages:
 
 variables:
   NODE_VERSION: "24"
+  # Microsoft Clarity project ID (public client-side identifier, not a secret).
+  # Baked into static export at build time; components/Clarity.tsx loads Clarity
+  # script only when this is set. Project: SourceScore (wk6sqdp5vn).
+  NEXT_PUBLIC_CLARITY_PROJECT_ID: "wk6sqdp5vn"
 
 cache:
   key: sourcescore-cache
