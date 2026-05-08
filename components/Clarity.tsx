@@ -16,7 +16,13 @@
 
 import Script from "next/script";
 
-const CLARITY_PROJECT_ID = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID;
+// Hardcoded fallback to canonical sourcescore.org Clarity project (wk6sqdp5vn).
+// Project ID is a public client-side identifier (visible in rendered HTML),
+// safe to commit. Env var override allowed for fork/staging deploys.
+// Set 2026-05-08 after env-var-only wiring through GitLab CI Variables +
+// .next/cache bust still failed to bake the value into static export.
+const CLARITY_PROJECT_ID =
+  process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || "wk6sqdp5vn";
 
 export function Clarity() {
   if (!CLARITY_PROJECT_ID) return null;
