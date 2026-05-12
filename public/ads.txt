@@ -1,4 +1,9 @@
 # sourcescore.org — ads.txt
-# AdSense publisher ID will replace this placeholder after approval.
-# Placeholder is acceptable during AdSense review per Google policy.
-placeholder.example.com, placeholder, DIRECT, placeholder
+# IAB Authorized Digital Sellers v1.0.2
+# https://iabtechlab.com/ads-txt/
+#
+# Fleet AdSense publisher: pub-7449214764048186 (verified DIRECT relationship
+# on txtfeed.com, readinglist.school, zipradar.org, readminute.com via the
+# same operator account paulomdevries@gmail.com).
+
+google.com, pub-7449214764048186, DIRECT, f08c47fec0942fa0
