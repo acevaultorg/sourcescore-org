@@ -33,6 +33,9 @@ build:
     - npm run build
     - test -d out
     - test -f out/index.html
+    # Verify postbuild generators produced their artifacts (sitemap, llms, sitemap-ai)
+    # Catches 2026-05-12-class root cause: generator silently fails -> sitemap.xml absent in deploy.
+    - node scripts/predeploy-guard.mjs
   artifacts:
     paths:
       - out/
@@ -53,6 +56,9 @@ deploy:
     - test -d out
     - test -n "$CLOUDFLARE_API_TOKEN"
     - test -n "$CLOUDFLARE_ACCOUNT_ID"
+    # Re-run the guard at deploy stage too — defends against artifact corruption between jobs
+    # OR against any future ad_hoc CI workflow that skips build.
+    - node scripts/predeploy-guard.mjs
     - wrangler pages deploy out --project-name sourcescore --branch main --commit-dirty=true
   only:
     - main
