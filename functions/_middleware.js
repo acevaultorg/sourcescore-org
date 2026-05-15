@@ -14,9 +14,7 @@
 // Dashboard:   https://app.tollbit.com/property/qnts1sjwvy7gdkif5ctnv6ix
 //
 // Price-elasticity experiment: low rates test whether TollBit marketplace
-// adoption is rate-sensitive (per fleet/LEARNED.md 2026-05-15 L3 + L12).
-
-interface Env {}
+// adoption is rate-sensitive (per fleet/LEARNED.md 2026-05-15 L12).
 
 const AI_BOT_REGEX = /\b(GPTBot|ChatGPT-User|OAI-SearchBot|ClaudeBot|PerplexityBot|Perplexity-User|Google-Extended|Applebot-Extended|CCBot|Amazonbot|Bytespider|Meta-ExternalAgent|meta-webindexer|meta-externalagent|Anthropic-AI|cohere-ai|Diffbot|FacebookBot|Omgilibot|YouBot)\b/i;
 
@@ -34,12 +32,11 @@ const SKIP_PATHS = [
   '/.well-known/',
 ];
 
-export const onRequest: PagesFunction<Env> = async (context) => {
+export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
   const ua = request.headers.get('User-Agent') || '';
 
-  // Skip static assets + infrastructure paths
   if (SKIP_EXTENSIONS.test(url.pathname)) {
     return next();
   }
@@ -47,7 +44,6 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     return next();
   }
 
-  // AI bot UA detection → 307 to TollBit paywall subdomain (preserves path + query)
   if (AI_BOT_REGEX.test(ua)) {
     const target = `https://tollbit.sourcescore.org${url.pathname}${url.search}`;
     return new Response(null, {
@@ -60,6 +56,5 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     });
   }
 
-  // Non-bot traffic → continue to static asset
   return next();
-};
+}
