@@ -10,6 +10,7 @@ import {
 } from "@/data/best-lists";
 import { categorySlug } from "@/data/sources";
 import { gradeColorClass } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Programmatic-SEO best-of listicles — one per curated vertical.
 // Targets high-intent "best X for AI citation" queries (e.g., "best news
@@ -87,6 +88,18 @@ export default async function BestListPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Best lists", url: "https://sourcescore.org/best/" },
+              { name: list.intent, url: `https://sourcescore.org/best/${list.slug}/` },
+            ])
+          ),
+        }}
       />
 
       {/* Breadcrumbs */}

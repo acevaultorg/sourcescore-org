@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { INSIGHTS, rowsForInsight } from "@/data/insights";
 import { gradeColorClass } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Day 30 — Insights index.
 // Top-level hub for all stat pages. Each insight is a cite-ready answer
@@ -58,6 +59,17 @@ export default function InsightsIndexPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Insights", url: "https://sourcescore.org/insights/" },
+            ])
+          ),
+        }}
       />
 
       <nav

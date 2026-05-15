@@ -14,6 +14,7 @@ import {
 } from "@/data/best-lists";
 import { gradeColorClass } from "@/lib/types";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Day 28 — Per-category top-10 × dim facet.
 // Same top-10 pool as `/category/<slug>/top-10/` (composite-sorted),
@@ -191,6 +192,20 @@ export default async function CategoryTopNDimPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Sources", url: "https://sourcescore.org/sources/" },
+              { name: category, url: `https://sourcescore.org/category/${slug}/` },
+              { name: "Top 10", url: `https://sourcescore.org/category/${slug}/top-10/` },
+              { name: dimMeta.short, url: `https://sourcescore.org/category/${slug}/top-10/${dimSegment}/` },
+            ])
+          ),
+        }}
       />
 
       {/* Breadcrumbs */}

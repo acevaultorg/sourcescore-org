@@ -17,6 +17,7 @@ import {
   type DimensionKey,
 } from "@/data/best-lists";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Day 27 — Composite-grade × sub-score faceted leaderboards.
 // Distinct from Day 21 `/<dim>/grade/<letter>/` which redefines the
@@ -195,6 +196,19 @@ export default async function GradeDimensionPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Grades", url: "https://sourcescore.org/grade/" },
+              { name: grade, url: `https://sourcescore.org/grade/${letter}/` },
+              { name: `By ${dimMeta.short}`, url: `https://sourcescore.org/grade/${letter}/${dimSegment}/` },
+            ])
+          ),
+        }}
       />
 
       {/* Breadcrumbs */}

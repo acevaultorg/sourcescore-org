@@ -9,6 +9,7 @@ import {
 import { ALL_DIMENSIONS, DIMENSION_META } from "@/data/best-lists";
 import { gradeColorClass } from "@/lib/types";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Day 30 — Per-insight stat page.
 // Each insight is a single cite-ready stat (top-5 sources extreme on
@@ -126,6 +127,18 @@ export default async function InsightPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Insights", url: "https://sourcescore.org/insights/" },
+              { name: insight.title, url: `https://sourcescore.org/insights/${slug}/` },
+            ])
+          ),
+        }}
       />
 
       <nav

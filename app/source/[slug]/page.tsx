@@ -4,6 +4,7 @@ import { getSource, allSlugs } from "@/data/sources";
 import { comparisonsForSource } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import type { DimensionScore } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Static params — every slug in the dataset gets pre-rendered.
 export function generateStaticParams() {
@@ -93,6 +94,19 @@ export default async function SourceDetailPage({ params }: PageProps) {
             description: `${source.name} scores ${idx.value}/100 (grade ${idx.grade}) on the SourceScore Index — a composite of Citation Discipline (${scores.discipline.value}), Modern Reference (${scores.modernReference.value}), and Citation Velocity (${scores.velocity.value}).`,
             inDefinedTermSet: "https://sourcescore.org/methodology/",
           }),
+        }}
+      />
+      {/* BreadcrumbList — mirrors visible breadcrumb nav below */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Sources", url: "https://sourcescore.org/sources/" },
+              { name: source.name, url: `https://sourcescore.org/source/${source.slug}/` },
+            ])
+          ),
         }}
       />
 

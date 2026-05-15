@@ -9,6 +9,7 @@ import {
 } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { gradeColorClass, type Source } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Day 18 — Sub-score-faceted comparators.
 // Layer 5 archetype stack:
@@ -216,6 +217,19 @@ export default async function CompareDimensionPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Compare", url: "https://sourcescore.org/compare/" },
+              { name: `${a.name} vs ${b.name}`, url: `https://sourcescore.org/compare/${slug}/` },
+              { name: dim.short, url: `https://sourcescore.org/compare/${slug}/${dimension}/` },
+            ])
+          ),
+        }}
       />
 
       {/* Breadcrumbs */}

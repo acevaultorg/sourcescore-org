@@ -12,6 +12,7 @@ import {
 } from "@/data/best-lists";
 import { categorySlug } from "@/data/sources";
 import { gradeColorClass } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Day 25 — Best-list × dimension faceted leaderboards.
 // Same source pool as the parent /best/<slug>/ page, re-sorted by ONE
@@ -159,6 +160,19 @@ export default async function BestListDimensionPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Best lists", url: "https://sourcescore.org/best/" },
+              { name: list.intent, url: `https://sourcescore.org/best/${slug}/` },
+              { name: `By ${dimMeta.short}`, url: `https://sourcescore.org/best/${slug}/${dimSegment}/` },
+            ])
+          ),
+        }}
       />
 
       {/* Breadcrumbs */}

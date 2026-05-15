@@ -9,6 +9,7 @@ import {
 import { ALL_DIMENSIONS, DIMENSION_META } from "@/data/best-lists";
 import { gradeColorClass } from "@/lib/types";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Day 28 — Per-category top-10 fixed-N leaderboard.
 // Distinct from Day 20 `/category/<slug>/<dim>/` which lists ALL sources
@@ -142,6 +143,19 @@ export default async function CategoryTopNPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Sources", url: "https://sourcescore.org/sources/" },
+              { name: category, url: `https://sourcescore.org/category/${slug}/` },
+              { name: "Top 10", url: `https://sourcescore.org/category/${slug}/top-10/` },
+            ])
+          ),
+        }}
       />
 
       {/* Breadcrumbs */}

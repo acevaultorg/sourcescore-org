@@ -8,6 +8,7 @@ import {
 } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { allGrades, gradeSlug, gradeRange, gradeColorClass } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Programmatic-SEO category pages — one per unique category in the dataset.
 // Each is a fully static page rendered at build time with generateStaticParams.
@@ -56,6 +57,18 @@ export default async function CategoryPage({ params }: PageProps) {
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Sources", url: "https://sourcescore.org/sources/" },
+              { name: category, url: `https://sourcescore.org/category/${slug}/` },
+            ])
+          ),
+        }}
+      />
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>

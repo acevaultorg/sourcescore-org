@@ -17,6 +17,7 @@ import {
   gradeColorClass,
   type GradeLetter,
 } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Cross-faceted programmatic-SEO route — /category/<cat>/grade/<letter>/.
 // Targets long-tail queries like "A-grade news sources for AI citation",
@@ -148,6 +149,20 @@ export default async function CategoryGradeFacetPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Sources", url: "https://sourcescore.org/sources/" },
+              { name: category, url: `https://sourcescore.org/category/${slug}/` },
+              { name: grade, url: `https://sourcescore.org/grade/${letter}/` },
+              { name: `${grade}-grade ${category}`, url: `https://sourcescore.org/category/${slug}/grade/${letter}/` },
+            ])
+          ),
+        }}
       />
 
       {/* Breadcrumbs */}

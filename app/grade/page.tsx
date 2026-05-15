@@ -7,6 +7,7 @@ import {
   gradeRange,
   gradeColorClass,
 } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: { absolute: "Source grading scale — A+ to F on the SourceScore Index" },
@@ -22,6 +23,17 @@ export default function GradeLandingPage() {
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Grades", url: "https://sourcescore.org/grade/" },
+            ])
+          ),
+        }}
+      />
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>

@@ -11,6 +11,7 @@ import {
   gradeColorClass,
   type GradeLetter,
 } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Programmatic-SEO grade pages — one per letter (a-plus, a, b, c, d, f).
 // Targets queries like "what sources score A+ on AI citation quality",
@@ -179,6 +180,18 @@ export default async function GradePage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Grades", url: "https://sourcescore.org/grade/" },
+              { name: grade, url: `https://sourcescore.org/grade/${letter}/` },
+            ])
+          ),
+        }}
       />
 
       {/* Breadcrumbs */}

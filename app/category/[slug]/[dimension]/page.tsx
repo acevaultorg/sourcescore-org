@@ -9,6 +9,7 @@ import {
 } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { gradeColorClass } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Day 20 — Category × dimension intersection pages.
 // Layer 5 archetype stack:
@@ -203,6 +204,19 @@ export default async function CategoryDimensionPage({ params }: PageProps) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
         />
       )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Sources", url: "https://sourcescore.org/sources/" },
+              { name: category, url: `https://sourcescore.org/category/${slug}/` },
+              { name: dim.short, url: `https://sourcescore.org/category/${slug}/${dimension}/` },
+            ])
+          ),
+        }}
+      />
 
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2 flex-wrap">
         <a href="/" className="hover:text-text">SourceScore</a>

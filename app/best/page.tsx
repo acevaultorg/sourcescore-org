@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { bestLists } from "@/data/best-lists";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: { absolute: "Best-of lists — SourceScore" },
@@ -11,6 +12,17 @@ export const metadata: Metadata = {
 export default function BestLandingPage() {
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Best lists", url: "https://sourcescore.org/best/" },
+            ])
+          ),
+        }}
+      />
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>

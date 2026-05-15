@@ -5,6 +5,7 @@ import { comparisonsForSource } from "@/data/comparisons";
 import { ALL_DIMENSIONS, DIMENSION_META } from "@/data/best-lists";
 import { gradeColorClass } from "@/lib/types";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Day 29 — Per-source peers hub.
 // Auto-computed nearest-neighbor peer group: 5 closest sources by
@@ -170,6 +171,19 @@ export default async function SourcePeersPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Sources", url: "https://sourcescore.org/sources/" },
+              { name: me.name, url: `https://sourcescore.org/source/${slug}/` },
+              { name: "Peers", url: `https://sourcescore.org/source/${slug}/peers/` },
+            ])
+          ),
+        }}
       />
 
       {/* Breadcrumbs */}

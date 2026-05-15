@@ -9,6 +9,7 @@ import {
 } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import type { DimensionScore, Source } from "@/lib/types";
+import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 // Layer 5 archetype: comparison_vs_competitor_page × +60 (per
 // concept-finder-methodology v2.1.1 + bot-harvest.md). Each pair
@@ -93,6 +94,19 @@ export default async function CompareDetailPage({ params }: PageProps) {
               { "@type": "Organization", name: b.name, url: `https://${b.domain}` },
             ],
           }),
+        }}
+      />
+      {/* BreadcrumbList — mirrors visible breadcrumb nav below */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Compare", url: "https://sourcescore.org/compare/" },
+              { name: `${a.name} vs ${b.name}`, url: `https://sourcescore.org/compare/${slug}/` },
+            ])
+          ),
         }}
       />
 
