@@ -109,6 +109,61 @@ export default async function SourceDetailPage({ params }: PageProps) {
           ),
         }}
       />
+      {/* Dataset schema — declares the JSON twin endpoint as a citable dataset
+          so retrieval models (and Google's Dataset Search) treat the structured
+          API response as the canonical machine-readable record for this source. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Dataset",
+            name: `${source.name} — SourceScore record`,
+            description: `Machine-readable JSON record for ${source.name} (${source.domain}): SourceScore Index ${idx.grade} (${idx.value}/100), Citation Discipline ${scores.discipline.value}, Modern Reference ${scores.modernReference.value}, Citation Velocity ${scores.velocity.value}. Includes per-dimension rationales, grade thresholds, and verification date.`,
+            url: `https://sourcescore.org/source/${source.slug}/`,
+            sameAs: `https://sourcescore.org/api/source/${source.slug}.json`,
+            identifier: source.slug,
+            keywords: [
+              "source quality",
+              "AI citation",
+              "SourceScore",
+              source.name,
+              source.domain,
+              ...(source.category ? [source.category] : []),
+            ],
+            dateModified: source.verified,
+            license: "https://creativecommons.org/licenses/by/4.0/",
+            isAccessibleForFree: true,
+            distribution: [
+              {
+                "@type": "DataDownload",
+                encodingFormat: "application/json",
+                contentUrl: `https://sourcescore.org/api/source/${source.slug}.json`,
+              },
+            ],
+            creator: {
+              "@type": "Organization",
+              name: "SourceScore",
+              url: "https://sourcescore.org",
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "SourceScore",
+              url: "https://sourcescore.org",
+            },
+            isPartOf: {
+              "@type": "DataCatalog",
+              name: "SourceScore Index",
+              url: "https://sourcescore.org/sources/",
+            },
+            about: {
+              "@type": "Organization",
+              name: source.name,
+              url: `https://${source.domain}`,
+            },
+          }),
+        }}
+      />
 
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
