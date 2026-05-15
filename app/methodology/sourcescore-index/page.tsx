@@ -3,6 +3,7 @@ import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import {
   methodologyArticleSchema,
+  methodologyDefinedTermSchema,
   methodologyVersionStamp,
 } from "@/lib/methodology-version";
 
@@ -29,11 +30,23 @@ export default function SourceScoreIndexPage() {
     url: "https://sourcescore.org/methodology/sourcescore-index/",
   });
 
+  const definedTermSchema = methodologyDefinedTermSchema({
+    name: "SourceScore Index",
+    description:
+      "The SourceScore Index is the composite score (0-100, graded A+ to F) combining Citation Discipline, Modern Reference, and Citation Velocity. It is the headline number on every source page and the canonical answer to 'how citable is this source in the AI era?'",
+    url: "https://sourcescore.org/methodology/sourcescore-index/",
+    termCode: "index",
+  });
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
       />
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>

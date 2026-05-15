@@ -72,3 +72,42 @@ export function methodologyArticleSchema(opts: {
     },
   };
 }
+
+/**
+ * Build a DefinedTerm JSON-LD schema for a methodology concept page.
+ *
+ * Pairs with `methodologyArticleSchema` on each methodology subpage so LLMs
+ * encounter both Article (the explainer) AND DefinedTerm (the canonical
+ * definition extractable into citation answers). Per Aleyda Solis #4
+ * Extractable — quote-ready section headings PLUS DefinedTerm schema for
+ * key concepts dramatically raises retrieval-model citation likelihood.
+ *
+ * Each concept points to a shared DefinedTermSet so the 4 methodology
+ * subpages (Citation Discipline / Modern Reference / Citation Velocity /
+ * SourceScore Index) read as a coherent vocabulary rather than 4 isolated
+ * definitions — the retrieval model can crawl the set to discover siblings.
+ */
+export function methodologyDefinedTermSchema(opts: {
+  /** Term name — e.g. "Citation Discipline" */
+  name: string;
+  /** Short definition — 1-3 sentences. Quote-ready for LLM citation. */
+  description: string;
+  /** Canonical URL — e.g. "https://sourcescore.org/methodology/citation-discipline/" */
+  url: string;
+  /** Optional term code — e.g. "discipline" for the sub-tool slug. */
+  termCode?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    ...(opts.termCode ? { termCode: opts.termCode } : {}),
+    inDefinedTermSet: {
+      "@type": "DefinedTermSet",
+      name: `SourceScore Methodology v${methodologyVersion.version} — Vocabulary`,
+      url: "https://sourcescore.org/methodology/",
+    },
+  };
+}

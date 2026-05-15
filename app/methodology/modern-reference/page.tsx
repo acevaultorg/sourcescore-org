@@ -3,6 +3,7 @@ import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import {
   methodologyArticleSchema,
+  methodologyDefinedTermSchema,
   methodologyVersionStamp,
 } from "@/lib/methodology-version";
 
@@ -28,11 +29,23 @@ export default function ModernReferencePage() {
     url: "https://sourcescore.org/methodology/modern-reference/",
   });
 
+  const definedTermSchema = methodologyDefinedTermSchema({
+    name: "Modern Reference",
+    description:
+      "Modern Reference measures how fit a source is for citation in the AI era: machine-readable structure, schema.org markup, stable canonical URLs, freshness signals, and JSON twin endpoints. Sources scoring high are the ones retrieval models can extract from cleanly.",
+    url: "https://sourcescore.org/methodology/modern-reference/",
+    termCode: "modern-reference",
+  });
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
       />
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>

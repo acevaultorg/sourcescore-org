@@ -3,6 +3,7 @@ import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import {
   methodologyArticleSchema,
+  methodologyDefinedTermSchema,
   methodologyVersionStamp,
 } from "@/lib/methodology-version";
 
@@ -28,11 +29,23 @@ export default function CitationDisciplinePage() {
     url: "https://sourcescore.org/methodology/citation-discipline/",
   });
 
+  const definedTermSchema = methodologyDefinedTermSchema({
+    name: "Citation Discipline",
+    description:
+      "Citation Discipline measures how rigorously a source backs each factual claim with a verifiable external source. It is the most heavily weighted of the three SourceScore sub-scores because AI retrieval models increasingly skip uncited claims at the page level.",
+    url: "https://sourcescore.org/methodology/citation-discipline/",
+    termCode: "discipline",
+  });
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
       />
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>

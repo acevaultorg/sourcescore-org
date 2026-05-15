@@ -3,6 +3,7 @@ import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import {
   methodologyArticleSchema,
+  methodologyDefinedTermSchema,
   methodologyVersionStamp,
 } from "@/lib/methodology-version";
 
@@ -28,11 +29,23 @@ export default function CitationVelocityPage() {
     url: "https://sourcescore.org/methodology/citation-velocity/",
   });
 
+  const definedTermSchema = methodologyDefinedTermSchema({
+    name: "Citation Velocity",
+    description:
+      "Citation Velocity measures how often a source is cited per week by tier-1 publications, peer-reviewed work, and AI retrieval engines. High velocity signals recency and ongoing relevance — the dimension where stale-but-accurate sources lose ground to actively-cited ones.",
+    url: "https://sourcescore.org/methodology/citation-velocity/",
+    termCode: "velocity",
+  });
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
       />
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>
