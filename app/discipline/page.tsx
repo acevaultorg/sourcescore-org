@@ -7,6 +7,10 @@ import {
   gradeRange,
   gradeSlug,
 } from "@/lib/types";
+import {
+  methodologyArticleSchema,
+  methodologyDefinedTermSchema,
+} from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: "Citation Discipline Score — how rigorously a source cites its evidence",
@@ -20,8 +24,33 @@ export default function DisciplinePage() {
   const gradeBuckets = allGrades
     .map((g) => ({ g, count: ranked.filter((s) => s.scores.discipline.grade === g).length }))
     .filter(({ count }) => count > 0);
+
+  const articleSchema = methodologyArticleSchema({
+    headline: "Citation Discipline Score — how rigorously a source cites its evidence",
+    description:
+      "Citation Discipline grades how strictly a source backs each factual claim with a verifiable source. One of the four SourceScore sub-tools.",
+    url: "https://sourcescore.org/discipline/",
+  });
+  // DefinedTerm points at the canonical methodology page so retrieval models
+  // can crawl to the full definition + worked examples after extraction here.
+  const definedTermSchema = methodologyDefinedTermSchema({
+    name: "Citation Discipline",
+    description:
+      "Citation Discipline measures how rigorously a source backs each factual claim with a verifiable external source. The most heavily weighted of the three SourceScore sub-scores because AI retrieval models increasingly skip uncited claims at the page level.",
+    url: "https://sourcescore.org/methodology/citation-discipline/",
+    termCode: "discipline",
+  });
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
+      />
       <div className="text-eyebrow text-brand mb-3">SourceScore sub-tool · 1 of 4</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Citation Discipline Score</h1>
       <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-6">

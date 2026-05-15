@@ -7,6 +7,10 @@ import {
   gradeRange,
   gradeSlug,
 } from "@/lib/types";
+import {
+  methodologyArticleSchema,
+  methodologyDefinedTermSchema,
+} from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: "Citation Velocity Tracker — how often a source is cited per week",
@@ -20,8 +24,31 @@ export default function VelocityPage() {
   const gradeBuckets = allGrades
     .map((g) => ({ g, count: ranked.filter((s) => s.scores.velocity.grade === g).length }))
     .filter(({ count }) => count > 0);
+
+  const articleSchema = methodologyArticleSchema({
+    headline: "Citation Velocity Tracker — how often a source is cited per week",
+    description:
+      "Citation Velocity tracks how often a source is cited by other tier-1 publications and AI engines per week.",
+    url: "https://sourcescore.org/velocity/",
+  });
+  const definedTermSchema = methodologyDefinedTermSchema({
+    name: "Citation Velocity",
+    description:
+      "Citation Velocity measures how often a source is cited per week by tier-1 publications, peer-reviewed work, and AI retrieval engines. High velocity signals recency and ongoing relevance — the dimension where stale-but-accurate sources lose ground to actively-cited ones.",
+    url: "https://sourcescore.org/methodology/citation-velocity/",
+    termCode: "velocity",
+  });
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
+      />
       <div className="text-eyebrow text-brand mb-3">SourceScore sub-tool · 3 of 4</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Citation Velocity Tracker</h1>
       <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-6">

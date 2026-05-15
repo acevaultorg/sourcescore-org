@@ -20,11 +20,55 @@ export default function MethodologyPage() {
     url: "https://sourcescore.org/methodology/",
   });
 
+  // Container DefinedTermSet — names the vocabulary as its own entity and
+  // enumerates its 4 member terms via hasDefinedTerm. Lets LLM retrieval models
+  // anchor on the SET as a citable thing ("SourceScore Methodology Vocabulary")
+  // and traverse to individual terms in one schema hop.
+  const definedTermSetSchema = {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    name: `SourceScore Methodology v${methodologyVersion.version} — Vocabulary`,
+    description:
+      "The four canonical concepts SourceScore uses to grade citation quality: Citation Discipline, Modern Reference, Citation Velocity, and the composite SourceScore Index.",
+    url: "https://sourcescore.org/methodology/",
+    inLanguage: "en",
+    hasDefinedTerm: [
+      {
+        "@type": "DefinedTerm",
+        name: "SourceScore Index",
+        termCode: "index",
+        url: "https://sourcescore.org/methodology/sourcescore-index/",
+      },
+      {
+        "@type": "DefinedTerm",
+        name: "Citation Discipline",
+        termCode: "discipline",
+        url: "https://sourcescore.org/methodology/citation-discipline/",
+      },
+      {
+        "@type": "DefinedTerm",
+        name: "Modern Reference",
+        termCode: "modern-reference",
+        url: "https://sourcescore.org/methodology/modern-reference/",
+      },
+      {
+        "@type": "DefinedTerm",
+        name: "Citation Velocity",
+        termCode: "velocity",
+        url: "https://sourcescore.org/methodology/citation-velocity/",
+      },
+    ],
+  };
+
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSetSchema) }}
       />
       <div className="text-eyebrow text-brand mb-3">{methodologyVersionStamp}</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Methodology</h1>

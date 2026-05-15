@@ -7,6 +7,10 @@ import {
   gradeRange,
   gradeSlug,
 } from "@/lib/types";
+import {
+  methodologyArticleSchema,
+  methodologyDefinedTermSchema,
+} from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: "Modern Citation Reference Score — fitness as a citation in the AI era",
@@ -20,8 +24,31 @@ export default function ModernReferencePage() {
   const gradeBuckets = allGrades
     .map((g) => ({ g, count: ranked.filter((s) => s.scores.modernReference.grade === g).length }))
     .filter(({ count }) => count > 0);
+
+  const articleSchema = methodologyArticleSchema({
+    headline: "Modern Citation Reference Score — fitness as a citation in the AI era",
+    description:
+      "Modern Reference grades how fit a source is for AI-era citation: machine-readable, schema-marked, structured, fresh.",
+    url: "https://sourcescore.org/modern-reference/",
+  });
+  const definedTermSchema = methodologyDefinedTermSchema({
+    name: "Modern Reference",
+    description:
+      "Modern Reference measures how fit a source is for citation in the AI era: machine-readable structure, schema.org markup, stable canonical URLs, freshness signals, and JSON twin endpoints. Sources scoring high are the ones retrieval models can extract from cleanly.",
+    url: "https://sourcescore.org/methodology/modern-reference/",
+    termCode: "modern-reference",
+  });
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
+      />
       <div className="text-eyebrow text-brand mb-3">SourceScore sub-tool · 2 of 4</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Modern Citation Reference</h1>
       <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-6">
