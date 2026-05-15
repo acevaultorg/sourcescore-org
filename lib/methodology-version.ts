@@ -111,3 +111,29 @@ export function methodologyDefinedTermSchema(opts: {
     },
   };
 }
+
+/**
+ * Build a BreadcrumbList JSON-LD schema matching the visible Breadcrumb nav
+ * on a page. Schema.org guidelines require BreadcrumbList to mirror the
+ * displayed breadcrumb trail (Google rich-results policy) — call this only
+ * on pages that DO render a visible breadcrumb nav.
+ *
+ * Items are an ordered list from root → current page. The current (final)
+ * page typically links to itself for stability; if your last UI segment is
+ * non-linked plain text, still pass its canonical URL so retrieval models
+ * have a stable anchor.
+ */
+export function breadcrumbListSchema(
+  items: Array<{ name: string; url: string }>
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}

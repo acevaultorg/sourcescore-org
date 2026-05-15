@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import {
+  breadcrumbListSchema,
   methodologyArticleSchema,
   methodologyDefinedTermSchema,
   methodologyVersionStamp,
@@ -36,6 +37,11 @@ export default function ModernReferencePage() {
     url: "https://sourcescore.org/methodology/modern-reference/",
     termCode: "modern-reference",
   });
+  const breadcrumbSchema = breadcrumbListSchema([
+    { name: "SourceScore", url: "https://sourcescore.org/" },
+    { name: "Methodology", url: "https://sourcescore.org/methodology/" },
+    { name: "Modern Reference", url: "https://sourcescore.org/methodology/modern-reference/" },
+  ]);
 
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
@@ -46,6 +52,10 @@ export default function ModernReferencePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>
