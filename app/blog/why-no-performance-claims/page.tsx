@@ -290,7 +290,7 @@ else:
           based on the prompt format. The discipline is the moat.
         </p>
         <p>
-          We&apos;d rather ship 100 claims that are right for the next
+          We&apos;d rather ship 91 claims that are right for the next
           decade than 10,000 that are right today and broken by Thursday.
         </p>
       </section>

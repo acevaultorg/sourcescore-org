@@ -15,7 +15,7 @@
 //   5. We DO publish foundational-paper / methodology-introduction claims
 //      because those are documented + dated + signed by their authors.
 //
-// Seed cohort (Day 1-9): 100 claims spanning 2015-2024 across model releases,
+// Seed cohort (Day 1-9): 91 claims spanning 2015-2024 across model releases,
 // foundational methods, datasets, and well-known organizations. Each has been
 // hand-verified against the cited sources on 2026-05-16.
 //
@@ -2272,37 +2272,6 @@ export const seedClaims: SeedClaim[] = [
   // ─── Batch 4 (Days 8-9 expansion): foundational methods + datasets + companies ─
   {
     vertical: "ai-ml",
-    subject: "Chain-of-Thought Prompting",
-    predicate: "introduced_in_paper",
-    object: "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models (Wei et al., 2022)",
-    confidence: 1.0,
-    sources: [
-      {
-        url: "https://arxiv.org/abs/2201.11903",
-        title: "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
-        publisher: "arXiv (Wei, Wang, Schuurmans, Bosma, Ichter, Xia, Chi, Le, Zhou)",
-        publishedDate: "2022-01-28",
-        accessedDate: TODAY,
-        type: "preprint",
-        excerpt:
-          "We explore how generating a chain of thought—a series of intermediate reasoning steps—significantly improves the ability of large language models to perform complex reasoning.",
-      },
-      {
-        url: "https://research.google/pubs/chain-of-thought-prompting-elicits-reasoning-in-large-language-models/",
-        title: "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
-        publisher: "Google Research",
-        publishedDate: "2022-01-28",
-        accessedDate: TODAY,
-        type: "official-blog",
-      },
-    ],
-    publishedAt: PUBLISHED_AT,
-    lastVerified: TODAY,
-    methodologyVersion: METHODOLOGY,
-    tags: ["chain-of-thought", "cot", "reasoning", "prompting", "foundational", "2022", "wei"],
-  },
-  {
-    vertical: "ai-ml",
     subject: "ReAct (Reasoning + Acting)",
     predicate: "introduced_in_paper",
     object: "ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2022)",
@@ -2396,68 +2365,6 @@ export const seedClaims: SeedClaim[] = [
   },
   {
     vertical: "ai-ml",
-    subject: "Direct Preference Optimization (DPO)",
-    predicate: "introduced_in_paper",
-    object: "Direct Preference Optimization: Your Language Model is Secretly a Reward Model (Rafailov et al., 2023)",
-    confidence: 1.0,
-    sources: [
-      {
-        url: "https://arxiv.org/abs/2305.18290",
-        title: "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
-        publisher: "arXiv (Rafailov, Sharma, Mitchell, Ermon, Manning, Finn)",
-        publishedDate: "2023-05-29",
-        accessedDate: TODAY,
-        type: "preprint",
-        excerpt:
-          "We introduce a new parameterization of the reward model in RLHF that enables extraction of the corresponding optimal policy in closed form, allowing us to solve the standard RLHF problem with only a simple classification loss.",
-      },
-      {
-        url: "https://papers.nips.cc/paper_files/paper/2023/hash/a85b405ed65c6477a4fe8302b5e06ce7-Abstract-Conference.html",
-        title: "Direct Preference Optimization (NeurIPS 2023 proceedings)",
-        publisher: "NeurIPS Foundation",
-        publishedDate: "2023-12-10",
-        accessedDate: TODAY,
-        type: "peer-reviewed",
-      },
-    ],
-    publishedAt: PUBLISHED_AT,
-    lastVerified: TODAY,
-    methodologyVersion: METHODOLOGY,
-    tags: ["dpo", "rlhf", "alignment", "preference-learning", "foundational", "2023", "nips"],
-  },
-  {
-    vertical: "ai-ml",
-    subject: "FlashAttention",
-    predicate: "introduced_in_paper",
-    object: "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness (Dao et al., 2022)",
-    confidence: 1.0,
-    sources: [
-      {
-        url: "https://arxiv.org/abs/2205.14135",
-        title: "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness",
-        publisher: "arXiv (Dao, Fu, Ermon, Rudra, Ré)",
-        publishedDate: "2022-05-27",
-        accessedDate: TODAY,
-        type: "preprint",
-        excerpt:
-          "We propose FlashAttention, an IO-aware exact attention algorithm that uses tiling to reduce the number of memory reads/writes between GPU high bandwidth memory (HBM) and GPU on-chip SRAM.",
-      },
-      {
-        url: "https://github.com/Dao-AILab/flash-attention",
-        title: "Dao-AILab/flash-attention — official implementation",
-        publisher: "Tri Dao / Stanford",
-        publishedDate: "2022-05-27",
-        accessedDate: TODAY,
-        type: "github-release",
-      },
-    ],
-    publishedAt: PUBLISHED_AT,
-    lastVerified: TODAY,
-    methodologyVersion: METHODOLOGY,
-    tags: ["flash-attention", "attention", "inference", "training", "foundational", "2022", "dao"],
-  },
-  {
-    vertical: "ai-ml",
     subject: "Rotary Position Embedding (RoPE)",
     predicate: "introduced_in_paper",
     object: "RoFormer: Enhanced Transformer with Rotary Position Embedding (Su et al., 2021)",
@@ -2548,37 +2455,6 @@ export const seedClaims: SeedClaim[] = [
     lastVerified: TODAY,
     methodologyVersion: METHODOLOGY,
     tags: ["sentencepiece", "tokenization", "google", "foundational", "2018"],
-  },
-  {
-    vertical: "ai-ml",
-    subject: "T5 (Text-to-Text Transfer Transformer)",
-    predicate: "introduced_in_paper",
-    object: "Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer (Raffel et al., 2019)",
-    confidence: 1.0,
-    sources: [
-      {
-        url: "https://arxiv.org/abs/1910.10683",
-        title: "Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer",
-        publisher: "arXiv (Raffel, Shazeer, Roberts, Lee, Narang, Matena, Zhou, Li, Liu)",
-        publishedDate: "2019-10-23",
-        accessedDate: TODAY,
-        type: "preprint",
-        excerpt:
-          "We introduce a unified framework that converts all text-based language problems into a text-to-text format. Our systematic study compares pre-training objectives, architectures, unlabeled datasets, transfer approaches, and other factors on dozens of language understanding tasks.",
-      },
-      {
-        url: "https://github.com/google-research/text-to-text-transfer-transformer",
-        title: "google-research/text-to-text-transfer-transformer — official code",
-        publisher: "Google Research",
-        publishedDate: "2019-10-23",
-        accessedDate: TODAY,
-        type: "github-release",
-      },
-    ],
-    publishedAt: PUBLISHED_AT,
-    lastVerified: TODAY,
-    methodologyVersion: METHODOLOGY,
-    tags: ["t5", "encoder-decoder", "transformer", "transfer-learning", "foundational", "2019", "google"],
   },
   {
     vertical: "ai-ml",
@@ -2704,37 +2580,6 @@ export const seedClaims: SeedClaim[] = [
   },
   {
     vertical: "ai-ml",
-    subject: "Whisper",
-    predicate: "released_on",
-    object: "2022-09-21",
-    confidence: 1.0,
-    sources: [
-      {
-        url: "https://openai.com/research/whisper",
-        title: "Introducing Whisper",
-        publisher: "OpenAI",
-        publishedDate: "2022-09-21",
-        accessedDate: TODAY,
-        type: "official-blog",
-        excerpt:
-          "We've trained and are open-sourcing a neural net called Whisper that approaches human level robustness and accuracy on English speech recognition.",
-      },
-      {
-        url: "https://cdn.openai.com/papers/whisper.pdf",
-        title: "Robust Speech Recognition via Large-Scale Weak Supervision (Whisper paper)",
-        publisher: "OpenAI",
-        publishedDate: "2022-09-21",
-        accessedDate: TODAY,
-        type: "preprint",
-      },
-    ],
-    publishedAt: PUBLISHED_AT,
-    lastVerified: TODAY,
-    methodologyVersion: METHODOLOGY,
-    tags: ["whisper", "speech-recognition", "asr", "openai", "released_on", "2022"],
-  },
-  {
-    vertical: "ai-ml",
     subject: "DALL·E 2",
     predicate: "released_on",
     object: "2022-04-06",
@@ -2792,35 +2637,6 @@ export const seedClaims: SeedClaim[] = [
     lastVerified: TODAY,
     methodologyVersion: METHODOLOGY,
     tags: ["stable-diffusion", "image-generation", "stability-ai", "released_on", "2022"],
-  },
-  {
-    vertical: "ai-ml",
-    subject: "Stability AI",
-    predicate: "founded_in",
-    object: "2020",
-    confidence: 0.95,
-    sources: [
-      {
-        url: "https://en.wikipedia.org/wiki/Stability_AI",
-        title: "Stability AI — Wikipedia",
-        publisher: "Wikipedia",
-        accessedDate: TODAY,
-        type: "docs",
-        excerpt:
-          "Stability AI Ltd is a British artificial intelligence company, founded in 2020 by Emad Mostaque.",
-      },
-      {
-        url: "https://stability.ai/about",
-        title: "About — Stability AI",
-        publisher: "Stability AI",
-        accessedDate: TODAY,
-        type: "official-blog",
-      },
-    ],
-    publishedAt: PUBLISHED_AT,
-    lastVerified: TODAY,
-    methodologyVersion: METHODOLOGY,
-    tags: ["stability-ai", "company", "founded", "2020"],
   },
   {
     vertical: "ai-ml",
@@ -2884,35 +2700,6 @@ export const seedClaims: SeedClaim[] = [
   },
   {
     vertical: "ai-ml",
-    subject: "Mistral AI",
-    predicate: "founded_in",
-    object: "2023",
-    confidence: 0.95,
-    sources: [
-      {
-        url: "https://mistral.ai/news/about-mistral-ai/",
-        title: "About Mistral AI",
-        publisher: "Mistral AI",
-        accessedDate: TODAY,
-        type: "official-blog",
-      },
-      {
-        url: "https://en.wikipedia.org/wiki/Mistral_AI",
-        title: "Mistral AI — Wikipedia",
-        publisher: "Wikipedia",
-        accessedDate: TODAY,
-        type: "docs",
-        excerpt:
-          "Mistral AI is a French artificial intelligence (AI) startup, headquartered in Paris. It was founded in April 2023 by Arthur Mensch, Guillaume Lample, and Timothée Lacroix.",
-      },
-    ],
-    publishedAt: PUBLISHED_AT,
-    lastVerified: TODAY,
-    methodologyVersion: METHODOLOGY,
-    tags: ["mistral", "company", "founded", "2023", "france"],
-  },
-  {
-    vertical: "ai-ml",
     subject: "AI21 Labs",
     predicate: "founded_in",
     object: "2017",
@@ -2939,66 +2726,6 @@ export const seedClaims: SeedClaim[] = [
     lastVerified: TODAY,
     methodologyVersion: METHODOLOGY,
     tags: ["ai21", "ai21-labs", "company", "founded", "2017", "israel"],
-  },
-  {
-    vertical: "ai-ml",
-    subject: "Hugging Face",
-    predicate: "founded_in",
-    object: "2016",
-    confidence: 1.0,
-    sources: [
-      {
-        url: "https://huggingface.co/huggingface",
-        title: "Hugging Face — official profile",
-        publisher: "Hugging Face",
-        accessedDate: TODAY,
-        type: "official-blog",
-      },
-      {
-        url: "https://en.wikipedia.org/wiki/Hugging_Face",
-        title: "Hugging Face — Wikipedia",
-        publisher: "Wikipedia",
-        accessedDate: TODAY,
-        type: "docs",
-        excerpt:
-          "Hugging Face, Inc. is an American company incorporated under the Delaware General Corporation Law and based in New York City that develops computation tools for building applications using machine learning. … It was founded in 2016 by French entrepreneurs Clément Delangue, Julien Chaumond, and Thomas Wolf.",
-      },
-    ],
-    publishedAt: PUBLISHED_AT,
-    lastVerified: TODAY,
-    methodologyVersion: METHODOLOGY,
-    tags: ["hugging-face", "company", "founded", "2016"],
-  },
-  {
-    vertical: "ai-ml",
-    subject: "Retrieval-Augmented Generation (RAG)",
-    predicate: "introduced_in_paper",
-    object: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (Lewis et al., 2020)",
-    confidence: 1.0,
-    sources: [
-      {
-        url: "https://arxiv.org/abs/2005.11401",
-        title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-        publisher: "arXiv (Lewis, Perez, Piktus, Petroni, Karpukhin, Goyal, Küttler, Lewis, Yih, Rocktäschel, Riedel, Kiela)",
-        publishedDate: "2020-05-22",
-        accessedDate: TODAY,
-        type: "preprint",
-        excerpt:
-          "We introduce RAG models where the parametric memory is a pre-trained seq2seq model and the non-parametric memory is a dense vector index of Wikipedia, accessed with a pre-trained neural retriever.",
-      },
-      {
-        url: "https://papers.nips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html",
-        title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (NeurIPS 2020 proceedings)",
-        publisher: "NeurIPS Foundation",
-        publishedDate: "2020-12-06",
-        accessedDate: TODAY,
-        type: "peer-reviewed",
-      },
-    ],
-    publishedAt: PUBLISHED_AT,
-    lastVerified: TODAY,
-    methodologyVersion: METHODOLOGY,
-    tags: ["rag", "retrieval", "grounding", "foundational", "2020", "nips", "meta"],
   },
 ];
 
