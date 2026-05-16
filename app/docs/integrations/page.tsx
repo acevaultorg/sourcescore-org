@@ -56,6 +56,20 @@ const guides = [
     summary:
       "Stanford's compound-AI-system framework. Custom dspy.Retrieve backed by the VERITAS catalog + verify-and-flag post-processor module. Compatible with DSPy optimizers — they tune prompts around the retriever, not the catalog.",
   },
+  {
+    slug: "pydantic-ai",
+    name: "Pydantic AI",
+    status: "ready",
+    summary:
+      "Type-safe claim verification as a Pydantic AI tool. The model calls verify_claim() with a structured input, gets back a typed VerificationResult envelope. Validators catch errors early; downstream code is type-safe.",
+  },
+  {
+    slug: "anthropic-sdk",
+    name: "Anthropic SDK",
+    status: "ready",
+    summary:
+      "Expose VERITAS as a Claude tool via the Anthropic SDK. tool_use → execute → tool_result loop. Python + TypeScript examples. Pairs with a system prompt that instructs Claude to self-verify before asserting.",
+  },
 ];
 
 export default function IntegrationsIndex() {

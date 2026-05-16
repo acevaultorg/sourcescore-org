@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "feat",
+    title: "/docs/integrations/pydantic-ai/ + /docs/integrations/anthropic-sdk/ — 6th + 7th framework guides",
+    body:
+      "Two new drop-in integration guides. Pydantic AI: type-safe verification via VerifyClaimInput → VerificationResult Pydantic models; agents emit structured tool calls; downstream code is type-safe with field validators catching confidence drift. Covers 3 patterns (verify-claim tool · structured agent output with required verification · multi-claim parallel verification). Anthropic SDK: Claude tool-use protocol with the tool_use → execute → tool_result loop, in both Python and TypeScript. Includes a system-prompt pattern that makes Claude self-verify before asserting facts. TechArticle + BreadcrumbList schema on both. Integrations index now lists 7 frameworks total (LangChain · LlamaIndex · OpenAI tools · Vercel AI SDK · DSPy · Pydantic AI · Anthropic SDK).",
+  },
+  {
+    date: "2026-05-16",
+    kind: "feat",
     title: "/docs/integrations/dspy/ — 5th framework integration guide",
     body:
       "DSPy (Stanford) is the fastest-growing compound-AI-system framework in 2026. Drop-in guide covers two patterns: (1) custom dspy.Retrieve backed by the VERITAS catalog — returns verified claims as DSPy Examples with claim_id, confidence, and canonical URL metadata; (2) VeritasVerify post-processor module — runs after answer generation, returns verified/unverified split + verification_rate (which doubles as a DSPy-optimizer metric for tuning the program toward more verifiable assertions). Includes a multi-hop ProgramOfThought composition example. TechArticle + BreadcrumbList schema. Compounds with the existing 4 guides (LangChain · LlamaIndex · OpenAI tool-calls · Vercel AI SDK).",
