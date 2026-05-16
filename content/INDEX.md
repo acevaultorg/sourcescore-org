@@ -70,7 +70,7 @@ This is brain's projection. Operator's actual mileage depends on:
 Before posting any content from this folder:
 
 - [ ] Verify the URLs cited in the post are live (load each one in browser, check 200)
-- [ ] Verify the count number (currently `126`) matches `https://sourcescore.org/api/v1/claims.json | jq '.count'`
+- [ ] Verify the count number (currently `136`) matches `https://sourcescore.org/api/v1/claims.json | jq '.count'`
 - [ ] Verify the Stripe checkout flow on /pricing/ works (operator's payment gate)
 - [ ] Operator's social-account profile is updated (bio mentions SourceScore + link)
 - [ ] OG image at /og-default.png or per-page OG renders correctly when URL is pasted in a Slack/Discord preview

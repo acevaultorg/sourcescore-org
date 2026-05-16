@@ -57,6 +57,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "data",
+    title: "Catalog 126 → 136 (Batch 9 — encoder-decoder pioneers + open-source inference)",
+    body:
+      "10 new hand-verified claims, ≥2 primary sources each. Encoder-decoder pioneers: BART (Lewis et al., Facebook AI 2019) — denoising sequence-to-sequence pretraining; GloVe (Pennington, Socher, Manning, Stanford NLP 2014) — global vectors for word representation. Multimodal: Flamingo (Alayrac et al., DeepMind 2022) — few-shot vision-language model. Tool-use foundational: Toolformer (Schick et al., Meta AI 2023) — self-supervised LLM tool-use. Open-source inference ecosystem: vLLM (Kwon et al., UC Berkeley 2023) — PagedAttention high-throughput serving; llama.cpp (Georgi Gerganov 2023-03-10) — pure C/C++ LLM inference; Ollama (2023-07-18) — local LLM runtime. Evaluation: Chatbot Arena (Chiang et al., LMSYS UC Berkeley 2024) — human-preference LLM leaderboard. 2024 model: Phi-4 (Microsoft Research 2024-12-12) — 14B-parameter synthetic-data-trained SLM. Quantization: GPTQ (Frantar et al., IST Austria 2022) — post-training weight quantization.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "data",
     title: "Catalog 116 → 126 (Batch 8 — pioneers, RL milestones, 2024-2025 frontier)",
     body:
       "10 new hand-verified claims, ≥2 primary sources each. Foundational pioneers: LSTM (Hochreiter & Schmidhuber, Neural Computation 1997) — gradient-based recurrent architecture that bridged 1000+ timestep dependencies. RL milestones: AlphaGo (DeepMind, Nature 2016) — defeated Lee Sedol 4-1 in March 2016; AlphaZero (DeepMind, Science 2018) — mastered chess + shogi + Go from rules + self-play alone. BERT family: RoBERTa (Liu et al., Facebook AI 2019) — robustly optimized BERT pretraining; DistilBERT (Sanh et al., Hugging Face 2019) — 40% smaller, 60% faster, 97% capability retention via knowledge distillation. Coding assistant: GitHub Copilot (GitHub + OpenAI, 2021-06-29) — technical-preview public release. 2024-2025 frontier: OLMo (Allen Institute for AI, 2024-02) — fully-open language model (weights + data + training code); Gemini Ultra (Google DeepMind, 2024-02-08) — Gemini Advanced subscription tier launch; DeepSeek-R1 (DeepSeek-AI, 2025-01-20) — reasoning chain-of-thought via reinforcement learning; Stable Diffusion 3 Medium (Stability AI, 2024-06-12) — rectified flow text-to-image. Coverage now spans 1997-2025.",
