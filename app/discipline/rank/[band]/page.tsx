@@ -7,6 +7,7 @@ import {
   sourcesAtDimRankBand,
   type RankBand,
 } from "@/components/DimensionRankBand";
+import { datasetSchema } from "@/lib/methodology-version";
 
 // Day 22 — Per-dim rank-band leaderboards: /discipline/rank/<band>/
 // where band ∈ {top-10, top-25, bottom-10}.
@@ -51,5 +52,38 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function DisciplineRankBandPage({ params }: PageProps) {
   const { band } = await params;
   if (!ALL_RANK_BANDS.includes(band as RankBand)) notFound();
-  return <DimensionRankBand dim="discipline" band={band as RankBand} />;
+  const bm = RANK_BAND_META[band as RankBand];
+  const list = sourcesAtDimRankBand("discipline", band as RankBand);
+  const leader = bm.direction === "top" ? list[0] : list[list.length - 1];
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${bm.label} sources on Citation Discipline`,
+              description: `Machine-readable JSON record of ${list.length} sources in the "${bm.label}" rank band on Citation Discipline.${leader ? ` Leader: ${leader.name} (${leader.scores.discipline.value}/100).` : ""}`,
+              url: `https://sourcescore.org/discipline/rank/${band}/`,
+              apiUrl: `https://sourcescore.org/api/discipline/rank/${band}.json`,
+              identifier: `discipline-rank-${band}`,
+              keywords: [
+                "Citation Discipline",
+                "AI citation",
+                "SourceScore",
+                bm.label,
+                "leaderboard",
+              ],
+              dateModified: leader?.verified ?? "2026-04-29",
+              isPartOf: {
+                name: "SourceScore Citation Discipline rankings",
+                url: "https://sourcescore.org/discipline/",
+              },
+            })
+          ),
+        }}
+      />
+      <DimensionRankBand dim="discipline" band={band as RankBand} />
+    </>
+  );
 }

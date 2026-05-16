@@ -7,6 +7,7 @@ import {
   sourcesAtDimRankBand,
   type RankBand,
 } from "@/components/DimensionRankBand";
+import { datasetSchema } from "@/lib/methodology-version";
 
 // Day 22 — Per-dim rank-band leaderboards: /velocity/rank/<band>/
 // where band ∈ {top-10, top-25, bottom-10}.
@@ -51,5 +52,38 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function VelocityRankBandPage({ params }: PageProps) {
   const { band } = await params;
   if (!ALL_RANK_BANDS.includes(band as RankBand)) notFound();
-  return <DimensionRankBand dim="velocity" band={band as RankBand} />;
+  const bm = RANK_BAND_META[band as RankBand];
+  const list = sourcesAtDimRankBand("velocity", band as RankBand);
+  const leader = bm.direction === "top" ? list[0] : list[list.length - 1];
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${bm.label} sources on Citation Velocity`,
+              description: `Machine-readable JSON record of ${list.length} sources in the "${bm.label}" rank band on Citation Velocity.${leader ? ` Leader: ${leader.name} (${leader.scores.velocity.value}/100).` : ""}`,
+              url: `https://sourcescore.org/velocity/rank/${band}/`,
+              apiUrl: `https://sourcescore.org/api/velocity/rank/${band}.json`,
+              identifier: `velocity-rank-${band}`,
+              keywords: [
+                "Citation Velocity",
+                "AI citation",
+                "SourceScore",
+                bm.label,
+                "leaderboard",
+              ],
+              dateModified: leader?.verified ?? "2026-04-29",
+              isPartOf: {
+                name: "SourceScore Citation Velocity rankings",
+                url: "https://sourcescore.org/velocity/",
+              },
+            })
+          ),
+        }}
+      />
+      <DimensionRankBand dim="velocity" band={band as RankBand} />
+    </>
+  );
 }
