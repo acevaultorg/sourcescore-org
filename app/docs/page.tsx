@@ -490,6 +490,12 @@ Content-Type: application/json
             — Next.js streamText + tool() patterns for TypeScript apps
           </li>
           <li>
+            <a href="/docs/integrations/dspy/" className="underline">
+              DSPy
+            </a>{" "}
+            — Stanford&apos;s compound-AI-system framework; custom Retrieve + verify-post-processor modules
+          </li>
+          <li>
             <a href="/docs/integrations/" className="underline">
               All integrations →
             </a>

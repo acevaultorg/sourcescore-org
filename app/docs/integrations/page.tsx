@@ -49,6 +49,13 @@ const guides = [
     summary:
       "Wire VERITAS into Next.js + AI SDK chains. Two patterns: tool() function-calling via streamText, and post-stream verification for free-form completions. TypeScript-first.",
   },
+  {
+    slug: "dspy",
+    name: "DSPy",
+    status: "ready",
+    summary:
+      "Stanford's compound-AI-system framework. Custom dspy.Retrieve backed by the VERITAS catalog + verify-and-flag post-processor module. Compatible with DSPy optimizers — they tune prompts around the retriever, not the catalog.",
+  },
 ];
 
 export default function IntegrationsIndex() {

@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "feat",
+    title: "/docs/integrations/dspy/ — 5th framework integration guide",
+    body:
+      "DSPy (Stanford) is the fastest-growing compound-AI-system framework in 2026. Drop-in guide covers two patterns: (1) custom dspy.Retrieve backed by the VERITAS catalog — returns verified claims as DSPy Examples with claim_id, confidence, and canonical URL metadata; (2) VeritasVerify post-processor module — runs after answer generation, returns verified/unverified split + verification_rate (which doubles as a DSPy-optimizer metric for tuning the program toward more verifiable assertions). Includes a multi-hop ProgramOfThought composition example. TechArticle + BreadcrumbList schema. Compounds with the existing 4 guides (LangChain · LlamaIndex · OpenAI tool-calls · Vercel AI SDK).",
+  },
+  {
+    date: "2026-05-16",
+    kind: "feat",
     title: "/concepts/evaluation-harness/ — 5th pillar (why benchmark scores vary across harnesses)",
     body:
       "Explainer on evaluation harnesses (LM Eval Harness · HELM · BIG-bench · lab-internal) and why the same model scores 4-10 points apart on the same nominal benchmark. Six axes of variation covered: prompt format, scoring method (log-likelihood vs generate-then-parse), decoding parameters, output parsing, benchmark version, contamination handling. Includes the 6-question checklist for reading benchmark claims honestly, plus production-decision implications (build your own eval, triangulate across 3+ harnesses, re-evaluate after frontier-model updates). Ties back to /blog/why-no-performance-claims/ — the methodology reason VERITAS excludes performance-comparison claims. TechArticle + DefinedTerm + BreadcrumbList schema.",
