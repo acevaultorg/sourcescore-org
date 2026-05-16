@@ -26,6 +26,13 @@ const concepts = [
       "What it means to ground a language model's output in verified sources, the three patterns that work, and where VERITAS fits.",
     status: "live",
   },
+  {
+    slug: "hallucination",
+    title: "LLM hallucination",
+    summary:
+      "Five categories of LLM hallucination, the six root causes, measured rates by query type, and the mitigation ladder from prompt engineering to signed-claim verification.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {
