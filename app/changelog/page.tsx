@@ -35,6 +35,13 @@ type Entry = {
 const entries: Entry[] = [
   {
     date: "2026-05-16",
+    kind: "data",
+    title: "Catalog 91 → 102 (Batch 5 — foundational methods, benchmarks, vector DB companies)",
+    body:
+      "11 new hand-verified claims, each with ≥2 primary sources. Foundational methods: ELMo (Peters et al., 2018), Latent Diffusion Models (Rombach et al., 2021), ELECTRA (Clark et al., 2020), Codex (Chen et al., 2021). Models: GPT-3 introduced_in_paper (Brown et al., 2020) — adds the foundational-paper predicate to the existing GPT-3 parameter_count claim. Benchmarks: GLUE (Wang et al., 2018), SuperGLUE (Wang et al., 2019). Vector DB companies: Pinecone (2019), Weaviate (2019), Qdrant (2021). Inference platforms: Replicate (2019).",
+  },
+  {
+    date: "2026-05-16",
     kind: "feat",
     title: "/glossary/ — 35-term AI/ML glossary with DefinedTermSet schema",
     body:
