@@ -100,6 +100,7 @@ const veritasSection = totalClaims > 0
 
 > Signed, sourced, citable claims about AI/ML research for grounded retrieval. v0.1 publishes ${totalClaims} hand-verified claims; each has 2+ primary sources and an HMAC-SHA256 signature. Free tier: 1,000 claims/mo, no auth.
 
+- https://sourcescore.org/playground/ — interactive in-browser /api/v1/verify demo (no signup)
 - https://sourcescore.org/quickstart/ — 5-minute self-serve onboarding (HowTo schema)
 - https://sourcescore.org/claims/ — claim browser, indexed catalog
 - https://sourcescore.org/claims/<id>/ — per-claim verification page (Article + DefinedTerm + Dataset schema)

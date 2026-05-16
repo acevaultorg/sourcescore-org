@@ -117,8 +117,14 @@ export default async function ClaimsIndexPage() {
         </p>
         <div className="mt-6 flex flex-wrap gap-3 text-sm">
           <a
-            href="/quickstart/"
+            href="/playground/"
             className="px-4 py-2 bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 rounded font-medium hover:bg-zinc-700 dark:hover:bg-zinc-300"
+          >
+            Try the playground
+          </a>
+          <a
+            href="/quickstart/"
+            className="px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900"
           >
             Quickstart (5 min)
           </a>

@@ -35,10 +35,38 @@ type Entry = {
 const entries: Entry[] = [
   {
     date: "2026-05-16",
-    kind: "data",
-    title: "Catalog 76 → 100 (Batch 4 — methods + datasets + organizations)",
+    kind: "feat",
+    title: "/playground/ — interactive in-browser verification demo",
     body:
-      "24 new hand-verified claims. Foundational methods: Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, BPE, SentencePiece, RAG. Models + datasets: T5, C4, The Pile, RedPajama, CLIP, Whisper, DALL·E 2, Stable Diffusion. Organizations: Stability AI, EleutherAI, Together AI, Mistral, AI21 Labs, Hugging Face. Each has ≥2 primary sources with verbatim excerpts.",
+      "Type a free-form claim, see VERITAS verify it live against the signed catalog. Pure client-side JavaScript calling /api/v1/verify — same endpoint your code will use, with the request shape and response shown side-by-side. Six sample claims pre-staged for one-click trying. No signup, no key, no quota for read-only access. Activation-stage UX so devs understand the product without writing code first.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "feat",
+    title: "/concepts/ pillar pages — LLM grounding, hallucination, RAG vs VERITAS",
+    body:
+      "Three standalone explainers (Wikipedia-rival depth) on high-intent search queries: definition of LLM grounding + 3 production patterns (prompt-stuffing / RAG / signed claims); five categories of hallucination + six root causes + mitigation ladder; RAG vs signed-claim verification comparison + hybrid pattern. TechArticle + DefinedTerm schema so LLMs can extract definitions cleanly.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "feat",
+    title: "/docs/integrations/ — 4 drop-in framework guides",
+    body:
+      "LangChain (retrieve-then-cite + generate-then-verify + signature-verify patterns); LlamaIndex (custom Retriever + NodePostprocessor); OpenAI tool-calls + Anthropic Claude tool-use; Vercel AI SDK (streamText + tool() function-calling). Each guide is copy-paste runnable in Python or JavaScript.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "feat",
+    title: "/quickstart/ — 5-minute self-serve onboarding",
+    body:
+      "Three sequential code blocks (curl + JS + Python) cover verify → search → fetch-envelope. HowTo + BreadcrumbList schema. No signup gate; free tier covers first 1,000 calls per month for read-only catalog access.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "data",
+    title: "Catalog 76 → 91 (Batch 4 — methods + datasets + organizations)",
+    body:
+      "15 new hand-verified claims (24 drafted, 9 deduped against pre-existing entries after build caught case-insensitive collisions). Foundational methods: Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, BPE, SentencePiece, RAG. Models + datasets: T5, C4, The Pile, RedPajama, CLIP, Whisper, DALL·E 2, Stable Diffusion. Organizations: Stability AI, EleutherAI, Together AI, Mistral, AI21 Labs, Hugging Face. Each has ≥2 primary sources with verbatim excerpts.",
   },
   {
     date: "2026-05-16",

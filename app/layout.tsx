@@ -245,6 +245,7 @@ function SiteFooter() {
           <div className="text-text font-semibold mb-2">VERITAS API</div>
           <ul className="space-y-1 text-muted">
             <li><a href="/quickstart/" className="hover:text-text">Quickstart</a></li>
+            <li><a href="/playground/" className="hover:text-text">Playground</a></li>
             <li><a href="/claims/" className="hover:text-text">Claim catalog</a></li>
             <li><a href="/docs/" className="hover:text-text">API docs</a></li>
             <li><a href="/docs/integrations/" className="hover:text-text">Integrations</a></li>
