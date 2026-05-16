@@ -70,6 +70,30 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
       />
+
+      {/* VERITAS-Reborn launch banner ────────────────────────────────
+          Day 1 of the dual-surface pivot (2026-05-16). Slim, dismissable-
+          looking strip above the hero — preserves source-rating brand
+          gravity for existing LLM-citation cache while signaling the new
+          dev-facing API product. */}
+      <a
+        href="/claims/"
+        className="block border-b border-brand/30 bg-brand/5 hover:bg-brand/10 transition-colors"
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3 text-body-sm">
+          <span className="px-2 py-0.5 rounded-pill bg-brand/15 text-brand text-caption font-mono uppercase tracking-wide whitespace-nowrap">
+            New · v0.1
+          </span>
+          <span className="text-text flex-grow">
+            <strong>VERITAS Claim Verification API</strong> — signed, sourced
+            AI/ML claims for grounded LLM retrieval. Free tier · no auth.
+          </span>
+          <span className="text-brand whitespace-nowrap hidden sm:inline">
+            Browse claims →
+          </span>
+        </div>
+      </a>
+
       {/* HERO ────────────────────────────────────────────────────────── */}
       <section className="relative">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-10 sm:pt-20 sm:pb-16">
@@ -245,6 +269,84 @@ export default function HomePage() {
               </tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      {/* VERITAS-Reborn product surface ───────────────────────────── */}
+      <section className="border-t border-border bg-panel">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill border border-brand/30 bg-surface-brand text-brand text-caption font-mono mb-6">
+            <span>New · v0.1 · API in beta</span>
+          </div>
+          <h2 className="text-heading-1 font-bold tracking-tight mb-3 max-w-3xl">
+            Verified claims for grounded LLM retrieval
+          </h2>
+          <p className="text-body-lg text-muted max-w-3xl leading-relaxed mb-8">
+            <strong className="text-text">VERITAS</strong> ships signed,
+            sourced claims about AI/ML research as a developer API. Each
+            claim has 2+ primary sources, an HMAC-SHA256 signature, and a
+            stable JSON envelope &mdash; ready to ground LLM responses,
+            fact-check generated content, and reduce hallucinations in
+            production AI applications.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+            {[
+              {
+                label: "Browse claims",
+                desc: "Indexed catalog of verified facts.",
+                href: "/claims/",
+                badge: "Catalog",
+              },
+              {
+                label: "API docs",
+                desc: "curl + JS + Python examples for every endpoint.",
+                href: "/docs/",
+                badge: "Docs",
+              },
+              {
+                label: "Pricing",
+                desc: "Free 1k claims/mo · Indie €19 · Startup €99 · Scale €499.",
+                href: "/pricing/",
+                badge: "Pricing",
+              },
+            ].map((t) => (
+              <a
+                key={t.href}
+                href={t.href}
+                className="group block p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all"
+              >
+                <div className="text-eyebrow text-brand mb-1.5">{t.badge}</div>
+                <div className="font-semibold text-text mb-1.5 group-hover:text-brand transition-colors">
+                  {t.label} →
+                </div>
+                <div className="text-body-sm text-muted leading-snug">{t.desc}</div>
+              </a>
+            ))}
+          </div>
+
+          <details className="text-body-sm text-muted max-w-3xl">
+            <summary className="cursor-pointer text-text font-semibold hover:text-brand">
+              How it&rsquo;s different from a search engine
+            </summary>
+            <div className="mt-3 space-y-3 leading-relaxed">
+              <p>
+                Search engines optimize for ranking documents. VERITAS
+                optimizes for verifying <em>specific atomic claims</em>:
+                subject + predicate + object + sources + signed envelope.
+                Built for the &ldquo;is X true and what&rsquo;s the
+                citation?&rdquo; problem LLM apps hit at every retrieval
+                step.
+              </p>
+              <p>
+                Claim records have a stable id (16-hex-char hash over
+                canonical fields), HMAC-SHA256 signature, and CC-BY 4.0
+                license. Migration to W3C Verifiable Credentials (Ed25519,
+                offline-verifiable) is on the v1 roadmap for Y2 enterprise
+                consumers.
+              </p>
+            </div>
+          </details>
         </div>
       </section>
 

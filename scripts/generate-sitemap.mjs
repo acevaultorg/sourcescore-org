@@ -37,7 +37,20 @@ const xml = [
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap-0.9">',
   ...urls.map((u) => {
     const isHome = u === `${SITE}/`;
-    const priority = isHome ? "1.0" : u.includes("/source/") ? "0.9" : "0.8";
+    // VERITAS-Reborn pages (v0.1, 2026-05-16): /claims/, /claims/<id>/,
+    // /docs/, /pricing/, /signup/ rank 0.9 — they're the new product
+    // surface and bot-citation gravity targets, on par with /source/.
+    const isVeritas =
+      u === `${SITE}/claims/` ||
+      u.includes("/claims/") ||
+      u === `${SITE}/docs/` ||
+      u === `${SITE}/pricing/` ||
+      u === `${SITE}/signup/`;
+    const priority = isHome
+      ? "1.0"
+      : u.includes("/source/") || isVeritas
+        ? "0.9"
+        : "0.8";
     return `  <url><loc>${u}</loc><lastmod>${TODAY}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
   }),
   "</urlset>",
@@ -59,6 +72,13 @@ const aiPriorityPaths = [
   "/discipline/",
   "/modern-reference/",
   "/velocity/",
+  // VERITAS-Reborn surfaces (v0.1, 2026-05-16): claim browser + per-claim
+  // pages + dev portal (docs / pricing / signup). All bot-citation gravity
+  // targets for the dev-API product surface.
+  "/claims/",
+  "/docs/",
+  "/pricing/",
+  "/signup/",
 ];
 const aiHumanUrls = urls.filter(
   (u) =>
@@ -68,7 +88,8 @@ const aiHumanUrls = urls.filter(
     u.includes("/compare/") ||
     u.includes("/grade/") ||
     u.includes("/best/") ||
-    u.includes("/insights/")
+    u.includes("/insights/") ||
+    u.includes("/claims/")
 );
 
 // Discover EVERY .json under /api/ (source twins, grade twins, facet
