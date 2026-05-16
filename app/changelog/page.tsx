@@ -36,6 +36,20 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "feat",
+    title: "/blog/llm-framework-comparison-2026/ — 4th blog post (meta-comparison of 7 frameworks)",
+    body:
+      "New blog post + canonical Dev.to/Hashnode source for cross-posts. Honest, opinionated comparison of LangChain vs LlamaIndex vs OpenAI tools vs DSPy vs Pydantic AI vs Vercel AI SDK vs Anthropic SDK. Sections: at-a-glance table, pick-by-archetype recommendations (RAG, multi-step agent, Next.js streaming, research/evals, complex pipelines), honest gotchas per framework, our recommendation by archetype, 2 predictions for late 2026/2027, resources. Cross-links to all 7 /docs/integrations/[slug]/ guides + /concepts/rag-vs-veritas/ + /playground/ + /quickstart/. BlogPosting + BreadcrumbList schema. Targets high-volume 'best LLM framework' queries.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "feat",
+    title: "/topics/ — 4 additional topic hubs (alignment, evaluation, inference-opt, AI orgs)",
+    body:
+      "Topic hub coverage doubled from 4 to 8. New hubs: alignment-and-rlhf (RLHF, Constitutional AI, DPO, InstructGPT lineage), evaluation-benchmarks (MMLU, GLUE, SuperGLUE, HumanEval, Chatbot Arena, AlpacaEval), inference-optimization (FlashAttention, GPTQ, QLoRA, vLLM, PagedAttention, LoRA), ai-organizations (the lab landscape — OpenAI/Anthropic/DeepMind/Mistral founding + lineage). Each hub: 400-700 words editorial intro, 3-4 DefinedTerms, CollectionPage schema referencing every member claim, cross-links to related hubs + concept pillars + integration guides. llms.txt + sitemap-ai.xml include all 8 hubs.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "feat",
     title: "/topics/ — 4 curated topic hubs (foundational papers, multimodal AI, RAG + retrieval, 2024-2025 LLM releases)",
     body:
       "New programmatic-SEO surface: /topics/ index + 4 topic hubs at /topics/[slug]/. Each hub bundles 400-700 words of editorial intro, a DefinedTermSet of 3-4 terms, a CollectionPage schema referencing every member claim, and cross-links to related hubs + concept pillars + integration guides. Topic claim membership is filter-derived from the catalog (e.g., foundational-papers = `tags.includes('foundational')` OR `predicate.includes('introduced_in')`) so hub population auto-updates as the catalog grows. Hubs shipped: foundational-papers (~80 claims), multimodal-ai (~15), rag-and-retrieval (~10), llm-releases-2024-2025 (~30+). Surfaces added to footer nav, sitemap-ai.xml priority list, and llms.txt manifest.",
@@ -60,6 +74,13 @@ const entries: Entry[] = [
     title: "/concepts/evaluation-harness/ — 5th pillar (why benchmark scores vary across harnesses)",
     body:
       "Explainer on evaluation harnesses (LM Eval Harness · HELM · BIG-bench · lab-internal) and why the same model scores 4-10 points apart on the same nominal benchmark. Six axes of variation covered: prompt format, scoring method (log-likelihood vs generate-then-parse), decoding parameters, output parsing, benchmark version, contamination handling. Includes the 6-question checklist for reading benchmark claims honestly, plus production-decision implications (build your own eval, triangulate across 3+ harnesses, re-evaluate after frontier-model updates). Ties back to /blog/why-no-performance-claims/ — the methodology reason VERITAS excludes performance-comparison claims. TechArticle + DefinedTerm + BreadcrumbList schema.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "data",
+    title: "Catalog 156 → 166 (Batch 12 — pre-modern foundations + 2025 frontier completion)",
+    body:
+      "10 new hand-verified claims, ≥2 primary sources each. Pre-modern foundations: Backpropagation (Rumelhart, Hinton, Williams, Nature 1986), U-Net (Ronneberger et al. 2015) — diffusion backbone, AlphaFold 1 (Senior et al., DeepMind Nature 2020). 2024-2025 frontier completion: Mixtral 8x22B (Mistral 2024-04), Claude Sonnet 4 (Anthropic 2025-05-22), OpenAI o3-mini (2025-01-31), Gemini 2.5 Pro (Google DeepMind 2025-03-25). Practical agent stack: Stanford Alpaca (CRFM 2023-03) — first widely-replicated instruction-tuned LLaMA fine-tune; LangSmith (LangChain 2023-07) — LLM observability + evaluation; Tavily — search API built for AI agents.",
   },
   {
     date: "2026-05-16",

@@ -16,6 +16,15 @@ interface PostMeta {
 
 const POSTS: PostMeta[] = [
   {
+    slug: "llm-framework-comparison-2026",
+    title:
+      "LLM framework comparison 2026 — LangChain vs LlamaIndex vs OpenAI tools vs DSPy vs Pydantic AI vs Vercel AI SDK vs Anthropic SDK",
+    subtitle:
+      "Seven LLM frameworks own most of 2026 dev mindshare. They optimize for different things — orchestration, retrieval, type-safety, vendor-native, deployment ergonomics. Pick by archetype + audience + commitment.",
+    publishedDate: "2026-05-16",
+    tags: ["framework", "comparison", "langchain", "llamaindex", "openai", "anthropic", "dspy", "pydantic-ai", "vercel-ai-sdk"],
+  },
+  {
     slug: "why-no-performance-claims",
     title:
       "Why VERITAS doesn't ship performance-comparison claims (and what we ship instead)",

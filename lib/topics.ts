@@ -176,6 +176,144 @@ export const TOPICS: TopicHub[] = [
     relatedConcepts: ["llm-grounding", "evaluation-harness"],
     relatedIntegrations: ["openai-tools", "anthropic-sdk", "pydantic-ai"],
   },
+  {
+    slug: "alignment-and-rlhf",
+    title: "Alignment, RLHF, and Constitutional AI — the safety stack",
+    metaDescription:
+      "Alignment foundations: RLHF, InstructGPT, Constitutional AI, DPO, PPO. Verified papers and primary sources tracing how frontier models became usable.",
+    subtitle:
+      "Reinforcement learning from human feedback, constitutional rules, direct preference optimization. The alignment techniques that took raw LLMs from research toys to production assistants.",
+    claimFilter: (c) =>
+      (c.tags ?? []).some((t) =>
+        ["rlhf", "alignment", "reinforcement-learning", "instruction-tuning", "preference-optimization"].includes(t),
+      ),
+    sections: [
+      {
+        heading: "Why alignment matters",
+        body: "A pretrained language model maximizes next-token likelihood over its training corpus. That doesn't make it helpful, harmless, or honest. The first three years of frontier-LLM work (GPT-1 through GPT-3) demonstrated capability; the alignment work that followed (2020-2024) made those capabilities usable. Without RLHF + safety training, ChatGPT would still be the curiosity that GPT-3 was — impressive but unfit for production.",
+      },
+      {
+        heading: "RLHF — the InstructGPT pattern",
+        body: "Reinforcement learning from human feedback was first popularized at scale by InstructGPT (Ouyang et al., OpenAI 2022). Three stages: supervised fine-tuning on instruction-response pairs, reward model training on human preference comparisons, PPO-based RL using the reward model as feedback. This recipe became the alignment baseline every frontier lab now ships variants of.",
+      },
+      {
+        heading: "Constitutional AI and the alternative",
+        body: "Anthropic's Constitutional AI (Bai et al. 2022) replaces some of the human-preference data with AI-generated critiques against a written constitution. DPO (Rafailov et al. 2023) collapses the three-stage RLHF process into a single direct-optimization step. Each method targets the same end (alignment) with different cost + transparency trade-offs.",
+      },
+    ],
+    definedTerms: [
+      { name: "RLHF", description: "Reinforcement learning from human feedback. Trains a reward model on human preference comparisons, then fine-tunes the LLM with PPO to maximize the reward model's score." },
+      { name: "Constitutional AI", description: "Anthropic's alignment approach using a written constitution + AI-generated critiques rather than purely human-preference data." },
+      { name: "DPO", description: "Direct Preference Optimization. Skips the reward-model stage of RLHF by directly optimizing the model on preference pairs." },
+      { name: "InstructGPT", description: "OpenAI's instruction-tuned GPT-3 variant that popularized the RLHF pipeline. Direct ancestor of ChatGPT." },
+    ],
+    relatedHubs: ["foundational-papers", "llm-releases-2024-2025"],
+    relatedConcepts: ["llm-grounding", "hallucination"],
+    relatedIntegrations: ["langchain", "anthropic-sdk"],
+  },
+  {
+    slug: "evaluation-benchmarks",
+    title: "Evaluation, benchmarks, and the harness problem",
+    metaDescription:
+      "AI/ML benchmarks: MMLU, GLUE, SuperGLUE, HumanEval, Chatbot Arena, AlpacaEval. Verified papers, datasets, and the methodological caveats that make benchmark comparisons hard.",
+    subtitle:
+      "The benchmarks that define \"capable model\" — and the methodology caveats that make cross-paper comparisons unreliable. Hand-verified primary sources for every benchmark cited in the literature.",
+    claimFilter: (c) =>
+      (c.tags ?? []).some((t) =>
+        ["benchmark", "evaluation", "leaderboard", "human-preference", "llm-as-judge"].includes(t),
+      ),
+    sections: [
+      {
+        heading: "Why benchmarks matter — and why they mislead",
+        body: "Benchmarks are how the field measures progress. MMLU, HumanEval, GLUE, SuperGLUE, Chatbot Arena — each tries to capture a different dimension of capability (knowledge breadth, code generation, language understanding, conversational quality). But the same benchmark name can produce different scores across different evaluation harnesses + prompt formats + decoding strategies, which is exactly why VERITAS does not ship performance-comparison claims (see /blog/why-no-performance-claims/).",
+      },
+      {
+        heading: "The classics",
+        body: "GLUE (Wang et al. 2018) and SuperGLUE (Wang et al. 2019) were the first standardized natural-language-understanding benchmarks. ImageNet (Deng et al., CVPR 2009) preceded them in vision. BLEU (Papineni et al., ACL 2002) and ROUGE (Lin, ACL 2004) measured machine translation and summarization. These benchmarks shaped a decade of progress.",
+      },
+      {
+        heading: "The LLM-era benchmarks",
+        body: "MMLU (Hendrycks et al. 2021) tests knowledge breadth across 57 subjects. HumanEval (Chen et al., OpenAI 2021) tests code generation. AlpacaEval (Tatsu Lab 2023) uses LLM-as-judge. Chatbot Arena (LMSYS 2023) uses pairwise human preferences. Each adds methodological subtlety: which split? which prompt? few-shot or zero-shot? chain-of-thought? The right reading is: track benchmarks as trend signals, not absolute rankings.",
+      },
+    ],
+    definedTerms: [
+      { name: "Benchmark", description: "A standardized dataset and evaluation protocol designed to measure a specific capability across multiple models." },
+      { name: "Evaluation harness", description: "Software that runs an LLM through a benchmark in a reproducible way. Different harnesses (LM Evaluation Harness, HELM, lm-eval) produce different scores for the same nominal benchmark." },
+      { name: "LLM-as-judge", description: "Evaluation approach where one LLM scores the outputs of another. Used by AlpacaEval and MT-Bench. Cheaper than human evaluation; biased toward judge-model preferences." },
+    ],
+    relatedHubs: ["foundational-papers", "llm-releases-2024-2025"],
+    relatedConcepts: ["evaluation-harness", "hallucination"],
+    relatedIntegrations: ["dspy"],
+  },
+  {
+    slug: "inference-optimization",
+    title: "Inference optimization — quantization, attention, and serving",
+    metaDescription:
+      "LLM inference optimization: FlashAttention, GPTQ, QLoRA, vLLM, PagedAttention, LoRA. Verified papers and tools for making frontier models cheaper to run.",
+    subtitle:
+      "The techniques that take a frontier model from \"impossible to deploy\" to \"$0.001 per call.\" Quantization, attention algorithms, fine-tuning adapters, and serving systems.",
+    claimFilter: (c) =>
+      (c.tags ?? []).some((t) =>
+        ["inference", "serving", "quantization", "fine-tuning", "flashattention", "lora"].includes(t),
+      ),
+    sections: [
+      {
+        heading: "The inference-cost wall",
+        body: "Training a 70B-parameter model is expensive once; running it for millions of users is expensive forever. Inference optimization has driven most of the practical-deployment progress 2022-2025. Three axes: faster attention (FlashAttention, PagedAttention), smaller weights (GPTQ, AWQ, QLoRA, GGUF quantization), better serving (vLLM, llama.cpp, Ollama, TGI).",
+      },
+      {
+        heading: "Attention improvements",
+        body: "FlashAttention (Dao et al. 2022) recomputes attention with IO-aware tiling, giving the same output with much less memory pressure. PagedAttention (Kwon et al., vLLM 2023) treats KV cache like OS-managed memory pages. Together these unlock context windows that were previously impossible on commodity hardware.",
+      },
+      {
+        heading: "Quantization + adapters",
+        body: "LoRA (Hu et al. 2021) and QLoRA (Dettmers et al. 2023) make fine-tuning a 70B model possible on a single consumer GPU. GPTQ (Frantar et al. 2022) and AWQ quantize trained models to 4-bit with minimal quality loss. The combined effect: a frontier-quality model that runs locally on a $1,500 GPU.",
+      },
+    ],
+    definedTerms: [
+      { name: "FlashAttention", description: "IO-aware exact attention algorithm by Dao et al. (2022) that reduces memory pressure during attention computation without changing outputs." },
+      { name: "Quantization", description: "Reducing the bit-precision of model weights (typically from 16-bit to 4-bit or 8-bit) to lower memory footprint and inference cost." },
+      { name: "LoRA", description: "Low-Rank Adaptation. Fine-tunes a small adapter that gets merged with frozen base-model weights. Drastically cheaper than full fine-tuning." },
+      { name: "PagedAttention", description: "KV-cache management technique from vLLM that treats GPU memory like OS-managed pages, allowing flexible request scheduling at high throughput." },
+    ],
+    relatedHubs: ["foundational-papers", "open-source-llms"],
+    relatedConcepts: ["llm-grounding"],
+    relatedIntegrations: ["pydantic-ai", "vercel-ai-sdk"],
+  },
+  {
+    slug: "ai-organizations",
+    title: "AI organizations — labs, founders, and the talent map",
+    metaDescription:
+      "Organizational landscape of AI: OpenAI, Anthropic, DeepMind, Mistral, Stability AI, EleutherAI, Hugging Face, Cohere, AI21, Together AI, xAI. Founding dates and lineage.",
+    subtitle:
+      "The labs and companies that ship frontier AI/ML. Founding dates, parent organizations, and the lineage that shaped each lab's culture. Hand-verified from official corporate pages + press records.",
+    claimFilter: (c) =>
+      (c.tags ?? []).some((t) =>
+        ["company", "founded"].includes(t),
+      ),
+    sections: [
+      {
+        heading: "Mapping the lab landscape",
+        body: "Frontier-AI work in 2026 is concentrated across roughly a dozen labs: OpenAI, Anthropic, Google DeepMind, Meta AI, Mistral, Microsoft Research, xAI, Stability AI, Cohere, AI21 Labs, EleutherAI, Together AI, plus the Chinese frontier (DeepSeek, Alibaba/Qwen, Zhipu/GLM). Each has its own model lineage, alignment philosophy, and funding model.",
+      },
+      {
+        heading: "Founders + lineage matters",
+        body: "Anthropic's founders left OpenAI in 2021 over alignment-direction disagreements. DeepMind was acquired by Google in 2014 but maintained a distinct research culture until the 2023 merger with Google Brain. Mistral was founded by ex-DeepMind + ex-Meta researchers in 2023. Knowing where each lab's researchers came from helps predict what kind of models they'll ship.",
+      },
+      {
+        heading: "Open-source vs closed",
+        body: "The labs split roughly into open-weight (Meta, Mistral, Stability AI, EleutherAI, Hugging Face, Together AI, Alibaba's Qwen, DeepSeek, Allen Institute's OLMo) and closed-API (OpenAI, Anthropic, Google's Gemini API, Cohere, xAI). Some are hybrid (Google releases Gemma weights but not Gemini's). The boundary moves: 2024 saw multiple closed labs release smaller open-weight variants under pressure from open competitors.",
+      },
+    ],
+    definedTerms: [
+      { name: "Frontier lab", description: "An AI lab that produces models at or near the current state-of-the-art for general-purpose capabilities. As of 2026: OpenAI, Anthropic, Google DeepMind, Meta AI, Mistral, plus a small number of Chinese labs." },
+      { name: "Open-weight model", description: "A model whose trained weights are publicly downloadable, regardless of whether training data + code are also released." },
+      { name: "Lab lineage", description: "The chain of researcher movements that shape a lab's culture and research direction. Often more predictive of model behavior than corporate stated priorities." },
+    ],
+    relatedHubs: ["llm-releases-2024-2025", "foundational-papers"],
+    relatedConcepts: ["llm-grounding"],
+    relatedIntegrations: ["openai-tools", "anthropic-sdk"],
+  },
 ];
 
 export function findTopic(slug: string): TopicHub | undefined {

@@ -108,6 +108,10 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/topics/multimodal-ai/ — vision + image gen + audio + video models
 - https://sourcescore.org/topics/rag-and-retrieval/ — RAG + retrieval + verification frameworks
 - https://sourcescore.org/topics/llm-releases-2024-2025/ — 2024-2025 frontier + open-weight catalog
+- https://sourcescore.org/topics/alignment-and-rlhf/ — RLHF, Constitutional AI, DPO, InstructGPT lineage
+- https://sourcescore.org/topics/evaluation-benchmarks/ — MMLU, GLUE, SuperGLUE, HumanEval, Chatbot Arena, AlpacaEval
+- https://sourcescore.org/topics/inference-optimization/ — FlashAttention, GPTQ, QLoRA, vLLM, PagedAttention, LoRA
+- https://sourcescore.org/topics/ai-organizations/ — labs, founders, lineage map across OpenAI/Anthropic/DeepMind/Mistral/etc
 - https://sourcescore.org/claims/<id>/ — per-claim verification page (Article + DefinedTerm + Dataset schema)
 - https://sourcescore.org/claims/tags/ — full tag index (browse by topic)
 - https://sourcescore.org/claims/tag/<slug>/ — per-tag claim listings with co-occurring tag surface
