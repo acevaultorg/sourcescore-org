@@ -40,6 +40,13 @@ const concepts = [
       "RAG retrieves prose chunks; VERITAS retrieves typed atomic claims with signatures. Comparison table, when to use each, the hybrid pattern most production systems converge on.",
     status: "live",
   },
+  {
+    slug: "citation-chain",
+    title: "Citation chains",
+    summary:
+      "The auditable trail from an LLM's emitted claim back to primary sources. Three building blocks: stable identifier · cryptographic signature · re-fetchable canonical URL. Local-verification walkthrough + how chains fit into agentic responses.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {

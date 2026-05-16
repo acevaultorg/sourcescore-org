@@ -35,6 +35,13 @@ type Entry = {
 const entries: Entry[] = [
   {
     date: "2026-05-16",
+    kind: "feat",
+    title: "/concepts/citation-chain/ — 4th pillar (provenance graphs for LLM citations)",
+    body:
+      "Standalone explainer on citation chains — the auditable trail from an LLM's emitted assertion back to the primary source(s) that prove it. Three building blocks (stable identifier · HMAC-SHA256 signature · re-fetchable canonical URL) covered in depth with a complete 30-line Python local-verification walkthrough. Covers chains in agentic LLM responses (citation trees), 4 failure modes chains detect, and the Y2 migration path to W3C Verifiable Credentials with Ed25519 public-key signing. TechArticle + DefinedTerm schema. Cross-links to llm-grounding, hallucination, rag-vs-veritas, langchain integration, security policy, claims catalog.",
+  },
+  {
+    date: "2026-05-16",
     kind: "data",
     title: "Catalog 102 → 110 (Batch 6 — foundational regularization, sparse attention, open-weights releases)",
     body:
