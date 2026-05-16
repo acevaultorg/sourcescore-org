@@ -297,7 +297,7 @@ result = await research_agent.run(
           path.
         </p>
         <p className="text-sm text-zinc-700 dark:text-zinc-300">
-          Catalog: 196 claims today, growing weekly. New verticals
+          Catalog: 206 claims today, growing weekly. New verticals
           (cybersecurity, data engineering, scientific computing) ship
           Year 2.
         </p>
@@ -320,7 +320,7 @@ result = await research_agent.run(
             • <a href="/docs/integrations/openai-tools/" className="underline">OpenAI tool-calls</a> — the underlying primitive
           </li>
           <li>
-            • <a href="/claims/" className="underline">Browse the catalog</a> — 196 verified AI/ML claims
+            • <a href="/claims/" className="underline">Browse the catalog</a> — 206 verified AI/ML claims
           </li>
         </ul>
       </section>

@@ -19,7 +19,7 @@ layer: at retrieval time, instead of trusting the LLM's parametric
 memory, hit a small API that returns the fact + its primary source.
 
 I built one in this space — sourcescore.org/claims/ — free tier is
-1,000 claims/mo no auth. 196 verified AI/ML claims at v0 covering all
+1,000 claims/mo no auth. 206 verified AI/ML claims at v0 covering all
 major model release dates, foundational papers (Transformer, RLHF, LoRA,
 DPO, etc.), parameter counts. Every claim has 2+ primary sources and an
 HMAC signature.
@@ -74,7 +74,7 @@ number on the source page" failure mode, two patterns help:
    prompt. Slow but reliable.
 
 For atomic-claim verification I built sourcescore.org/claims/ for AI/ML
-specifically — 196 verified claims, signed HMAC envelopes, free 1k/mo
+specifically — 206 verified claims, signed HMAC envelopes, free 1k/mo
 tier. Probably narrower than what you need if you're doing general
 factual RAG, but the pattern (separate retrieval for atomic facts vs
 documents) generalizes.

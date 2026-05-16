@@ -35,6 +35,13 @@ type Entry = {
 const entries: Entry[] = [
   {
     date: "2026-05-17",
+    kind: "data",
+    title: "Catalog 196 → 206 (Batch 16 — multimodal AI creative tools + Anthropic alignment)",
+    body:
+      "10 new hand-verified claims: Black Forest Labs Flux (2024-08), Anthropic Tool Use GA (2024-05), OpenAI Function Calling launch (2023-06-13), Perplexity AI (founded 2022), Suno AI (founded 2023, music generation), ElevenLabs (founded 2022, voice synthesis), Runway ML (founded 2018, video generation), Midjourney (public beta 2022-07-12), Hugging Face Hub (2020-09), Anthropic Constitutional AI Harmlessness paper (Bai et al. 2022). Coverage shifts toward multimodal AI creative tools (image / video / music / voice) + alignment foundations + agent ecosystem companies. Year-hubs auto-update; tags.json now indexes 469 unique tags across 206 claims.",
+  },
+  {
+    date: "2026-05-17",
     kind: "feat",
     title: "/comparisons/ — 3 head-to-head buyer-intent comparison pages",
     body:
