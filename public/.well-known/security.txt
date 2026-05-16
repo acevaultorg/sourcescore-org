@@ -1,0 +1,21 @@
+# SourceScore VERITAS — security contacts
+# RFC 9116 (security.txt) — last updated 2026-05-16
+
+Contact: mailto:security@sourcescore.org
+Expires: 2027-05-16T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://sourcescore.org/.well-known/security.txt
+Policy: https://sourcescore.org/security/
+Acknowledgments: https://sourcescore.org/security/#acknowledgments
+
+# Scope:
+#   - sourcescore.org and *.sourcescore.org subdomains
+#   - SourceScore VERITAS API (/api/v1/*)
+#   - Claim envelope signing + verification logic
+#   - User-facing dashboard + signup flow
+
+# Out of scope:
+#   - Third-party services we integrate with (CF, Stripe, Resend, GitLab):
+#     report directly to those vendors
+#   - Stale catalog claims (claim correctness is a methodology issue,
+#     not a security issue — see /methodology/)

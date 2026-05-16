@@ -233,32 +233,46 @@ function SiteHeader() {
 function SiteFooter() {
   return (
     <footer className="border-t border-border mt-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 grid sm:grid-cols-3 gap-8 text-body-sm">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-body-sm">
         <div>
           <div className="text-text font-semibold mb-2">SourceScore</div>
           <p className="text-muted leading-relaxed">
-            The reference index for AI-citation quality. Score Discipline, Modern Reference, and Velocity for any source.
+            Source-rating reference + VERITAS signed-claim API. Two
+            surfaces, one trust layer for AI-era citation.
           </p>
         </div>
         <div>
-          <div className="text-text font-semibold mb-2">Sub-tools</div>
+          <div className="text-text font-semibold mb-2">VERITAS API</div>
+          <ul className="space-y-1 text-muted">
+            <li><a href="/claims/" className="hover:text-text">Claim catalog</a></li>
+            <li><a href="/docs/" className="hover:text-text">API docs</a></li>
+            <li><a href="/docs/integrations/" className="hover:text-text">Integrations</a></li>
+            <li><a href="/pricing/" className="hover:text-text">Pricing</a></li>
+            <li><a href="/blog/" className="hover:text-text">Blog</a></li>
+            <li><a href="/changelog/" className="hover:text-text">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <div className="text-text font-semibold mb-2">Reference</div>
           <ul className="space-y-1 text-muted">
             <li><a href="/" className="hover:text-text">SourceScore Index</a></li>
             <li><a href="/discipline/" className="hover:text-text">Citation Discipline</a></li>
             <li><a href="/modern-reference/" className="hover:text-text">Modern Reference</a></li>
             <li><a href="/velocity/" className="hover:text-text">Citation Velocity</a></li>
-          </ul>
-        </div>
-        <div>
-          <div className="text-text font-semibold mb-2">Browse</div>
-          <ul className="space-y-1 text-muted">
             <li><a href="/sources/" className="hover:text-text">All sources</a></li>
             <li><a href="/grade/" className="hover:text-text">By grade (A+ → F)</a></li>
             <li><a href="/best/" className="hover:text-text">Best-of lists</a></li>
+          </ul>
+        </div>
+        <div>
+          <div className="text-text font-semibold mb-2">Trust</div>
+          <ul className="space-y-1 text-muted">
             <li><a href="/methodology/" className="hover:text-text">Methodology</a></li>
+            <li><a href="/security/" className="hover:text-text">Security</a></li>
             <li><a href="/about/" className="hover:text-text">About</a></li>
             <li><a href="/contact/" className="hover:text-text">Contact</a></li>
             <li><a href="/privacy/" className="hover:text-text">Privacy</a></li>
+            <li><a href="/terms/" className="hover:text-text">Terms</a></li>
           </ul>
         </div>
       </div>
