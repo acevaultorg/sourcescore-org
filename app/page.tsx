@@ -78,7 +78,8 @@ export default function HomePage() {
           dev-facing API product. */}
       <a
         href="/claims/"
-        className="block border-b border-brand/30 bg-brand/5 hover:bg-brand/10 transition-colors"
+        data-clarity-upgrade="veritas-launch-banner"
+        className="block border-b border-brand/30 bg-brand/5 hover:bg-brand/10 transition-colors plausible-event-name=veritas_banner_click"
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3 text-body-sm">
           <span className="px-2 py-0.5 rounded-pill bg-brand/15 text-brand text-caption font-mono uppercase tracking-wide whitespace-nowrap">
@@ -297,24 +298,28 @@ export default function HomePage() {
                 desc: "Indexed catalog of verified facts.",
                 href: "/claims/",
                 badge: "Catalog",
+                event: "catalog",
               },
               {
                 label: "API docs",
                 desc: "curl + JS + Python examples for every endpoint.",
                 href: "/docs/",
                 badge: "Docs",
+                event: "docs",
               },
               {
                 label: "Pricing",
                 desc: "Free 1k claims/mo · Indie €19 · Startup €99 · Scale €499.",
                 href: "/pricing/",
                 badge: "Pricing",
+                event: "pricing",
               },
             ].map((t) => (
               <a
                 key={t.href}
                 href={t.href}
-                className="group block p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all"
+                data-clarity-upgrade={`veritas-cta-${t.event}`}
+                className={`group block p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all plausible-event-name=veritas_cta plausible-event-target=${t.event}`}
               >
                 <div className="text-eyebrow text-brand mb-1.5">{t.badge}</div>
                 <div className="font-semibold text-text mb-1.5 group-hover:text-brand transition-colors">

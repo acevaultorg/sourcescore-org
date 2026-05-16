@@ -1,0 +1,65 @@
+{
+  "name": "@sourcescore/api",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for the SourceScore VERITAS API — signed, sourced, citable claim verification for LLM developers building grounded retrieval systems.",
+  "keywords": [
+    "llm",
+    "claim verification",
+    "grounded retrieval",
+    "source citation",
+    "fact checking",
+    "ai",
+    "ml",
+    "rag",
+    "sourcescore",
+    "veritas"
+  ],
+  "homepage": "https://sourcescore.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/acevault-lab/sourcescore-api.git"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/acevault-lab/sourcescore-api/-/issues"
+  },
+  "license": "MIT",
+  "author": "SourceScore <contact@sourcescore.org> (https://sourcescore.org)",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json",
+    "test": "tsx --test src/*.test.ts",
+    "lint": "tsc --noEmit",
+    "example:browse": "tsx examples/01-browse-catalog.ts",
+    "example:verify": "tsx examples/02-verify-claim.ts",
+    "example:search": "tsx examples/03-search.ts",
+    "prepublishOnly": "npm run lint && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

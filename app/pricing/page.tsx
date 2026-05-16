@@ -150,14 +150,16 @@ export default function PricingPage() {
               {isFree ? (
                 <a
                   href="/docs/"
-                  className="w-full text-center px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                  data-clarity-upgrade={`pricing-cta-${tier.name}`}
+                  className="w-full text-center px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 plausible-event-name=pricing_cta plausible-event-tier=free"
                 >
                   Start in docs
                 </a>
               ) : (
                 <a
                   href="/signup/"
-                  className={`w-full text-center px-4 py-2 rounded font-medium ${
+                  data-clarity-upgrade={`pricing-cta-${tier.name}`}
+                  className={`w-full text-center px-4 py-2 rounded font-medium plausible-event-name=pricing_cta plausible-event-tier=${tier.name} ${
                     tier.name === "indie"
                       ? "bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-300"
                       : "border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-900"
