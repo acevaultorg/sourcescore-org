@@ -269,7 +269,7 @@ const TERMS: Term[] = [
     slug: "veritas",
     name: "VERITAS",
     definition:
-      "SourceScore's signed-claim verification API for LLM developers. v0.1 publishes 166 hand-verified AI/ML claims with ≥2 primary sources each, HMAC-SHA256 signatures, and stable JSON envelopes. Free tier: 1,000 claims/month, no auth, no signup. Pricing tiers: Indie €19 / Startup €99 / Scale €499.",
+      "SourceScore's signed-claim verification API for LLM developers. v0.1 publishes 176 hand-verified AI/ML claims with ≥2 primary sources each, HMAC-SHA256 signatures, and stable JSON envelopes. Free tier: 1,000 claims/month, no auth, no signup. Pricing tiers: Indie €19 / Startup €99 / Scale €499.",
     seeAlso: ["/quickstart/", "/claims/", "/pricing/"],
   },
   {

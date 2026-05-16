@@ -314,6 +314,74 @@ export const TOPICS: TopicHub[] = [
     relatedConcepts: ["llm-grounding"],
     relatedIntegrations: ["openai-tools", "anthropic-sdk"],
   },
+  {
+    slug: "agent-frameworks",
+    title: "Agent frameworks — orchestration libraries for LLM apps",
+    metaDescription:
+      "LLM agent frameworks: LangChain, LlamaIndex, DSPy, Pydantic AI, OpenAI Agents, AutoGen, CrewAI. Verified releases, founding orgs, and primary documentation.",
+    subtitle:
+      "Frameworks that orchestrate LLMs in multi-step agent pipelines. Each picks different defaults for tool-use, memory, retrieval, and observability.",
+    claimFilter: (c) =>
+      (c.tags ?? []).some((t) =>
+        ["framework", "agent", "tool-use", "orchestration", "langchain", "llamaindex", "dspy"].includes(t),
+      ),
+    sections: [
+      {
+        heading: "Why frameworks emerged",
+        body: "By mid-2022 the agent loop pattern — model emits tool call, runtime executes, model receives result, repeat — was clearly the production shape. Writing it from scratch for each project produced inconsistent error handling, inconsistent retries, inconsistent observability. Frameworks like LangChain (October 2022) and LlamaIndex (November 2022) emerged within weeks of each other to standardize.",
+      },
+      {
+        heading: "The current landscape",
+        body: "As of 2026: LangChain (orchestration breadth) + LlamaIndex (retrieval-first RAG) dominate Python. DSPy (Stanford) offers programs-not-prompts. Pydantic AI brings type-safety. OpenAI Agents SDK + Anthropic SDK are vendor-native. Vercel AI SDK owns Next.js. Each has a different mental model — pick by archetype + audience + commitment level.",
+      },
+      {
+        heading: "The cross-vendor convergence",
+        body: "Anthropic's Model Context Protocol (November 2024) is the cross-vendor standard for tool exposure. Adopted by Anthropic, OpenAI, and most major frameworks within ~6 months. The framework count may eventually drop as MCP absorbs per-vendor SDKs — but as of 2026 the seven-framework landscape is what production developers face.",
+      },
+    ],
+    definedTerms: [
+      { name: "Agent framework", description: "A library that orchestrates LLM tool-use loops, retrieval, memory, and observability. Examples: LangChain, LlamaIndex, DSPy." },
+      { name: "Tool-use loop", description: "The multi-turn pattern: model emits tool call, runtime executes tool, model receives result, model decides next step or final answer." },
+      { name: "Programs-not-prompts", description: "DSPy's paradigm: write structured programs (modules + signatures) that get optimized for prompts and few-shot examples rather than hand-writing prompts." },
+    ],
+    relatedHubs: ["rag-and-retrieval", "foundational-papers"],
+    relatedConcepts: ["llm-grounding", "rag-vs-veritas"],
+    relatedIntegrations: ["langchain", "llamaindex", "dspy", "pydantic-ai", "openai-tools", "anthropic-sdk", "vercel-ai-sdk"],
+  },
+  {
+    slug: "vector-databases",
+    title: "Vector databases — storing and searching embeddings at scale",
+    metaDescription:
+      "Vector database catalog: FAISS, Pinecone, Weaviate, Qdrant, Chroma, Milvus, pgvector. Founding dates, primary sources, and when to use each.",
+    subtitle:
+      "Databases optimized for similarity search over dense vector embeddings. The retrieval backbone of every production RAG pipeline.",
+    claimFilter: (c) =>
+      (c.tags ?? []).some((t) =>
+        ["vector-database", "vector-search", "similarity-search", "faiss", "pinecone", "weaviate", "qdrant"].includes(t),
+      ),
+    sections: [
+      {
+        heading: "Why dedicated vector DBs",
+        body: "Standard databases (Postgres, MySQL, MongoDB) handle exact-match + range queries. Vector queries are different: given a 1536-dimensional query vector, return the K nearest neighbors by cosine similarity from a corpus of millions of vectors, in &lt;100ms. The data structures (HNSW, IVF, PQ) and tuning trade-offs are non-trivial. Dedicated vector DBs ship those primitives.",
+      },
+      {
+        heading: "The four main options",
+        body: "FAISS (Facebook AI 2017) is a library, not a database — fastest, no service to run, embed in your app. Pinecone (founded 2019) is the managed-cloud leader — easiest production deployment, costs scale with index size. Weaviate, Qdrant, and Milvus are open-source + managed-cloud — Qdrant is the easiest local + production option for most teams. Chroma is the simplest dev-loop option (single-file SQLite-backed).",
+      },
+      {
+        heading: "The Postgres option",
+        body: "pgvector — a Postgres extension — has matured enough by 2025 that for teams already on Postgres, adding pgvector beats adding a separate vector DB. Trade-off: pgvector's similarity-search performance lags purpose-built vector DBs at &gt;10M vectors, but is competitive below that threshold.",
+      },
+    ],
+    definedTerms: [
+      { name: "Vector database", description: "A database optimized for storing and similarity-searching high-dimensional vector embeddings. Foundational to RAG retrieval at scale." },
+      { name: "HNSW", description: "Hierarchical Navigable Small World — the dominant approximate-nearest-neighbor algorithm. Used by FAISS, Pinecone, Weaviate, Qdrant, pgvector." },
+      { name: "pgvector", description: "Postgres extension that adds vector storage + similarity search. Lets teams already on Postgres avoid a separate vector DB." },
+    ],
+    relatedHubs: ["rag-and-retrieval", "inference-optimization"],
+    relatedConcepts: ["embeddings", "rag-vs-veritas"],
+    relatedIntegrations: ["langchain", "llamaindex"],
+  },
 ];
 
 export function findTopic(slug: string): TopicHub | undefined {

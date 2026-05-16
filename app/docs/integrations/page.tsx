@@ -70,6 +70,13 @@ const guides = [
     summary:
       "Expose VERITAS as a Claude tool via the Anthropic SDK. tool_use → execute → tool_result loop. Python + TypeScript examples. Pairs with a system prompt that instructs Claude to self-verify before asserting.",
   },
+  {
+    slug: "instructor",
+    name: "Instructor",
+    status: "ready",
+    summary:
+      "Jason Liu's structured-output library. Pydantic models with model_validator hooks that look up claims via VERITAS at parse-time; failed verification triggers Instructor's automatic retry. Type-safe verified-claim outputs end-to-end.",
+  },
 ];
 
 export default function IntegrationsIndex() {

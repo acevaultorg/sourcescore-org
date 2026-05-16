@@ -36,7 +36,7 @@ signature, and a ready-to-paste citation.
 Try it:
 
   curl https://sourcescore.org/api/v1/claims.json | jq '.count'
-  # → 166
+  # → 176
 
   curl -X POST https://sourcescore.org/api/v1/verify \
     -H 'Content-Type: application/json' \
@@ -44,7 +44,7 @@ Try it:
   # → bestMatch with sources + HMAC signature
 
 The v0 wedge is AI/ML research claims (release dates, paper introductions,
-architecture facts, parameter counts, organizational dates). 166 claims at
+architecture facts, parameter counts, organizational dates). 176 claims at
 launch spanning 1997-2025 — every one has 2+ primary sources. Free tier is
 1,000 claims/mo with no auth, no signup.
 
@@ -80,7 +80,7 @@ to expand to after AI/ML. Will be in-thread for the next few hours.
 
 > Reply: "You shouldn't. The signature attests SourceScore signed this envelope; it doesn't attest the underlying fact. That's why every claim links to 2+ primary sources you can re-verify. The value is the unit-economics: hand-verifying every AI/ML release date you cite is slow + your time isn't free. VERITAS pays $0.0002/claim to do that work once and amortize it. The methodology is published; you can re-derive any score. If you want the raw signal, follow the source URLs in the envelope."
 
-**Top critical take #3: "v0 catalog is small — only 166 claims?"**
+**Top critical take #3: "v0 catalog is small — only 176 claims?"**
 
 > Reply: "Yes, intentionally — every claim is hand-verified against the primary source, not LLM-generated. The plan is ~500 by end of year and ~5,000 by Year 2. I'd rather grow quality-first than ship 50k synthetic claims. The contribution bar is 'subject + predicate + object are factual, ≥2 primary sources exist, confidence ≥0.85, no performance comparisons.' Open to issues/PRs against the seed file at gitlab.com/acevault-lab/sourcescore-org (data/claims-ai-ml.ts)."
 

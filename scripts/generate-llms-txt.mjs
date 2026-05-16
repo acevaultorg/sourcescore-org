@@ -134,6 +134,7 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/docs/integrations/dspy/ — Stanford DSPy compound-AI-system framework
 - https://sourcescore.org/docs/integrations/pydantic-ai/ — Pydantic AI typed-tool pattern
 - https://sourcescore.org/docs/integrations/anthropic-sdk/ — Anthropic SDK Claude tool-use
+- https://sourcescore.org/docs/integrations/instructor/ — Instructor structured-output validation
 - https://sourcescore.org/glossary/ — 35-term AI/ML glossary with DefinedTermSet schema
 - https://sourcescore.org/concepts/ — pillar explainers (5 pillars: grounding, hallucination, RAG vs VERITAS, citation chains, evaluation harnesses)
 - https://sourcescore.org/concepts/citation-chain/ — provenance graphs for LLM citations (stable ID + signature + re-fetchable URL)

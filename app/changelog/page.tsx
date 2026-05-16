@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "8th integration guide (Instructor) + 2 more topic hubs (agent-frameworks, vector-databases) + Batch 13 → 176 claims",
+    body:
+      "Instructor integration guide (/docs/integrations/instructor/) — Jason Liu's structured-output library with model_validator pattern that triggers Instructor's auto-retry on VERITAS-unverified claims. Pairs with Pydantic AI for end-to-end type-safety. Two more topic hubs: /topics/agent-frameworks/ (orchestration libraries — LangChain, LlamaIndex, DSPy, etc.) + /topics/vector-databases/ (FAISS, Pinecone, Weaviate, Qdrant, Chroma, Milvus, pgvector). Batch 13 catalog adds 10 claims spanning structured outputs (Instructor) + vector DBs (Chroma, Milvus, pgvector) + multi-agent orchestration (CrewAI, AutoGen, Microsoft Semantic Kernel, Haystack) + serving infrastructure (Triton, Modal Labs). 8 integration guides + 8 topic hubs + 6 concept pillars total. All build clean.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "/use-cases/ — 3 high-intent buyer pages + /concepts/embeddings/ (6th concept pillar)",
     body:
       "New /use-cases/ index + 3 deployment-pattern pages: /ai-agent-grounding/ (verify_claim as agent tool), /rag-pipeline-verification/ (close right-doc-wrong-number gap), /research-citation/ (programmatic citations for academic AI tools). Each: TechArticle + BreadcrumbList schema, HowTo on agent-grounding. /use-cases/ added to footer nav + sitemap-ai.xml + llms.txt. New concept pillar /concepts/embeddings/: history (Word2Vec → GloVe → BERT → sentence-transformers → OpenAI/Cohere), how to choose a model, vector DBs, anti-patterns, where embeddings stop and verification starts. DefinedTerm + TechArticle schema. 5 → 6 concept pillars.",
