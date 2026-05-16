@@ -182,12 +182,64 @@ export default async function ClaimPage({ params }: PageProps) {
         <h1 className="text-3xl sm:text-4xl font-semibold leading-tight mb-4">
           {claim.statement}
         </h1>
-        <p className="text-zinc-600 dark:text-zinc-400">
+        <p className="text-zinc-600 dark:text-zinc-400 mb-4">
           Last verified {claim.lastVerified} · Methodology {claim.methodologyVersion} ·{" "}
           <code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
             {claim.id}
           </code>
         </p>
+        <div className="flex flex-wrap gap-2 text-xs">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+              `${claim.statement} — verified via @sourcescore`,
+            )}&url=${encodeURIComponent(`https://sourcescore.org/claims/${claim.id}/`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_twitter"
+          >
+            Share on X
+          </a>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+              `https://sourcescore.org/claims/${claim.id}/`,
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_linkedin"
+          >
+            Share on LinkedIn
+          </a>
+          <a
+            href={`https://news.ycombinator.com/submitlink?u=${encodeURIComponent(
+              `https://sourcescore.org/claims/${claim.id}/`,
+            )}&t=${encodeURIComponent(`Verified: ${claim.statement}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_hn"
+          >
+            Submit to HN
+          </a>
+          <a
+            href={`https://reddit.com/submit?url=${encodeURIComponent(
+              `https://sourcescore.org/claims/${claim.id}/`,
+            )}&title=${encodeURIComponent(`Verified: ${claim.statement}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_reddit"
+          >
+            Share on Reddit
+          </a>
+          <a
+            href={`mailto:?subject=${encodeURIComponent(
+              `Verified: ${claim.statement}`,
+            )}&body=${encodeURIComponent(
+              `${claim.statement}\n\nVerified at: https://sourcescore.org/claims/${claim.id}/\n\nWith ${claim.sources.length} primary sources and an HMAC signature.`,
+            )}`}
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_email"
+          >
+            Email
+          </a>
+        </div>
       </header>
 
       <section className="mb-10">
