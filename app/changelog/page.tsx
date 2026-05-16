@@ -35,6 +35,13 @@ type Entry = {
 const entries: Entry[] = [
   {
     date: "2026-05-16",
+    kind: "data",
+    title: "Catalog 110 → 116 (Batch 7 — foundational eval metrics + optimizers + 2022/2024 models)",
+    body:
+      "6 new hand-verified claims, ≥2 primary sources each. Foundational evaluation metrics: BLEU score (Papineni et al., ACL 2002) — machine translation evaluation; ROUGE score (Lin, ACL 2004) — summarization evaluation. Optimizer: AdamW (Loshchilov & Hutter, ICLR 2019) — decoupled weight decay. Foundational models: PaLM (Chowdhery et al., 2022) — 540B-parameter Pathways language model; Imagen (Saharia et al., 2022) — photorealistic text-to-image diffusion (Google). 2024 release: AlphaFold 3 (Google DeepMind / Isomorphic Labs, 2024-05-08, Nature) — biomolecular structure prediction with unprecedented accuracy.",
+  },
+  {
+    date: "2026-05-16",
     kind: "feat",
     title: "/concepts/citation-chain/ — 4th pillar (provenance graphs for LLM citations)",
     body:

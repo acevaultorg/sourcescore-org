@@ -15,7 +15,7 @@
 //   5. We DO publish foundational-paper / methodology-introduction claims
 //      because those are documented + dated + signed by their authors.
 //
-// Seed cohort (Day 1-9): 110 claims spanning 2015-2024 across model releases,
+// Seed cohort (Day 1-9): 116 claims spanning 2015-2024 across model releases,
 // foundational methods, datasets, and well-known organizations. Each has been
 // hand-verified against the cited sources on 2026-05-16.
 //
@@ -3297,6 +3297,191 @@ export const seedClaims: SeedClaim[] = [
     lastVerified: TODAY,
     methodologyVersion: METHODOLOGY,
     tags: ["qwen", "alibaba", "open-weights", "released_on", "2023", "china"],
+  },
+  // ─── Batch 7 (2026-05-16): foundational eval metrics + optimizers + 2022 models ──
+  {
+    vertical: "ai-ml",
+    subject: "BLEU score",
+    predicate: "introduced_in_paper",
+    object: "BLEU: a Method for Automatic Evaluation of Machine Translation (Papineni et al., 2002)",
+    confidence: 1.0,
+    sources: [
+      {
+        url: "https://aclanthology.org/P02-1040/",
+        title: "BLEU: a Method for Automatic Evaluation of Machine Translation",
+        publisher: "ACL Anthology (Papineni, Roukos, Ward, Zhu)",
+        publishedDate: "2002-07-07",
+        accessedDate: TODAY,
+        type: "peer-reviewed",
+        excerpt:
+          "We propose a method of automatic machine translation evaluation that is quick, inexpensive, and language-independent, that correlates highly with human evaluation, and that has little marginal cost per run.",
+      },
+      {
+        url: "https://en.wikipedia.org/wiki/BLEU",
+        title: "BLEU — Wikipedia",
+        publisher: "Wikipedia",
+        accessedDate: TODAY,
+        type: "docs",
+      },
+    ],
+    publishedAt: PUBLISHED_AT,
+    lastVerified: TODAY,
+    methodologyVersion: METHODOLOGY,
+    tags: ["bleu", "evaluation-metric", "machine-translation", "foundational", "2002", "acl", "ibm"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "ROUGE score",
+    predicate: "introduced_in_paper",
+    object: "ROUGE: A Package for Automatic Evaluation of Summaries (Lin, 2004)",
+    confidence: 1.0,
+    sources: [
+      {
+        url: "https://aclanthology.org/W04-1013/",
+        title: "ROUGE: A Package for Automatic Evaluation of Summaries",
+        publisher: "ACL Anthology (Lin)",
+        publishedDate: "2004-07-25",
+        accessedDate: TODAY,
+        type: "peer-reviewed",
+        excerpt:
+          "ROUGE stands for Recall-Oriented Understudy for Gisting Evaluation. It includes measures to automatically determine the quality of a summary by comparing it to other (ideal) summaries created by humans.",
+      },
+      {
+        url: "https://en.wikipedia.org/wiki/ROUGE_(metric)",
+        title: "ROUGE (metric) — Wikipedia",
+        publisher: "Wikipedia",
+        accessedDate: TODAY,
+        type: "docs",
+      },
+    ],
+    publishedAt: PUBLISHED_AT,
+    lastVerified: TODAY,
+    methodologyVersion: METHODOLOGY,
+    tags: ["rouge", "evaluation-metric", "summarization", "foundational", "2004", "acl"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "AdamW optimizer",
+    predicate: "introduced_in_paper",
+    object: "Decoupled Weight Decay Regularization (Loshchilov & Hutter, 2017)",
+    confidence: 1.0,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/1711.05101",
+        title: "Decoupled Weight Decay Regularization",
+        publisher: "arXiv (Loshchilov, Hutter)",
+        publishedDate: "2017-11-14",
+        accessedDate: TODAY,
+        type: "preprint",
+        excerpt:
+          "We propose a simple modification to recover the original formulation of weight decay regularization by decoupling the weight decay from the optimization steps taken w.r.t. the loss function.",
+      },
+      {
+        url: "https://openreview.net/forum?id=Bkg6RiCqY7",
+        title: "Decoupled Weight Decay Regularization (ICLR 2019)",
+        publisher: "OpenReview / ICLR",
+        publishedDate: "2019-05-06",
+        accessedDate: TODAY,
+        type: "peer-reviewed",
+      },
+    ],
+    publishedAt: PUBLISHED_AT,
+    lastVerified: TODAY,
+    methodologyVersion: METHODOLOGY,
+    tags: ["adamw", "optimizer", "weight-decay", "foundational", "2017", "iclr"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "PaLM",
+    predicate: "introduced_in_paper",
+    object: "PaLM: Scaling Language Modeling with Pathways (Chowdhery et al., 2022)",
+    confidence: 1.0,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2204.02311",
+        title: "PaLM: Scaling Language Modeling with Pathways",
+        publisher: "arXiv (Chowdhery, Narang, Devlin, Bosma, Mishra, Roberts, et al.)",
+        publishedDate: "2022-04-05",
+        accessedDate: TODAY,
+        type: "preprint",
+        excerpt:
+          "We trained a 540-billion parameter, densely activated, Transformer language model, which we call Pathways Language Model PaLM. … PaLM 540B achieves breakthrough performance, outperforming the finetuned state-of-the-art on a suite of multi-step reasoning tasks.",
+      },
+      {
+        url: "https://blog.research.google/2022/04/pathways-language-model-palm-scaling-to.html",
+        title: "Pathways Language Model (PaLM): Scaling to 540 Billion Parameters",
+        publisher: "Google Research",
+        publishedDate: "2022-04-04",
+        accessedDate: TODAY,
+        type: "official-blog",
+      },
+    ],
+    publishedAt: PUBLISHED_AT,
+    lastVerified: TODAY,
+    methodologyVersion: METHODOLOGY,
+    tags: ["palm", "google", "pathways", "foundational", "2022", "parameter-count", "540b"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "Imagen",
+    predicate: "introduced_in_paper",
+    object: "Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding (Saharia et al., 2022)",
+    confidence: 1.0,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2205.11487",
+        title: "Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding",
+        publisher: "arXiv (Saharia, Chan, Saxena, Li, Whang, Denton, et al. / Google Brain)",
+        publishedDate: "2022-05-23",
+        accessedDate: TODAY,
+        type: "preprint",
+        excerpt:
+          "We present Imagen, a text-to-image diffusion model with an unprecedented degree of photorealism and a deep level of language understanding.",
+      },
+      {
+        url: "https://imagen.research.google/",
+        title: "Imagen — official site",
+        publisher: "Google Research",
+        publishedDate: "2022-05-23",
+        accessedDate: TODAY,
+        type: "official-blog",
+      },
+    ],
+    publishedAt: PUBLISHED_AT,
+    lastVerified: TODAY,
+    methodologyVersion: METHODOLOGY,
+    tags: ["imagen", "google", "text-to-image", "diffusion", "foundational", "2022"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "AlphaFold 3",
+    predicate: "released_on",
+    object: "2024-05-08",
+    confidence: 1.0,
+    sources: [
+      {
+        url: "https://blog.google/technology/ai/google-deepmind-isomorphic-alphafold-3-ai-model/",
+        title: "Introducing AlphaFold 3, our state-of-the-art AI model for structure prediction",
+        publisher: "Google DeepMind / Isomorphic Labs",
+        publishedDate: "2024-05-08",
+        accessedDate: TODAY,
+        type: "official-blog",
+        excerpt:
+          "Today, we're introducing AlphaFold 3, a revolutionary model that can predict the structure and interactions of all life's molecules with unprecedented accuracy.",
+      },
+      {
+        url: "https://www.nature.com/articles/s41586-024-07487-w",
+        title: "Accurate structure prediction of biomolecular interactions with AlphaFold 3",
+        publisher: "Nature (Abramson et al.)",
+        publishedDate: "2024-05-08",
+        accessedDate: TODAY,
+        type: "peer-reviewed",
+      },
+    ],
+    publishedAt: PUBLISHED_AT,
+    lastVerified: TODAY,
+    methodologyVersion: METHODOLOGY,
+    tags: ["alphafold", "alphafold-3", "deepmind", "isomorphic", "protein-structure", "released_on", "2024", "nature"],
   },
 ];
 
