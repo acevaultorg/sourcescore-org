@@ -195,6 +195,21 @@ export default async function ClaimsIndexPage() {
         </p>
       </section>
 
+      <section className="mb-12">
+        <h2 className="text-xl font-semibold mb-4">Browse by year</h2>
+        <div className="flex flex-wrap gap-2 text-sm">
+          {["2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013"].map((y) => (
+            <a
+              key={y}
+              href={`/claims/year/${y}/`}
+              className="px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-900"
+            >
+              {y}
+            </a>
+          ))}
+        </div>
+      </section>
+
       <ClaimSection title="Foundational papers" claims={foundational} />
       <ClaimSection title="Model releases" claims={releases} />
       <ClaimSection title="Organizations" claims={organizations} />

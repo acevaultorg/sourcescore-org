@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/claims/year/[year]/ programmatic year-hubs + /concepts/function-calling/ (7th pillar)",
+    body:
+      "New programmatic SEO surface: /claims/year/[year]/ pages auto-generated for every year that has ≥3 claims with sources dated in that year. ~12 new SEO landings targeting 'AI papers 2024', 'LLM releases 2025', etc. Each: CollectionPage + BreadcrumbList schema, auto-curated claim list sorted by confidence. Year extracted from earliest source publishedDate. New 7th concept pillar /concepts/function-calling/: definition, history (OpenAI June 2023 → Anthropic → Google → MCP standard Nov 2024), JSON schema, agent loop, vendor flavors, common production patterns, anti-patterns. TechArticle + DefinedTerm + BreadcrumbList schema. Cross-links to 4 integration guides + 2 use-cases.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "5th blog post + /api/v1/tags.json (bot discovery) + Batch 14 → 186 claims",
     body:
       "New blog post /blog/llm-grounding-strategies-2026/ — 6 grounding strategies (temperature/prompt → few-shot → RAG → citation+post-process → signed-claim verification → constrained decoding) with measured impact + when-to-combine + practical sequencing. New static endpoint /api/v1/tags.json: 434 tag entries with claim counts + sample claim IDs + browse URLs — lets RAG developers + LLM crawlers see catalog structure without walking every claim. Batch 14 adds 10 claims: VAE (Kingma & Welling 2013), Knowledge Distillation (Hinton et al. 2015), SGLang (UC Berkeley 2024), Llama 4 (Meta 2025-04-05), Claude Haiku 3.5 (Anthropic 2024-11), Replit Agent (2024-09), Devin (Cognition Labs 2024-03), Groq LPU (2024-02), Cerebras (founded 2016), Anthropic API GA (2023-07).",

@@ -143,6 +143,7 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/concepts/llm-grounding/ — definition + 3 production patterns
 - https://sourcescore.org/concepts/hallucination/ — categories, root causes, mitigations
 - https://sourcescore.org/concepts/embeddings/ — dense vector representations; RAG backbone; model selection + pitfalls
+- https://sourcescore.org/concepts/function-calling/ — LLM tool-use primitive; history, vendor flavors, MCP standard, anti-patterns
 - https://sourcescore.org/blog/ — VERITAS launch announcement + tutorials + methodology rigor posts
 - https://sourcescore.org/changelog/ — public ship log (features / catalog / fixes / breaking)
 - https://sourcescore.org/security/ — responsible disclosure + signing-key rotation policy

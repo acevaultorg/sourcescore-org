@@ -61,6 +61,13 @@ const concepts = [
       "Dense numerical vectors that represent text/images/audio such that similar inputs produce similar vectors. The retrieval backbone of RAG, semantic search, classification, and most LLM-era infrastructure. History, model selection, common pitfalls, and where embeddings stop and verification starts.",
     status: "live",
   },
+  {
+    slug: "function-calling",
+    title: "Function calling",
+    summary:
+      "How modern LLMs invoke external tools (APIs, databases, code execution). OpenAI launched it June 2023; the pattern is now table-stakes. History, vendor flavors, the agent loop, cross-vendor MCP standard, common production patterns, and anti-patterns.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {
