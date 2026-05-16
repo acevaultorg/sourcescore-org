@@ -33,6 +33,13 @@ const concepts = [
       "Five categories of LLM hallucination, the six root causes, measured rates by query type, and the mitigation ladder from prompt engineering to signed-claim verification.",
     status: "live",
   },
+  {
+    slug: "rag-vs-veritas",
+    title: "RAG vs signed-claim verification",
+    summary:
+      "RAG retrieves prose chunks; VERITAS retrieves typed atomic claims with signatures. Comparison table, when to use each, the hybrid pattern most production systems converge on.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {
