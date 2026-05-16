@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "npx tsx scripts/generate-api-json.ts && npx tsx scripts/generate-og-images.ts && node scripts/generate-sitemap.mjs && node scripts/generate-llms-txt.mjs",
+    "postbuild": "npx tsx scripts/generate-api-json.ts && npx tsx scripts/generate-claims-json.ts && npx tsx scripts/generate-og-images.ts && node scripts/generate-sitemap.mjs && node scripts/generate-llms-txt.mjs",
     "start": "next start",
     "lint": "next lint",
     "indexnow": "node scripts/ping-indexnow.mjs",
