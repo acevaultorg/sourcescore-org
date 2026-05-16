@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { bestLists } from "@/data/best-lists";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: { absolute: "Best-of lists — SourceScore" },
@@ -20,6 +20,22 @@ export default function BestLandingPage() {
               { name: "SourceScore", url: "https://sourcescore.org/" },
               { name: "Best lists", url: "https://sourcescore.org/best/" },
             ])
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: "SourceScore best-of lists",
+              description: `Machine-readable JSON record of ${bestLists.length} curated "best X for AI citation" lists derived from the SourceScore Index — best news, peer-reviewed journals, government primary sources, health authorities, reference works, and more.`,
+              url: "https://sourcescore.org/best/",
+              apiUrl: "https://sourcescore.org/api/best.json",
+              identifier: "best-index",
+              keywords: ["best sources", "AI citation", "SourceScore", "curated lists"],
+              dateModified: "2026-04-29",
+            })
           ),
         }}
       />

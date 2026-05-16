@@ -7,7 +7,7 @@ import {
   gradeRange,
   gradeColorClass,
 } from "@/lib/types";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: { absolute: "Source grading scale — A+ to F on the SourceScore Index" },
@@ -31,6 +31,22 @@ export default function GradeLandingPage() {
               { name: "SourceScore", url: "https://sourcescore.org/" },
               { name: "Grades", url: "https://sourcescore.org/grade/" },
             ])
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: "SourceScore grade bands (A+ → F)",
+              description: `Machine-readable JSON record of ${allGrades.length} composite-Index grade bands with per-grade source counts across the SourceScore Index of ${sources.length} information sources.`,
+              url: "https://sourcescore.org/grade/",
+              apiUrl: "https://sourcescore.org/api/grades.json",
+              identifier: "grade-index",
+              keywords: ["source grading", "AI citation", "SourceScore", "A+ to F", "grade scale"],
+              dateModified: "2026-04-29",
+            })
           ),
         }}
       />

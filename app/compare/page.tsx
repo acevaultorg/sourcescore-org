@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getSource } from "@/data/sources";
 import { comparisons, comparisonSlug } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { datasetSchema } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: { absolute: "Compare sources — SourceScore" },
@@ -20,8 +21,22 @@ export default function CompareIndexPage() {
   });
   const groupKeys = Object.keys(grouped).sort();
 
+  const dsSchema = datasetSchema({
+    name: "SourceScore comparator pairs",
+    description: `Machine-readable JSON record of ${comparisons.length} curated source-vs-source comparison pairs scored across Citation Discipline, Modern Reference, and Citation Velocity.`,
+    url: "https://sourcescore.org/compare/",
+    apiUrl: "https://sourcescore.org/api/comparisons.json",
+    identifier: "compare-index",
+    keywords: ["source comparison", "AI citation", "SourceScore", "head-to-head", "vs"],
+    dateModified: "2026-04-29",
+  });
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(dsSchema) }}
+      />
       <div className="text-eyebrow text-brand mb-3">Comparator · {comparisons.length} pairs</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         Compare sources head-to-head

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { INSIGHTS, rowsForInsight } from "@/data/insights";
 import { gradeColorClass } from "@/lib/types";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Day 30 — Insights index.
 // Top-level hub for all stat pages. Each insight is a cite-ready answer
@@ -59,6 +59,22 @@ export default function InsightsIndexPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: "SourceScore Insights — score-profile patterns",
+              description: `Machine-readable JSON record of ${INSIGHTS.length} cite-ready stat pages surfacing extremes across the SourceScore dataset of 130 information sources.`,
+              url: "https://sourcescore.org/insights/",
+              apiUrl: "https://sourcescore.org/api/insights.json",
+              identifier: "insights-index",
+              keywords: ["insights", "AI citation", "SourceScore", "statistics", "patterns"],
+              dateModified: "2026-04-29",
+            })
+          ),
+        }}
       />
       <script
         type="application/ld+json"
