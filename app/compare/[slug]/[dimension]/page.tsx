@@ -9,7 +9,7 @@ import {
 } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { gradeColorClass, type Source } from "@/lib/types";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Day 18 — Sub-score-faceted comparators.
 // Layer 5 archetype stack:
@@ -228,6 +228,35 @@ export default async function CompareDimensionPage({ params }: PageProps) {
               { name: `${a.name} vs ${b.name}`, url: `https://sourcescore.org/compare/${slug}/` },
               { name: dim.short, url: `https://sourcescore.org/compare/${slug}/${dimension}/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — per-pair-per-dimension JSON twin is the canonical
+          machine-readable record for this specific claim. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${a.name} vs ${b.name} — ${dim.label} comparison`,
+              description: claim,
+              url: `https://sourcescore.org/compare/${slug}/${dimension}/`,
+              apiUrl: `https://sourcescore.org/api/compare/${slug}/${dimension}.json`,
+              identifier: `${slug}--${dimension}`,
+              keywords: [
+                "source comparison",
+                "AI citation",
+                "SourceScore",
+                dim.label,
+                a.name,
+                b.name,
+              ],
+              dateModified: a.verified,
+              isPartOf: {
+                name: `${a.name} vs ${b.name} comparison`,
+                url: `https://sourcescore.org/compare/${slug}/`,
+              },
+            })
           ),
         }}
       />

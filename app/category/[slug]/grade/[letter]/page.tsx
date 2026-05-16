@@ -17,7 +17,7 @@ import {
   gradeColorClass,
   type GradeLetter,
 } from "@/lib/types";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Cross-faceted programmatic-SEO route — /category/<cat>/grade/<letter>/.
 // Targets long-tail queries like "A-grade news sources for AI citation",
@@ -161,6 +161,34 @@ export default async function CategoryGradeFacetPage({ params }: PageProps) {
               { name: grade, url: `https://sourcescore.org/grade/${letter}/` },
               { name: `${grade}-grade ${category}`, url: `https://sourcescore.org/category/${slug}/grade/${letter}/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — category × grade facet JSON twin */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${grade}-grade ${category.toLowerCase()} sources — SourceScore facet`,
+              description: `Machine-readable JSON record of ${list.length} ${category.toLowerCase()} source${list.length === 1 ? "" : "s"} scoring ${grade} (range ${gradeRange(grade)}) on the SourceScore Index. Intersection of category × grade.`,
+              url: `https://sourcescore.org/category/${slug}/grade/${letter}/`,
+              apiUrl: `https://sourcescore.org/api/category/${slug}/grade/${letter}.json`,
+              identifier: `category-${slug}--grade-${letter}`,
+              keywords: [
+                "AI citation",
+                "SourceScore",
+                category,
+                `${grade} grade`,
+                "facet",
+              ],
+              dateModified: list[0]?.verified ?? "2026-04-28",
+              isPartOf: {
+                name: `${category} catalog`,
+                url: `https://sourcescore.org/category/${slug}/`,
+              },
+              about: { name: category, type: "Thing" },
+            })
           ),
         }}
       />

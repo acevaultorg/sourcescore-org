@@ -8,7 +8,7 @@ import {
 } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { allGrades, gradeSlug, gradeRange, gradeColorClass } from "@/lib/types";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Programmatic-SEO category pages — one per unique category in the dataset.
 // Each is a fully static page rendered at build time with generateStaticParams.
@@ -66,6 +66,35 @@ export default async function CategoryPage({ params }: PageProps) {
               { name: "Sources", url: "https://sourcescore.org/sources/" },
               { name: category, url: `https://sourcescore.org/category/${slug}/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — per-category JSON twin is the canonical machine-readable
+          record of every source in this category + their SourceScore Index. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${category} sources — SourceScore catalog`,
+              description: `Machine-readable JSON record of ${list.length} ${category.toLowerCase()} sources on the SourceScore Index. Includes per-source Citation Discipline, Modern Reference, Citation Velocity scores + composite Index. Average Index across category: ${avgIndex}.`,
+              url: `https://sourcescore.org/category/${slug}/`,
+              apiUrl: `https://sourcescore.org/api/category/${slug}.json`,
+              identifier: `category-${slug}`,
+              keywords: [
+                "AI citation",
+                "SourceScore",
+                category,
+                "source quality",
+                "category catalog",
+              ],
+              dateModified: list[0]?.verified ?? "2026-04-28",
+              isPartOf: {
+                name: "SourceScore Index",
+                url: "https://sourcescore.org/sources/",
+              },
+              about: { name: category, type: "Thing" },
+            })
           ),
         }}
       />

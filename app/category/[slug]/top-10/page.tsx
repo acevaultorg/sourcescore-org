@@ -9,7 +9,7 @@ import {
 import { ALL_DIMENSIONS, DIMENSION_META } from "@/data/best-lists";
 import { gradeColorClass } from "@/lib/types";
 import { ScoreBadge } from "@/components/ScoreBadge";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Day 28 — Per-category top-10 fixed-N leaderboard.
 // Distinct from Day 20 `/category/<slug>/<dim>/` which lists ALL sources
@@ -154,6 +154,34 @@ export default async function CategoryTopNPage({ params }: PageProps) {
               { name: category, url: `https://sourcescore.org/category/${slug}/` },
               { name: "Top 10", url: `https://sourcescore.org/category/${slug}/top-10/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — per-category top-10 JSON twin */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `Top 10 ${category.toLowerCase()} sources — SourceScore`,
+              description: `The 10 highest-scoring ${category.toLowerCase()} sources by composite SourceScore Index. From a ${fullList.length}-source category. Mean Index of top 10: ${indexMean}; category mean: ${categoryMean}. Leader: ${leader.name}.`,
+              url: `https://sourcescore.org/category/${slug}/top-10/`,
+              apiUrl: `https://sourcescore.org/api/category/${slug}/top-10.json`,
+              identifier: `category-${slug}--top-10`,
+              keywords: [
+                "AI citation",
+                "SourceScore",
+                category,
+                "top 10",
+                "ranked",
+              ],
+              dateModified: leader.verified,
+              isPartOf: {
+                name: `${category} catalog`,
+                url: `https://sourcescore.org/category/${slug}/`,
+              },
+              about: { name: category, type: "Thing" },
+            })
           ),
         }}
       />

@@ -137,3 +137,83 @@ export function breadcrumbListSchema(
     })),
   };
 }
+
+/**
+ * Build a Dataset JSON-LD schema declaring a page's JSON twin endpoint as a
+ * citable, structured machine-readable record. Per Aleyda Solis #2 Useful +
+ * #4 Extractable: retrieval models (and Google Dataset Search) treat
+ * Dataset-marked URLs as canonical-source candidates for the underlying
+ * facts. Every SourceScore page that has a /api/.../.json twin gets one.
+ *
+ * The `sameAs` field points to the JSON twin so the relationship is
+ * explicit: this page IS the human-facing surface of the JSON dataset.
+ */
+export function datasetSchema(opts: {
+  /** Display name — e.g. "Apple Inc — SourceScore record" */
+  name: string;
+  /** 1-3 sentence description of what's in the dataset. */
+  description: string;
+  /** Canonical URL of the page describing the dataset. */
+  url: string;
+  /** Canonical URL of the JSON twin endpoint. */
+  apiUrl: string;
+  /** Short stable identifier — slug, pair-id, etc. */
+  identifier: string;
+  /** ≥3 keywords / tags. */
+  keywords: string[];
+  /** ISO date string for the dataset's last-verified timestamp. */
+  dateModified: string;
+  /** Optional — for sub-collections (category catalog, comparison hub, etc.) */
+  isPartOf?: { name: string; url: string };
+  /** Optional — the primary entity this dataset is "about" (Org, Pair, Category). */
+  about?: { name: string; url?: string; type?: string };
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    sameAs: opts.apiUrl,
+    identifier: opts.identifier,
+    keywords: opts.keywords,
+    dateModified: opts.dateModified,
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    isAccessibleForFree: true,
+    distribution: [
+      {
+        "@type": "DataDownload",
+        encodingFormat: "application/json",
+        contentUrl: opts.apiUrl,
+      },
+    ],
+    creator: {
+      "@type": "Organization",
+      name: "SourceScore",
+      url: "https://sourcescore.org",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "SourceScore",
+      url: "https://sourcescore.org",
+    },
+    ...(opts.isPartOf
+      ? {
+          isPartOf: {
+            "@type": "DataCatalog",
+            name: opts.isPartOf.name,
+            url: opts.isPartOf.url,
+          },
+        }
+      : {}),
+    ...(opts.about
+      ? {
+          about: {
+            "@type": opts.about.type ?? "Thing",
+            name: opts.about.name,
+            ...(opts.about.url ? { url: opts.about.url } : {}),
+          },
+        }
+      : {}),
+  };
+}

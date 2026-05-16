@@ -12,7 +12,7 @@ import {
 } from "@/data/best-lists";
 import { categorySlug } from "@/data/sources";
 import { gradeColorClass } from "@/lib/types";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Day 25 — Best-list × dimension faceted leaderboards.
 // Same source pool as the parent /best/<slug>/ page, re-sorted by ONE
@@ -171,6 +171,33 @@ export default async function BestListDimensionPage({ params }: PageProps) {
               { name: list.intent, url: `https://sourcescore.org/best/${slug}/` },
               { name: `By ${dimMeta.short}`, url: `https://sourcescore.org/best/${slug}/${dimSegment}/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — per-best-list-per-dim JSON twin */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${list.title} — ranked by ${dimMeta.label}`,
+              description: `Same hand-curated source pool as ${list.title}, re-sorted by ${dimMeta.label} only. ${items.length} sources. Mean ${dimMeta.short}: ${dimMean}. Leader: ${leader.name} (${leader.scores[dim].grade} · ${leader.scores[dim].value}).`,
+              url: `https://sourcescore.org/best/${slug}/${dimSegment}/`,
+              apiUrl: `https://sourcescore.org/api/best/${slug}/${dimSegment}.json`,
+              identifier: `best-${slug}--${dimSegment}`,
+              keywords: [
+                "AI citation",
+                "SourceScore",
+                dimMeta.label,
+                list.intent,
+                "ranked list",
+              ],
+              dateModified: "2026-04-29",
+              isPartOf: {
+                name: list.title,
+                url: `https://sourcescore.org/best/${slug}/`,
+              },
+            })
           ),
         }}
       />

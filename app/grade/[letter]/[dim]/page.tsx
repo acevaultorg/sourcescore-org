@@ -17,7 +17,7 @@ import {
   type DimensionKey,
 } from "@/data/best-lists";
 import { ScoreBadge } from "@/components/ScoreBadge";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Day 27 — Composite-grade × sub-score faceted leaderboards.
 // Distinct from Day 21 `/<dim>/grade/<letter>/` which redefines the
@@ -207,6 +207,33 @@ export default async function GradeDimensionPage({ params }: PageProps) {
               { name: grade, url: `https://sourcescore.org/grade/${letter}/` },
               { name: `By ${dimMeta.short}`, url: `https://sourcescore.org/grade/${letter}/${dimSegment}/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — per-grade-per-dim JSON twin */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${grade}-grade sources ranked by ${dimMeta.label}`,
+              description: `Composite ${grade}-tier (range ${gradeRange(grade)}) sources re-ranked by ${dimMeta.label}. ${items.length} sources. Mean ${dimMeta.short}: ${dimMean}; mean composite: ${compositeMean}. Leader on ${dimMeta.short}: ${leader.name}.`,
+              url: `https://sourcescore.org/grade/${letter}/${dimSegment}/`,
+              apiUrl: `https://sourcescore.org/api/grade/${letter}/${dimSegment}.json`,
+              identifier: `grade-${letter}--${dimSegment}`,
+              keywords: [
+                "AI citation",
+                "SourceScore",
+                `${grade} grade`,
+                dimMeta.label,
+                "ranked",
+              ],
+              dateModified: leader.verified,
+              isPartOf: {
+                name: `${grade} grade tier`,
+                url: `https://sourcescore.org/grade/${letter}/`,
+              },
+            })
           ),
         }}
       />

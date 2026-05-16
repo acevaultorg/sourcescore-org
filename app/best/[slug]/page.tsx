@@ -10,7 +10,7 @@ import {
 } from "@/data/best-lists";
 import { categorySlug } from "@/data/sources";
 import { gradeColorClass } from "@/lib/types";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Programmatic-SEO best-of listicles — one per curated vertical.
 // Targets high-intent "best X for AI citation" queries (e.g., "best news
@@ -88,6 +88,32 @@ export default async function BestListPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${list.title} — SourceScore curated list`,
+              description: `Machine-readable JSON record of ${items.length} hand-curated sources for "${list.intent}". Each entry includes Citation Discipline, Modern Reference, and Citation Velocity scores plus composite Index. ${list.description}`,
+              url: `https://sourcescore.org/best/${slug}/`,
+              apiUrl: `https://sourcescore.org/api/best/${slug}.json`,
+              identifier: `best-${slug}`,
+              keywords: [
+                "AI citation",
+                "SourceScore",
+                "curated list",
+                list.intent,
+                "source quality",
+              ],
+              dateModified: "2026-04-29",
+              isPartOf: {
+                name: "SourceScore Best Lists",
+                url: "https://sourcescore.org/best/",
+              },
+            })
+          ),
+        }}
       />
       <script
         type="application/ld+json"

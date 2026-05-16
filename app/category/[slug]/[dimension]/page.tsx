@@ -9,7 +9,7 @@ import {
 } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { gradeColorClass } from "@/lib/types";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Day 20 — Category × dimension intersection pages.
 // Layer 5 archetype stack:
@@ -214,6 +214,34 @@ export default async function CategoryDimensionPage({ params }: PageProps) {
               { name: category, url: `https://sourcescore.org/category/${slug}/` },
               { name: dim.short, url: `https://sourcescore.org/category/${slug}/${dimension}/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — category × dimension JSON twin */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${category} sources ranked by ${dim.label} — SourceScore`,
+              description: `Machine-readable JSON record of ${list.length} ${category.toLowerCase()} sources scored on ${dim.label}. Category mean: ${catMean}; global mean: ${globalMean}.${top ? ` Top: ${top.name} (${top.scores[dim.key].grade} · ${top.scores[dim.key].value}).` : ""}`,
+              url: `https://sourcescore.org/category/${slug}/${dimension}/`,
+              apiUrl: `https://sourcescore.org/api/category/${slug}/${dimension}.json`,
+              identifier: `category-${slug}--${dimension}`,
+              keywords: [
+                "AI citation",
+                "SourceScore",
+                category,
+                dim.label,
+                "ranked",
+              ],
+              dateModified: top?.verified ?? "2026-04-28",
+              isPartOf: {
+                name: `${category} catalog`,
+                url: `https://sourcescore.org/category/${slug}/`,
+              },
+              about: { name: category, type: "Thing" },
+            })
           ),
         }}
       />

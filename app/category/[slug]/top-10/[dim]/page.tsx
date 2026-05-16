@@ -14,7 +14,7 @@ import {
 } from "@/data/best-lists";
 import { gradeColorClass } from "@/lib/types";
 import { ScoreBadge } from "@/components/ScoreBadge";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Day 28 — Per-category top-10 × dim facet.
 // Same top-10 pool as `/category/<slug>/top-10/` (composite-sorted),
@@ -204,6 +204,34 @@ export default async function CategoryTopNDimPage({ params }: PageProps) {
               { name: "Top 10", url: `https://sourcescore.org/category/${slug}/top-10/` },
               { name: dimMeta.short, url: `https://sourcescore.org/category/${slug}/top-10/${dimSegment}/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — top-10-by-dim JSON twin */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `Top 10 ${category.toLowerCase()} sources by ${dimMeta.label}`,
+              description: `Top 10 ${category.toLowerCase()} sources (composite Index) re-sorted by ${dimMeta.label}. Mean ${dimMeta.short}: ${dimMean}; mean composite: ${compositeMean}. Leader on ${dimMeta.short}: ${leader.name}.`,
+              url: `https://sourcescore.org/category/${slug}/top-10/${dimSegment}/`,
+              apiUrl: `https://sourcescore.org/api/category/${slug}/top-10/${dimSegment}.json`,
+              identifier: `category-${slug}--top-10--${dimSegment}`,
+              keywords: [
+                "AI citation",
+                "SourceScore",
+                category,
+                dimMeta.label,
+                "top 10",
+              ],
+              dateModified: leader.verified,
+              isPartOf: {
+                name: `Top 10 ${category.toLowerCase()}`,
+                url: `https://sourcescore.org/category/${slug}/top-10/`,
+              },
+              about: { name: category, type: "Thing" },
+            })
           ),
         }}
       />

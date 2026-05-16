@@ -9,7 +9,7 @@ import {
 } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import type { DimensionScore, Source } from "@/lib/types";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Layer 5 archetype: comparison_vs_competitor_page × +60 (per
 // concept-finder-methodology v2.1.1 + bot-harvest.md). Each pair
@@ -106,6 +106,38 @@ export default async function CompareDetailPage({ params }: PageProps) {
               { name: "Compare", url: "https://sourcescore.org/compare/" },
               { name: `${a.name} vs ${b.name}`, url: `https://sourcescore.org/compare/${slug}/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — declares JSON twin as canonical machine-readable
+          record of the head-to-head comparison (per-dimension scores +
+          deltas). Enables Google Dataset Search + LLM retrieval to anchor
+          on this pair as a citable source. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${a.name} vs ${b.name} — SourceScore comparison`,
+              description: `Head-to-head SourceScore comparison: ${a.name} (${a.scores.index.grade} ${a.scores.index.value}) vs ${b.name} (${b.scores.index.grade} ${b.scores.index.value}). Includes per-dimension scores (Citation Discipline, Modern Reference, Citation Velocity), deltas, and rationales for each source.`,
+              url: `https://sourcescore.org/compare/${slug}/`,
+              apiUrl: `https://sourcescore.org/api/compare/${slug}.json`,
+              identifier: slug,
+              keywords: [
+                "source comparison",
+                "AI citation",
+                "SourceScore",
+                a.name,
+                b.name,
+                a.category,
+                b.category,
+              ].filter((k, i, arr) => arr.indexOf(k) === i),
+              dateModified: a.verified,
+              isPartOf: {
+                name: "SourceScore Comparisons",
+                url: "https://sourcescore.org/compare/",
+              },
+            })
           ),
         }}
       />

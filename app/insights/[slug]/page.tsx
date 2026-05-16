@@ -9,7 +9,7 @@ import {
 import { ALL_DIMENSIONS, DIMENSION_META } from "@/data/best-lists";
 import { gradeColorClass } from "@/lib/types";
 import { ScoreBadge } from "@/components/ScoreBadge";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Day 30 — Per-insight stat page.
 // Each insight is a single cite-ready stat (top-5 sources extreme on
@@ -137,6 +137,34 @@ export default async function InsightPage({ params }: PageProps) {
               { name: "Insights", url: "https://sourcescore.org/insights/" },
               { name: insight.title, url: `https://sourcescore.org/insights/${slug}/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — insight JSON twin is the canonical record of the
+          ranked top-N extreme on this signal. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${insight.title} — SourceScore insight`,
+              description: `${insight.summary} Top ${rows.length} sources ranked on this signal. Leader: ${leader.source.name}.`,
+              url: `https://sourcescore.org/insights/${slug}/`,
+              apiUrl: `https://sourcescore.org/api/insights/${slug}.json`,
+              identifier: `insight-${slug}`,
+              keywords: [
+                "AI citation",
+                "SourceScore",
+                "insight",
+                "ranked extreme",
+                insight.title,
+              ],
+              dateModified: leader.source.verified,
+              isPartOf: {
+                name: "SourceScore Insights",
+                url: "https://sourcescore.org/insights/",
+              },
+            })
           ),
         }}
       />

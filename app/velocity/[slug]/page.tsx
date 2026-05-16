@@ -6,6 +6,7 @@ import {
   DIMENSION_META,
   dimensionRank,
 } from "@/components/SourceDimensionDetail";
+import { datasetSchema } from "@/lib/methodology-version";
 
 export function generateStaticParams() {
   return allSlugs.map((slug) => ({ slug }));
@@ -70,6 +71,38 @@ export default async function VelocitySourcePage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${s.name} — Citation Velocity detail`,
+              description: `Machine-readable JSON record of ${s.name}'s Citation Velocity score: ${score.grade} (${score.value}/100), global rank #${rank}. ${score.rationale}`,
+              url: `https://sourcescore.org/velocity/${slug}/`,
+              apiUrl: `https://sourcescore.org/api/velocity/${slug}.json`,
+              identifier: `velocity-${slug}`,
+              keywords: [
+                "Citation Velocity",
+                "AI citation",
+                "SourceScore",
+                s.name,
+                s.domain,
+                s.category,
+              ],
+              dateModified: s.verified,
+              isPartOf: {
+                name: "SourceScore Citation Velocity rankings",
+                url: "https://sourcescore.org/velocity/",
+              },
+              about: {
+                name: s.name,
+                url: `https://${s.domain}`,
+                type: "Organization",
+              },
+            })
+          ),
+        }}
       />
       <SourceDimensionDetail source={s} dim="velocity" />
     </>

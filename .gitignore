@@ -40,3 +40,4 @@ Thumbs.db
 
 # IndexNow private key snapshot — public key already in /public/<KEY>.txt
 .indexnow-key.txt
+.claude/

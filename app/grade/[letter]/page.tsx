@@ -11,7 +11,7 @@ import {
   gradeColorClass,
   type GradeLetter,
 } from "@/lib/types";
-import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
 
 // Programmatic-SEO grade pages — one per letter (a-plus, a, b, c, d, f).
 // Targets queries like "what sources score A+ on AI citation quality",
@@ -190,6 +190,33 @@ export default async function GradePage({ params }: PageProps) {
               { name: "Grades", url: "https://sourcescore.org/grade/" },
               { name: grade, url: `https://sourcescore.org/grade/${letter}/` },
             ])
+          ),
+        }}
+      />
+      {/* Dataset schema — per-grade JSON twin */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${grade}-grade sources — SourceScore catalog`,
+              description: `Machine-readable JSON record of ${list.length} sources holding composite SourceScore grade ${grade} (range ${gradeRange(grade)}). Average sub-scores — Discipline ${avgDiscipline}, Modern Reference ${avgModern}, Velocity ${avgVelocity}.`,
+              url: `https://sourcescore.org/grade/${letter}/`,
+              apiUrl: `https://sourcescore.org/api/grade/${letter}.json`,
+              identifier: `grade-${letter}`,
+              keywords: [
+                "AI citation",
+                "SourceScore",
+                `${grade} grade`,
+                "source quality",
+                "grade tier",
+              ],
+              dateModified: "2026-04-28",
+              isPartOf: {
+                name: "SourceScore Grades",
+                url: "https://sourcescore.org/grade/",
+              },
+            })
           ),
         }}
       />

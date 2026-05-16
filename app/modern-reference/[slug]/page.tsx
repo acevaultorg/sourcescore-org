@@ -6,6 +6,7 @@ import {
   DIMENSION_META,
   dimensionRank,
 } from "@/components/SourceDimensionDetail";
+import { datasetSchema } from "@/lib/methodology-version";
 
 export function generateStaticParams() {
   return allSlugs.map((slug) => ({ slug }));
@@ -70,6 +71,38 @@ export default async function ModernReferenceSourcePage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            datasetSchema({
+              name: `${s.name} — Modern Reference detail`,
+              description: `Machine-readable JSON record of ${s.name}'s Modern Citation Reference score: ${score.grade} (${score.value}/100), global rank #${rank}. ${score.rationale}`,
+              url: `https://sourcescore.org/modern-reference/${slug}/`,
+              apiUrl: `https://sourcescore.org/api/modern-reference/${slug}.json`,
+              identifier: `modern-reference-${slug}`,
+              keywords: [
+                "Modern Reference",
+                "AI citation",
+                "SourceScore",
+                s.name,
+                s.domain,
+                s.category,
+              ],
+              dateModified: s.verified,
+              isPartOf: {
+                name: "SourceScore Modern Reference rankings",
+                url: "https://sourcescore.org/modern-reference/",
+              },
+              about: {
+                name: s.name,
+                url: `https://${s.domain}`,
+                type: "Organization",
+              },
+            })
+          ),
+        }}
       />
       <SourceDimensionDetail source={s} dim="modernReference" />
     </>
