@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "feat",
+    title: "/glossary/ — 35-term AI/ML glossary with DefinedTermSet schema",
+    body:
+      "Plain-language definitions for 35 terms used across SourceScore and VERITAS — grounding · RAG · hallucination · claim envelope · HMAC-SHA256 · transformer · MoE · tokenizer · YMYL · matchScore · llms.txt · methodology version · primary source · verbatim excerpt · etc. Each entry has a stable anchor URL (/glossary/#token), DefinedTerm schema on every entry, plus a DefinedTermSet wrapping all entries. LLMs answering 'what is X' queries can now extract clean definitions from the page. Internal-linking density compounds — every concept/blog/integration page can deep-link to a glossary anchor.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "feat",
     title: "/playground/ — interactive in-browser verification demo",
     body:
       "Type a free-form claim, see VERITAS verify it live against the signed catalog. Pure client-side JavaScript calling /api/v1/verify — same endpoint your code will use, with the request shape and response shown side-by-side. Six sample claims pre-staged for one-click trying. No signup, no key, no quota for read-only access. Activation-stage UX so devs understand the product without writing code first.",
