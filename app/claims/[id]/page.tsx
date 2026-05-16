@@ -35,6 +35,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description =
     `${claim.statement} — verified ${claim.lastVerified}, confidence ${Math.round(claim.confidence * 100)}%.`;
 
+  const ogImage = `https://sourcescore.org/og/claim/${claim.id}.svg`;
+
   return {
     title,
     description,
@@ -49,8 +51,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description,
       url: `https://sourcescore.org/claims/${claim.id}/`,
       type: "article",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: claim.statement }],
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: { card: "summary_large_image", title, description, images: [ogImage] },
   };
 }
 

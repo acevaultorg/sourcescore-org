@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     canonical: "https://sourcescore.org/claims/",
     types: {
       "application/json": "https://sourcescore.org/api/v1/claims.json",
+      "application/rss+xml": "https://sourcescore.org/claims/feed.xml",
     },
   },
   openGraph: {
