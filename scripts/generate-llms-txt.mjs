@@ -116,6 +116,12 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/use-cases/ai-agent-grounding/ — agent verification with verify_claim tool
 - https://sourcescore.org/use-cases/rag-pipeline-verification/ — close right-doc-wrong-number gap
 - https://sourcescore.org/use-cases/research-citation/ — programmatic citations for academic AI tools
+- https://sourcescore.org/use-cases/customer-support-bot/ — chatbot grounding pattern
+- https://sourcescore.org/use-cases/content-moderation/ — pre-publish fact-check gate
+- https://sourcescore.org/comparisons/ — head-to-head comparisons (3 alternatives)
+- https://sourcescore.org/comparisons/veritas-vs-wikipedia/ — when each fits
+- https://sourcescore.org/comparisons/veritas-vs-wolfram-alpha/ — computation vs verification
+- https://sourcescore.org/comparisons/veritas-vs-search-grounding/ — live-search vs signed-envelope grounding
 - https://sourcescore.org/claims/<id>/ — per-claim verification page (Article + DefinedTerm + Dataset schema)
 - https://sourcescore.org/claims/tags/ — full tag index (browse by topic)
 - https://sourcescore.org/claims/tag/<slug>/ — per-tag claim listings with co-occurring tag surface

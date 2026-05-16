@@ -82,6 +82,7 @@ const aiPriorityPaths = [
   "/topics/",
   "/concepts/",
   "/use-cases/",
+  "/comparisons/",
 ];
 const aiHumanUrls = urls.filter(
   (u) =>
@@ -95,7 +96,8 @@ const aiHumanUrls = urls.filter(
     u.includes("/claims/") ||
     u.includes("/topics/") ||
     u.includes("/concepts/") ||
-    u.includes("/use-cases/")
+    u.includes("/use-cases/") ||
+    u.includes("/comparisons/")
 );
 
 // Discover EVERY .json under /api/ (source twins, grade twins, facet

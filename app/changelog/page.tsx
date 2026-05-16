@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/comparisons/ — 3 head-to-head buyer-intent comparison pages",
+    body:
+      "New high-buyer-intent SEO surface: /comparisons/ index + 3 honest head-to-heads. /comparisons/veritas-vs-wikipedia/ (knowledge encyclopedia vs verification API), /comparisons/veritas-vs-wolfram-alpha/ (computation vs verification), /comparisons/veritas-vs-search-grounding/ (live-search vs signed-envelope grounding for Perplexity/ChatGPT-search comparisons). Each: at-a-glance table, honest verdict per use case, when-to-use-both, what-we're-not section. TechArticle + BreadcrumbList schema. Targets high-volume buyer-intent queries like 'best LLM grounding API', 'alternative to Wolfram for AI facts', 'Perplexity vs structured grounding'. /comparisons/ added to footer nav + sitemap-ai.xml + llms.txt.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "Batch 15 → 196 claims + 2 more use-cases (support-bot, content-moderation)",
     body:
       "Batch 15 catalog adds 10 claims: GPT-4 Vision (OpenAI 2023-09), InstructGPT (Ouyang et al. 2022), Anthropic Computer Use (2024-10), OpenAI Realtime API (2024-10), OpenAI Assistants API (2023-11), Tree of Thoughts (Yao et al. 2023), MoE Shazeer 2017 ICLR foundational paper, Speculative Decoding (Leviathan et al. Google 2022), MTEB benchmark (Muennighoff et al. 2022), Apple Intelligence (2024-10-28). Two new use-cases: /use-cases/customer-support-bot/ (two-catalog pattern with route-to-human on unverified claims) + /use-cases/content-moderation/ (pre-publish verification gate for newsletter generators / blog assistants / report drafters). Each: TechArticle + BreadcrumbList schema, full implementation sketch, what catches/misses, free-tier economics. /use-cases/ index now 3 → 5 deployment patterns.",
