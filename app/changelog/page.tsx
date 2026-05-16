@@ -34,6 +34,13 @@ type Entry = {
 
 const entries: Entry[] = [
   {
+    date: "2026-05-17",
+    kind: "feat",
+    title: "/use-cases/ — 3 high-intent buyer pages + /concepts/embeddings/ (6th concept pillar)",
+    body:
+      "New /use-cases/ index + 3 deployment-pattern pages: /ai-agent-grounding/ (verify_claim as agent tool), /rag-pipeline-verification/ (close right-doc-wrong-number gap), /research-citation/ (programmatic citations for academic AI tools). Each: TechArticle + BreadcrumbList schema, HowTo on agent-grounding. /use-cases/ added to footer nav + sitemap-ai.xml + llms.txt. New concept pillar /concepts/embeddings/: history (Word2Vec → GloVe → BERT → sentence-transformers → OpenAI/Cohere), how to choose a model, vector DBs, anti-patterns, where embeddings stop and verification starts. DefinedTerm + TechArticle schema. 5 → 6 concept pillars.",
+  },
+  {
     date: "2026-05-16",
     kind: "feat",
     title: "/blog/llm-framework-comparison-2026/ — 4th blog post (meta-comparison of 7 frameworks)",

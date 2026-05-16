@@ -54,6 +54,13 @@ const concepts = [
       "Why the same model scores differently on the same benchmark across LM Eval Harness vs HELM vs lab-internal evals. Six axes of variation, how to read benchmark claims honestly, and why VERITAS excludes performance-comparison claims.",
     status: "live",
   },
+  {
+    slug: "embeddings",
+    title: "Embeddings",
+    summary:
+      "Dense numerical vectors that represent text/images/audio such that similar inputs produce similar vectors. The retrieval backbone of RAG, semantic search, classification, and most LLM-era infrastructure. History, model selection, common pitfalls, and where embeddings stop and verification starts.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {

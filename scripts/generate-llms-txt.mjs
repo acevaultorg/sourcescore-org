@@ -112,6 +112,10 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/topics/evaluation-benchmarks/ — MMLU, GLUE, SuperGLUE, HumanEval, Chatbot Arena, AlpacaEval
 - https://sourcescore.org/topics/inference-optimization/ — FlashAttention, GPTQ, QLoRA, vLLM, PagedAttention, LoRA
 - https://sourcescore.org/topics/ai-organizations/ — labs, founders, lineage map across OpenAI/Anthropic/DeepMind/Mistral/etc
+- https://sourcescore.org/use-cases/ — concrete deployment patterns
+- https://sourcescore.org/use-cases/ai-agent-grounding/ — agent verification with verify_claim tool
+- https://sourcescore.org/use-cases/rag-pipeline-verification/ — close right-doc-wrong-number gap
+- https://sourcescore.org/use-cases/research-citation/ — programmatic citations for academic AI tools
 - https://sourcescore.org/claims/<id>/ — per-claim verification page (Article + DefinedTerm + Dataset schema)
 - https://sourcescore.org/claims/tags/ — full tag index (browse by topic)
 - https://sourcescore.org/claims/tag/<slug>/ — per-tag claim listings with co-occurring tag surface
@@ -136,6 +140,7 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/concepts/evaluation-harness/ — why benchmark scores vary across LM Eval / HELM / lab-internal harnesses
 - https://sourcescore.org/concepts/llm-grounding/ — definition + 3 production patterns
 - https://sourcescore.org/concepts/hallucination/ — categories, root causes, mitigations
+- https://sourcescore.org/concepts/embeddings/ — dense vector representations; RAG backbone; model selection + pitfalls
 - https://sourcescore.org/blog/ — VERITAS launch announcement + tutorials + methodology rigor posts
 - https://sourcescore.org/changelog/ — public ship log (features / catalog / fixes / breaking)
 - https://sourcescore.org/security/ — responsible disclosure + signing-key rotation policy

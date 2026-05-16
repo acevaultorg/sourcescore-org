@@ -248,6 +248,7 @@ function SiteFooter() {
             <li><a href="/playground/" className="hover:text-text">Playground</a></li>
             <li><a href="/claims/" className="hover:text-text">Claim catalog</a></li>
             <li><a href="/topics/" className="hover:text-text">Topics</a></li>
+            <li><a href="/use-cases/" className="hover:text-text">Use cases</a></li>
             <li><a href="/docs/" className="hover:text-text">API docs</a></li>
             <li><a href="/docs/integrations/" className="hover:text-text">Integrations</a></li>
             <li><a href="/pricing/" className="hover:text-text">Pricing</a></li>
