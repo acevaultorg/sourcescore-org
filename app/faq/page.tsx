@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: { absolute: "FAQ — SourceScore" },
   description:
-    "Frequently asked questions about SourceScore: what the score measures, how to use it, the rubric, scoring frequency, who runs the site, corrections.",
+    "Frequently asked questions about SourceScore: the source-rating rubric, scoring frequency, corrections — plus VERITAS API questions (free tier, signing, integrations, catalog scope, contribution).",
   alternates: { canonical: "https://sourcescore.org/faq/" },
 };
 
@@ -55,6 +55,47 @@ const faqs = [
   {
     q: "Is SourceScore affiliated with any AI engine or publisher?",
     a: "No. SourceScore is independent. We do not accept funding from AI engines, publishers, SEO platforms, or PR firms. Methodology decisions are made by the editorial team; revenue (where it exists) comes from non-affecting sources — display ads outside the source pages and embedded badge usage. Affiliate disclosures, where they apply, are shown on the affected page.",
+  },
+  // ─── VERITAS API questions ─────────────────────────────────────────
+  {
+    q: "What is SourceScore VERITAS?",
+    a: "VERITAS is the developer-facing API surface of SourceScore. Where the source-rating product scores publishers, VERITAS publishes individual fact-shaped claims that have been hand-verified against ≥2 primary sources and signed with HMAC-SHA256. Developers building LLM applications use VERITAS to ground model responses in signed, sourced statements — reducing hallucination on AI/ML domain queries. The catalog ships with a stable JSON twin, a TypeScript SDK, and integration guides for LangChain, LlamaIndex, and OpenAI tool-calls.",
+  },
+  {
+    q: "How is VERITAS different from RAG?",
+    a: "RAG (retrieval-augmented generation) retrieves chunks of documents and concatenates them into a prompt. VERITAS retrieves discrete, atomic, structured claims with verified sources and confidence scores. The shape difference matters in practice: chunks are noisy + variable + unverified, so models still hallucinate on the boundary. Claims are subject + predicate + object + sources, so the model has a typed contract to cite from. Use VERITAS in addition to your existing RAG, not as a replacement — it's the high-precision layer over your retrieval graph.",
+  },
+  {
+    q: "Is there a free tier?",
+    a: "Yes. 1,000 verified-claim calls per month, no credit card, no signup required for read-only catalog access. Paid tiers (Indie €19/mo / Startup €99/mo / Scale €499/mo) raise the quota and add features like signed-response HMAC and per-team API keys. See the pricing page for the full comparison.",
+  },
+  {
+    q: "How is a claim signed?",
+    a: "Every claim envelope ships with an HMAC-SHA256 signature over a canonical JSON serialization (sorted keys, ASCII-safe, no whitespace) of the claim fields plus signedAt + signedBy metadata. The signer identity is did:web:sourcescore.org — preserved across all future key rotations. Y2 we migrate to W3C Verifiable Credentials with Ed25519 public-key signing; the envelope shape is forward-compatible.",
+  },
+  {
+    q: "What's in the catalog today?",
+    a: "100 hand-verified AI/ML claims spanning 2015-2024: foundational papers (Transformer, RLHF, Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, CLIP, RAG), model releases (GPT family, Claude family, Llama family, DALL·E, Whisper, Stable Diffusion), datasets (C4, The Pile, RedPajama), organizations (OpenAI, Anthropic, DeepMind, Stability AI, EleutherAI, Mistral, AI21, Hugging Face, Together AI, xAI, Cohere). Expansion path: ~150 claims by Q3, new verticals (cybersecurity, data engineering, scientific computing) deferred to Y2.",
+  },
+  {
+    q: "How confident are the confidence scores?",
+    a: "The confidence value (0.0-1.0) reflects two things: (1) source convergence — how many independent primary sources agree on the fact, and (2) precision of the underlying assertion. Release dates and architectural facts have confidence 0.95-1.00. Founding dates with verbatim corroboration are 0.95. Methodology introductions with multiple peer-reviewed citations are 1.00. We deliberately do NOT publish performance-comparison claims, because benchmark numbers vary by prompt format / version / shot count — too much surface for 'actually that's not quite right' pushback.",
+  },
+  {
+    q: "What happens if a primary source goes 404?",
+    a: "Each claim envelope carries the source URL plus a verbatim excerpt at the time we verified it. If the source goes 404, the excerpt survives in the envelope — the claim is still defensible because the textual evidence is preserved alongside it. On the next re-verification cycle we surface broken-link claims in the changelog (severity: breaking) and either find a new primary source or downgrade the confidence to reflect single-source dependency.",
+  },
+  {
+    q: "How do I integrate VERITAS into LangChain / LlamaIndex / OpenAI tool-calls?",
+    a: "Three drop-in guides at /docs/integrations/ cover the canonical patterns: retrieve-then-cite (LangChain), custom Retriever + NodePostprocessor (LlamaIndex), and native function-calling with search_claims + verify_claim (OpenAI / Anthropic tool-use). Each guide is copy-paste runnable in Python or JavaScript. The TypeScript SDK at @sourcescore/veritas (Y2 npm release) abstracts the HTTP calls if you don't want to roll your own client.",
+  },
+  {
+    q: "Can I submit a claim for inclusion in the catalog?",
+    a: "Yes — email contact@sourcescore.org with the proposed claim (subject + predicate + object), ≥2 primary sources you'd cite (preferred: arxiv preprint + official-blog or model-card; avoid Wikipedia-as-sole-source), and an exact verbatim excerpt from each. We aim to review within 7 days. Approved submissions appear in the next catalog rebuild and the contributor is credited (opt-in) on the contributors page.",
+  },
+  {
+    q: "What does VERITAS not do?",
+    a: "VERITAS is not a generic fact-checker. The catalog is bounded to AI/ML research today. If your chain asks about 'the capital of France' we return zero matches and your code falls through to whatever retrieval you'd use anyway. We do not score performance-comparison claims (too volatile). We do not aggregate from low-quality secondary sources without a primary anchor. We do not sign claims we have not personally verified — even at 99% obviousness, two-source confirmation is the floor.",
   },
 ];
 
