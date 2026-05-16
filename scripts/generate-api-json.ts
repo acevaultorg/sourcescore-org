@@ -866,6 +866,68 @@ for (const d of DIMENSION_DIRS) {
   }
 }
 
+// /api/<dim>/index.json × 3 — per-dimension full ranked index (Day 21 sibling).
+// Mirrors app/<dim>/page.tsx — full 130-source leaderboard sorted by that
+// dimension's value. Referenced by Dataset schema apiUrl on the dim landing pages.
+let dimensionIndexTwinsWritten = 0;
+for (const d of DIMENSION_DIRS) {
+  const ranked = [...sources].sort(
+    (a, b) => b.scores[d.key].value - a.scores[d.key].value
+  );
+  const globalMean = Math.round(
+    sources.reduce((a, s) => a + s.scores[d.key].value, 0) / sources.length
+  );
+  const top = ranked[0];
+  const dir = join(API_DIR, d.pathSegment);
+  mkdirSync(dir, { recursive: true });
+
+  const body = {
+    apiVersion,
+    methodology: d.methodology,
+    canonical: `https://sourcescore.org/${d.pathSegment}/`,
+    dimension: {
+      key: d.key,
+      pathSegment: d.pathSegment,
+      label: d.label,
+      weightInComposite: d.weight,
+    },
+    count: ranked.length,
+    means: { global: globalMean },
+    leader: top
+      ? {
+          slug: top.slug,
+          name: top.name,
+          domain: top.domain,
+          value: top.scores[d.key].value,
+          grade: top.scores[d.key].grade,
+          canonical: `https://sourcescore.org/source/${top.slug}/`,
+          dimensionDetail: `https://sourcescore.org/${d.pathSegment}/${top.slug}/`,
+        }
+      : null,
+    sources: ranked.map((s, i) => ({
+      rank: i + 1,
+      slug: s.slug,
+      name: s.name,
+      domain: s.domain,
+      category: s.category,
+      canonical: `https://sourcescore.org/source/${s.slug}/`,
+      dimensionDetail: `https://sourcescore.org/${d.pathSegment}/${s.slug}/`,
+      api: `https://sourcescore.org/api/source/${s.slug}.json`,
+      score: {
+        value: s.scores[d.key].value,
+        grade: s.scores[d.key].grade,
+        rationale: s.scores[d.key].rationale,
+      },
+    })),
+    license: {
+      methodology: "Cite as: SourceScore Methodology v0.1, sourcescore.org",
+      data: "Underlying public-source data credited to original publishers",
+    },
+  };
+  writeFileSync(join(dir, "index.json"), JSON.stringify(body, null, 2));
+  dimensionIndexTwinsWritten++;
+}
+
 // /api/category/<slug>/<dim>.json × 36 — per-category-per-dimension JSON twin
 // (Day 20). Mirrors app/category/[slug]/[dimension]/page.tsx — ranked
 // leaderboard of sources in this category × this dimension.
@@ -1776,5 +1838,5 @@ for (const insight of INSIGHTS) {
 }
 
 console.log(
-  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/grade/<letter>/<dim>.json (${gradeDimensionTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/category/<cat>/top-10.json (${categoryTopNTwinsWritten}) + /api/category/<cat>/top-10/<dim>.json (${categoryTopNDimTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/best/<slug>/<dim>.json (${bestDimensionTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten}) + /api/source/<slug>/peers.json (${sourcePeersTwinsWritten}) + /api/insights.json + /api/insights/<slug>.json (${insightsTwinsWritten})`
+  `✓ /api/source/<slug>.json (${sources.length}) + /api/sources.json + /api/categories.json + /api/category/<slug>.json (${categoryTwinsWritten}) + /api/category/<slug>/<dim>.json (${categoryDimensionTwinsWritten}) + /api/comparisons.json + /api/compare/<slug>.json (${compareTwinsWritten}) + /api/compare/<slug>/<dim>.json (${compareDimensionTwinsWritten}) + /api/grades.json + /api/grade/<letter>.json (${gradeTwinsWritten}) + /api/grade/<letter>/<dim>.json (${gradeDimensionTwinsWritten}) + /api/category/<cat>/grade/<letter>.json (${facetTwinsWritten}) + /api/category/<cat>/top-10.json (${categoryTopNTwinsWritten}) + /api/category/<cat>/top-10/<dim>.json (${categoryTopNDimTwinsWritten}) + /api/best.json + /api/best/<slug>.json (${bestTwinsWritten}) + /api/best/<slug>/<dim>.json (${bestDimensionTwinsWritten}) + /api/{discipline,modern-reference,velocity}/<slug>.json (${dimensionDetailTwinsWritten}) + /api/{dim}/index.json (${dimensionIndexTwinsWritten}) + /api/{dim}/grade/<letter>.json (${dimensionGradeTwinsWritten}) + /api/{dim}/rank/<band>.json (${dimensionRankBandTwinsWritten}) + /api/source/<slug>/comparisons.json (${sourceComparatorHubTwinsWritten}) + /api/source/<slug>/peers.json (${sourcePeersTwinsWritten}) + /api/insights.json + /api/insights/<slug>.json (${insightsTwinsWritten})`
 );
