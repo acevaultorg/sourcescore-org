@@ -11,6 +11,7 @@ import {
   methodologyArticleSchema,
   methodologyDefinedTermSchema,
   datasetSchema,
+  breadcrumbListSchema,
 } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
@@ -63,6 +64,22 @@ export default function ModernReferencePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(dsSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Modern Reference", url: "https://sourcescore.org/modern-reference/" },
+            ])
+          ),
+        }}
+      />
+      <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
+        <a href="/" className="hover:text-text">SourceScore</a>
+        <span aria-hidden="true">/</span>
+        <span className="text-muted">Modern Reference</span>
+      </nav>
       <div className="text-eyebrow text-brand mb-3">SourceScore sub-tool · 2 of 4</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Modern Citation Reference</h1>
       <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-6">

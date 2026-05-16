@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getSource } from "@/data/sources";
 import { comparisons, comparisonSlug } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
-import { datasetSchema } from "@/lib/methodology-version";
+import { datasetSchema, breadcrumbListSchema } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: { absolute: "Compare sources — SourceScore" },
@@ -37,6 +37,22 @@ export default function CompareIndexPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(dsSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: "SourceScore", url: "https://sourcescore.org/" },
+              { name: "Compare", url: "https://sourcescore.org/compare/" },
+            ])
+          ),
+        }}
+      />
+      <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
+        <a href="/" className="hover:text-text">SourceScore</a>
+        <span aria-hidden="true">/</span>
+        <span className="text-muted">Compare</span>
+      </nav>
       <div className="text-eyebrow text-brand mb-3">Comparator · {comparisons.length} pairs</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         Compare sources head-to-head
