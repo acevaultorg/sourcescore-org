@@ -10,6 +10,7 @@ import {
 import {
   methodologyArticleSchema,
   methodologyDefinedTermSchema,
+  datasetSchema,
 } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
@@ -38,6 +39,15 @@ export default function ModernReferencePage() {
     url: "https://sourcescore.org/methodology/modern-reference/",
     termCode: "modern-reference",
   });
+  const dsSchema = datasetSchema({
+    name: "SourceScore Modern Reference rankings",
+    description: `Machine-readable JSON record of ${ranked.length} sources scored on Modern Citation Reference${ranked[0] ? ` (top: ${ranked[0].name} at ${ranked[0].scores.modernReference.value}/100)` : ""}.`,
+    url: "https://sourcescore.org/modern-reference/",
+    apiUrl: "https://sourcescore.org/api/modern-reference/index.json",
+    identifier: "modern-reference-index",
+    keywords: ["Modern Reference", "AI citation", "SourceScore", "ranked", "leaderboard"],
+    dateModified: ranked[0]?.verified ?? "2026-04-29",
+  });
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
@@ -48,6 +58,10 @@ export default function ModernReferencePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(dsSchema) }}
       />
       <div className="text-eyebrow text-brand mb-3">SourceScore sub-tool · 2 of 4</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Modern Citation Reference</h1>

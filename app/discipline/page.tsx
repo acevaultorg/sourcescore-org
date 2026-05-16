@@ -10,6 +10,7 @@ import {
 import {
   methodologyArticleSchema,
   methodologyDefinedTermSchema,
+  datasetSchema,
 } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
@@ -40,6 +41,15 @@ export default function DisciplinePage() {
     url: "https://sourcescore.org/methodology/citation-discipline/",
     termCode: "discipline",
   });
+  const dsSchema = datasetSchema({
+    name: "SourceScore Citation Discipline rankings",
+    description: `Machine-readable JSON record of ${ranked.length} sources scored on Citation Discipline${ranked[0] ? ` (top: ${ranked[0].name} at ${ranked[0].scores.discipline.value}/100)` : ""}.`,
+    url: "https://sourcescore.org/discipline/",
+    apiUrl: "https://sourcescore.org/api/discipline/index.json",
+    identifier: "discipline-index",
+    keywords: ["Citation Discipline", "AI citation", "SourceScore", "ranked", "leaderboard"],
+    dateModified: ranked[0]?.verified ?? "2026-04-29",
+  });
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
@@ -50,6 +60,10 @@ export default function DisciplinePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(dsSchema) }}
       />
       <div className="text-eyebrow text-brand mb-3">SourceScore sub-tool · 1 of 4</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Citation Discipline Score</h1>
