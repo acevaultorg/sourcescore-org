@@ -102,6 +102,7 @@ export async function onRequest(context) {
     apiVersion: "v1",
     methodology: index.methodology,
     query: claim,
+    minConfidence,
     matches: topN.map((m) => ({
       claim: toSummary(m.claim),
       matchScore: round2(m.matchScore),

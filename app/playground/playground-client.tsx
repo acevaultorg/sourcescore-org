@@ -7,22 +7,36 @@
 
 import { useState } from "react";
 
-type Match = {
+type ClaimSummary = {
   id: string;
+  vertical?: string;
+  subject?: string;
+  predicate?: string;
+  object?: string;
   statement: string;
   confidence: number;
-  matchScore?: number;
+  signatureShort?: string;
+  detailUrl?: string;
+};
+
+type MatchEntry = {
+  claim: ClaimSummary;
+  matchScore: number;
   rationale?: string;
-  sources?: Array<{ url: string; title: string; publisher: string; type?: string }>;
-  tags?: string[];
 };
 
 type VerifyResponse = {
   query: string;
-  bestMatch: Match | null;
-  matches: Match[];
-  minConfidence: number;
+  bestMatch?: ClaimSummary;
+  notVerified?: boolean;
+  matches: MatchEntry[];
+  minConfidence?: number;
+  apiVersion?: string;
+  methodology?: unknown;
+  signature?: unknown;
 };
+
+const SENT_MIN_CONFIDENCE = 0.8;
 
 const SAMPLES = [
   "The Transformer architecture was introduced in 2017 by Vaswani et al.",
@@ -48,13 +62,18 @@ export function Playground() {
       const r = await fetch("/api/v1/verify", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ claim: text, minConfidence: 0.8 }),
+        body: JSON.stringify({ claim: text, minConfidence: SENT_MIN_CONFIDENCE }),
       });
       if (!r.ok) {
         setError(`HTTP ${r.status}`);
         return;
       }
-      setResult(await r.json());
+      const data: VerifyResponse = await r.json();
+      // Echo back the minConfidence we sent if the API didn't return it,
+      // so the UI can render the threshold consistently.
+      if (data.minConfidence == null) data.minConfidence = SENT_MIN_CONFIDENCE;
+      if (data.query == null) data.query = text;
+      setResult(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -135,39 +154,18 @@ export function Playground() {
                   <span className="font-mono">{result.bestMatch.id}</span>
                   {" · "}
                   {Math.round(result.bestMatch.confidence * 100)}% confidence
-                  {result.bestMatch.matchScore != null && (
-                    <> · match score {result.bestMatch.matchScore.toFixed(2)}</>
-                  )}
                 </p>
                 <a
                   href={`/claims/${result.bestMatch.id}/`}
                   className="text-sm underline"
                 >
-                  Open canonical claim page →
+                  Open canonical claim page (full sources + signed envelope) →
                 </a>
-                {result.bestMatch.sources && result.bestMatch.sources.length > 0 && (
-                  <ol className="mt-3 text-xs text-zinc-600 dark:text-zinc-400 space-y-1 pl-4 list-decimal">
-                    {result.bestMatch.sources.slice(0, 3).map((s) => (
-                      <li key={s.url}>
-                        <a
-                          href={s.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline"
-                        >
-                          {s.title}
-                        </a>
-                        {" — "}
-                        {s.publisher}
-                      </li>
-                    ))}
-                  </ol>
-                )}
               </div>
             ) : (
               <div className="border border-zinc-200 dark:border-zinc-800 rounded-md p-4 text-sm">
                 <p className="font-medium mb-1">
-                  ⚠️ No high-confidence match above {Math.round(result.minConfidence * 100)}%
+                  ⚠️ No high-confidence match above {Math.round((result.minConfidence ?? SENT_MIN_CONFIDENCE) * 100)}%
                 </p>
                 <p className="text-zinc-600 dark:text-zinc-400">
                   Either this assertion is outside the AI/ML catalog
@@ -187,23 +185,24 @@ export function Playground() {
               <ol className="space-y-2 pl-0 list-none">
                 {result.matches.map((m, i) => (
                   <li
-                    key={m.id}
+                    key={m.claim.id}
                     className="border border-zinc-200 dark:border-zinc-800 rounded-md p-3 text-sm"
                   >
                     <div className="flex items-baseline gap-2 mb-1">
                       <span className="text-zinc-400 font-mono text-xs">{i + 1}.</span>
                       <a
-                        href={`/claims/${m.id}/`}
+                        href={`/claims/${m.claim.id}/`}
                         className="font-medium hover:underline"
                       >
-                        {m.statement}
+                        {m.claim.statement}
                       </a>
                     </div>
                     <p className="text-xs text-zinc-500 pl-5">
-                      <span className="font-mono">{m.id}</span> ·{" "}
-                      {Math.round(m.confidence * 100)}% confidence
-                      {m.matchScore != null && (
-                        <> · match {m.matchScore.toFixed(2)}</>
+                      <span className="font-mono">{m.claim.id}</span> ·{" "}
+                      {Math.round(m.claim.confidence * 100)}% confidence ·
+                      match {m.matchScore.toFixed(2)}
+                      {m.rationale && (
+                        <> · {m.rationale}</>
                       )}
                     </p>
                   </li>
