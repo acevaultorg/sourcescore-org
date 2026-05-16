@@ -27,10 +27,10 @@
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
-import type { Claim, ClaimSummary, ClaimsCatalog, ClaimEnvelope } from "../lib/claims-types";
+import type { ClaimSummary, ClaimsCatalog, ClaimEnvelope } from "../lib/claims-types";
 import { TIERS } from "../lib/claims-types";
-import { claimId, signClaim, buildCitation } from "../lib/claim-signing";
-import { seedClaims } from "../data/claims-ai-ml";
+import { signClaim, buildCitation } from "../lib/claim-signing";
+import { loadFullClaims } from "../lib/claims-build";
 
 const SITE = "https://sourcescore.org";
 const OUT_ROOT = join(process.cwd(), "out");
@@ -73,49 +73,8 @@ mkdirSync(CLAIMS_DIR, { recursive: true });
 
 // ── 3. For each seed claim: compute id, generate statement, sign, write ─────
 
-function generateStatement(parts: {
-  subject: string;
-  predicate: string;
-  object: string;
-}): string {
-  const verb = parts.predicate.replace(/_/g, " ").trim();
-  return `${parts.subject} ${verb}: ${parts.object}.`;
-}
-
-async function buildFullClaims(): Promise<Claim[]> {
-  const out: Claim[] = [];
-  for (const seed of seedClaims) {
-    const id = await claimId({
-      vertical: seed.vertical,
-      subject: seed.subject,
-      predicate: seed.predicate,
-      object: seed.object,
-    });
-    const statement = seed.statement ?? generateStatement(seed);
-    out.push({ ...seed, id, statement });
-  }
-
-  // Detect duplicate ids (collision guard — should never fire with 16-hex-char
-  // hashes at our scale, but build cheap insurance).
-  const seen = new Set<string>();
-  for (const c of out) {
-    if (seen.has(c.id)) {
-      throw new Error(
-        `[generate-claims-json] Duplicate claim id ${c.id} — collision in catalog. ` +
-          `Subjects: ${out
-            .filter((x) => x.id === c.id)
-            .map((x) => x.subject)
-            .join(" / ")}.`,
-      );
-    }
-    seen.add(c.id);
-  }
-
-  return out;
-}
-
 async function main() {
-  const claims = await buildFullClaims();
+  const claims = await loadFullClaims();
 
   // Sign every claim. Build-time signedAt = first second of today (UTC) so
   // rebuilds with no underlying data change produce byte-identical output —

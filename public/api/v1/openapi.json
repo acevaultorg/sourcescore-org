@@ -1,0 +1,394 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SourceScore VERITAS API",
+    "summary": "Signed, sourced, citable claim verification for LLM developers building grounded retrieval systems.",
+    "description": "VERITAS-Reborn v0.1 — every claim has 2+ primary sources, an HMAC-SHA256 signature (`did:web:sourcescore.org`), and a stable JSON envelope. Designed for grounding LLM responses, fact-checking generated content, and reducing hallucinations in production AI applications.\n\nv0 covers the **ai-ml** vertical (AI/ML research, model releases, foundational papers, organizational facts). Day-1 seed: 26 hand-verified claims, expanding to 500+ in 30 days, 5,000+ by Year-1.\n\nFree tier: 1,000 claims/mo, no auth, public-read. Paid tiers (Indie €19, Startup €99, Scale €499) unlock higher rate limits, API key management, and dedicated support. See `/pricing/`.\n\nAll endpoints are CORS-enabled (`Access-Control-Allow-Origin: *`); browser, server, and LLM-agent callers all work. No authentication required for v0 read endpoints — auth + per-key rate limits land Day 8+ alongside Stripe metered billing.\n\nCite as: `SourceScore Claim <id>, sourcescore.org`. Data licensed CC-BY 4.0.",
+    "version": "0.1.0",
+    "contact": {
+      "name": "SourceScore VERITAS",
+      "url": "https://sourcescore.org/contact/"
+    },
+    "license": {
+      "name": "CC-BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "x-acepilot-archetype": "api-only + saas-b2b"
+  },
+  "servers": [
+    {
+      "url": "https://sourcescore.org",
+      "description": "Production (Cloudflare Pages + Pages Functions)"
+    }
+  ],
+  "externalDocs": {
+    "description": "Verification methodology v0.1 — full rubric + signing model + tier reference",
+    "url": "https://sourcescore.org/api/v1/methodology.json"
+  },
+  "tags": [
+    { "name": "Claims", "description": "Per-claim envelopes + catalog endpoints." },
+    { "name": "Search", "description": "Keyword search across the catalog." },
+    { "name": "Verify", "description": "Natural-language claim verification." },
+    { "name": "Methodology", "description": "How claims are sourced + signed." }
+  ],
+  "paths": {
+    "/api/v1/claims.json": {
+      "get": {
+        "tags": ["Claims"],
+        "summary": "Full claim catalog (light per-claim summaries)",
+        "description": "Returns every verified claim with subject/predicate/object/statement/confidence + signature prefix + link to per-claim envelope. Suited for client-side filtering, building local indexes, or feeding LLM context windows with the full catalog.",
+        "operationId": "getClaimsCatalog",
+        "responses": {
+          "200": {
+            "description": "Catalog wrapper.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ClaimsCatalog" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/claims/{id}.json": {
+      "get": {
+        "tags": ["Claims"],
+        "summary": "Per-claim signed envelope",
+        "description": "Returns the full signed envelope for a single claim: subject + predicate + object + 2+ sources + HMAC-SHA256 signature + ready-to-paste citation.",
+        "operationId": "getClaimById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "16-hex-char claim id (lowercase). Pattern: `[0-9a-f]{16}`.",
+            "schema": { "type": "string", "example": "ad17e76a8baad7a1", "pattern": "^[0-9a-f]{16}$" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Signed claim envelope.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ClaimEnvelope" }
+              }
+            }
+          },
+          "404": { "description": "Claim id not found in catalog." }
+        }
+      }
+    },
+    "/api/v1/methodology.json": {
+      "get": {
+        "tags": ["Methodology"],
+        "summary": "Verification methodology + pricing tiers",
+        "description": "Returns methodology metadata: signing algorithm, signed-by identity, citation format, license, pricing tiers (free/indie/startup/scale), endpoint index.",
+        "operationId": "getMethodology",
+        "responses": {
+          "200": {
+            "description": "Methodology document.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Methodology" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/search": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Keyword search across claims",
+        "description": "Returns claims matching the query. v0 implementation: keyword-overlap scoring across subject/object/statement/predicate/tags with field weights. v1 (Day 30+) migrates to semantic-similarity scoring via sentence-transformer embeddings.",
+        "operationId": "searchClaims",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Query string. 2-500 chars.",
+            "schema": { "type": "string", "minLength": 2, "maxLength": 500, "example": "llama" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Max results. 1-50. Default 20.",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 20 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SearchResponse" }
+              }
+            }
+          },
+          "400": { "description": "Invalid query parameter." }
+        }
+      }
+    },
+    "/api/v1/verify": {
+      "post": {
+        "tags": ["Verify"],
+        "summary": "Verify a natural-language claim against the catalog",
+        "description": "Submit a natural-language claim string. Returns the best matching catalog claim (if any) above the configurable confidence threshold, or `notVerified: true`. v0: keyword-overlap match scoring. v1 (Day 30+): semantic-similarity via embeddings.\n\nResponse is HMAC-signed when `SOURCESCORE_SIGNING_SECRET` is available at the edge — consumers can prove the answer came from sourcescore.org at a specific time.",
+        "operationId": "verifyClaim",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VerifyRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification result.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VerifyResponse" }
+              }
+            }
+          },
+          "400": { "description": "Body invalid or `claim` missing/out-of-bounds." },
+          "405": { "description": "Method Not Allowed (POST only)." },
+          "503": { "description": "Catalog index temporarily unavailable." }
+        }
+      }
+    },
+    "/api/v1/openapi.json": {
+      "get": {
+        "tags": ["Methodology"],
+        "summary": "This document",
+        "description": "OpenAPI 3.1 spec for the VERITAS-Reborn API.",
+        "operationId": "getOpenAPI",
+        "responses": {
+          "200": {
+            "description": "OpenAPI spec.",
+            "content": { "application/json": {} }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClaimsCatalog": {
+        "type": "object",
+        "required": ["apiVersion", "methodology", "generated", "count", "claims"],
+        "properties": {
+          "apiVersion": { "type": "string", "enum": ["v1"] },
+          "methodology": { "type": "string", "format": "uri" },
+          "generated": { "type": "string", "format": "date-time" },
+          "count": { "type": "integer", "example": 26 },
+          "claims": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ClaimSummary" }
+          }
+        }
+      },
+      "ClaimSummary": {
+        "type": "object",
+        "required": ["id", "vertical", "subject", "predicate", "object", "statement", "confidence", "signatureShort", "detailUrl"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[0-9a-f]{16}$", "example": "ad17e76a8baad7a1" },
+          "vertical": { "type": "string", "enum": ["ai-ml"] },
+          "subject": { "type": "string", "example": "Llama 3.1" },
+          "predicate": { "type": "string", "example": "released_on" },
+          "object": { "type": "string", "example": "2024-07-23" },
+          "statement": { "type": "string", "example": "Llama 3.1 released on: 2024-07-23." },
+          "confidence": { "type": "number", "minimum": 0.7, "maximum": 1.0 },
+          "signatureShort": { "type": "string", "example": "3e28e071" },
+          "detailUrl": { "type": "string", "format": "uri" }
+        }
+      },
+      "ClaimEnvelope": {
+        "type": "object",
+        "required": ["apiVersion", "methodology", "canonical", "claim", "signature", "citedAs"],
+        "properties": {
+          "apiVersion": { "type": "string", "enum": ["v1"] },
+          "methodology": { "type": "string", "format": "uri" },
+          "canonical": { "type": "string", "format": "uri" },
+          "claim": { "$ref": "#/components/schemas/Claim" },
+          "signature": { "$ref": "#/components/schemas/Signature" },
+          "citedAs": { "type": "string" }
+        }
+      },
+      "Claim": {
+        "type": "object",
+        "required": ["id", "vertical", "subject", "predicate", "object", "statement", "confidence", "sources", "publishedAt", "lastVerified", "methodologyVersion", "tags"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+          "vertical": { "type": "string", "enum": ["ai-ml"] },
+          "subject": { "type": "string" },
+          "predicate": { "type": "string" },
+          "object": { "type": "string" },
+          "statement": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0.7, "maximum": 1.0 },
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/components/schemas/ClaimSource" }
+          },
+          "publishedAt": { "type": "string", "format": "date-time" },
+          "lastVerified": { "type": "string", "format": "date" },
+          "methodologyVersion": { "type": "string", "example": "veritas-v0.1" },
+          "tags": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "ClaimSource": {
+        "type": "object",
+        "required": ["url", "title", "publisher", "accessedDate", "type"],
+        "properties": {
+          "url": { "type": "string", "format": "uri" },
+          "title": { "type": "string" },
+          "publisher": { "type": "string" },
+          "publishedDate": { "type": "string", "format": "date" },
+          "accessedDate": { "type": "string", "format": "date" },
+          "type": {
+            "type": "string",
+            "enum": [
+              "preprint",
+              "peer-reviewed",
+              "official-blog",
+              "press-release",
+              "docs",
+              "model-card",
+              "github-release",
+              "benchmark"
+            ]
+          },
+          "excerpt": { "type": "string", "maxLength": 200 }
+        }
+      },
+      "Signature": {
+        "type": "object",
+        "required": ["algorithm", "signedBy", "signedAt", "signature"],
+        "properties": {
+          "algorithm": { "type": "string", "enum": ["HMAC-SHA256"] },
+          "signedBy": { "type": "string", "example": "did:web:sourcescore.org" },
+          "signedAt": { "type": "string", "format": "date-time" },
+          "signature": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+        }
+      },
+      "SearchResponse": {
+        "type": "object",
+        "required": ["apiVersion", "methodology", "query", "count", "results"],
+        "properties": {
+          "apiVersion": { "type": "string", "enum": ["v1"] },
+          "methodology": { "type": "string", "format": "uri" },
+          "query": { "type": "string" },
+          "count": { "type": "integer" },
+          "results": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ClaimSummary" }
+          }
+        }
+      },
+      "VerifyRequest": {
+        "type": "object",
+        "required": ["claim"],
+        "properties": {
+          "claim": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1000,
+            "description": "Natural-language claim string to verify.",
+            "example": "Llama 3.1 was released in July 2024"
+          },
+          "vertical": {
+            "type": "string",
+            "enum": ["ai-ml"],
+            "description": "Optional vertical filter."
+          },
+          "minConfidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0.85,
+            "description": "Minimum claim confidence to count as 'verified'. Best match below threshold returns notVerified:true."
+          }
+        }
+      },
+      "VerifyResponse": {
+        "type": "object",
+        "required": ["apiVersion", "methodology", "query", "matches"],
+        "properties": {
+          "apiVersion": { "type": "string", "enum": ["v1"] },
+          "methodology": { "type": "string", "format": "uri" },
+          "query": { "type": "string" },
+          "matches": {
+            "type": "array",
+            "description": "Top 5 ranked matches.",
+            "items": {
+              "type": "object",
+              "required": ["claim", "matchScore", "rationale"],
+              "properties": {
+                "claim": { "$ref": "#/components/schemas/ClaimSummary" },
+                "matchScore": { "type": "number", "minimum": 0, "maximum": 1 },
+                "rationale": { "type": "string" }
+              }
+            }
+          },
+          "bestMatch": {
+            "$ref": "#/components/schemas/ClaimSummary",
+            "description": "Highest-scoring match if matchScore ≥ 0.20 AND claim.confidence ≥ minConfidence."
+          },
+          "notVerified": {
+            "type": "boolean",
+            "description": "True if no match cleared the threshold."
+          },
+          "signature": { "$ref": "#/components/schemas/Signature" }
+        }
+      },
+      "Methodology": {
+        "type": "object",
+        "properties": {
+          "apiVersion": { "type": "string", "enum": ["v1"] },
+          "version": { "type": "string", "example": "veritas-v0.1" },
+          "generated": { "type": "string", "format": "date-time" },
+          "title": { "type": "string" },
+          "summary": { "type": "string" },
+          "signing": {
+            "type": "object",
+            "properties": {
+              "algorithm": { "type": "string" },
+              "signedBy": { "type": "string" },
+              "verificationEndpoint": { "type": "string", "format": "uri" },
+              "migrationNote": { "type": "string" }
+            }
+          },
+          "citation": {
+            "type": "object",
+            "properties": {
+              "license": { "type": "string" },
+              "citationFormat": { "type": "string" }
+            }
+          },
+          "tiers": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Tier" }
+          },
+          "count": { "type": "integer" },
+          "endpoints": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        }
+      },
+      "Tier": {
+        "type": "object",
+        "required": ["name", "monthlyEur", "includedClaims", "overageEurPerClaim", "maxApiKeys", "supportSlaHours", "uptimeSla"],
+        "properties": {
+          "name": { "type": "string", "enum": ["free", "indie", "startup", "scale"] },
+          "monthlyEur": { "type": "number" },
+          "includedClaims": { "type": "integer" },
+          "overageEurPerClaim": { "type": "number" },
+          "maxApiKeys": { "oneOf": [{ "type": "integer" }, { "type": "string", "enum": ["unlimited"] }] },
+          "supportSlaHours": { "type": "integer" },
+          "uptimeSla": { "type": "number" }
+        }
+      }
+    }
+  }
+}

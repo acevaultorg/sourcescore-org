@@ -16,6 +16,7 @@ const OUT_DIR = "out";
 const sourcesPath = path.join(OUT_DIR, "api/sources.json");
 const comparisonsPath = path.join(OUT_DIR, "api/comparisons.json");
 const categoriesPath = path.join(OUT_DIR, "api/categories.json");
+const claimsCatalogPath = path.join(OUT_DIR, "api/v1/claims.json");
 
 if (!fs.existsSync(sourcesPath)) {
   console.error(`✗ ${sourcesPath} not found — run generate-api-json.ts first`);
@@ -36,6 +37,14 @@ const categories = categoriesData.categories ?? [];
 const totalSources = sources.length;
 const totalComparisons = comparisons.length;
 const totalCategories = categories.length;
+
+// VERITAS-Reborn claim catalog. Optional — script tolerates missing file
+// (e.g., a build that runs llms-txt generation before claims generation by
+// mistake; we just skip the VERITAS section instead of failing the build).
+const claimsCatalog = fs.existsSync(claimsCatalogPath)
+  ? JSON.parse(fs.readFileSync(claimsCatalogPath, "utf8"))
+  : { count: 0, claims: [] };
+const totalClaims = claimsCatalog.count ?? 0;
 
 const byGrade = {};
 for (const s of sources) {
@@ -84,18 +93,42 @@ const categoryLines = [...categories]
   .map((c) => `- https://sourcescore.org/category/${categorySlug(c.name)}/ — ${categoryDescription(c.name)}`)
   .join("\n");
 
+const veritasSection = totalClaims > 0
+  ? `
+
+## VERITAS-Reborn — Verified Claim API for LLM Developers
+
+> Signed, sourced, citable claims about AI/ML research for grounded retrieval. v0.1 publishes ${totalClaims} hand-verified claims; each has 2+ primary sources and an HMAC-SHA256 signature. Free tier: 1,000 claims/mo, no auth.
+
+- https://sourcescore.org/claims/ — claim browser, indexed catalog
+- https://sourcescore.org/claims/<id>/ — per-claim verification page (Article + DefinedTerm + Dataset schema)
+- https://sourcescore.org/api/v1/claims.json — full claim catalog (ClaimSummary[])
+- https://sourcescore.org/api/v1/claims/<id>.json — per-claim signed envelope (HMAC-SHA256)
+- https://sourcescore.org/api/v1/methodology.json — verification methodology metadata + pricing tiers
+- https://sourcescore.org/api/v1/search?q=<query> — keyword search across claims (GET, public, no auth)
+- https://sourcescore.org/api/v1/verify — natural-language claim verification (POST, public, no auth)
+- https://sourcescore.org/api/v1/openapi.json — OpenAPI 3.1 spec for the v1 claim API
+- https://sourcescore.org/docs/ — developer docs (curl + JS + Python examples)
+- https://sourcescore.org/pricing/ — Free (1k claims/mo) / Indie €19 / Startup €99 / Scale €499 tiers
+- License: CC-BY 4.0 (methodology + verified claim data). Cite as "SourceScore Claim <id>, sourcescore.org".
+`
+  : "";
+
 const content = `# SourceScore
 
-> The reference index for AI-citation quality. Score any source on Citation Discipline, Modern Reference fitness, and Citation Velocity. v0.1 publishes ${totalSources} hand-scored sources across ${totalCategories} categories; production scales to 10,000+ via the same methodology.
+> Trust signals for AI-citation-aware content. Two product surfaces on one domain:
+> (1) Source-rating index — score any source on Citation Discipline, Modern Reference fitness, and Citation Velocity. v0.1 publishes ${totalSources} hand-scored sources across ${totalCategories} categories.
+> (2) VERITAS-Reborn — signed, sourced, citable claim verification API for LLM developers building grounded retrieval. ${totalClaims} verified claims at v0.1.
 
 ## Primary data
 
-- https://sourcescore.org/ — landing + Top-5 leaderboard + full ${totalSources}-source table
+- https://sourcescore.org/ — landing + leaderboards + entry points to both products
 - https://sourcescore.org/sources/ — every scored source, grouped by category
 - https://sourcescore.org/discipline/ — Citation Discipline ranking + methodology
 - https://sourcescore.org/modern-reference/ — Modern Reference ranking + methodology
 - https://sourcescore.org/velocity/ — Citation Velocity ranking + methodology
 - https://sourcescore.org/methodology/ — full v0.1 methodology + grade scale
+- https://sourcescore.org/claims/ — verified claim catalog (VERITAS-Reborn)
 
 ## Category indexes
 
@@ -130,10 +163,12 @@ Index:   https://sourcescore.org/compare/  — all ${totalComparisons} curated p
 - /api/source/[slug].json — per-source JSON twin (LLM-extraction-ready)
 - /api/sources.json — catalog of all ${totalSources} sources
 
+${veritasSection}
 ## License
 
 - Methodology: proprietary; cite as "SourceScore Methodology v0.1, sourcescore.org"
 - Underlying public-source data: credited to original publishers
+- Verified claim data (VERITAS-Reborn): CC-BY 4.0; cite as "SourceScore Claim <id>, sourcescore.org"
 - Contact: contact@sourcescore.org
 
 # Generated automatically from current data at build time.
@@ -142,5 +177,5 @@ Index:   https://sourcescore.org/compare/  — all ${totalComparisons} curated p
 
 fs.writeFileSync(path.join(OUT_DIR, "llms.txt"), content);
 console.log(
-  `✓ llms.txt (${totalSources} sources · ${totalCategories} categories · ${totalComparisons} comparator pairs)`,
+  `✓ llms.txt (${totalSources} sources · ${totalCategories} categories · ${totalComparisons} comparator pairs · ${totalClaims} claims)`,
 );
