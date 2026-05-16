@@ -121,6 +121,7 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/claims/tag/<slug>/ — per-tag claim listings with co-occurring tag surface
 - https://sourcescore.org/api/v1/claims.json — full claim catalog (ClaimSummary[])
 - https://sourcescore.org/api/v1/claims/<id>.json — per-claim signed envelope (HMAC-SHA256)
+- https://sourcescore.org/api/v1/tags.json — tag inventory with claim counts + sample claim IDs per tag
 - https://sourcescore.org/api/v1/methodology.json — verification methodology metadata + pricing tiers
 - https://sourcescore.org/api/v1/search?q=<query> — keyword search across claims (GET, public, no auth)
 - https://sourcescore.org/api/v1/verify — natural-language claim verification (POST, public, no auth)

@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "5th blog post + /api/v1/tags.json (bot discovery) + Batch 14 → 186 claims",
+    body:
+      "New blog post /blog/llm-grounding-strategies-2026/ — 6 grounding strategies (temperature/prompt → few-shot → RAG → citation+post-process → signed-claim verification → constrained decoding) with measured impact + when-to-combine + practical sequencing. New static endpoint /api/v1/tags.json: 434 tag entries with claim counts + sample claim IDs + browse URLs — lets RAG developers + LLM crawlers see catalog structure without walking every claim. Batch 14 adds 10 claims: VAE (Kingma & Welling 2013), Knowledge Distillation (Hinton et al. 2015), SGLang (UC Berkeley 2024), Llama 4 (Meta 2025-04-05), Claude Haiku 3.5 (Anthropic 2024-11), Replit Agent (2024-09), Devin (Cognition Labs 2024-03), Groq LPU (2024-02), Cerebras (founded 2016), Anthropic API GA (2023-07).",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "8th integration guide (Instructor) + 2 more topic hubs (agent-frameworks, vector-databases) + Batch 13 → 176 claims",
     body:
       "Instructor integration guide (/docs/integrations/instructor/) — Jason Liu's structured-output library with model_validator pattern that triggers Instructor's auto-retry on VERITAS-unverified claims. Pairs with Pydantic AI for end-to-end type-safety. Two more topic hubs: /topics/agent-frameworks/ (orchestration libraries — LangChain, LlamaIndex, DSPy, etc.) + /topics/vector-databases/ (FAISS, Pinecone, Weaviate, Qdrant, Chroma, Milvus, pgvector). Batch 13 catalog adds 10 claims spanning structured outputs (Instructor) + vector DBs (Chroma, Milvus, pgvector) + multi-agent orchestration (CrewAI, AutoGen, Microsoft Semantic Kernel, Haystack) + serving infrastructure (Triton, Modal Labs). 8 integration guides + 8 topic hubs + 6 concept pillars total. All build clean.",

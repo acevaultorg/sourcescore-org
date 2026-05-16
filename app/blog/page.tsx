@@ -16,6 +16,15 @@ interface PostMeta {
 
 const POSTS: PostMeta[] = [
   {
+    slug: "llm-grounding-strategies-2026",
+    title:
+      "Six grounding strategies that actually reduce LLM hallucination (and the trade-offs)",
+    subtitle:
+      "Prompt engineering buys 10-30%. Retrieval-augmented generation buys another 20-40%. Signed-claim verification closes the long tail. Six strategies, their measured impact, and when to combine.",
+    publishedDate: "2026-05-17",
+    tags: ["grounding", "hallucination", "rag", "verification", "production", "patterns"],
+  },
+  {
     slug: "llm-framework-comparison-2026",
     title:
       "LLM framework comparison 2026 — LangChain vs LlamaIndex vs OpenAI tools vs DSPy vs Pydantic AI vs Vercel AI SDK vs Anthropic SDK",

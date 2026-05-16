@@ -194,11 +194,54 @@ async function main() {
     "utf8",
   );
 
-  // ── 8. Status report ──────────────────────────────────────────────────────
+  // ── 8. Emit /api/v1/tags.json — tag-discovery surface for bots + agents ──
+  //
+  // Returns the full tag inventory with claim counts + sample claim IDs.
+  // Lets RAG developers and LLM crawlers see catalog structure without
+  // walking every claim. Layer 5 archetype: dataset_json_api × +70.
+
+  const tagsMap = new Map<string, { label: string; claimIds: string[] }>();
+  for (const c of claims) {
+    for (const tag of c.tags ?? []) {
+      const slug = tag.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      if (!slug) continue;
+      const existing = tagsMap.get(slug);
+      if (existing) {
+        existing.claimIds.push(c.id);
+      } else {
+        tagsMap.set(slug, { label: tag, claimIds: [c.id] });
+      }
+    }
+  }
+
+  const tagsDoc = {
+    apiVersion: "v1",
+    generated: new Date().toISOString(),
+    methodology: `${SITE}/methodology/`,
+    count: tagsMap.size,
+    catalogCount: claims.length,
+    tags: [...tagsMap.entries()]
+      .map(([slug, { label, claimIds }]) => ({
+        slug,
+        label,
+        claimCount: claimIds.length,
+        browseUrl: `${SITE}/claims/tag/${slug}/`,
+        sampleClaimIds: claimIds.slice(0, 5),
+      }))
+      .sort((a, b) => b.claimCount - a.claimCount || a.slug.localeCompare(b.slug)),
+  };
+
+  writeFileSync(
+    join(API_ROOT, "tags.json"),
+    JSON.stringify(tagsDoc, null, 2),
+    "utf8",
+  );
+
+  // ── 9. Status report ──────────────────────────────────────────────────────
 
   console.log(
     `[generate-claims-json] OK · ${claims.length} claims signed · ${envelopes.length} envelopes ` +
-      `· catalog + methodology + index emitted to out/api/v1/ + out/claims-index.json`,
+      `· catalog + methodology + tags (${tagsMap.size}) + index emitted to out/api/v1/ + out/claims-index.json`,
   );
 }
 
