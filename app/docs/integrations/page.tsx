@@ -42,6 +42,13 @@ const guides = [
     summary:
       "Expose VERITAS as native function-calls in the OpenAI Chat Completions API. The model auto-invokes verify_claim() when uncertain.",
   },
+  {
+    slug: "vercel-ai-sdk",
+    name: "Vercel AI SDK",
+    status: "ready",
+    summary:
+      "Wire VERITAS into Next.js + AI SDK chains. Two patterns: tool() function-calling via streamText, and post-stream verification for free-form completions. TypeScript-first.",
+  },
 ];
 
 export default function IntegrationsIndex() {

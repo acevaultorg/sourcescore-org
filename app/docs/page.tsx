@@ -484,6 +484,12 @@ Content-Type: application/json
             — native function-calling that auto-grounds when uncertain
           </li>
           <li>
+            <a href="/docs/integrations/vercel-ai-sdk/" className="underline">
+              Vercel AI SDK
+            </a>{" "}
+            — Next.js streamText + tool() patterns for TypeScript apps
+          </li>
+          <li>
             <a href="/docs/integrations/" className="underline">
               All integrations →
             </a>
