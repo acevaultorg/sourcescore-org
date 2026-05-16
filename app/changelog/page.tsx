@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "Batch 15 → 196 claims + 2 more use-cases (support-bot, content-moderation)",
+    body:
+      "Batch 15 catalog adds 10 claims: GPT-4 Vision (OpenAI 2023-09), InstructGPT (Ouyang et al. 2022), Anthropic Computer Use (2024-10), OpenAI Realtime API (2024-10), OpenAI Assistants API (2023-11), Tree of Thoughts (Yao et al. 2023), MoE Shazeer 2017 ICLR foundational paper, Speculative Decoding (Leviathan et al. Google 2022), MTEB benchmark (Muennighoff et al. 2022), Apple Intelligence (2024-10-28). Two new use-cases: /use-cases/customer-support-bot/ (two-catalog pattern with route-to-human on unverified claims) + /use-cases/content-moderation/ (pre-publish verification gate for newsletter generators / blog assistants / report drafters). Each: TechArticle + BreadcrumbList schema, full implementation sketch, what catches/misses, free-tier economics. /use-cases/ index now 3 → 5 deployment patterns.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "/claims/year/[year]/ programmatic year-hubs + /concepts/function-calling/ (7th pillar)",
     body:
       "New programmatic SEO surface: /claims/year/[year]/ pages auto-generated for every year that has ≥3 claims with sources dated in that year. ~12 new SEO landings targeting 'AI papers 2024', 'LLM releases 2025', etc. Each: CollectionPage + BreadcrumbList schema, auto-curated claim list sorted by confidence. Year extracted from earliest source publishedDate. New 7th concept pillar /concepts/function-calling/: definition, history (OpenAI June 2023 → Anthropic → Google → MCP standard Nov 2024), JSON schema, agent loop, vendor flavors, common production patterns, anti-patterns. TechArticle + DefinedTerm + BreadcrumbList schema. Cross-links to 4 integration guides + 2 use-cases.",

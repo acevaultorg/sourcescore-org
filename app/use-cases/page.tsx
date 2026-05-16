@@ -42,6 +42,20 @@ const USE_CASES = [
       "Programmatic citations for academic + research AI tools. Stable claim IDs, primary sources with verbatim excerpts, HMAC signatures for reproducibility.",
     audience: "Research labs, academic AI projects, citation-required builds",
   },
+  {
+    slug: "customer-support-bot",
+    title: "Customer-support chatbot grounding",
+    summary:
+      "Stop bots from hallucinating product pricing, integrations, rate limits, AI/ML facts. Two-catalog pattern (your own product facts + SourceScore VERITAS) with route-to-human on unverified claims.",
+    audience: "SaaS support teams, product chatbot builders",
+  },
+  {
+    slug: "content-moderation",
+    title: "Content moderation — fact-check LLM outputs",
+    summary:
+      "Pre-publish verification gate for newsletter generators, blog assistants, report drafters. Extract atomic claims, verify each, flag or strip unverified before publish.",
+    audience: "Editorial AI tools, content-generation platforms, marketing automation",
+  },
 ];
 
 export default function UseCasesIndex() {

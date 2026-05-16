@@ -388,7 +388,7 @@ ASSISTANT: The Transformer was introduced in 2017 by Vaswani et al. [1]`}</code>
             for what makes it into the verified-claim catalog
           </li>
           <li>
-            <a href="/claims/">Browse the catalog</a> — 186 verified AI/ML
+            <a href="/claims/">Browse the catalog</a> — 196 verified AI/ML
             claims, each with primary sources and signatures
           </li>
         </ul>
