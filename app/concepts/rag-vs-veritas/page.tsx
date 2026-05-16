@@ -258,8 +258,9 @@ async def answer(question):
           </li>
           <li>
             <strong>VERITAS Free tier:</strong> 1,000 calls/mo free,
-            then $0.0008/call on the next tier (Indie €19 for 25k =
-            ~$0.0008/call).
+            then ~€0.0004/call on the next tier (Indie €19 for 50,000
+            calls = ~€0.00038/call). Volume tiers (€99 / €499) drop
+            per-call cost further.
           </li>
           <li>
             <strong>Hybrid:</strong> additive. ~$0.0018/query for both

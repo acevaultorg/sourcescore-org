@@ -319,9 +319,9 @@ print("ok — claim is genuine + unmodified")
         </p>
         <ul className="text-sm text-zinc-700 dark:text-zinc-300 list-disc pl-6 space-y-1">
           <li><strong>Free:</strong> 1,000 calls/month — sufficient for prototyping</li>
-          <li><strong>Indie €19/mo:</strong> 25,000 calls/month — solo apps + small teams</li>
-          <li><strong>Startup €99/mo:</strong> 250,000 calls/month — Series-A class</li>
-          <li><strong>Scale €499/mo:</strong> 2,500,000 calls/month — high-throughput</li>
+          <li><strong>Indie €19/mo:</strong> 50,000 calls/month — solo apps + small teams</li>
+          <li><strong>Startup €99/mo:</strong> 500,000 calls/month — Series-A class</li>
+          <li><strong>Scale €499/mo:</strong> 5,000,000 calls/month — high-throughput</li>
         </ul>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-3">
           See <a href="/pricing/" className="underline">pricing</a> for full tier comparison.
