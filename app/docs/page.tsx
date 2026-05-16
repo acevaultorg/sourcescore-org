@@ -459,6 +459,38 @@ Content-Type: application/json
         </p>
       </Section>
 
+      <Section id="integrations" title="Framework integrations">
+        <p>
+          Drop-in guides for grounding LLM responses in signed VERITAS
+          claims, with copy-paste runnable examples:
+        </p>
+        <ul className="mt-3 space-y-1 list-disc pl-6">
+          <li>
+            <a href="/docs/integrations/langchain/" className="underline">
+              LangChain
+            </a>{" "}
+            — retrieve-then-cite + generate-then-verify patterns
+          </li>
+          <li>
+            <a href="/docs/integrations/llamaindex/" className="underline">
+              LlamaIndex
+            </a>{" "}
+            — custom Retriever + NodePostprocessor for verification
+          </li>
+          <li>
+            <a href="/docs/integrations/openai-tools/" className="underline">
+              OpenAI tool-calls
+            </a>{" "}
+            — native function-calling that auto-grounds when uncertain
+          </li>
+          <li>
+            <a href="/docs/integrations/" className="underline">
+              All integrations →
+            </a>
+          </li>
+        </ul>
+      </Section>
+
       <Section id="support" title="Support">
         <p>
           Community support: open an issue on{" "}
@@ -494,6 +526,7 @@ function Toc() {
     { id: "rate-limits", label: "Rate limits" },
     { id: "signing", label: "Signature verification" },
     { id: "errors", label: "Errors" },
+    { id: "integrations", label: "Framework integrations" },
     { id: "support", label: "Support" },
   ];
   return (
