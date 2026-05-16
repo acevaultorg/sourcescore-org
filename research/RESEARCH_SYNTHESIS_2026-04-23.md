@@ -1,5 +1,16 @@
 # Research Synthesis — Pay-Per-Crawl + TollBit
 
+> **⚠️ 2026-05-16 UPDATE — TollBit was REMOVED from sourcescore.org.**
+> Operator decision: TollBit pay-per-crawl revenue measured $0/mo since
+> launch despite forwarding all major AI bot UAs; VERITAS Y1 ARR
+> trajectory dominates the trade-off. Middleware deleted in commit
+> 21e5b90 (see `/changelog/` on the live site). This document remains
+> as a historical record of the original research; recommendations that
+> hinged on TollBit revenue are no longer in force for sourcescore.
+> Fleet-wide TollBit applicability for OTHER sites is still discussed
+> in `methodology/bot-harvest.md` Path 2 (now marked deprecated for the
+> source-rating product).
+
 **Input:** `/acepilot auto [study this: ...]` — multi-session transcript on TollBit / Ledger concepts / domain brainstorming.
 **Date:** 2026-04-23 · v19.7 auto mode.
 **Applies to:** this folder's Cost-Adjusted LLM Leaderboard concept (CONCEPT.md).

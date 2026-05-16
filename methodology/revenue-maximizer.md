@@ -1,5 +1,7 @@
 # Revenue Maximizer — the canonical fleet monetization stack (v1.0, 2026-04-21)
 
+> **⚠️ 2026-05-16 — Layer 8 TollBit REMOVED from sourcescore.org.** Operator decision: measured $0/mo TollBit revenue × paywalled LLM-citation surface was net-negative against the VERITAS ARR trajectory. Middleware deleted in commit 21e5b90. Other fleet sites may still defer TollBit per the Month 6+ criteria documented below; this rule's structural framework is unchanged.
+
 **Operator directive 2026-04-21:** *"how to get highest revenue of pay per crawl, ads, affiliate or something else. important to have fastest most easy revenue growth with no / barely non work for operator"*.
 
 This rule is the canonical monetization-layer playbook for every fleet site. It ordered which revenue layer gets wired first, in what sequence, and which to skip entirely. Binding on every fleet site from v19.5 forward.

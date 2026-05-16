@@ -1,5 +1,7 @@
 # Bot Harvest — operational playbook for LLM/AI-crawler traffic (v1.0, 2026-04-19)
 
+> **⚠️ 2026-05-16 — TollBit removed from sourcescore.org.** Path 2 (TollBit / ProRata) is still valid as a general fleet pattern but is no longer in use on the source-rating product surface. Operator decision: measured $0/mo TollBit revenue × paywalled LLM-citation surface was net-negative against the VERITAS ARR trajectory. Middleware deleted in commit 21e5b90.
+
 **Binding on every fleet site from v19.4 forward.** This file is the how-to companion to v19.4's brain-level Bot Harvest spec. It answers three operator questions in order:
 
 1. How do we monetize bot traffic?
