@@ -57,6 +57,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "data",
+    title: "Catalog 136 → 146 (Batch 10 — framework foundations + 2024 ecosystem)",
+    body:
+      "10 new hand-verified claims, ≥2 primary sources each. Application frameworks: LangChain (Harrison Chase 2022-10-25) + LlamaIndex / GPT Index (Jerry Liu 2022-11-09). Vector + tokenizer foundations: FAISS (Johnson, Douze, Jégou, Facebook AI 2017) — billion-scale GPU similarity search; tiktoken (OpenAI 2022-12-06) — official BPE tokenizer. 2024 open-standards + features: Model Context Protocol / MCP (Anthropic 2024-11-25) — open standard for AI ↔ data-source connections; ChatGPT search (OpenAI 2024-10-31) — web-grounded answers. State-space + RAG advances: Mamba-2 (Dao & Gu, Princeton + CMU 2024) — structured state space duality; Self-RAG (Asai et al., UW + AI2 2023) — self-reflective retrieval-augmented generation. Speech + evaluation: Whisper large-v3 (OpenAI 2023-11-06); AlpacaEval (Tatsu Lab / Stanford 2023) — LLM-as-judge automatic evaluator.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "data",
     title: "Catalog 126 → 136 (Batch 9 — encoder-decoder pioneers + open-source inference)",
     body:
       "10 new hand-verified claims, ≥2 primary sources each. Encoder-decoder pioneers: BART (Lewis et al., Facebook AI 2019) — denoising sequence-to-sequence pretraining; GloVe (Pennington, Socher, Manning, Stanford NLP 2014) — global vectors for word representation. Multimodal: Flamingo (Alayrac et al., DeepMind 2022) — few-shot vision-language model. Tool-use foundational: Toolformer (Schick et al., Meta AI 2023) — self-supervised LLM tool-use. Open-source inference ecosystem: vLLM (Kwon et al., UC Berkeley 2023) — PagedAttention high-throughput serving; llama.cpp (Georgi Gerganov 2023-03-10) — pure C/C++ LLM inference; Ollama (2023-07-18) — local LLM runtime. Evaluation: Chatbot Arena (Chiang et al., LMSYS UC Berkeley 2024) — human-preference LLM leaderboard. 2024 model: Phi-4 (Microsoft Research 2024-12-12) — 14B-parameter synthetic-data-trained SLM. Quantization: GPTQ (Frantar et al., IST Austria 2022) — post-training weight quantization.",
