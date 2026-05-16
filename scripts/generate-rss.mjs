@@ -15,11 +15,28 @@ const TODAY = new Date().toUTCString();
 
 const POSTS = [
   {
+    slug: "why-no-performance-claims",
+    title:
+      "Why VERITAS doesn't ship performance-comparison claims (and what we ship instead)",
+    summary:
+      "Benchmark numbers vary by prompt format, model version, shot count, and evaluation harness. Shipping them as verified claims is the surest way to make the catalog wrong by Thursday. The methodology rules we keep — and the trust math they preserve.",
+    publishedDate: "2026-05-16T00:00:00Z",
+    tags: ["methodology", "trust", "benchmarks", "veritas"],
+  },
+  {
+    slug: "verify-ai-facts-five-lines-python",
+    title: "Verifying AI-generated facts in 5 lines of Python",
+    summary:
+      "Drop SourceScore VERITAS into your LLM pipeline as a post-generation check. Every claim the model emits gets a confidence score plus canonical citation before the user sees it. Five-line client + a generate-then-verify loop pattern.",
+    publishedDate: "2026-05-16T00:00:00Z",
+    tags: ["tutorial", "python", "veritas", "hallucination"],
+  },
+  {
     slug: "launching-veritas",
     title:
       "Stop hallucinating: a developer API for grounding LLM responses with signed, sourced claims",
     summary:
-      "VERITAS is a free-tier-friendly API that returns hand-verified AI/ML claims with their primary sources, an HMAC-SHA256 signature, and a ready-to-paste citation. 51 claims at launch, expanding to 5,000+ this year.",
+      "VERITAS is a free-tier-friendly API that returns hand-verified AI/ML claims with their primary sources, an HMAC-SHA256 signature, and a ready-to-paste citation. 100 claims today, expanding through Q3.",
     publishedDate: "2026-05-16T00:00:00Z",
     tags: ["launch", "veritas", "api", "llm-grounding"],
   },

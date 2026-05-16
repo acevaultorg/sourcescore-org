@@ -16,6 +16,23 @@ interface PostMeta {
 
 const POSTS: PostMeta[] = [
   {
+    slug: "why-no-performance-claims",
+    title:
+      "Why VERITAS doesn't ship performance-comparison claims (and what we ship instead)",
+    subtitle:
+      "Benchmark numbers vary by prompt format, model version, shot count, and evaluation harness. Shipping them as 'verified claims' is the surest way to make the catalog wrong by Thursday. Here's the alternative.",
+    publishedDate: "2026-05-16",
+    tags: ["methodology", "trust", "benchmarks", "veritas"],
+  },
+  {
+    slug: "verify-ai-facts-five-lines-python",
+    title: "Verifying AI-generated facts in 5 lines of Python",
+    subtitle:
+      "Drop SourceScore VERITAS into your LLM pipeline as a post-generation check. Every claim the model emits gets a confidence score + canonical citation before the user sees it.",
+    publishedDate: "2026-05-16",
+    tags: ["tutorial", "python", "veritas", "hallucination"],
+  },
+  {
     slug: "launching-veritas",
     title:
       "Stop hallucinating: a developer API for grounding LLM responses with signed, sourced claims",
