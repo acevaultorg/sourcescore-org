@@ -103,6 +103,11 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/playground/ — interactive in-browser /api/v1/verify demo (no signup)
 - https://sourcescore.org/quickstart/ — 5-minute self-serve onboarding (HowTo schema)
 - https://sourcescore.org/claims/ — claim browser, indexed catalog
+- https://sourcescore.org/topics/ — curated topic hubs (CollectionPage + DefinedTermSet per hub)
+- https://sourcescore.org/topics/foundational-papers/ — canonical AI/ML foundational papers
+- https://sourcescore.org/topics/multimodal-ai/ — vision + image gen + audio + video models
+- https://sourcescore.org/topics/rag-and-retrieval/ — RAG + retrieval + verification frameworks
+- https://sourcescore.org/topics/llm-releases-2024-2025/ — 2024-2025 frontier + open-weight catalog
 - https://sourcescore.org/claims/<id>/ — per-claim verification page (Article + DefinedTerm + Dataset schema)
 - https://sourcescore.org/claims/tags/ — full tag index (browse by topic)
 - https://sourcescore.org/claims/tag/<slug>/ — per-tag claim listings with co-occurring tag surface

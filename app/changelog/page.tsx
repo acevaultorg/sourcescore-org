@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "feat",
+    title: "/topics/ — 4 curated topic hubs (foundational papers, multimodal AI, RAG + retrieval, 2024-2025 LLM releases)",
+    body:
+      "New programmatic-SEO surface: /topics/ index + 4 topic hubs at /topics/[slug]/. Each hub bundles 400-700 words of editorial intro, a DefinedTermSet of 3-4 terms, a CollectionPage schema referencing every member claim, and cross-links to related hubs + concept pillars + integration guides. Topic claim membership is filter-derived from the catalog (e.g., foundational-papers = `tags.includes('foundational')` OR `predicate.includes('introduced_in')`) so hub population auto-updates as the catalog grows. Hubs shipped: foundational-papers (~80 claims), multimodal-ai (~15), rag-and-retrieval (~10), llm-releases-2024-2025 (~30+). Surfaces added to footer nav, sitemap-ai.xml priority list, and llms.txt manifest.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "feat",
     title: "/docs/integrations/pydantic-ai/ + /docs/integrations/anthropic-sdk/ — 6th + 7th framework guides",
     body:
       "Two new drop-in integration guides. Pydantic AI: type-safe verification via VerifyClaimInput → VerificationResult Pydantic models; agents emit structured tool calls; downstream code is type-safe with field validators catching confidence drift. Covers 3 patterns (verify-claim tool · structured agent output with required verification · multi-claim parallel verification). Anthropic SDK: Claude tool-use protocol with the tool_use → execute → tool_result loop, in both Python and TypeScript. Includes a system-prompt pattern that makes Claude self-verify before asserting facts. TechArticle + BreadcrumbList schema on both. Integrations index now lists 7 frameworks total (LangChain · LlamaIndex · OpenAI tools · Vercel AI SDK · DSPy · Pydantic AI · Anthropic SDK).",
