@@ -325,26 +325,91 @@ export default async function ClaimPage({ params }: PageProps) {
       )}
 
       <section className="mb-10">
-        <h2 className="text-lg font-semibold mb-3">Programmatic access</h2>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
-          Fetch this claim with a signed envelope for verification:
+        <h2 className="text-xl font-semibold mb-4">Use this claim in your code</h2>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+          Fetch this signed envelope from your application. The response
+          includes the verbatim excerpt, primary source URLs, and an
+          HMAC-SHA256 signature you can verify locally for audit trails.
         </p>
-        <code className="block text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded p-3 overflow-x-auto font-mono">
-          curl {apiUrl}
-        </code>
-        <p className="mt-4 text-sm">
-          <a href="/docs/" className="text-zinc-900 dark:text-zinc-100 underline">
-            API docs
-          </a>{" "}
-          ·{" "}
-          <a href="/pricing/" className="text-zinc-900 dark:text-zinc-100 underline">
-            Pricing
-          </a>{" "}
-          ·{" "}
-          <a href="/api/v1/methodology.json" className="text-zinc-900 dark:text-zinc-100 underline">
-            Methodology JSON
+
+        <div className="space-y-4">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2">cURL</p>
+            <code className="block text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded p-3 overflow-x-auto font-mono whitespace-pre-wrap break-all">
+              {`curl ${apiUrl}`}
+            </code>
+          </div>
+
+          <div>
+            <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2">JavaScript / TypeScript</p>
+            <code className="block text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded p-3 overflow-x-auto font-mono whitespace-pre">
+{`const r = await fetch("${apiUrl}");
+const envelope = await r.json();
+console.log(envelope.claim.statement);
+//   "${claim.statement}"`}
+            </code>
+          </div>
+
+          <div>
+            <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2">Python</p>
+            <code className="block text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded p-3 overflow-x-auto font-mono whitespace-pre">
+{`import httpx
+r = httpx.get("${apiUrl}")
+envelope = r.json()
+print(envelope["claim"]["statement"])
+#   "${claim.statement}"`}
+            </code>
+          </div>
+
+          <div>
+            <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2">
+              LangChain (retrieve-then-cite)
+            </p>
+            <code className="block text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded p-3 overflow-x-auto font-mono whitespace-pre">
+{`from langchain_core.tools import tool
+import httpx
+
+@tool
+def get_${claim.subject.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "claim"}_fact() -> dict:
+    """Fetch the verified SourceScore claim for ${claim.subject}."""
+    r = httpx.get("${apiUrl}")
+    return r.json()`}
+            </code>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-2 text-sm">
+          <a
+            href="/quickstart/"
+            className="px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            5-min Quickstart
           </a>
-        </p>
+          <a
+            href="/playground/"
+            className="px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            Try in playground
+          </a>
+          <a
+            href="/docs/integrations/"
+            className="px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            Framework integrations
+          </a>
+          <a
+            href="/docs/"
+            className="px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            Full API docs
+          </a>
+          <a
+            href="/pricing/"
+            className="px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            Pricing
+          </a>
+        </div>
       </section>
     </article>
   );

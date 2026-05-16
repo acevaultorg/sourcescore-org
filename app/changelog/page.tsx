@@ -64,6 +64,20 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "data",
+    title: "Catalog 146 → 156 (Batch 11 — frontier 2025 + practical infrastructure)",
+    body:
+      "10 new hand-verified claims, ≥2 primary sources each. 2024-2025 frontier: Mistral Large 2 (Mistral AI 2024-07-24), Qwen 2.5 (Alibaba Cloud 2024-09-19), Anthropic Claude Opus 4 (Anthropic 2025-05-22), OpenAI o1 (full release 2024-12-05 with ChatGPT Pro launch). Coding-tool: Cursor (Anysphere 2023-03-14) — AI-powered VS Code fork. Practical infrastructure: Hugging Face Transformers library (2018-10/11), PyTorch (Facebook AI Research 2017-01-18), TensorFlow (Google 2015-11-09), JAX (Google Research 2018-12-10), DeepSpeed + ZeRO (Microsoft Research 2020-02-13). The infrastructure layer (libraries + training frameworks) is what every fleet site cites without realizing.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "feat",
+    title: "Per-claim engagement deepening — code snippets in 4 languages on every /claims/[id]/ page",
+    body:
+      "Every claim detail page now includes a 'Use this claim in your code' section with copy-paste-ready snippets in cURL, JavaScript/TypeScript, Python, and LangChain tool-decorator form. Each snippet substitutes the specific claim's API URL and subject so devs can drop the code directly into their codebase. Compounds: (1) time-on-page boost — devs read 4 language variants instead of bouncing on the first; (2) activation lift — the next-action is concrete (paste + run) rather than abstract (read API docs); (3) social proof — viewing the LangChain snippet plants the integration as a real pattern.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "data",
     title: "Catalog 136 → 146 (Batch 10 — framework foundations + 2024 ecosystem)",
     body:
       "10 new hand-verified claims, ≥2 primary sources each. Application frameworks: LangChain (Harrison Chase 2022-10-25) + LlamaIndex / GPT Index (Jerry Liu 2022-11-09). Vector + tokenizer foundations: FAISS (Johnson, Douze, Jégou, Facebook AI 2017) — billion-scale GPU similarity search; tiktoken (OpenAI 2022-12-06) — official BPE tokenizer. 2024 open-standards + features: Model Context Protocol / MCP (Anthropic 2024-11-25) — open standard for AI ↔ data-source connections; ChatGPT search (OpenAI 2024-10-31) — web-grounded answers. State-space + RAG advances: Mamba-2 (Dao & Gu, Princeton + CMU 2024) — structured state space duality; Self-RAG (Asai et al., UW + AI2 2023) — self-reflective retrieval-augmented generation. Speech + evaluation: Whisper large-v3 (OpenAI 2023-11-06); AlpacaEval (Tatsu Lab / Stanford 2023) — LLM-as-judge automatic evaluator.",
