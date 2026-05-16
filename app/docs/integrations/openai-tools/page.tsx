@@ -2,7 +2,7 @@
 
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
-
+import { openaiToolsHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
   title: "OpenAI tool calls + SourceScore VERITAS — auto-grounding via function calling",
   description:
@@ -35,6 +35,10 @@ export default function OpenAIToolsIntegration() {
             mainEntityOfPage: "https://sourcescore.org/docs/integrations/openai-tools/",
           }),
         }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(openaiToolsHowTo) }}
       />
       <script
         type="application/ld+json"

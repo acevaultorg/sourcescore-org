@@ -2,7 +2,7 @@
 
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
-
+import { vercelAiSdkHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
   title: "Vercel AI SDK + SourceScore VERITAS — verified-claim grounding in Next.js",
   description:
@@ -35,6 +35,10 @@ export default function VercelAISDKIntegration() {
             mainEntityOfPage: "https://sourcescore.org/docs/integrations/vercel-ai-sdk/",
           }),
         }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(vercelAiSdkHowTo) }}
       />
       <script
         type="application/ld+json"

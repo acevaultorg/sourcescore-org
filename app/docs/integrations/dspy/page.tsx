@@ -4,7 +4,7 @@
 
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
-
+import { dspyHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
   title: "DSPy + SourceScore VERITAS — programmatic claim verification in compound AI systems",
   description:
@@ -37,6 +37,10 @@ export default function DSPyIntegration() {
             mainEntityOfPage: "https://sourcescore.org/docs/integrations/dspy/",
           }),
         }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(dspyHowTo) }}
       />
       <script
         type="application/ld+json"

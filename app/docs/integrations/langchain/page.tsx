@@ -52,6 +52,52 @@ export default function LangChainIntegration() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            name: "Integrate SourceScore VERITAS into a LangChain chain",
+            description:
+              "Wire signed-claim verification into a LangChain RAG pipeline. Two patterns: retrieve-then-cite and generate-then-verify.",
+            totalTime: "PT20M",
+            tool: [
+              { "@type": "HowToTool", name: "LangChain" },
+              { "@type": "HowToTool", name: "Python or TypeScript" },
+            ],
+            supply: [
+              { "@type": "HowToSupply", name: "SourceScore VERITAS API (free tier: 1,000 calls/month)" },
+            ],
+            step: [
+              {
+                "@type": "HowToStep",
+                position: 1,
+                name: "Install dependencies",
+                text: "Install langchain + httpx (Python) or langchain + node-fetch (TypeScript).",
+              },
+              {
+                "@type": "HowToStep",
+                position: 2,
+                name: "Define the verify-claim tool",
+                text: "Wrap https://sourcescore.org/api/v1/verify as a LangChain Tool with claim (string) + min_confidence (number) parameters.",
+              },
+              {
+                "@type": "HowToStep",
+                position: 3,
+                name: "Register tool with the agent",
+                text: "Add the verify_claim tool to your AgentExecutor tools list. Update system prompt to instruct verification before factual assertions.",
+              },
+              {
+                "@type": "HowToStep",
+                position: 4,
+                name: "Test on AI/ML factual queries",
+                text: "Run queries like 'When was Llama 3.1 released?' or 'How many parameters does GPT-4 have?'. Confirm agent calls verify_claim and cites the signed envelope's detail URL.",
+              },
+            ],
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
           __html: JSON.stringify(
             breadcrumbListSchema([
               { name: "SourceScore", url: "https://sourcescore.org/" },

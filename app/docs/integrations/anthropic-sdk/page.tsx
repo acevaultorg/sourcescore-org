@@ -4,7 +4,7 @@
 
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
-
+import { anthropicSdkHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
   title: "Anthropic SDK + SourceScore VERITAS — tool-use claim verification for Claude",
   description:
@@ -37,6 +37,10 @@ export default function AnthropicSDKIntegration() {
             mainEntityOfPage: "https://sourcescore.org/docs/integrations/anthropic-sdk/",
           }),
         }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(anthropicSdkHowTo) }}
       />
       <script
         type="application/ld+json"

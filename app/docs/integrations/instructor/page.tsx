@@ -5,7 +5,7 @@
 
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
-
+import { instructorHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
   title: "Instructor + SourceScore VERITAS — structured-output claim verification",
   description:
@@ -38,6 +38,10 @@ export default function InstructorIntegration() {
             mainEntityOfPage: "https://sourcescore.org/docs/integrations/instructor/",
           }),
         }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(instructorHowTo) }}
       />
       <script
         type="application/ld+json"

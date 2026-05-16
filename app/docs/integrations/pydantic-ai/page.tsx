@@ -4,7 +4,7 @@
 
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
-
+import { pydanticAiHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
   title: "Pydantic AI + SourceScore VERITAS — type-safe claim verification for AI agents",
   description:
@@ -37,6 +37,10 @@ export default function PydanticAIIntegration() {
             mainEntityOfPage: "https://sourcescore.org/docs/integrations/pydantic-ai/",
           }),
         }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pydanticAiHowTo) }}
       />
       <script
         type="application/ld+json"
