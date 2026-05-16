@@ -50,6 +50,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "data",
+    title: "Catalog 116 → 126 (Batch 8 — pioneers, RL milestones, 2024-2025 frontier)",
+    body:
+      "10 new hand-verified claims, ≥2 primary sources each. Foundational pioneers: LSTM (Hochreiter & Schmidhuber, Neural Computation 1997) — gradient-based recurrent architecture that bridged 1000+ timestep dependencies. RL milestones: AlphaGo (DeepMind, Nature 2016) — defeated Lee Sedol 4-1 in March 2016; AlphaZero (DeepMind, Science 2018) — mastered chess + shogi + Go from rules + self-play alone. BERT family: RoBERTa (Liu et al., Facebook AI 2019) — robustly optimized BERT pretraining; DistilBERT (Sanh et al., Hugging Face 2019) — 40% smaller, 60% faster, 97% capability retention via knowledge distillation. Coding assistant: GitHub Copilot (GitHub + OpenAI, 2021-06-29) — technical-preview public release. 2024-2025 frontier: OLMo (Allen Institute for AI, 2024-02) — fully-open language model (weights + data + training code); Gemini Ultra (Google DeepMind, 2024-02-08) — Gemini Advanced subscription tier launch; DeepSeek-R1 (DeepSeek-AI, 2025-01-20) — reasoning chain-of-thought via reinforcement learning; Stable Diffusion 3 Medium (Stability AI, 2024-06-12) — rectified flow text-to-image. Coverage now spans 1997-2025.",
+  },
+  {
+    date: "2026-05-16",
+    kind: "data",
     title: "Catalog 110 → 116 (Batch 7 — foundational eval metrics + optimizers + 2022/2024 models)",
     body:
       "6 new hand-verified claims, ≥2 primary sources each. Foundational evaluation metrics: BLEU score (Papineni et al., ACL 2002) — machine translation evaluation; ROUGE score (Lin, ACL 2004) — summarization evaluation. Optimizer: AdamW (Loshchilov & Hutter, ICLR 2019) — decoupled weight decay. Foundational models: PaLM (Chowdhery et al., 2022) — 540B-parameter Pathways language model; Imagen (Saharia et al., 2022) — photorealistic text-to-image diffusion (Google). 2024 release: AlphaFold 3 (Google DeepMind / Isomorphic Labs, 2024-05-08, Nature) — biomolecular structure prediction with unprecedented accuracy.",

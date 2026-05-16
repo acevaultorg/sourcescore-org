@@ -295,7 +295,7 @@ class AnswerAndVerify(dspy.Module):
           <li>• <a href="/docs/integrations/openai-tools/" className="underline">OpenAI tool-calls</a> — native function-calling</li>
           <li>• <a href="/docs/integrations/vercel-ai-sdk/" className="underline">Vercel AI SDK</a> — TypeScript/Next.js</li>
           <li>• <a href="/concepts/citation-chain/" className="underline">Citation chains</a> — local verification of signed envelopes</li>
-          <li>• <a href="/claims/" className="underline">Browse the catalog</a> — 116 verified AI/ML claims</li>
+          <li>• <a href="/claims/" className="underline">Browse the catalog</a> — 126 verified AI/ML claims</li>
         </ul>
       </section>
     </article>
