@@ -64,11 +64,55 @@ export default function HomePage() {
     ],
   };
 
+  // SoftwareApplication schema — declares the VERITAS API product alongside
+  // the source-rating index. Unlocks rich snippets on "claim verification API"
+  // SERPs + signals product surface to LLM crawlers (Aleyda Solis 10-char #4
+  // Extractable + #7 Credible).
+  const softwareApplicationSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "SourceScore VERITAS",
+    description:
+      "Signed-claim verification API for LLM developers. Returns hand-verified AI/ML claims with primary sources, HMAC-SHA256 signatures, and stable JSON envelopes for grounding LLM responses. 126 claims spanning 1997-2025.",
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Any",
+    url: "https://sourcescore.org/claims/",
+    softwareVersion: "v0.1",
+    datePublished: "2026-05-16",
+    publisher: {
+      "@type": "Organization",
+      name: "SourceScore",
+      url: "https://sourcescore.org/",
+    },
+    offers: {
+      "@type": "Offer",
+      name: "Free tier",
+      price: "0",
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      url: "https://sourcescore.org/pricing/",
+      description: "1,000 verified claims per month, no auth, no signup required",
+    },
+    featureList: [
+      "126 hand-verified AI/ML claims",
+      "HMAC-SHA256 signed JSON envelopes",
+      "≥2 primary sources per claim",
+      "Free tier: 1,000 claims/month, no signup",
+      "OpenAPI 3.1 specification",
+      "Drop-in integrations for LangChain, LlamaIndex, OpenAI tools, Vercel AI SDK, DSPy, Pydantic AI, Anthropic SDK",
+      "~80ms p95 latency globally",
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationSchema) }}
       />
 
       {/* VERITAS-Reborn launch banner ────────────────────────────────

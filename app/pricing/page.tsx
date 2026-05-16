@@ -71,8 +71,76 @@ const tagline: Record<(typeof TIERS)[number]["name"], string> = {
 };
 
 export default function PricingPage() {
+  const softwareApplicationSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "SourceScore VERITAS",
+    description:
+      "Signed-claim verification API for LLM developers. Returns hand-verified AI/ML claims with primary sources, HMAC-SHA256 signatures, and stable JSON envelopes for grounding LLM responses.",
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Any",
+    url: "https://sourcescore.org/",
+    softwareVersion: "v0.1",
+    publisher: {
+      "@type": "Organization",
+      name: "SourceScore",
+      url: "https://sourcescore.org/",
+    },
+    offers: {
+      "@type": "AggregateOffer",
+      lowPrice: "0",
+      highPrice: "499",
+      priceCurrency: "EUR",
+      offerCount: TIERS.length,
+      offers: TIERS.map((tier) => ({
+        "@type": "Offer",
+        name:
+          tier.name === "free"
+            ? "Free"
+            : tier.name.charAt(0).toUpperCase() + tier.name.slice(1),
+        price: tier.monthlyEur.toString(),
+        priceCurrency: "EUR",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: tier.monthlyEur,
+          priceCurrency: "EUR",
+          unitText: "MONTH",
+          billingIncrement: 1,
+          referenceQuantity: {
+            "@type": "QuantitativeValue",
+            value: tier.includedClaims,
+            unitText: "verified-claim API calls",
+          },
+        },
+        category: tagline[tier.name],
+        availability: "https://schema.org/InStock",
+        url: "https://sourcescore.org/pricing/",
+        seller: {
+          "@type": "Organization",
+          name: "SourceScore",
+          url: "https://sourcescore.org/",
+        },
+      })),
+    },
+    featureList: [
+      "1,000 free API claims per month (no signup)",
+      "HMAC-SHA256 signed response envelopes",
+      "≥2 primary sources per claim",
+      "OpenAPI 3.1 spec",
+      "126 hand-verified AI/ML claims (1997-2025)",
+      "Stable JSON-LD claim envelopes",
+      "Self-serve Stripe metered billing",
+    ],
+  };
+
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(softwareApplicationSchema),
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
