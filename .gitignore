@@ -27,6 +27,14 @@ Thumbs.db
 # Claude state — kept for brain context but not tracked in git
 .claude/state/
 
+# Claude worktrees — each is its own git checkout (parent-zone bare-clone
+# linked via .git/worktrees/<name>/gitdir). They MUST NOT be tracked in
+# the parent index as regular files or as gitlinks (mode 160000) — a
+# stray `git add -A` from the parent root will otherwise ingest tens of
+# thousands of duplicate files OR commit a broken submodule pointer.
+# 2026-05-16: parallel-session accidentally committed ~64k lines this way.
+.claude/worktrees/
+
 # Operator-generated archive
 .stale-out-trash/
 
