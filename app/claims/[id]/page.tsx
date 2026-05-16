@@ -245,6 +245,31 @@ export default async function ClaimPage({ params }: PageProps) {
         </code>
       </section>
 
+      <section className="mb-10 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
+        <h2 className="text-lg font-semibold mb-3">Embed this claim</h2>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+          Drop this iframe into any blog post, docs page, or knowledge base.
+          The widget renders the signed claim + primary source + click-through
+          to this canonical page. CC-BY 4.0; attribution included.
+        </p>
+        <code className="block text-xs sm:text-sm bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded p-3 overflow-x-auto font-mono whitespace-pre-wrap break-all">
+{`<iframe src="https://sourcescore.org/embed/claim/${claim.id}/" `}
+{`width="100%" height="360" frameborder="0" loading="lazy" `}
+{`title="${claim.statement.replace(/"/g, "&quot;")}"></iframe>`}
+        </code>
+        <p className="mt-3 text-xs text-zinc-500">
+          Preview:{" "}
+          <a
+            href={`/embed/claim/${claim.id}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            open in new tab
+          </a>
+        </p>
+      </section>
+
       <section className="mb-10">
         <h2 className="text-lg font-semibold mb-3">Programmatic access</h2>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">

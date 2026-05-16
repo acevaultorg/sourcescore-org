@@ -7,6 +7,15 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 
+# Embeddable widgets — must allow cross-origin iframe embedding.
+# `! X-Frame-Options` removes SAMEORIGIN; CSP frame-ancestors then governs.
+# Layer 5 archetype: embeddable_widget x +80 per rules/aceusergrowth.md
+# Lever 2 — each external embed = permanent backlink + LLM-citation surface.
+/embed/*
+  ! X-Frame-Options
+  Content-Security-Policy: frame-ancestors *;
+  Cache-Control: public, max-age=600, s-maxage=3600
+
 # Long-cache static assets
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
