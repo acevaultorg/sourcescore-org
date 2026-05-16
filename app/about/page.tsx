@@ -53,8 +53,35 @@ const orgSchema = {
       name: "SourceScore VERITAS",
       url: "https://sourcescore.org/claims/",
       description:
-        "Signed claim verification API for LLM developers — 51 verified AI/ML claims at v0.1, expanding to 5,000+ in Year 1.",
+        "Signed claim verification API for LLM developers — 206 hand-verified AI/ML claims spanning 1997-2025 at v0.1, expanding to 5,000+ in Year 1.",
     },
+  ],
+  foundingDate: "2026-04",
+  founder: { "@id": "https://sourcescore.org/about/#person-editorial-lead" },
+  publisher: { "@id": "https://sourcescore.org/about/#person-editorial-lead" },
+};
+
+// Editorial Lead Person entity — referenced by every TechArticle / BlogPosting
+// author field across the site via @id. Single source of truth for entity
+// coherence (Aleyda 10-char #3 Recognizable + #7 Credible). Sameas links
+// added by operator when public profiles are finalized.
+const editorialPersonSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "https://sourcescore.org/about/#person-editorial-lead",
+  name: "SourceScore Editorial Team",
+  description:
+    "Maintainers of SourceScore methodology and the VERITAS verified-claim catalog. Editorial decisions follow the published methodology at /methodology/; corrections are timestamped and public.",
+  url: "https://sourcescore.org/about/",
+  email: "contact@sourcescore.org",
+  worksFor: { "@id": "https://sourcescore.org/#organization" },
+  knowsAbout: [
+    "AI/ML research methodology",
+    "LLM grounding",
+    "Retrieval-augmented generation",
+    "Claim verification",
+    "HMAC signature schemes",
+    "Source quality evaluation",
   ],
 };
 
@@ -72,6 +99,10 @@ export default function AboutPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(editorialPersonSchema) }}
       />
       <script
         type="application/ld+json"
