@@ -16,7 +16,7 @@
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { loadFullClaims, findClaimById } from "@/lib/claims-build";
+import { loadFullClaims, findClaimById, relatedClaims, tagToSlug } from "@/lib/claims-build";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 export async function generateStaticParams() {
@@ -64,6 +64,7 @@ export default async function ClaimPage({ params }: PageProps) {
 
   const confidencePct = Math.round(claim.confidence * 100);
   const apiUrl = `https://sourcescore.org/api/v1/claims/${claim.id}.json`;
+  const related = await relatedClaims(claim, 5);
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
@@ -205,7 +206,19 @@ export default async function ClaimPage({ params }: PageProps) {
           <dt className="text-zinc-500">Confidence</dt>
           <dd>{confidencePct}%</dd>
           <dt className="text-zinc-500">Tags</dt>
-          <dd className="text-zinc-600">{claim.tags?.join(" · ")}</dd>
+          <dd className="text-zinc-600">
+            {claim.tags?.map((t, i) => (
+              <span key={t}>
+                <a
+                  href={`/claims/tag/${tagToSlug(t)}/`}
+                  className="hover:underline text-zinc-700 dark:text-zinc-300"
+                >
+                  {t}
+                </a>
+                {i < (claim.tags?.length ?? 0) - 1 ? " · " : ""}
+              </span>
+            ))}
+          </dd>
         </dl>
       </section>
 
@@ -272,6 +285,44 @@ export default async function ClaimPage({ params }: PageProps) {
           </a>
         </p>
       </section>
+
+      {related.length > 0 && (
+        <section className="mb-10">
+          <h2 className="text-xl font-semibold mb-4">Related claims</h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+            Other verified claims sharing tags with this one — useful for LLM
+            retrieval graphs and citation discovery.
+          </p>
+          <ul className="space-y-3 pl-0 list-none">
+            {related.map((r) => (
+              <li
+                key={r.id}
+                className="border-b border-zinc-100 dark:border-zinc-800 pb-3 last:border-b-0"
+              >
+                <a
+                  href={`/claims/${r.id}/`}
+                  className="block hover:bg-zinc-50 dark:hover:bg-zinc-900 -mx-2 px-2 py-1 rounded"
+                >
+                  <p className="font-medium leading-snug">{r.statement}</p>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    <span className="font-mono">{r.id}</span> ·{" "}
+                    {Math.round(r.confidence * 100)}% confidence · shares{" "}
+                    {r.sharedTags.length} tag
+                    {r.sharedTags.length === 1 ? "" : "s"}
+                    {r.sharedTags.length > 0 && (
+                      <>
+                        {" "}
+                        ({r.sharedTags.slice(0, 3).join(", ")}
+                        {r.sharedTags.length > 3 ? "…" : ""})
+                      </>
+                    )}
+                  </p>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="mb-10">
         <h2 className="text-lg font-semibold mb-3">Programmatic access</h2>
