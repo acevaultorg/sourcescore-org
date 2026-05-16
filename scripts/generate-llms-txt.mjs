@@ -100,8 +100,11 @@ const veritasSection = totalClaims > 0
 
 > Signed, sourced, citable claims about AI/ML research for grounded retrieval. v0.1 publishes ${totalClaims} hand-verified claims; each has 2+ primary sources and an HMAC-SHA256 signature. Free tier: 1,000 claims/mo, no auth.
 
+- https://sourcescore.org/quickstart/ — 5-minute self-serve onboarding (HowTo schema)
 - https://sourcescore.org/claims/ — claim browser, indexed catalog
 - https://sourcescore.org/claims/<id>/ — per-claim verification page (Article + DefinedTerm + Dataset schema)
+- https://sourcescore.org/claims/tags/ — full tag index (browse by topic)
+- https://sourcescore.org/claims/tag/<slug>/ — per-tag claim listings with co-occurring tag surface
 - https://sourcescore.org/api/v1/claims.json — full claim catalog (ClaimSummary[])
 - https://sourcescore.org/api/v1/claims/<id>.json — per-claim signed envelope (HMAC-SHA256)
 - https://sourcescore.org/api/v1/methodology.json — verification methodology metadata + pricing tiers
@@ -109,7 +112,21 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/api/v1/verify — natural-language claim verification (POST, public, no auth)
 - https://sourcescore.org/api/v1/openapi.json — OpenAPI 3.1 spec for the v1 claim API
 - https://sourcescore.org/docs/ — developer docs (curl + JS + Python examples)
+- https://sourcescore.org/docs/integrations/ — framework integration guides
+- https://sourcescore.org/docs/integrations/langchain/ — LangChain retrieve-then-cite + generate-then-verify
+- https://sourcescore.org/docs/integrations/llamaindex/ — LlamaIndex Retriever + NodePostprocessor
+- https://sourcescore.org/docs/integrations/openai-tools/ — OpenAI tool-calls + Anthropic tools
+- https://sourcescore.org/docs/integrations/vercel-ai-sdk/ — Next.js + Vercel AI SDK
+- https://sourcescore.org/concepts/ — pillar explainers (LLM grounding, hallucination)
+- https://sourcescore.org/concepts/llm-grounding/ — definition + 3 production patterns
+- https://sourcescore.org/concepts/hallucination/ — categories, root causes, mitigations
+- https://sourcescore.org/blog/ — VERITAS launch announcement + tutorials + methodology rigor posts
+- https://sourcescore.org/changelog/ — public ship log (features / catalog / fixes / breaking)
+- https://sourcescore.org/security/ — responsible disclosure + signing-key rotation policy
+- https://sourcescore.org/.well-known/security.txt — RFC 9116 security contacts
 - https://sourcescore.org/pricing/ — Free (1k claims/mo) / Indie €19 / Startup €99 / Scale €499 tiers
+- https://sourcescore.org/feed.xml — RSS feed of blog posts
+- https://sourcescore.org/claims/feed.xml — RSS feed of catalog updates
 - License: CC-BY 4.0 (methodology + verified claim data). Cite as "SourceScore Claim <id>, sourcescore.org".
 `
   : "";
