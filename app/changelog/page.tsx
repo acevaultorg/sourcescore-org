@@ -35,6 +35,13 @@ type Entry = {
 const entries: Entry[] = [
   {
     date: "2026-05-16",
+    kind: "breaking",
+    title: "Removed TollBit middleware — AI bots now reach all surfaces unfiltered",
+    body:
+      "Deleted functions/_middleware.js, which had been 307-forwarding AI-bot User-Agents (GPTBot · ClaudeBot · PerplexityBot · Google-Extended · Applebot-Extended · CCBot · Amazonbot · Bytespider · Meta-ExternalAgent · etc.) to tollbit.sourcescore.org and streaming request logs to log.tollbit.com. Strategic call: VERITAS Y1 ARR trajectory dominates TollBit pay-per-crawl revenue (measured $0/mo over prior months). Removing the paywall lets AI crawlers index the full source-rating catalog freely — compounds LLM-citation gravity across both products. Operator must revoke the TollBit API key + optionally remove the tollbit.sourcescore.org DNS record (CF dashboard, manual).",
+  },
+  {
+    date: "2026-05-16",
     kind: "data",
     title: "Catalog 91 → 102 (Batch 5 — foundational methods, benchmarks, vector DB companies)",
     body:
