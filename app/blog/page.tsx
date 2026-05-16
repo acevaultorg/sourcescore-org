@@ -30,7 +30,12 @@ export const metadata: Metadata = {
   title: { absolute: "Blog — SourceScore" },
   description:
     "Posts on AI-citation quality, LLM grounding, and the SourceScore methodology.",
-  alternates: { canonical: "https://sourcescore.org/blog/" },
+  alternates: {
+    canonical: "https://sourcescore.org/blog/",
+    types: {
+      "application/rss+xml": "https://sourcescore.org/feed.xml",
+    },
+  },
   openGraph: {
     title: "Blog — SourceScore",
     description: "Posts on AI-citation quality and LLM grounding.",

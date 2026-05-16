@@ -5,12 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "npx tsx scripts/generate-api-json.ts && npx tsx scripts/generate-claims-json.ts && npx tsx scripts/generate-og-images.ts && node scripts/generate-sitemap.mjs && node scripts/generate-llms-txt.mjs",
+    "postbuild": "npx tsx scripts/generate-api-json.ts && npx tsx scripts/generate-claims-json.ts && npx tsx scripts/generate-og-images.ts && node scripts/generate-sitemap.mjs && node scripts/generate-llms-txt.mjs && node scripts/generate-rss.mjs",
     "start": "next start",
     "lint": "next lint",
     "indexnow": "node scripts/ping-indexnow.mjs",
     "clean": "rm -rf .next out 2>/dev/null; find . -name '.DS_Store' -not -path './node_modules/*' -delete 2>/dev/null; true",
-    "deploy": "npm run clean && npm run build && npx wrangler pages deploy out --project-name sourcescore --branch main --commit-dirty=true && npm run indexnow",
+    "deploy": "npm run clean && npm run build && npx wrangler pages deploy out --project-name sourcescore --branch main --commit-message='deploy: brain wrangler push' && npm run indexnow",
     "predeploy": "node scripts/predeploy-guard.mjs"
   },
   "dependencies": {

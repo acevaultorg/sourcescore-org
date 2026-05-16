@@ -144,6 +144,52 @@ export default function MethodologyPage() {
           </li>
         </ol>
 
+        <h2 className="text-heading-2 font-bold pt-4">VERITAS Claim Verification methodology</h2>
+        <p className="text-muted">
+          The companion product on this domain,{" "}
+          <a href="/claims/" className="text-brand hover:underline">VERITAS</a>, applies the same
+          trust-signal thinking to atomic claims rather than whole sources. A claim is published
+          only when:
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-muted">
+          <li>
+            <span className="text-text font-semibold">Source convergence &ge; 2 primary documents.</span>{" "}
+            One of those must be primary (preprint authored by the work&rsquo;s authors,
+            official-blog from the entity making the claim, model-card on Hugging Face, or
+            github-release tag). Aggregator sites alone are insufficient.
+          </li>
+          <li>
+            <span className="text-text font-semibold">Confidence &ge; 0.70</span>, calibrated as:
+            <ul className="list-disc pl-5 space-y-1 mt-2">
+              <li><code>1.00</code> &mdash; primary-source confirmation + independent verification</li>
+              <li><code>0.95</code> &mdash; primary-source single attestation</li>
+              <li><code>0.85</code> &mdash; strong secondary-source convergence (&ge;3 independent sources agree)</li>
+              <li><code>0.70</code> &mdash; single secondary source, no contradictions found</li>
+              <li><code>&lt; 0.70</code> &mdash; not published in v0</li>
+            </ul>
+          </li>
+          <li>
+            <span className="text-text font-semibold">Performance comparisons excluded</span> from
+            v0 because benchmark numbers depend on prompt format, decoding strategy, evaluation
+            harness version, and shot count. Six dimensions of methodology drift make any single
+            &ldquo;model X scores Y on benchmark Z&rdquo; claim unreproducible. Day 30+ adds them
+            back with explicit benchmark-version + prompt-format metadata bundled into the envelope.
+          </li>
+          <li>
+            <span className="text-text font-semibold">Signed with HMAC-SHA256</span> by{" "}
+            <code>did:web:sourcescore.org</code>. Migration to W3C Verifiable Credentials with
+            Ed25519 keys is on the Y2 roadmap for enterprise customers wanting offline verification.
+          </li>
+        </ul>
+        <p className="text-muted">
+          Machine-readable methodology + tier reference + endpoint index:{" "}
+          <a href="/api/v1/methodology.json" className="text-brand hover:underline">
+            /api/v1/methodology.json
+          </a>
+          . Full developer docs (curl + JS + Python examples):{" "}
+          <a href="/docs/" className="text-brand hover:underline">/docs/</a>.
+        </p>
+
         <h2 className="text-heading-2 font-bold pt-4">Grade scale</h2>
         <p className="text-muted">
           Scores 0–100 map to letter grades on an academic-style scale: A+ ≥ 95, A ≥ 85, B ≥ 70,
