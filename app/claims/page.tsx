@@ -57,8 +57,7 @@ export default async function ClaimsIndexPage() {
             "@context": "https://schema.org",
             "@type": "Dataset",
             name: "SourceScore VERITAS — AI/ML Claims Catalog",
-            description:
-              "Signed, sourced, citable claims about AI/ML research and model releases. v0.1 catalog (Day 1 seed: 26 claims). Each claim has 2+ primary sources and an HMAC-SHA256 signature. Suited for grounded LLM retrieval and citation.",
+            description: `Signed, sourced, citable claims about AI/ML research and model releases. v0.1 catalog (${claims.length} hand-verified claims spanning 1997-2025). Each claim has ≥2 primary sources and an HMAC-SHA256 signature. Suited for grounded LLM retrieval and citation.`,
             url: "https://sourcescore.org/claims/",
             license: "https://creativecommons.org/licenses/by/4.0/",
             creator: {
@@ -148,6 +147,53 @@ export default async function ClaimsIndexPage() {
           </a>
         </div>
       </header>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-semibold mb-4">Browse by topic</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <a
+            href="/topics/foundational-papers/"
+            className="block border border-zinc-200 dark:border-zinc-800 rounded p-4 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors"
+          >
+            <p className="font-semibold mb-1">Foundational papers</p>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+              Transformer, LSTM, BERT, RLHF, RAG, LoRA, FlashAttention — the canonical reading list.
+            </p>
+          </a>
+          <a
+            href="/topics/llm-releases-2024-2025/"
+            className="block border border-zinc-200 dark:border-zinc-800 rounded p-4 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors"
+          >
+            <p className="font-semibold mb-1">2024-2025 LLM releases</p>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+              GPT-4o, Claude Opus 4, Gemini Ultra, Llama 3.x, DeepSeek-R1, Phi-4, Qwen, OpenAI o1.
+            </p>
+          </a>
+          <a
+            href="/topics/multimodal-ai/"
+            className="block border border-zinc-200 dark:border-zinc-800 rounded p-4 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors"
+          >
+            <p className="font-semibold mb-1">Multimodal AI</p>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+              CLIP, DALL·E, Stable Diffusion, Imagen, Flamingo, Sora, Whisper.
+            </p>
+          </a>
+          <a
+            href="/topics/rag-and-retrieval/"
+            className="block border border-zinc-200 dark:border-zinc-800 rounded p-4 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors"
+          >
+            <p className="font-semibold mb-1">RAG &amp; retrieval</p>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+              FAISS, Pinecone, Weaviate, Self-RAG, LangChain, LlamaIndex, MCP.
+            </p>
+          </a>
+        </div>
+        <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+          <a href="/topics/" className="underline">All topic hubs</a>
+          {" · "}
+          <a href="/claims/tags/" className="underline">Browse by tag</a>
+        </p>
+      </section>
 
       <ClaimSection title="Foundational papers" claims={foundational} />
       <ClaimSection title="Model releases" claims={releases} />
