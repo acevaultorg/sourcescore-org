@@ -40,9 +40,31 @@ const SKIP_PATHS = [
   '/favicon',
   '/robots.txt',
   '/sitemap.xml',
+  '/sitemap-ai.xml',
   '/llms.txt',
   '/ads.txt',
+  '/feed.xml',
   '/.well-known/',
+  // ── VERITAS product surface ──────────────────────────────────────────
+  // AI bots must reach these freely so the LLM-citation strategy compounds
+  // (per rules/aceusergrowth.md Part 23 + Aleyda Solis 10-characteristic
+  // checklist: Accessible · Extractable · Recognizable · Credible). The
+  // dev-API product is monetized via Stripe metered billing (€19/€99/€499
+  // tiers), not via TollBit pay-per-crawl. Paywalling these surfaces would
+  // gate the entire VERITAS revenue trajectory for marginal TollBit upside.
+  '/claims/',
+  '/blog/',
+  '/embed/',
+  '/docs/',
+  '/pricing/',
+  '/signup/',
+  '/dashboard/',
+  '/about/',
+  '/methodology/',
+  // The og/ directory serves visual share previews for both products —
+  // bots that follow OG images (Twitter/LinkedIn/Slack previews) should
+  // get them, not a paywall page.
+  '/og/',
 ];
 
 const TOLLBIT_LOG_ENDPOINT = 'https://log.tollbit.com/log';
