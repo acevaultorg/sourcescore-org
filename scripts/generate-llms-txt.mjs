@@ -119,8 +119,9 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/docs/integrations/openai-tools/ — OpenAI tool-calls + Anthropic tools
 - https://sourcescore.org/docs/integrations/vercel-ai-sdk/ — Next.js + Vercel AI SDK
 - https://sourcescore.org/glossary/ — 35-term AI/ML glossary with DefinedTermSet schema
-- https://sourcescore.org/concepts/ — pillar explainers (LLM grounding, hallucination, RAG vs VERITAS, citation chains)
+- https://sourcescore.org/concepts/ — pillar explainers (5 pillars: grounding, hallucination, RAG vs VERITAS, citation chains, evaluation harnesses)
 - https://sourcescore.org/concepts/citation-chain/ — provenance graphs for LLM citations (stable ID + signature + re-fetchable URL)
+- https://sourcescore.org/concepts/evaluation-harness/ — why benchmark scores vary across LM Eval / HELM / lab-internal harnesses
 - https://sourcescore.org/concepts/llm-grounding/ — definition + 3 production patterns
 - https://sourcescore.org/concepts/hallucination/ — categories, root causes, mitigations
 - https://sourcescore.org/blog/ — VERITAS launch announcement + tutorials + methodology rigor posts

@@ -47,6 +47,13 @@ const concepts = [
       "The auditable trail from an LLM's emitted claim back to primary sources. Three building blocks: stable identifier · cryptographic signature · re-fetchable canonical URL. Local-verification walkthrough + how chains fit into agentic responses.",
     status: "live",
   },
+  {
+    slug: "evaluation-harness",
+    title: "Evaluation harnesses",
+    summary:
+      "Why the same model scores differently on the same benchmark across LM Eval Harness vs HELM vs lab-internal evals. Six axes of variation, how to read benchmark claims honestly, and why VERITAS excludes performance-comparison claims.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {
