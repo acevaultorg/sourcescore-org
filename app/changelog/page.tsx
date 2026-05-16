@@ -35,6 +35,13 @@ type Entry = {
 const entries: Entry[] = [
   {
     date: "2026-05-16",
+    kind: "data",
+    title: "Catalog 102 → 110 (Batch 6 — foundational regularization, sparse attention, open-weights releases)",
+    body:
+      "8 new hand-verified claims. Foundational regularization: Dropout (Srivastava et al., JMLR 2014), Batch Normalization (Ioffe & Szegedy, ICML 2015), Layer Normalization (Ba, Kiros, Hinton, 2016). Foundational architectures: Sequence-to-Sequence Learning (Sutskever, Vinyals, Le, NeurIPS 2014). Sparse-attention transformers: Longformer (Beltagy et al., 2020), Reformer (Kitaev et al., ICLR 2020). Open-weights releases: Gemma (Google, 2024-02-21), Qwen (Alibaba, 2023-08-03). All claims have ≥2 primary sources with verbatim excerpts.",
+  },
+  {
+    date: "2026-05-16",
     kind: "breaking",
     title: "Removed TollBit middleware — AI bots now reach all surfaces unfiltered",
     body:

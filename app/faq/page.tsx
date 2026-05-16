@@ -75,7 +75,7 @@ const faqs = [
   },
   {
     q: "What's in the catalog today?",
-    a: "102 hand-verified AI/ML claims spanning 2015-2024: foundational papers (Transformer, RLHF, Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, CLIP, RAG), model releases (GPT family, Claude family, Llama family, DALL·E, Whisper, Stable Diffusion), datasets (C4, The Pile, RedPajama), organizations (OpenAI, Anthropic, DeepMind, Stability AI, EleutherAI, Mistral, AI21, Hugging Face, Together AI, xAI, Cohere). Expansion path: ~150 claims by Q3, new verticals (cybersecurity, data engineering, scientific computing) deferred to Y2.",
+    a: "110 hand-verified AI/ML claims spanning 2015-2024: foundational papers (Transformer, RLHF, Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, CLIP, RAG), model releases (GPT family, Claude family, Llama family, DALL·E, Whisper, Stable Diffusion), datasets (C4, The Pile, RedPajama), organizations (OpenAI, Anthropic, DeepMind, Stability AI, EleutherAI, Mistral, AI21, Hugging Face, Together AI, xAI, Cohere). Expansion path: ~150 claims by Q3, new verticals (cybersecurity, data engineering, scientific computing) deferred to Y2.",
   },
   {
     q: "How confident are the confidence scores?",
