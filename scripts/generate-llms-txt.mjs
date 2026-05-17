@@ -112,6 +112,9 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/topics/evaluation-benchmarks/ — MMLU, GLUE, SuperGLUE, HumanEval, Chatbot Arena, AlpacaEval
 - https://sourcescore.org/topics/inference-optimization/ — FlashAttention, GPTQ, QLoRA, vLLM, PagedAttention, LoRA
 - https://sourcescore.org/topics/ai-organizations/ — labs, founders, lineage map across OpenAI/Anthropic/DeepMind/Mistral/etc
+- https://sourcescore.org/topics/agent-frameworks/ — LangChain, LlamaIndex, DSPy, Pydantic AI, OpenAI Agents, AutoGen, CrewAI
+- https://sourcescore.org/topics/vector-databases/ — FAISS, Pinecone, Weaviate, Qdrant, Chroma, Milvus, pgvector
+- https://sourcescore.org/topics/prompt-engineering/ — Chain-of-Thought, ReAct, Tree of Thoughts, in-context learning, instruction tuning
 - https://sourcescore.org/use-cases/ — concrete deployment patterns
 - https://sourcescore.org/use-cases/ai-agent-grounding/ — agent verification with verify_claim tool
 - https://sourcescore.org/use-cases/rag-pipeline-verification/ — close right-doc-wrong-number gap

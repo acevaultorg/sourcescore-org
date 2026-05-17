@@ -35,6 +35,13 @@ type Entry = {
 const entries: Entry[] = [
   {
     date: "2026-05-17",
+    kind: "feat",
+    title: "Batch 19 → 236 + /topics/prompt-engineering/ (11th topic hub)",
+    body:
+      "Catalog adds 10 claims spanning scaling laws + prompt-engineering canon + 2023 open-weight models: Kaplan scaling laws (Kaplan et al. OpenAI 2020), ReAct (Yao et al. Princeton+Google ICLR 2023), RAG-Fusion (Raudaschl 2023), CRAG/Corrective RAG (Yan et al. USTC+Google 2024), Chain-of-Thought (Wei et al. Google Brain NeurIPS 2022), Galactica (Meta AI 2022-11-15, withdrawn after 3 days — case study), PEFT (Houlsby et al. Google ICML 2019), Stable LM (Stability AI 2023-04), Falcon LLM (TII Abu Dhabi 2023-05), Yi (01.AI 2023-11). New /topics/prompt-engineering/ topic hub covers Chain-of-Thought, ReAct, Tree of Thoughts, in-context learning, instruction tuning + 4 DefinedTerms. tags.json now indexes 524 unique tags across 236 claims.",
+  },
+  {
+    date: "2026-05-17",
     kind: "data",
     title: "Catalog 216 → 226 (Batch 18 — RAG ecosystem deep + 2024-2025 API features)",
     body:

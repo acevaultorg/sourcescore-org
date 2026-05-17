@@ -34,7 +34,7 @@ verification is the missing step.
 **Tweet 3 — The catalog**
 
 ```
-226 hand-verified AI/ML claims at launch:
+236 hand-verified AI/ML claims at launch:
 
 • transformer paper (vaswani 2017)
 • LSTM (hochreiter 1997)

@@ -382,6 +382,50 @@ export const TOPICS: TopicHub[] = [
     relatedConcepts: ["embeddings", "rag-vs-veritas"],
     relatedIntegrations: ["langchain", "llamaindex"],
   },
+  {
+    slug: "prompt-engineering",
+    title: "Prompt engineering — patterns that work",
+    metaDescription:
+      "Prompt engineering catalog: Chain-of-Thought, ReAct, Tree of Thoughts, few-shot, system-prompt patterns. Verified papers and the patterns that became production-standard.",
+    subtitle:
+      "The prompting patterns that survived 2022-2025 contact with production systems. Each is a published research finding (not a Medium-post folk recipe) — Chain-of-Thought, ReAct, Tree of Thoughts, instruction-tuning, few-shot, in-context learning.",
+    claimFilter: (c) =>
+      (c.tags ?? []).some((t) =>
+        [
+          "chain-of-thought",
+          "react",
+          "tree-of-thoughts",
+          "tot",
+          "prompting",
+          "in-context-learning",
+          "instruction-tuning",
+          "few-shot",
+        ].includes(t),
+      ),
+    sections: [
+      {
+        heading: "Why prompting still matters",
+        body: "Frontier models in 2025-2026 are massively more capable than 2022-23 ancestors, but prompt structure still dramatically affects output quality. The reason: the model's training distribution rewards certain shapes of input (step-by-step reasoning, structured examples, explicit role assignments). Prompt patterns that align with the training distribution out-perform raw queries.",
+      },
+      {
+        heading: "The foundational patterns",
+        body: "Chain-of-Thought (Wei et al., 2022) — append 'let's think step by step' and watch reasoning benchmarks jump. ReAct (Yao et al., 2022) — interleave reasoning + action steps for tool-use agents. Tree of Thoughts (Yao et al., 2023) — generalize CoT to branching exploration for deliberate problem-solving. InstructGPT (Ouyang et al., 2022) — RLHF training on instruction-response pairs is why models follow instructions at all.",
+      },
+      {
+        heading: "What still doesn't work reliably",
+        body: "Self-evaluation (asking the model 'are you sure?') is poorly calibrated. Few-shot prompting beats zero-shot for narrow extraction but doesn't help open-ended generation. 'Adversarial' prompts that try to bypass safety training increasingly fail on aligned models. Prompt engineering ≠ jailbreaking; the patterns that survive are the ones grounded in published research.",
+      },
+    ],
+    definedTerms: [
+      { name: "Chain-of-Thought (CoT)", description: "Prompting technique that elicits step-by-step reasoning before the final answer. Wei et al. (Google Brain, 2022) found dramatic reasoning-benchmark gains from this single technique." },
+      { name: "ReAct", description: "Reasoning + Acting interleaved pattern (Yao et al., Princeton+Google 2022). Foundational to agent loops — the model emits Thought → Action → Observation cycles." },
+      { name: "In-context learning", description: "The capability of LLMs to learn new patterns from examples in the prompt without weight updates. Emerged at GPT-3 scale; remains the primary mechanism for few-shot prompting." },
+      { name: "Instruction tuning", description: "Fine-tuning a pretrained LM on instruction-response pairs (often RLHF-augmented) so the model follows natural-language instructions. The InstructGPT paper (2022) is the canonical reference." },
+    ],
+    relatedHubs: ["foundational-papers", "alignment-and-rlhf", "agent-frameworks"],
+    relatedConcepts: ["llm-grounding", "function-calling"],
+    relatedIntegrations: ["dspy", "openai-tools", "anthropic-sdk"],
+  },
 ];
 
 export function findTopic(slug: string): TopicHub | undefined {
