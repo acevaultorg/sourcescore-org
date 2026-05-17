@@ -201,8 +201,15 @@ export function datasetSchema(opts: {
       ? {
           isPartOf: {
             "@type": "DataCatalog",
+            "@id": `${opts.isPartOf.url}#catalog`,
             name: opts.isPartOf.name,
             url: opts.isPartOf.url,
+            description: `Canonical catalog of SourceScore-rated entities accessible at ${opts.isPartOf.url}. Each entry has a JSON twin under /api/.`,
+            publisher: {
+              "@type": "Organization",
+              name: "SourceScore",
+              url: "https://sourcescore.org",
+            },
           },
         }
       : {}),

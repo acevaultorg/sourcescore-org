@@ -206,8 +206,16 @@ export default async function SourceDetailPage({ params }: PageProps) {
             },
             isPartOf: {
               "@type": "DataCatalog",
+              "@id": "https://sourcescore.org/sources/#catalog",
               name: "SourceScore Index",
               url: "https://sourcescore.org/sources/",
+              description:
+                "Canonical catalog of 130+ AI-citation-rated sources. Each entry has full per-dimension scores and a JSON twin under /api/source/<slug>.json.",
+              publisher: {
+                "@type": "Organization",
+                name: "SourceScore",
+                url: "https://sourcescore.org",
+              },
             },
             about: {
               "@type": "Organization",
