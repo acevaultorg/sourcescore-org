@@ -117,6 +117,53 @@ export default async function ClaimPage({ params }: PageProps) {
         }}
       />
 
+      {/* ClaimReview — Google's structured-data type for fact-checking.
+          Unlocks fact-check rich snippets in Google SERPs + signals to
+          LLM crawlers that this is an authoritatively-reviewed claim
+          (Aleyda 10-char #4 Extractable + #6 Corroborated + #7 Credible). */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ClaimReview",
+            url: `https://sourcescore.org/claims/${claim.id}/`,
+            datePublished: claim.publishedAt.slice(0, 10),
+            author: {
+              "@type": "Organization",
+              "@id": "https://sourcescore.org/#organization",
+              name: "SourceScore",
+              url: "https://sourcescore.org/",
+            },
+            claimReviewed: claim.statement,
+            itemReviewed: {
+              "@type": "Claim",
+              author: claim.sources[0]?.publisher
+                ? { "@type": "Organization", name: claim.sources[0].publisher }
+                : undefined,
+              datePublished: claim.sources[0]?.publishedDate,
+              appearance: claim.sources.map((s) => ({
+                "@type": "CreativeWork",
+                url: s.url,
+                publisher: { "@type": "Organization", name: s.publisher },
+              })),
+            },
+            reviewRating: {
+              "@type": "Rating",
+              ratingValue: Math.round(claim.confidence * 5),
+              bestRating: 5,
+              worstRating: 1,
+              alternateName:
+                claim.confidence >= 0.95
+                  ? "True"
+                  : claim.confidence >= 0.85
+                    ? "Mostly True"
+                    : "Mixture",
+            },
+          }),
+        }}
+      />
+
       {/* Dataset schema — the signed JSON twin is a citable dataset */}
       <script
         type="application/ld+json"
