@@ -43,6 +43,12 @@ const articleSchema = {
     name: "SourceScore",
     url: "https://sourcescore.org",
   },
+  editor: {
+    "@type": "Person",
+    "@id": "https://sourcescore.org/about/#person-editorial-lead",
+    name: "SourceScore Editorial Team",
+    url: "https://sourcescore.org/about/",
+  },
   publisher: {
     "@type": "Organization",
     "@id": "https://sourcescore.org/#organization",

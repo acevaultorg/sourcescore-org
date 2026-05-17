@@ -35,6 +35,13 @@ type Entry = {
 const entries: Entry[] = [
   {
     date: "2026-05-17",
+    kind: "feat",
+    title: "v20.3 GEO compound — Batch 17 → 216 + Person/Editor @id chain + speakable + ClaimReview + HowTo",
+    body:
+      "Major GEO surface expansion. Batch 17 adds 10 claims: ColBERT (Stanford 2020), BGE embeddings (BAAI 2023-08), Voyage AI (2023), Phi-2 (Microsoft 2023-12), ARC-AGI (Chollet 2019), SWE-bench (Princeton 2023), Claude Code (Anthropic 2025-02-24), OpenAI Operator (2025-01-23), Grok 3 (xAI 2025-02-17), Hume AI (2021). Person + editor @id chain added to all 5 BlogPosting schemas — references central Editorial Lead Person @id from /about/. ClaimReview schema added to every /claims/[id]/ page (Google fact-check rich snippet eligibility + LLM-citation gravity). HowTo schema on all 8 integration guides via lib/howto-schemas.ts (Google Rich Results + Aleyda #4 Extractable). /faq/ gets speakable SpeakableSpecification (voice + AI summary extraction). About page: stale 51 → 216 count fix + foundationDate + founder + publisher Person refs. CITATIONS.md state file scaffolded with 5 seed Test Queries per v20.3 Citation Oracle prime.",
+  },
+  {
+    date: "2026-05-17",
     kind: "data",
     title: "Catalog 196 → 206 (Batch 16 — multimodal AI creative tools + Anthropic alignment)",
     body:

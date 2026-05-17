@@ -42,6 +42,12 @@ const articleSchema = {
     name: "SourceScore",
     url: "https://sourcescore.org",
   },
+  editor: {
+    "@type": "Person",
+    "@id": "https://sourcescore.org/about/#person-editorial-lead",
+    name: "SourceScore Editorial Team",
+    url: "https://sourcescore.org/about/",
+  },
   publisher: {
     "@type": "Organization",
     "@id": "https://sourcescore.org/#organization",
@@ -208,7 +214,7 @@ context. If you cannot cite a claim, mark it [^unverified].`}</code></pre>
           The fix: query a separate verified-claim catalog post-
           generation. Extract atomic assertions from the response;
           look each up against a source-of-truth. We built{" "}
-          <a href="/claims/">SourceScore VERITAS</a> for this — 206
+          <a href="/claims/">SourceScore VERITAS</a> for this — 216
           hand-verified AI/ML claims with primary sources + HMAC
           signatures. Free tier, no signup. ~80ms per claim. Catches
           ~30% of RAG&apos;s residual hallucination gap.

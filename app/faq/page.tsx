@@ -75,7 +75,7 @@ const faqs = [
   },
   {
     q: "What's in the catalog today?",
-    a: "206 hand-verified AI/ML claims spanning 1997-2025: foundational papers (Transformer, RLHF, Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, CLIP, RAG, LSTM, BART, GloVe), reinforcement-learning milestones (AlphaGo, AlphaZero), model releases (GPT family, Claude family, Llama family, Gemini Ultra, DeepSeek-R1, Phi-4, DALL·E, Whisper, Stable Diffusion 1-3, GitHub Copilot), open-source inference (vLLM, llama.cpp, Ollama, GPTQ), evaluation (Chatbot Arena), datasets (C4, The Pile, RedPajama), organizations (OpenAI, Anthropic, DeepMind, Microsoft Research, Stability AI, EleutherAI, Mistral, AI21, Hugging Face, Together AI, xAI, Cohere, Allen AI). Expansion path: ~150 claims by Q3, new verticals (cybersecurity, data engineering, scientific computing) deferred to Y2.",
+    a: "216 hand-verified AI/ML claims spanning 1997-2025: foundational papers (Transformer, RLHF, Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, CLIP, RAG, LSTM, BART, GloVe), reinforcement-learning milestones (AlphaGo, AlphaZero), model releases (GPT family, Claude family, Llama family, Gemini Ultra, DeepSeek-R1, Phi-4, DALL·E, Whisper, Stable Diffusion 1-3, GitHub Copilot), open-source inference (vLLM, llama.cpp, Ollama, GPTQ), evaluation (Chatbot Arena), datasets (C4, The Pile, RedPajama), organizations (OpenAI, Anthropic, DeepMind, Microsoft Research, Stability AI, EleutherAI, Mistral, AI21, Hugging Face, Together AI, xAI, Cohere, Allen AI). Expansion path: ~150 claims by Q3, new verticals (cybersecurity, data engineering, scientific computing) deferred to Y2.",
   },
   {
     q: "How confident are the confidence scores?",
@@ -102,11 +102,19 @@ const faqs = [
 const faqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  url: "https://sourcescore.org/faq/",
   mainEntity: faqs.map(({ q, a }) => ({
     "@type": "Question",
     name: q,
     acceptedAnswer: { "@type": "Answer", text: a },
   })),
+  // Speakable schema — Google Assistant + voice-search + AI-summary extraction.
+  // Tells crawlers "the answers in dt.faq-answer are safe to speak aloud or
+  // extract as quotable answers." Pairs with FAQPage for voice-first ranking.
+  speakable: {
+    "@type": "SpeakableSpecification",
+    cssSelector: ["dt.faq-question", "dd.faq-answer"],
+  },
 };
 
 export default function FAQPage() {
@@ -132,10 +140,10 @@ export default function FAQPage() {
         <dl className="space-y-8">
           {faqs.map(({ q, a }) => (
             <div key={q}>
-              <dt className="text-heading-3 font-bold leading-snug mb-2">
+              <dt className="faq-question text-heading-3 font-bold leading-snug mb-2">
                 {q}
               </dt>
-              <dd className="text-body text-text leading-relaxed">{a}</dd>
+              <dd className="faq-answer text-body text-text leading-relaxed">{a}</dd>
             </div>
           ))}
         </dl>

@@ -73,7 +73,7 @@ export default function HomePage() {
     "@type": "SoftwareApplication",
     name: "SourceScore VERITAS",
     description:
-      "Signed-claim verification API for LLM developers. Returns hand-verified AI/ML claims with primary sources, HMAC-SHA256 signatures, and stable JSON envelopes for grounding LLM responses. 206 claims spanning 1997-2025.",
+      "Signed-claim verification API for LLM developers. Returns hand-verified AI/ML claims with primary sources, HMAC-SHA256 signatures, and stable JSON envelopes for grounding LLM responses. 216 claims spanning 1997-2025.",
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Any",
     url: "https://sourcescore.org/claims/",
@@ -94,7 +94,7 @@ export default function HomePage() {
       description: "1,000 verified claims per month, no auth, no signup required",
     },
     featureList: [
-      "206 hand-verified AI/ML claims",
+      "216 hand-verified AI/ML claims",
       "HMAC-SHA256 signed JSON envelopes",
       "≥2 primary sources per claim",
       "Free tier: 1,000 claims/month, no signup",

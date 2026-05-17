@@ -42,6 +42,12 @@ const articleSchema = {
     name: "SourceScore",
     url: "https://sourcescore.org",
   },
+  editor: {
+    "@type": "Person",
+    "@id": "https://sourcescore.org/about/#person-editorial-lead",
+    name: "SourceScore Editorial Team",
+    url: "https://sourcescore.org/about/",
+  },
   publisher: {
     "@type": "Organization",
     "@id": "https://sourcescore.org/#organization",
@@ -194,7 +200,7 @@ It was introduced by Vaswani et al. in "Attention Is All You Need". ✅ [abc123.
 
         <h2>Scope honesty</h2>
         <p>
-          VERITAS today is bounded to AI/ML research — 206 hand-verified
+          VERITAS today is bounded to AI/ML research — 216 hand-verified
           claims across foundational papers, model releases, organizations,
           and datasets. If your chain asks about &quot;the capital of
           France&quot; we return no match and your code falls through to
@@ -224,13 +230,13 @@ It was introduced by Vaswani et al. in "Attention Is All You Need". ✅ [abc123.
             <a href="/docs/integrations/openai-tools/">OpenAI tool-calls</a> — native function-calling pattern
           </li>
           <li>
-            <a href="/claims/">Browse the catalog</a> — 206 verified AI/ML claims
+            <a href="/claims/">Browse the catalog</a> — 216 verified AI/ML claims
           </li>
         </ul>
 
         <h2>One question I get a lot</h2>
         <p>
-          <em>&quot;Why not just put all 206 claims in the prompt as
+          <em>&quot;Why not just put all 216 claims in the prompt as
           context?&quot;</em>
         </p>
         <p>
