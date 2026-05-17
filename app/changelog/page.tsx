@@ -35,6 +35,13 @@ type Entry = {
 const entries: Entry[] = [
   {
     date: "2026-05-17",
+    kind: "data",
+    title: "Catalog 216 → 226 (Batch 18 — RAG ecosystem deep + 2024-2025 API features)",
+    body:
+      "10 new hand-verified claims: Tülu 3 (AI2 2024-11), GraphRAG (Microsoft Research 2024-04 + GitHub 2024-07), Anthropic Message Batches API (2024-10), OpenAI Batch API (2024-04), Cohere Command R+ (2024-04), Anthropic Citations API (2025-01-23 — built-in grounding), OpenAI Structured Outputs (2024-08 — guaranteed JSON Schema), Stable Diffusion XL / SDXL (Stability AI 2023-07), PyTorch Lightning (William Falcon 2019), Outlines structured generation (dottxt-ai 2023). Coverage strengthens RAG ecosystem + the 2024-2025 API features that directly enable better LLM grounding (Batches, Citations, Structured Outputs). Year-hubs auto-update; tags.json now indexes 504 unique tags across 226 claims.",
+  },
+  {
+    date: "2026-05-17",
     kind: "feat",
     title: "v20.3 GEO compound — Batch 17 → 216 + Person/Editor @id chain + speakable + ClaimReview + HowTo",
     body:
