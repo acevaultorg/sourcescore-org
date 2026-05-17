@@ -66,6 +66,53 @@ export default async function ClaimPage({ params }: PageProps) {
   const apiUrl = `https://sourcescore.org/api/v1/claims/${claim.id}.json`;
   const related = await relatedClaims(claim, 5);
 
+  // FAQPage — AEO Part 14 minimums per rules/seo-geo-mastery.md.
+  // PAA-style questions for verified-claim queries ("Is X true?", "What's
+  // the evidence?", "Who verified X?", "When was X verified?") drive
+  // Google rich-result + AI Overview eligibility on the highest-volume
+  // factual-lookup query class. One FAQ block per page (v18 LEARNED
+  // faq_schema_spam × -10). Stacks on existing Article + DefinedTerm +
+  // ClaimReview + Dataset + BreadcrumbList schemas.
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `https://sourcescore.org/claims/${claim.id}/#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `Is the claim "${claim.statement}" verified?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Yes — SourceScore verified this claim with ${confidencePct}% confidence as of ${claim.lastVerified}. The verification uses ${claim.sources?.length || "multiple"} primary sources cross-referenced against the SourceScore methodology (version ${claim.methodologyVersion}). Full source list + signed JSON envelope linked below.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `What is the evidence for "${claim.statement}"?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Evidence comes from ${claim.sources?.length || "multiple"} primary sources${claim.sources && claim.sources.length > 0 ? `: ${claim.sources.slice(0, 3).map(s => s.publisher).join(", ")}${claim.sources.length > 3 ? `, +${claim.sources.length - 3} more` : ""}` : ""}. Each source is listed below with verbatim excerpts and URLs. The signed JSON envelope at ${apiUrl} includes an HMAC-SHA256 signature for audit verification.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `When was this claim last verified by SourceScore?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Last verified ${claim.lastVerified} under methodology version ${claim.methodologyVersion}. The signed JSON envelope is dated and cryptographically signed for audit trail. Re-verification cadence depends on the claim type and source freshness.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `How can I cite this SourceScore claim in my code or article?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Fetch the signed JSON envelope from ${apiUrl} which includes the verbatim claim, primary sources, confidence, methodology version, last-verified date, and HMAC-SHA256 signature for audit. The CC-BY-4.0 license permits commercial use with attribution to SourceScore.`,
+        },
+      },
+    ],
+  };
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
       {/* Article schema for LLM citation */}
@@ -208,6 +255,13 @@ export default async function ClaimPage({ params }: PageProps) {
             ]),
           ),
         }}
+      />
+
+      {/* FAQPage — AEO Part 14 minimums per rules/seo-geo-mastery.md.
+          PAA-style questions for verified-claim lookups. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
       <nav className="text-sm text-zinc-500 mb-6">
@@ -422,6 +476,23 @@ export default async function ClaimPage({ params }: PageProps) {
           </ul>
         </section>
       )}
+
+      {/* AEO FAQ — Frequently asked questions (mirrors faqLd JSON-LD for
+          Google rich-result + AI Overview eligibility on verified-claim
+          queries per Part 14.4). Visible <details> accordion. */}
+      <section className="mb-10">
+        <h2 className="text-xl font-semibold mb-4">Frequently asked questions</h2>
+        <div className="space-y-3">
+          {(faqLd.mainEntity as Array<{ name: string; acceptedAnswer: { text: string } }>).map((q, i) => (
+            <details key={i} className="rounded border border-zinc-200 dark:border-zinc-800 p-4 open:border-zinc-400 dark:open:border-zinc-600">
+              <summary className="cursor-pointer font-semibold">{q.name}</summary>
+              <p className="ss-faq-answer mt-3 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                {q.acceptedAnswer.text}
+              </p>
+            </details>
+          ))}
+        </div>
+      </section>
 
       <section className="mb-10">
         <h2 className="text-xl font-semibold mb-4">Use this claim in your code</h2>
