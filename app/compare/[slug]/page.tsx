@@ -69,6 +69,60 @@ export default async function CompareDetailPage({ params }: PageProps) {
     return "tie";
   };
 
+  // FAQPage + Speakable — AEO Part 14 minimums per rules/seo-geo-mastery.md.
+  // PAA-style questions for X-vs-Y queries ("Which is better?", "How does X
+  // compare?", "Score difference?", "Why does winner win?") drive Google
+  // rich-result + AI Overview + featured-snippet eligibility on the highest-
+  // volume LLM-comparison search class. Visible FAQ below mirrors the schema.
+  const indexWinner = winner("index");
+  const winnerName = indexWinner === "a" ? a.name : indexWinner === "b" ? b.name : null;
+  const loserName = indexWinner === "a" ? b.name : indexWinner === "b" ? a.name : null;
+  const winnerScore = indexWinner === "a" ? a.scores.index : indexWinner === "b" ? b.scores.index : null;
+  const loserScore = indexWinner === "a" ? b.scores.index : indexWinner === "b" ? a.scores.index : null;
+  const indexDelta = Math.abs(a.scores.index.value - b.scores.index.value);
+
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `https://sourcescore.org/compare/${slug}/#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `Which is better, ${a.name} or ${b.name}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: winnerName
+            ? `${winnerName} scores higher on the SourceScore Index (${winnerScore!.grade} ${winnerScore!.value}) vs ${loserName} (${loserScore!.grade} ${loserScore!.value}) — a ${indexDelta}-point composite lead across Citation Discipline, Modern Reference, and Citation Velocity. "Better" depends on use case; the per-dimension breakdown below shows where each wins.`
+            : `${a.name} and ${b.name} tie on the SourceScore Index (both ${a.scores.index.grade} ${a.scores.index.value}). The per-dimension breakdown below shows where each leads on Citation Discipline, Modern Reference, and Citation Velocity.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `How does ${a.name} compare to ${b.name} on citation discipline?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${a.name} scores ${a.scores.discipline.grade} ${a.scores.discipline.value} on Citation Discipline; ${b.name} scores ${b.scores.discipline.grade} ${b.scores.discipline.value}. Citation Discipline measures how rigorously each source cites primary references — see the per-dimension rationale below for the breakdown.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `What's the SourceScore difference between ${a.name} and ${b.name}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${a.name} ${a.scores.index.grade} ${a.scores.index.value} vs ${b.name} ${b.scores.index.grade} ${b.scores.index.value} on the composite Index. ${comp.summary}`,
+        },
+      },
+      ...(winnerName ? [{
+        "@type": "Question",
+        name: `Why does ${winnerName} score higher than ${loserName}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${winnerName} leads by ${indexDelta} composite points on the SourceScore Index. The rationale section below breaks down where the lead comes from — Citation Discipline, Modern Reference (AI-era fitness), and Citation Velocity. Each dimension is scored from primary methodology criteria.`,
+        },
+      }] : []),
+    ],
+  };
+
   return (
     <article className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       {/* Article schema for LLM citation */}
@@ -93,6 +147,12 @@ export default async function CompareDetailPage({ params }: PageProps) {
               { "@type": "Organization", name: a.name, url: `https://${a.domain}` },
               { "@type": "Organization", name: b.name, url: `https://${b.domain}` },
             ],
+            // Speakable — AEO Part 14.5 voice-search eligibility.
+            // cssSelector targets the comp.summary paragraph + FAQ answers.
+            speakable: {
+              "@type": "SpeakableSpecification",
+              cssSelector: [".ss-compare-summary", ".ss-faq-answer"],
+            },
           }),
         }}
       />
@@ -141,6 +201,10 @@ export default async function CompareDetailPage({ params }: PageProps) {
           ),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
 
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
         <a href="/" className="hover:text-text">SourceScore</a>
@@ -154,7 +218,7 @@ export default async function CompareDetailPage({ params }: PageProps) {
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         {a.name} <span className="text-dim font-normal">vs</span> {b.name}
       </h1>
-      <p className="text-body-lg text-muted leading-relaxed max-w-3xl mb-10">{comp.summary}</p>
+      <p className="ss-compare-summary text-body-lg text-muted leading-relaxed max-w-3xl mb-10">{comp.summary}</p>
 
       {/* SUMMARY ROW ──────────────────────────────────────────── */}
       <section className="mb-8 grid sm:grid-cols-2 gap-3">
@@ -260,6 +324,24 @@ export default async function CompareDetailPage({ params }: PageProps) {
         {(["discipline", "modernReference", "velocity"] as const).map((key) => (
           <DimensionExplainer key={key} dimKey={key} a={a} b={b} />
         ))}
+      </section>
+
+      {/* AEO FAQ — Frequently asked questions (mirrors faqLd JSON-LD for
+          Google rich-result + AI Overview eligibility on X-vs-Y queries
+          per Part 14.4). Visible <details> accordion satisfies Google's
+          "FAQ content must be visible" requirement. */}
+      <section className="border-t border-border pt-8 mb-12">
+        <h2 className="text-heading-2 font-bold mb-4">Frequently asked questions</h2>
+        <div className="space-y-3">
+          {(faqLd.mainEntity as Array<{ name: string; acceptedAnswer: { text: string } }>).map((q, i) => (
+            <details key={i} className="rounded-card border border-border bg-panel p-4 open:border-brand/40">
+              <summary className="cursor-pointer font-semibold text-text">{q.name}</summary>
+              <p className="ss-faq-answer mt-3 text-body-sm text-muted leading-relaxed">
+                {q.acceptedAnswer.text}
+              </p>
+            </details>
+          ))}
+        </div>
       </section>
 
       {/* OTHER COMPARISONS ──────────────────────────────────── */}
