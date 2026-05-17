@@ -55,6 +55,53 @@ export default async function SourceDetailPage({ params }: PageProps) {
   const compPairs = comparisonsForSource(slug);
   const hasComparators = compPairs.length > 0;
 
+  // FAQPage — AEO Part 14 minimums per rules/seo-geo-mastery.md.
+  // PAA-style questions for per-source lookups ("What is X's SourceScore?",
+  // "Is X reliable?", "How is X scored?", "What makes X different?") drive
+  // Google rich-result + AI Overview eligibility on the 390-page source
+  // detail surface. Factual answers only — no opinion labels. One FAQ
+  // block per page (v18 LEARNED faq_schema_spam × -10 respected).
+  const sourceUrl = `https://sourcescore.org/source/${source.slug}/`;
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${sourceUrl}#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `What is ${source.name}'s SourceScore?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${source.name} (${source.domain}) scores ${idx.value}/100 (Grade ${idx.grade}) on the composite SourceScore Index. Sub-scores: Citation Discipline ${scores.discipline.value}/100, Modern Reference (AI-era fitness) ${scores.modernReference.value}/100, Citation Velocity ${scores.velocity.value}/100. Verified ${source.verified}.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `How does SourceScore evaluate ${source.name}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${source.name} is scored across three dimensions on the SourceScore Index methodology: Citation Discipline (how rigorously the source cites primary references), Modern Reference (fitness for AI-era retrieval), and Citation Velocity (how often the source is cited per week). Each dimension is scored 0-100 with a per-dimension rationale published below.`,
+        },
+      },
+      ...(idx.rationale ? [{
+        "@type": "Question",
+        name: `Why does ${source.name} score ${idx.grade}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: idx.rationale,
+        },
+      }] : []),
+      ...(source.summary ? [{
+        "@type": "Question",
+        name: `What is ${source.name}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${source.summary}${source.category ? ` Category: ${source.category}.` : ""} Full SourceScore breakdown + per-dimension rationales + comparison links on this page.`,
+        },
+      }] : []),
+    ],
+  };
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
       {/* Article schema for LLM citation */}
@@ -108,6 +155,12 @@ export default async function SourceDetailPage({ params }: PageProps) {
             ])
           ),
         }}
+      />
+      {/* FAQPage — AEO Part 14 minimums per rules/seo-geo-mastery.md.
+          PAA-style questions for per-source SourceScore lookups. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
       {/* Dataset schema — declares the JSON twin endpoint as a citable dataset
           so retrieval models (and Google's Dataset Search) treat the structured
@@ -334,6 +387,23 @@ export default async function SourceDetailPage({ params }: PageProps) {
         <pre className="p-3 rounded-card border border-border bg-bg text-caption font-mono text-text overflow-x-auto leading-relaxed">
           {`<iframe src="https://sourcescore.org/embed/${source.slug}/" width="100%" height="380" loading="lazy" style="border:0;max-width:480px;" title="SourceScore: ${source.name}"></iframe>`}
         </pre>
+      </section>
+
+      {/* AEO FAQ — Frequently asked questions (mirrors faqLd JSON-LD for
+          Google rich-result + AI Overview eligibility on per-source lookups
+          per Part 14.4). Visible <details> accordion. */}
+      <section className="mt-12">
+        <h2 className="text-heading-2 font-bold mb-4">Frequently asked questions</h2>
+        <div className="space-y-3">
+          {(faqLd.mainEntity as Array<{ name: string; acceptedAnswer: { text: string } }>).map((q, i) => (
+            <details key={i} className="rounded-card border border-border bg-panel p-4 open:border-brand/40">
+              <summary className="cursor-pointer font-semibold text-text">{q.name}</summary>
+              <p className="ss-faq-answer mt-3 text-body-sm text-muted leading-relaxed">
+                {q.acceptedAnswer.text}
+              </p>
+            </details>
+          ))}
+        </div>
       </section>
     </article>
   );
