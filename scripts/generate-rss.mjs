@@ -15,6 +15,15 @@ const TODAY = new Date().toUTCString();
 
 const POSTS = [
   {
+    slug: "multi-llm-grounding-2026",
+    title:
+      "Multi-LLM grounding in 2026 — build once, deploy across OpenAI, Anthropic, Google, and open-weight",
+    summary:
+      "Single-provider lock-in is fragile in 2026. Pricing shifts, capability changes, and outages all argue for portability. The architecture pattern that keeps your grounding layer LLM-agnostic — same verification, citation, and source-quality across every provider.",
+    publishedDate: "2026-05-17T00:00:00Z",
+    tags: ["multi-llm", "architecture", "portability", "router", "adapter", "grounding"],
+  },
+  {
     slug: "why-no-performance-claims",
     title:
       "Why VERITAS doesn't ship performance-comparison claims (and what we ship instead)",

@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/blog/multi-llm-grounding-2026/ — 6th blog post (provider-portable architecture)",
+    body:
+      "6th blog post — multi-LLM grounding architecture pattern. Covers why single-provider lock-in is fragile in 2026 (pricing variance 5-10×, capability gaps shift quarterly, outages routine, regulatory zones, open-weight quality crossed the line), the 3-layer pattern (Router → Adapter → Grounding), Python skeleton code routing across OpenAI + Anthropic + Gemini with provider-agnostic VERITAS grounding, adapter library landscape (Vercel AI SDK, DSPy, LangChain, Instructor, LiteLLM, OpenRouter), 5 production routing rules (task type → model, user tier → cost, latency SLA → streaming, outage → failover, regulatory → compliant provider), why grounding-layer portability matters (provider-locked grounding disappears on failover), when to combine provider-native + portable (user-doc RAG via Citations API + shared facts via VERITAS). BlogPosting + BreadcrumbList schema with editor @id chain. Cross-links to /comparisons/veritas-vs-anthropic-citations + /blog/llm-grounding-strategies-2026 + /blog/llm-framework-comparison-2026 + /concepts/llm-grounding + /topics/llm-releases-2024-2025. RSS feed regenerated (4 posts). Targets queries: 'multi-LLM grounding', 'switch LLMs production', 'LLM provider portability', 'OpenAI Anthropic Gemini router'. Blog count: 5 → 6.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "/comparisons/veritas-vs-anthropic-citations/ — 4th head-to-head (direct competitor buyer intent)",
     body:
       "4th /comparisons/[X]/ — direct head-to-head with Anthropic Citations API (launched 2025-01-23). At-a-glance comparison table (released date · source of truth · cite-format · provider lock · verifiability · external citability · pricing · latency · scope), explainer of what each does, decision matrix (when to use Anthropic Citations vs VERITAS vs both), explicit honest 'what VERITAS does NOT do' + 'what Anthropic Citations does NOT do' sections. Verdict: complementary not competitive — Anthropic Citations API solves user-doc-RAG citation problem within Claude API; VERITAS solves shared-knowledge-base + cryptographic-provenance + multi-LLM problem. Most production AI products use both. TechArticle + BreadcrumbList schema with editor @id chain. Targets queries: 'VERITAS vs Anthropic Citations API', 'alternative to Anthropic Citations', 'multi-LLM grounding API', 'externally citable LLM citations'. /comparisons/ index 3 → 4 head-to-heads.",
