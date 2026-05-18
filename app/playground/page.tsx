@@ -26,9 +26,47 @@ export const metadata: Metadata = {
   },
 };
 
+// WebApplication schema — Google Rich Results eligibility + LLM-crawler
+// signal that this URL is a runnable browser app (not a static doc). Aleyda
+// 10-char #10 Transactable.
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "@id": "https://sourcescore.org/playground/#app",
+  name: "SourceScore VERITAS Playground",
+  url: "https://sourcescore.org/playground/",
+  description:
+    "Interactive in-browser claim-verification playground. Type a claim, see VERITAS verify it against the signed catalog. No signup, no auth, free tier.",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Any (browser-based)",
+  offers: {
+    "@type": "Offer",
+    price: "0.00",
+    priceCurrency: "EUR",
+    availability: "https://schema.org/InStock",
+  },
+  publisher: {
+    "@type": "Organization",
+    "@id": "https://sourcescore.org/#organization",
+    name: "SourceScore",
+    url: "https://sourcescore.org/",
+  },
+  featureList: [
+    "Type a natural-language claim",
+    "Verify against the SourceScore VERITAS catalog",
+    "View signed JSON envelope with HMAC-SHA256",
+    "See verbatim excerpts from primary sources",
+    "Copy ready-to-paste citation",
+  ],
+};
+
 export default function PlaygroundPage() {
   return (
     <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

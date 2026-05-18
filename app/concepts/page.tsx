@@ -68,6 +68,13 @@ const concepts = [
       "How modern LLMs invoke external tools (APIs, databases, code execution). OpenAI launched it June 2023; the pattern is now table-stakes. History, vendor flavors, the agent loop, cross-vendor MCP standard, common production patterns, and anti-patterns.",
     status: "live",
   },
+  {
+    slug: "agents",
+    title: "AI agents",
+    summary:
+      "An LLM that decides when to use tools, observes results, and chooses what to do next. Definition, canonical loop, history 2022-2025 (ReAct → AutoGPT → BabyAGI → LangGraph → Operator → Codex), 5 production patterns, 8 failure modes nobody publishes, and when NOT to use an agent.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {

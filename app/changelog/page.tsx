@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "Batch 20 → 246 + /concepts/agents/ (8th pillar) + WebApp schema on /playground/",
+    body:
+      "Catalog adds 10 agent + framework + reasoning claims: LangGraph (LangChain 2024-01-17 — stateful graph orchestration), Mistral Codestral (2024-05-29 — 22B code-specialist), LMArena/Chatbot Arena (LMSYS 2023-05-03 — human-pairwise leaderboard), Fireworks AI (founded 2022 — fast inference platform), Mistral Small 3 (2025-01-30 — 24B Apache 2.0 latency-optimized), OpenAI Codex 2025 cloud agent (2025-05-16 — codex-1 reborn), DeepSeek-V2 (2024-05-07 — 236B MoE w/ MLA), BabyAGI (Yohei Nakajima 2023-04-03 — early task-loop agent), AutoGPT (Toran Bruce Richards 2023-03-30 — most-starred 2023 GitHub project), Vercel AI SDK (2023-06-14 — multi-provider TS toolkit). New /concepts/agents/ 8th concept pillar covers canonical agent loop pseudocode, 9-event history timeline (2022 → 2025: ReAct → AutoGPT/BabyAGI → LangGraph → Operator → Codex), 5 production patterns (tool-using assistant · code agent · research synthesizer · workflow orchestrator · browser-use), 8 failure modes (loop divergence · tool hallucination · cost explosion · token budget · over-confidence · prompt injection · race conditions · brittle parsing), when NOT to use agents, framework picking. WebApplication schema on /playground/ (DeveloperApplication category, free Offer, 5 featureList items) for AEO Knowledge Panel eligibility. Bulk 236 → 246 catalog count sync across app/**/*.tsx + content/**/*.md. tags.json now indexes 543 unique tags across 246 claims.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "Batch 19 → 236 + /topics/prompt-engineering/ (11th topic hub)",
     body:
       "Catalog adds 10 claims spanning scaling laws + prompt-engineering canon + 2023 open-weight models: Kaplan scaling laws (Kaplan et al. OpenAI 2020), ReAct (Yao et al. Princeton+Google ICLR 2023), RAG-Fusion (Raudaschl 2023), CRAG/Corrective RAG (Yan et al. USTC+Google 2024), Chain-of-Thought (Wei et al. Google Brain NeurIPS 2022), Galactica (Meta AI 2022-11-15, withdrawn after 3 days — case study), PEFT (Houlsby et al. Google ICML 2019), Stable LM (Stability AI 2023-04), Falcon LLM (TII Abu Dhabi 2023-05), Yi (01.AI 2023-11). New /topics/prompt-engineering/ topic hub covers Chain-of-Thought, ReAct, Tree of Thoughts, in-context learning, instruction tuning + 4 DefinedTerms. tags.json now indexes 524 unique tags across 236 claims.",
