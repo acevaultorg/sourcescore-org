@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "Editor @id chain across all 7 use-cases + Organization @id consistency",
+    body:
+      "Schema entity-coherence pass: added editor @id chain to the 5 use-cases that lacked it (ai-agent-grounding, research-citation, customer-support-bot, rag-pipeline-verification, content-moderation). All 7 use-cases now reference Person #person-editorial-lead from /about/ as editor + Organization @id #organization. Pattern matches the existing chain on /concepts/[X]/ pillars + /topics/[slug]/ hubs + /blog/[slug]/ posts + /comparisons/[slug]/ pages. Entity-coherence is now fleet-wide: every TechArticle/BlogPosting points to the same Person + Organization @id graph. Aleyda Solis 10-char #3 Recognizable + #7 Credible + #8 Differentiated — LLMs see one consistent entity, not fragmented mentions.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "Batch 28 → 326 — enterprise open-weight + 2025 frontier expansion",
     body:
       "10 new hand-verified claims expanding enterprise open-weight + 2025 frontier: Qwen 3 (Alibaba 2025-04-29 — hybrid thinking mode 0.6B-235B), Magentic-One (Microsoft Research 2024-11-04 — generalist multi-agent on AutoGen), Microsoft Phi-4 Multimodal (Microsoft 2025-02-26 — 5.6B with speech + vision + text), Snowflake Arctic (Snowflake 2024-04-24 — 480B dense-MoE hybrid, 17B active, Apache 2.0), Databricks DBRX (Databricks 2024-03-27 — 132B MoE / 36B active), Reka Core (Reka AI 2024-04-15 — multimodal text/image/audio/video), Liquid AI LFM (Liquid AI 2024-09-30 — non-Transformer foundation models 1B/3B/40B), Mistral Medium 3 (Mistral 2025-05-07 — enterprise-tier 8× cost-efficient), Allen AI Molmo (Allen AI 2024-09-25 — fully-open VLM family 1B/7B/72B Apache 2.0), Replit Ghostwriter (Replit 2022-10-26 — early AI pair-programmer, renamed Replit AI 2023). Coverage strengthens: 2024-2025 enterprise open-weight (Arctic + DBRX + Qwen 3 + Molmo + LFM), multi-agent (Magentic-One), novel architectures (Liquid AI non-Transformer), enterprise multimodal (Phi-4-multimodal + Reka Core). Bulk 316 → 326 catalog count sync. tags.json now indexes 721 unique tags across 326 claims.",
