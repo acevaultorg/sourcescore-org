@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/topics/voice-and-audio-ai/ — 14th topic hub (Whisper + ElevenLabs + Suno + Stable Audio)",
+    body:
+      "14th /topics/[X]/ hub — voice and audio AI catalog. CollectionPage schema groups catalog claims covering speech recognition (Whisper, Whisper large-v3), text-to-speech (ElevenLabs), music generation (Suno v3/v4, Stable Audio 2.0), voice-emotion (Hume AI), and end-to-end voice agents (ElevenLabs Conversational AI). 4 editorial sections (voice + audio is the next-most-important modality after text, the 3-layer audio stack ASR/TTS/audio-generation, why voice agents are the 2025 frontier, why this catalog matters for voice-agent verification) + 6 DefinedTerms (ASR · TTS · Voice agent · Whisper · Suno · ElevenLabs). Cross-links to multimodal-ai + llm-releases-2024-2025 + /concepts/{multimodal, llm-grounding} + openai-tools + anthropic-sdk integrations. Targets queries: 'voice AI', 'AI voice agent', 'best text-to-speech 2025', 'Suno vs Udio', 'Whisper alternatives', 'ElevenLabs Conversational AI'. 13 → 14 topic hubs.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "Batch 27 → 316 — 2025 model releases + emerging architectures",
     body:
       "10 new hand-verified claims expanding 2025 frontier + emerging architectures: xAI Grok 4 (xAI 2025-07-09 — Grok 4 + Grok 4 Heavy multi-agent), Anthropic Claude Memory (Anthropic 2025-04-15 — Claude.ai Memory beta), Mistral OCR (Mistral 2025-03-06 — document-understanding OCR with table + math extraction), OpenAI Sora 2 (OpenAI 2025-09-30 — text-to-video with synchronized audio), Google Imagen 4 (Google DeepMind 2025-05-20 — improved typography rendering), Inception Labs Mercury (Inception Labs 2025-02-26 — first commercial diffusion LLM, 10× faster than autoregressive), Anthropic Files API (Anthropic 2025-03-25 — file upload + reference API for Claude), Stability AI Stable Audio 2.0 (Stability AI 2024-04-03 — long-form text-to-music 3min tracks), Cohere Aya Vision (Cohere For AI 2025-03-04 — open-weight multilingual VLM 23 languages), Glean (founded 2019 by Jain + Vishwanath + Gentilcore + Prahladka — enterprise AI work assistant). Coverage strengthens: 2025 frontier reasoning + multi-agent (Grok 4 + Magistral + o3/o4-mini), emerging architectures (Mercury diffusion LLM), video gen (Sora 2 audio-sync), document AI (Mistral OCR), enterprise platforms (Glean), multilingual VLM (Aya Vision). Bulk 306 → 316 catalog count sync across app/**/*.tsx + content/**/*.md + openapi.json. tags.json now indexes 703 unique tags across 316 claims.",

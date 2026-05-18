@@ -546,6 +546,64 @@ export const TOPICS: TopicHub[] = [
     relatedConcepts: ["llm-grounding", "evaluation-harness", "agents"],
     relatedIntegrations: ["langchain", "llamaindex", "openai-tools"],
   },
+  {
+    slug: "voice-and-audio-ai",
+    title: "Voice and audio AI — speech, music, and conversational platforms",
+    metaDescription:
+      "Voice + audio AI: ElevenLabs, Suno, Whisper, Stable Audio, Hume, AudioLM. Verified release dates + capabilities for the speech/music/voice-agent stack.",
+    subtitle:
+      "Speech recognition (Whisper), text-to-speech (ElevenLabs), music generation (Suno, Stable Audio), voice-emotion (Hume), and end-to-end voice agents (ElevenLabs Conversational AI). Verified release dates + capabilities + license context.",
+    claimFilter: (c) =>
+      (c.tags ?? []).some((t) =>
+        [
+          "whisper",
+          "audiolm",
+          "elevenlabs",
+          "elevenlabs-conversational",
+          "suno",
+          "suno-v3",
+          "suno-v4",
+          "stable-audio",
+          "hume-ai",
+          "voice-agent",
+          "music-generation",
+          "text-to-audio",
+          "asr",
+          "asr-llm-tts",
+          "tts",
+          "audio",
+        ].includes(t),
+      ),
+    sections: [
+      {
+        heading: "Voice + audio is the next-most-important modality after text",
+        body: "Vision-language models grabbed 2023-2024 headlines, but voice + audio is quietly becoming the dominant interaction surface. ChatGPT's voice mode (2023-09), OpenAI Realtime API (2024-10), Anthropic's voice features, ElevenLabs Conversational AI (2024-11), and the wider Suno + Udio + Stable Audio music-generation wave have made audio a first-class AI modality. Voice-only smart speakers + earbuds + handsets push interaction toward speech, not text.",
+      },
+      {
+        heading: "The audio AI stack has three layers",
+        body: "Layer 1: ASR (speech-to-text) — OpenAI Whisper (open-weight, foundational), Whisper large-v3 (2023-11). Layer 2: TTS (text-to-speech) — ElevenLabs (founded 2022), OpenAI tts-1, Anthropic, etc. Layer 3: Audio generation — Suno v3/v4 (music, 3-minute coherent tracks), Stable Audio 2.0 (Stability AI 2024-04 long-form music), AudioLM (Google 2022, foundational). Hume AI (founded 2021) adds emotion-recognition over speech. ElevenLabs Conversational AI (2024-11) combines all three layers into a single voice-agent API.",
+      },
+      {
+        heading: "Why voice agents are the 2025 frontier",
+        body: "Production voice agents need ASR + LLM + TTS in single low-latency loop (<1 second from user voice to first response audio). Achieving sub-second latency requires careful integration — model parallelism, streaming output, voice-activity detection. The platforms that ship this integrated experience (ElevenLabs Conversational AI, OpenAI Realtime API, Anthropic voice features, Vapi, Retell) are the 2025 voice-agent leaders.",
+      },
+      {
+        heading: "Why this catalog matters for verification",
+        body: "Voice-AI assistants confidently emit hallucinated facts the same way text LLMs do — but users can't easily fact-check while listening. The verification layer (SourceScore VERITAS) is doubly important in voice context: text-render the LLM response server-side, verify facts before TTS, only synthesize verified content. Plus, the voice + music + audio claims in this hub are themselves the kind of facts a voice-assistant might be asked about — the catalog grounds future voice agents asking about voice-AI history.",
+      },
+    ],
+    definedTerms: [
+      { name: "ASR (Automatic Speech Recognition)", description: "Converting audio of human speech to text. State-of-the-art systems: OpenAI Whisper, Google USM, Amazon Transcribe, ElevenLabs Speech-to-Text." },
+      { name: "TTS (Text-to-Speech)", description: "Converting text to natural-sounding speech audio. Leaders: ElevenLabs, OpenAI tts-1, Microsoft Azure Speech, Google WaveNet." },
+      { name: "Voice agent", description: "An end-to-end conversational AI that handles voice input + voice output in a single low-latency loop. Combines ASR + LLM + TTS." },
+      { name: "Whisper", description: "OpenAI's open-weight ASR model (2022-09), trained on 680k hours of multilingual audio. Foundational to most production speech-to-text systems today. Whisper large-v3 (2023-11) is current generation." },
+      { name: "Suno", description: "Music generation startup (founded 2023). Suno v3 (2024-03) + v4 (2024-11) generate coherent multi-minute songs with lyrics + instruments + vocals from text prompts." },
+      { name: "ElevenLabs", description: "Voice AI company (founded 2022) leading in voice cloning + TTS. ElevenLabs Conversational AI (2024-11) is their end-to-end voice agent platform." },
+    ],
+    relatedHubs: ["multimodal-ai", "llm-releases-2024-2025"],
+    relatedConcepts: ["multimodal", "llm-grounding"],
+    relatedIntegrations: ["openai-tools", "anthropic-sdk"],
+  },
 ];
 
 export function findTopic(slug: string): TopicHub | undefined {
