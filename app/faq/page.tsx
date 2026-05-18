@@ -75,7 +75,7 @@ const faqs = [
   },
   {
     q: "What's in the catalog today?",
-    a: "266 hand-verified AI/ML claims spanning 1997-2025: foundational papers (Transformer, RLHF, Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, CLIP, RAG, LSTM, BART, GloVe), reinforcement-learning milestones (AlphaGo, AlphaZero), model releases (GPT family, Claude family, Llama family, Gemini Ultra, DeepSeek-R1, Phi-4, DALL·E, Whisper, Stable Diffusion 1-3, GitHub Copilot), open-source inference (vLLM, llama.cpp, Ollama, GPTQ), evaluation (Chatbot Arena), datasets (C4, The Pile, RedPajama), organizations (OpenAI, Anthropic, DeepMind, Microsoft Research, Stability AI, EleutherAI, Mistral, AI21, Hugging Face, Together AI, xAI, Cohere, Allen AI). Expansion path: ~150 claims by Q3, new verticals (cybersecurity, data engineering, scientific computing) deferred to Y2.",
+    a: "276 hand-verified AI/ML claims spanning 1997-2025: foundational papers (Transformer, RLHF, Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, CLIP, RAG, LSTM, BART, GloVe), reinforcement-learning milestones (AlphaGo, AlphaZero), model releases (GPT family, Claude family, Llama family, Gemini Ultra, DeepSeek-R1, Phi-4, DALL·E, Whisper, Stable Diffusion 1-3, GitHub Copilot), open-source inference (vLLM, llama.cpp, Ollama, GPTQ), evaluation (Chatbot Arena), datasets (C4, The Pile, RedPajama), organizations (OpenAI, Anthropic, DeepMind, Microsoft Research, Stability AI, EleutherAI, Mistral, AI21, Hugging Face, Together AI, xAI, Cohere, Allen AI). Expansion path: ~150 claims by Q3, new verticals (cybersecurity, data engineering, scientific computing) deferred to Y2.",
   },
   {
     q: "How confident are the confidence scores?",

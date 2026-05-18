@@ -53,7 +53,7 @@ const orgSchema = {
       name: "SourceScore VERITAS",
       url: "https://sourcescore.org/claims/",
       description:
-        "Signed claim verification API for LLM developers — 266 hand-verified AI/ML claims spanning 1997-2025 at v0.1, expanding to 5,000+ in Year 1.",
+        "Signed claim verification API for LLM developers — 276 hand-verified AI/ML claims spanning 1997-2025 at v0.1, expanding to 5,000+ in Year 1.",
     },
   ],
   foundingDate: "2026-04",
