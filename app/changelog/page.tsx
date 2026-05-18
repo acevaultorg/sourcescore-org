@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/use-cases/news-fact-checking/ — 6th use-case (newsroom AI verification)",
+    body:
+      "New buyer-intent use-case for newsroom AI tools. Covers 3 integration patterns: pre-publish verification gate (extract atomic claims, verify, flag-or-strip), in-line citation injection (footnote-link verified facts to /claims/[id]/ pages), beat-reporter assistant grounding (filter VERITAS retrieval by vertical). Lists what VERITAS catches (model release dates, paper authorship, parameter counts, org facts, benchmark scores) + what it doesn't (live breaking-news, political, health/medical — Y2 expansion). Compatibility section notes every /claims/[id]/ page emits ClaimReview JSON-LD eligible for Google Fact Check Tools indexing + rich snippets. Economics tier table fitted to newsroom scale (Free / Startup €99 / Scale €499 + custom enterprise). TechArticle + BreadcrumbList schema with editor @id chain. /use-cases/ index now 5 → 6 deployment patterns.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "Batch 21 → 256 — frontier-2024 multimodal + open-weight + agent infra",
     body:
       "10 new hand-verified claims spanning the 2024 frontier: NVIDIA Nemotron-4 340B (2024-06-14 — 340B open-weight optimized for synthetic data generation), Cohere Aya 23 (Cohere For AI 2024-05-22 — 23 languages multilingual), LongBench (Bai et al. THU + Zhipu AI 2023-08-28 — bilingual long-context eval benchmark), Mistral Pixtral 12B (Mistral 2024-09-11 — first Mistral multimodal, Apache 2.0), Google Gemma 2 (Google DeepMind 2024-06-27 — 9B + 27B open-weight), NVIDIA NIM (NVIDIA 2024-03-18 — inference microservices), AWS Bedrock (Amazon GA 2023-09-28; preview 2023-04-13 — managed multi-provider foundation-model API), xAI Grok-2 (xAI 2024-08-14 — Grok-2 + Grok-2 mini), DeepSeek-V3 (DeepSeek AI 2024-12-26 — 671B MoE / 37B active, open weights), Meta SAM 2 (Meta AI 2024-07-29 — Segment Anything Model 2 for real-time video segmentation). Coverage strengthens 2024 frontier infra layer (NIM + Bedrock + Fireworks) + 2024 multimodal (Pixtral + SAM 2) + open-weight density (Nemotron / Aya / Gemma 2 / DeepSeek-V3). tags.json now indexes 563 unique tags across 256 claims. /api/v1/openapi.json description sync (26 → 256 hand-verified claims).",

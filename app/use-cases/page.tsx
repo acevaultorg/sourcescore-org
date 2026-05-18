@@ -56,6 +56,13 @@ const USE_CASES = [
       "Pre-publish verification gate for newsletter generators, blog assistants, report drafters. Extract atomic claims, verify each, flag or strip unverified before publish.",
     audience: "Editorial AI tools, content-generation platforms, marketing automation",
   },
+  {
+    slug: "news-fact-checking",
+    title: "News fact-checking — AI-assisted newsroom verification",
+    summary:
+      "Verification API for newsroom AI tools: explainer-bot drafts, archive search, breaking-news context, fact-check workflow. ClaimReview-aware envelopes + verbatim-quote primary sources reduce retraction risk in AI-generated newsroom output.",
+    audience: "Newsroom tech teams, journalism AI tooling, fact-check organizations",
+  },
 ];
 
 export default function UseCasesIndex() {
