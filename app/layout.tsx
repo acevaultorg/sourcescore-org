@@ -130,6 +130,43 @@ export default function RootLayout({
             (3,840 AI crawls/30d per fleet/LEARNED.md) — explicit head signal
             helps Anthropic, OpenAI, Perplexity prioritize the manifest. */}
         <link rel="llms" type="text/plain" href="/llms.txt" />
+        {/* Atom/RSS feed discovery — RSS readers, LLM crawlers, and Google
+            Reader-class aggregators auto-detect these. Borrowed from
+            readstacks.com layout pattern. */}
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="SourceScore — Blog (RSS)"
+          href="/feed.xml"
+        />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="SourceScore — VERITAS verified claims (RSS)"
+          href="/claims/feed.xml"
+        />
+        {/* JSON twin discoverability — LLM crawlers following Aleyda Solis
+            10-char #4 Extractable prefer structured JSON over HTML. */}
+        <link
+          rel="alternate"
+          type="application/json"
+          title="SourceScore — Source catalog (JSON)"
+          href="/api/sources.json"
+        />
+        <link
+          rel="alternate"
+          type="application/json"
+          title="SourceScore VERITAS — Claim catalog (JSON)"
+          href="/api/v1/claims.json"
+        />
+        {/* OpenAPI 3.1 spec for SDK generators (openapi-typescript,
+            openapi-generator, swagger-codegen). Fleet pattern via txtfeed. */}
+        <link
+          rel="alternate"
+          type="application/json"
+          title="SourceScore VERITAS — OpenAPI 3.1 spec"
+          href="/api/v1/openapi.json"
+        />
       </head>
       <body className="bg-bg text-text min-h-screen flex flex-col antialiased">
         <WebVitals />

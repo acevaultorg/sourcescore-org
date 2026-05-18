@@ -8,3 +8,12 @@
 # traffic data shows the /standard URL drawing more inbound links.
 /standard /methodology/ 301
 /standard/ /methodology/ 301
+
+# IETF emerging-track URL — /.well-known/llms.txt. Several LLM crawlers +
+# bot-management tools probe this canonical path before falling back to
+# /llms.txt. 200 = serve same content (not 301).
+# Borrowed from txtfeed fleet GEO pattern.
+/.well-known/llms.txt /llms.txt 200
+
+# Same for AI sitemap discovery.
+/.well-known/ai-sitemap.xml /sitemap-ai.xml 200
