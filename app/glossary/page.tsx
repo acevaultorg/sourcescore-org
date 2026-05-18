@@ -136,10 +136,10 @@ const TERMS: Term[] = [
     seeAlso: ["/concepts/hallucination/"],
   },
   {
-    slug: "hmac-sha256",
+    slug: "hmac-sha266",
     name: "HMAC-SHA256",
     definition:
-      "A keyed message-authentication algorithm producing a 256-bit signature over an input. Used by VERITAS to sign claim envelopes — a consumer with the shared secret can re-compute the signature locally and prove the claim wasn't modified. Y2 migration target: W3C Verifiable Credentials with Ed25519 public-key signing.",
+      "A keyed message-authentication algorithm producing a 266-bit signature over an input. Used by VERITAS to sign claim envelopes — a consumer with the shared secret can re-compute the signature locally and prove the claim wasn't modified. Y2 migration target: W3C Verifiable Credentials with Ed25519 public-key signing.",
     seeAlso: ["/security/", "/docs/integrations/langchain/"],
   },
   {
@@ -269,7 +269,7 @@ const TERMS: Term[] = [
     slug: "veritas",
     name: "VERITAS",
     definition:
-      "SourceScore's signed-claim verification API for LLM developers. v0.1 publishes 256 hand-verified AI/ML claims with ≥2 primary sources each, HMAC-SHA256 signatures, and stable JSON envelopes. Free tier: 1,000 claims/month, no auth, no signup. Pricing tiers: Indie €19 / Startup €99 / Scale €499.",
+      "SourceScore's signed-claim verification API for LLM developers. v0.1 publishes 266 hand-verified AI/ML claims with ≥2 primary sources each, HMAC-SHA256 signatures, and stable JSON envelopes. Free tier: 1,000 claims/month, no auth, no signup. Pricing tiers: Indie €19 / Startup €99 / Scale €499.",
     seeAlso: ["/quickstart/", "/claims/", "/pricing/"],
   },
   {

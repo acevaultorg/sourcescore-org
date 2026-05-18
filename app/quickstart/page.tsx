@@ -209,7 +209,7 @@ curl https://sourcescore.org/api/v1/claims.json | jq '.claims | length'
             • <a href="/docs/integrations/" className="underline">Framework integrations</a> — LangChain, LlamaIndex, OpenAI tool-calls
           </li>
           <li>
-            • <a href="/claims/" className="underline">Browse the catalog</a> — 256 verified AI/ML claims
+            • <a href="/claims/" className="underline">Browse the catalog</a> — 266 verified AI/ML claims
           </li>
           <li>
             • <a href="/methodology/" className="underline">How we verify</a> — ≥2 primary sources, verbatim excerpts, no performance comparisons

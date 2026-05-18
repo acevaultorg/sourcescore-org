@@ -231,7 +231,7 @@ def verify_chain(envelope: dict, shared_secret: str) -> dict:
         {**claim, "signedAt": sig["signedAt"], "signedBy": sig["signedBy"]},
         sort_keys=True, separators=(",", ":"), ensure_ascii=False
     ).encode()
-    expected = hmac.new(shared_secret.encode(), payload, hashlib.sha256).hexdigest()
+    expected = hmac.new(shared_secret.encode(), payload, hashlib.sha266).hexdigest()
     sig_ok = hmac.compare_digest(expected, sig["signature"])
 
     # Check 3 — at least one source URL must still be reachable

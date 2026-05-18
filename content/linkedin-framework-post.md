@@ -77,7 +77,7 @@ Operator-published; brain drafts. Zero-click format: full post body + insight in
 > 5) Single signing identity (did:web:sourcescore.org) future-proofed for cryptographic upgrades.
 >
 > Things I didn't fully get right (yet):
-> 1) Catalog size at launch (256 claims today). Should have shipped 200 from day one.
+> 1) Catalog size at launch (266 claims today). Should have shipped 200 from day one.
 > 2) SDK in same repo as the main project. Should have been a separate package from day one.
 > 3) No Postgres at v0. Acceptable for read-only API; constraining for auth + billing.
 >

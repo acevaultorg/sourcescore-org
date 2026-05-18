@@ -127,7 +127,7 @@ export default function PricingPage() {
       "HMAC-SHA256 signed response envelopes",
       "≥2 primary sources per claim",
       "OpenAPI 3.1 spec",
-      "256 hand-verified AI/ML claims (1997-2025)",
+      "266 hand-verified AI/ML claims (1997-2025)",
       "Stable JSON-LD claim envelopes",
       "Self-serve Stripe metered billing",
     ],
