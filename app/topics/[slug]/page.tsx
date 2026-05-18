@@ -64,9 +64,21 @@ export default async function TopicPage({ params }: PageParams) {
     description: topic.metaDescription,
     datePublished: "2026-05-16",
     dateModified: "2026-05-16",
-    author: { "@type": "Organization", name: "SourceScore", url: "https://sourcescore.org/" },
+    author: {
+      "@type": "Organization",
+      "@id": "https://sourcescore.org/#organization",
+      name: "SourceScore",
+      url: "https://sourcescore.org/",
+    },
+    editor: {
+      "@type": "Person",
+      "@id": "https://sourcescore.org/about/#person-editorial-lead",
+      name: "SourceScore Editorial Team",
+      url: "https://sourcescore.org/about/",
+    },
     publisher: {
       "@type": "Organization",
+      "@id": "https://sourcescore.org/#organization",
       name: "SourceScore",
       logo: { "@type": "ImageObject", url: "https://sourcescore.org/logo.svg" },
     },

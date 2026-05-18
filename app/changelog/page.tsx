@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/topics/open-weight-models/ — 12th topic hub + editor @id chain across all topic pages",
+    body:
+      "12th /topics/[X]/ hub — open-weight LLM 2023-2025 catalog. CollectionPage schema groups 35 catalog claims spanning Llama 2/3/3.1/3.2/3.3, Mistral 7B/Mixtral/Nemo/Saba/Codestral/Small 3/Pixtral, Gemma + Gemma 2, DeepSeek-V2/V3/R1, Qwen, Falcon, Yi, Phi, OLMo 2, IBM Granite, Hunyuan-Large, Jamba, Aya 23, SmolLM, Nemotron, Stable LM, Tülu 3, StarCoder. 4 editorial sections (the open-weight wave, sizes + architectures span 4 orders of magnitude, multilingual + specialist forks, why this catalog matters for verification) + 5 DefinedTerms (Open-weight, MoE, Apache 2.0, Llama 3 Community License, Tülu). Cross-links to foundational-papers, llm-releases-2024-2025, alignment-and-rlhf, /concepts/fine-tuning, /concepts/llm-grounding, integration guides. Targets queries: 'open source LLM 2025', 'open-weight LLM list', 'best open-source LLM', 'Llama vs Mistral vs Gemma'. ALSO: TechArticle schema across all 12 /topics/[slug]/ pages now includes editor @id chain (Person Editorial Lead) — parallels concept pillars + blog posts + use-cases.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "Batch 23 → 276 — 2024 open-weight ecosystem + agent-AI companies",
     body:
       "10 new hand-verified claims expanding open-weight + company-history coverage: Hugging Face SmolLM (HF 2024-07-16 — 135M/360M/1.7B for on-device), Genmo Mochi 1 (Genmo 2024-10-22 — 10B open-weight text-to-video), Inflection AI (founded 2022 by Suleyman + Hoffman + Simonyan — Pi assistant), Character AI (founded 2021 by Shazeer + De Freitas from Google LaMDA team), Adept AI (founded 2022 by Luan + Parmar + Vaswani — ACT-1 action transformer), Mistral Saba (Mistral 2025-02-17 — 24B Arabic + South Asian languages), Tencent Hunyuan-Large (Tencent 2024-11-05 — 389B MoE / 52B active), Allen AI OLMo 2 (Allen AI 2024-11-26 — fully-open with training data + code + recipes), IBM Granite (IBM 2024-05-09 — enterprise-AI Apache 2.0 family), AI21 Jamba (AI21 Labs 2024-03-28 — first production hybrid Mamba-Transformer SSM model). Coverage strengthens: 2024 open-weight (SmolLM + Mochi 1 + OLMo 2 + Granite + Hunyuan-Large + Jamba) + agent-AI company history (Inflection + Character + Adept) + multilingual (Saba). Bulk 266 → 276 catalog count sync across app/**/*.tsx + content/**/*.md + openapi.json. Glossary SHA-256 bit-count crypto regression fixed (sed bumped 256 → 266; reverted). tags.json now indexes 621 unique tags across 276 claims.",

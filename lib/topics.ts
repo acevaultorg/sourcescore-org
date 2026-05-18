@@ -426,6 +426,76 @@ export const TOPICS: TopicHub[] = [
     relatedConcepts: ["llm-grounding", "function-calling"],
     relatedIntegrations: ["dspy", "openai-tools", "anthropic-sdk"],
   },
+  {
+    slug: "open-weight-models",
+    title: "Open-weight LLMs — the 2023-2025 catalog",
+    metaDescription:
+      "The open-weight LLM landscape: Llama, Mistral, Gemma, DeepSeek, Qwen, Falcon, Yi, Phi, OLMo, Granite, Hunyuan, Jamba, Aya, SmolLM. Verified release dates, licenses, parameter counts.",
+    subtitle:
+      "The open-weight LLM landscape — every major release verified against the official announcement and the Hugging Face model card. Includes license, parameter count, release date, and family lineage.",
+    claimFilter: (c) =>
+      (c.tags ?? []).some((t) =>
+        [
+          "open-weight",
+          "llama-2",
+          "llama-3",
+          "llama-3-2",
+          "mistral",
+          "mixtral",
+          "gemma",
+          "gemma-2",
+          "deepseek",
+          "deepseek-v2",
+          "deepseek-v3",
+          "qwen",
+          "falcon",
+          "yi",
+          "phi",
+          "olmo",
+          "olmo-2",
+          "granite",
+          "hunyuan-large",
+          "jamba",
+          "aya-23",
+          "smollm",
+          "pixtral",
+          "mistral-nemo",
+          "mistral-saba",
+          "nemotron",
+          "stable-lm",
+          "tulu",
+          "starcoder",
+        ].includes(t),
+      ),
+    sections: [
+      {
+        heading: "The open-weight wave",
+        body: "Between Llama 2 (July 2023) and Llama 4 (April 2025), open-weight LLMs went from rare research artifacts to a competitive parallel ecosystem matching frontier closed APIs on most general benchmarks. The fleet of open-weight families — Meta Llama, Mistral, Google Gemma, Alibaba Qwen, DeepSeek, Allen AI OLMo, IBM Granite, TII Falcon, 01.AI Yi, Stability LM, Microsoft Phi, Tencent Hunyuan — gave researchers, fine-tuners, and on-prem deployments real options. The license diversity matters: some are pure Apache 2.0 (Mistral most, Gemma 2 under Gemma Terms, OLMo Apache 2.0), some are conditional (Llama 3 with monthly-active-user threshold), some are NVIDIA Open Model License (Nemotron), some are research-only.",
+      },
+      {
+        heading: "Sizes + architectures span 4 orders of magnitude",
+        body: "Open weights range from on-device-tier SmolLM 135M up to Hunyuan-Large 389B (52B active MoE). Architectures span dense Transformer (most Llama, Mistral 7B, Gemma 2), Mixture-of-Experts (Mixtral 8x7B/8x22B, DeepSeek-V2/V3, Hunyuan-Large, Mistral Nemo isn't MoE), and hybrid SSM-Transformer (AI21 Jamba — first production Mamba). The choice of architecture maps to deployment tradeoffs: MoE = high quality at lower active-parameter cost; dense = simpler inference; SSM hybrid = longer context window with lower attention-quadratic cost.",
+      },
+      {
+        heading: "Multilingual + specialist forks",
+        body: "Beyond the English-default releases, the open-weight ecosystem has specialist forks. Cohere Aya 23 covers 23 languages; Mistral Saba targets Arabic + South Asian; Allen AI Tülu 3 is the open-replication recipe for Llama-3-Instruct quality; Stability LM specializes in stability of generation; StarCoder 2 focuses on code. The composition matters because LLM cost-per-token is roughly constant in the open ecosystem but quality on a specialist task varies massively. Pick the right specialist before fine-tuning a general model.",
+      },
+      {
+        heading: "Why this catalog matters for verification",
+        body: "AI-assistants are most likely to hallucinate when they confidently misstate a release date, license, parameter count, or family lineage. Open-weight models confuse the picture further: Llama 2 vs Llama 3 vs Llama 3.1 vs Llama 3.2 vs Llama 3.3 vs Llama 4 — six distinct releases, six distinct dates, frequent mis-attribution. This hub holds the verified record for each.",
+      },
+    ],
+    definedTerms: [
+      { name: "Open-weight", description: "A model whose trained weights are publicly downloadable, with a license permitting at least research use. Distinct from open-source (which would require open training data + code + weights)." },
+      { name: "Mixture-of-Experts (MoE)", description: "Architecture where each token routes to a small subset of expert sub-networks. Examples: Mixtral 8x7B (8 experts × 7B params, 2 active per token), DeepSeek-V3 (671B total / 37B active), Hunyuan-Large (389B total / 52B active)." },
+      { name: "Apache 2.0 license", description: "Permissive open-source license allowing commercial use, modification, redistribution. Used by Mistral 7B, Mixtral, OLMo 2, IBM Granite, AI21 Jamba, Mistral Pixtral 12B, Mistral Nemo." },
+      { name: "Llama 3 Community License", description: "Meta's license for Llama 3 family — permissive for most use but requires a separate agreement if your platform exceeds 700M monthly active users." },
+      { name: "Tülu", description: "Allen Institute for AI's open-recipe instruction-tuning project. Tülu 3 (2024-11) replicates Llama-3-Instruct quality with fully-open training data + code + recipes." },
+    ],
+    relatedHubs: ["foundational-papers", "llm-releases-2024-2025", "alignment-and-rlhf"],
+    relatedConcepts: ["fine-tuning", "llm-grounding"],
+    relatedIntegrations: ["openai-tools", "anthropic-sdk", "vercel-ai-sdk"],
+  },
 ];
 
 export function findTopic(slug: string): TopicHub | undefined {
