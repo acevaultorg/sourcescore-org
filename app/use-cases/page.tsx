@@ -63,6 +63,13 @@ const USE_CASES = [
       "Verification API for newsroom AI tools: explainer-bot drafts, archive search, breaking-news context, fact-check workflow. ClaimReview-aware envelopes + verbatim-quote primary sources reduce retraction risk in AI-generated newsroom output.",
     audience: "Newsroom tech teams, journalism AI tooling, fact-check organizations",
   },
+  {
+    slug: "developer-copilot",
+    title: "Developer copilot grounding — stop coding assistants hallucinating libraries",
+    summary:
+      "AI coding tools (Cursor, Windsurf, Continue, Bolt, Lovable, v0, Copilot) frequently invent package names, hallucinate API signatures, misattribute paper citations. Verify the AI/ML factual layer the model emits — model release dates, framework version specs, paper authorship — before code reaches the user.",
+    audience: "AI coding-tool teams, IDE extension builders, AI-pair-programmer products",
+  },
 ];
 
 export default function UseCasesIndex() {

@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/use-cases/developer-copilot/ — 7th use-case (Cursor/Windsurf/Bolt/Lovable/v0 grounding)",
+    body:
+      "7th /use-cases/[X]/ — buyer-intent use-case for the 2024+ wave of AI coding tools (Cursor, Windsurf, Continue, Bolt.new, Lovable, Vercel v0, Microsoft Copilot Studio, Claude Code, GitHub Copilot, Codeium). Covers 5 common hallucination failures (invented package names / slopsquatting, hallucinated API signatures, fabricated config flags, wrong release dates, mis-attributed paper citations), 3 integration patterns (post-generation IDE verification, server-side pre-suggestion gate, sidebar reference panel with citation badges), what VERITAS catches (model spec claims + paper authorship + org facts + framework release dates + license facts) vs what to handle separately (function-signature hallucinations need type-checker integration; slopsquatting needs registry-side checks; code bugs need SAST). TypeScript code snippet for Continue/Cursor extension integration. Economics fitted to coding-tool scale (Free / Startup €99 / Scale €499). TechArticle + BreadcrumbList schema with editor @id chain. /use-cases/ index now 6 → 7 patterns.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "Batch 25 → 296 — AI coding assistants + 2024-2025 developer tools",
     body:
       "10 new hand-verified claims expanding AI coding tools + developer-platform ecosystem: Bolt.new (StackBlitz 2024-09-16 — AI web app builder), Lovable (founded 2023 by Anton Osika — AI app builder evolved from GPT-Engineer, Stockholm), Windsurf (Codeium 2024-11-13 — AI-native IDE forked from VSCode), Anthropic Claude Sonnet 4.5 (Anthropic 2025-09-29 — production model with extended-thinking), NotebookLM (Google Labs 2023-07-12 — AI research assistant grounding in source material), Suno v3 (Suno 2024-03-21 — full 2-minute music generation), Microsoft Copilot Studio (Microsoft 2023-11-15 — low-code enterprise AI copilot builder), Continue.dev (Continue Dev Inc 2023-07-26 — open-source AI coding assistant for VS Code + JetBrains), Vercel v0 (Vercel 2023-10-31 — generative UI tool for React + Tailwind), Google AI Studio (Google 2023-12-13 — developer playground for Gemini API). Coverage strengthens: AI coding tools (Bolt + Lovable + Windsurf + Continue + v0 + Copilot Studio + Google AI Studio) + grounding tools (NotebookLM) + music gen (Suno v3) + frontier model (Claude Sonnet 4.5). Bulk 286 → 296 catalog count sync across app/**/*.tsx + content/**/*.md + openapi.json. tags.json now indexes 662 unique tags across 296 claims.",
