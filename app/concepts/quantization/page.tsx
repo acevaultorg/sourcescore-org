@@ -410,7 +410,7 @@ export default function QuantizationPage() {
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           Running a quantized open-weight model locally and need to
           verify its factual outputs? Browse the{" "}
-          <a href="/claims/" className="underline">276 verified claims</a>
+          <a href="/claims/" className="underline">286 verified claims</a>
           {" "}or run the{" "}
           <a href="/quickstart/" className="underline">5-min quickstart</a>{" "}
           — the verify endpoint is free and stateless.

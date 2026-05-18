@@ -304,7 +304,7 @@ def verify_envelope(envelope: dict) -> bool:
         {**claim, "signedAt": sig["signedAt"], "signedBy": sig["signedBy"]},
         sort_keys=True, separators=(",", ":"), ensure_ascii=False
     ).encode()
-    expected = hmac.new(SECRET.encode(), payload, hashlib.sha266).hexdigest()
+    expected = hmac.new(SECRET.encode(), payload, hashlib.sha256).hexdigest()
     return hmac.compare_digest(expected, sig["value"])
 
 env = requests.get(f"{VERITAS}/claims/<claim_id>.json").json()
@@ -378,7 +378,7 @@ print("ok — claim is genuine + unmodified")
         <h2 className="text-lg font-semibold mb-3">What VERITAS is not</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           We are deliberately not a generic fact-checker. The Day 1
-          catalog (276 claims today) covers AI/ML research — model releases,
+          catalog (286 claims today) covers AI/ML research — model releases,
           foundational papers, organizations, datasets. If your chain
           asks about &quot;the capital of France&quot; we will return no
           matches and your code should fall through to whatever
@@ -399,7 +399,7 @@ print("ok — claim is genuine + unmodified")
             • <a href="/docs/" className="underline">Full API reference</a> — every endpoint with curl + JS + Python examples
           </li>
           <li>
-            • <a href="/claims/" className="underline">Browse the catalog</a> — 276 verified AI/ML claims
+            • <a href="/claims/" className="underline">Browse the catalog</a> — 286 verified AI/ML claims
           </li>
           <li>
             • <a href="/api/v1/openapi.json" className="underline">OpenAPI spec</a> — generate clients in any language
