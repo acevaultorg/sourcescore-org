@@ -496,6 +496,56 @@ export const TOPICS: TopicHub[] = [
     relatedConcepts: ["fine-tuning", "llm-grounding"],
     relatedIntegrations: ["openai-tools", "anthropic-sdk", "vercel-ai-sdk"],
   },
+  {
+    slug: "llm-observability",
+    title: "LLM observability — tracing, logging, and evals for production AI",
+    metaDescription:
+      "The LLM observability landscape: LangSmith, Langfuse, Helicone, Vellum AI. Verified founding dates + open-source status + use cases.",
+    subtitle:
+      "Once an LLM application reaches production, you need traces, evals, and feedback loops. This hub catalogs the production-grade observability platforms and what each is best for.",
+    claimFilter: (c) =>
+      (c.tags ?? []).some((t) =>
+        [
+          "langsmith",
+          "langfuse",
+          "helicone",
+          "vellum-ai",
+          "observability",
+          "tracing",
+          "llm-platform",
+          "evaluation",
+          "evaluation-harness",
+        ].includes(t),
+      ),
+    sections: [
+      {
+        heading: "Why LLM observability is its own product category",
+        body: "Traditional APM (Datadog, New Relic, Honeycomb) handles HTTP latency, error rates, and infrastructure metrics. None of that captures what matters in LLM applications: which prompts produced bad outputs, how a chain spent its tokens, whether a fine-tune is regressing on the eval set, whether a user accepted a draft, what a multi-step agent's intermediate steps did. LLM observability emerged 2022-2024 as a distinct category because the questions changed.",
+      },
+      {
+        heading: "The four production-grade platforms (as of 2025)",
+        body: "LangSmith (LangChain, hosted) is the default for LangChain users; built-in to the LangChain ecosystem with strong eval framework. Langfuse (open-source + hosted) is the open-source champion — self-hostable, OpenTelemetry-compatible, framework-agnostic. Helicone (open-source + hosted) routes via proxy + adds caching, retries, rate limits alongside observability. Vellum AI is the developer-platform-with-evaluation positioning — workflow builder + eval orchestration + production tracing.",
+      },
+      {
+        heading: "Eval coverage matters more than trace volume",
+        body: "Production LLM observability isn't about gathering 100% of traces — it's about catching the 0.5% of regressions that matter. Best practice: define a small, curated eval set (50-500 cases) covering edge cases + safety + tone + format; run on every deployment; alert on regression. Volume-based tracing is the cheap part; eval discipline is where the value lives.",
+      },
+      {
+        heading: "Why verification + observability complement each other",
+        body: "Observability tells you what your model did. Verification (per SourceScore VERITAS) tells you which assertions in the output are factually grounded. The pair: observability catches behavioral regressions; verification catches factual hallucinations. Both required for production-grade LLM systems.",
+      },
+    ],
+    definedTerms: [
+      { name: "LLM tracing", description: "Capturing each step of an LLM application — prompts, retrievals, tool calls, intermediate generations, final outputs — for debugging + replay + analysis." },
+      { name: "Eval set", description: "A curated collection of test cases (input + expected behavior) run against an LLM application to detect regressions across deployments. Distinct from training data; never leaked into the training set." },
+      { name: "LangSmith", description: "LangChain's hosted observability + eval platform (2023). Tracks all LangChain runs by default; adds eval framework + dataset management. Closed-source backend." },
+      { name: "Langfuse", description: "Open-source LLM observability + tracing platform (founded 2022, YC W23). Self-hostable; OpenTelemetry-compatible; framework-agnostic. MIT-licensed." },
+      { name: "Helicone", description: "Open-source LLM observability via proxy gateway (founded 2022, YC W23). Adds caching, retries, rate-limiting alongside trace capture. Apache 2.0." },
+    ],
+    relatedHubs: ["agent-frameworks", "evaluation-benchmarks"],
+    relatedConcepts: ["llm-grounding", "evaluation-harness", "agents"],
+    relatedIntegrations: ["langchain", "llamaindex", "openai-tools"],
+  },
 ];
 
 export function findTopic(slug: string): TopicHub | undefined {

@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/topics/llm-observability/ — 13th topic hub (LangSmith + Langfuse + Helicone + Vellum)",
+    body:
+      "13th /topics/[X]/ hub — LLM observability catalog. CollectionPage schema groups production-grade observability platforms (LangSmith, Langfuse, Helicone, Vellum AI). 4 editorial sections (why LLM observability is its own product category, four production-grade platforms as of 2025, eval coverage matters more than trace volume, why verification + observability complement each other) + 5 DefinedTerms (LLM tracing · Eval set · LangSmith · Langfuse · Helicone). Cross-links to agent-frameworks + evaluation-benchmarks + /concepts/{llm-grounding, evaluation-harness, agents} + integration guides. Targets queries: 'LLM observability', 'best LangChain observability', 'open source LLM tracing', 'production LLM eval platform', 'LangSmith vs Langfuse vs Helicone'. Same-session pair with Batch 24 (added Langfuse + Helicone + Vellum + LangFlow).",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "Batch 24 → 286 + LLM observability ecosystem + 2025 frontier multimodal",
     body:
       "10 new hand-verified claims expanding 2024-2025 frontier + LLM tooling ecosystem: Meta Llama 3.2 Vision (Meta 2024-09-25 — 11B + 90B vision-language), OpenAI o4-mini (OpenAI 2025-04-16 — reasoning model with tool-use in CoT), Mistral Le Chat (Mistral 2024-02-26 — consumer chat assistant), Cohere Embed v4 (Cohere 2025-04-09 — multimodal embeddings, 256k context, 100+ languages), Stability AI Stable Diffusion 3.5 (Stability AI 2024-10-22 — SD 3.5 Large/Medium/Large Turbo), Langfuse (founded 2022, YC W23 — open-source LLM observability), Google Gemma 3 (Google DeepMind 2025-03-12 — 1B/4B/12B/27B with vision at 4B+), LangFlow (Logspace 2023-02-04 — visual builder for LangChain), Vellum AI (founded 2023, YC W23 — LLM application platform), Helicone (founded 2022, YC W23 — open-source LLM observability). Coverage strengthens: 2024-2025 multimodal (Llama 3.2 Vision + Gemma 3 + SD 3.5 + Cohere Embed v4) + LLM observability/tooling ecosystem (Langfuse + Helicone + Vellum AI + LangFlow). Bulk 276 → 286 catalog count sync across app/**/*.tsx + content/**/*.md + openapi.json. Glossary HMAC-SHA266 slug regression fixed (sed-bumped → reverted to hmac-sha256). 2 hashlib.sha266 Python code samples in /docs/integrations/langchain/ + /concepts/citation-chain/ also reverted to hashlib.sha256. tags.json now indexes 636 unique tags across 286 claims.",
