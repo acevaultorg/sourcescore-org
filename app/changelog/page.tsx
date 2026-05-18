@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/concepts/quantization/ — 11th concept pillar (GGUF + GPTQ + AWQ + bitsandbytes reference)",
+    body:
+      "11th /concepts/[X]/ pillar — quantization complete reference. Definition + 5 canonical techniques (Post-Training Quantization, GPTQ, AWQ, GGUF/GGML, bitsandbytes 4/8-bit), format-comparison decision tree (GGUF vs GPTQ vs AWQ vs bitsandbytes vs FP8 — which to pick when), precision-quality-speed tradeoff math (4-bit = 1-3% benchmark drop + 4× memory + 50-150% speedup), 2022-2024 timeline (LLM.int8 → GPTQ → llama.cpp → QLoRA → AWQ → GGUF → IQ2/IQ3 K-quants → TensorRT-LLM FP8), 5 failure modes (outlier-induced collapse, chat-template misalignment, tokenizer drift, KV-cache precision mismatch, wrong-distribution benchmarks), when NOT to quantize (4 cases). TechArticle + DefinedTermSet (6 terms — Quantization · GGUF · GPTQ · AWQ · bitsandbytes · llama.cpp) + BreadcrumbList. Editor @id chain. Cross-links to fine-tuning + llm-grounding + multimodal + inference-optimization + open-weight-models. Targets queries: 'LLM quantization', 'GGUF vs GPTQ vs AWQ', '4-bit inference', 'run Llama on CPU', 'best quantization format'.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "/topics/open-weight-models/ — 12th topic hub + editor @id chain across all topic pages",
     body:
       "12th /topics/[X]/ hub — open-weight LLM 2023-2025 catalog. CollectionPage schema groups 35 catalog claims spanning Llama 2/3/3.1/3.2/3.3, Mistral 7B/Mixtral/Nemo/Saba/Codestral/Small 3/Pixtral, Gemma + Gemma 2, DeepSeek-V2/V3/R1, Qwen, Falcon, Yi, Phi, OLMo 2, IBM Granite, Hunyuan-Large, Jamba, Aya 23, SmolLM, Nemotron, Stable LM, Tülu 3, StarCoder. 4 editorial sections (the open-weight wave, sizes + architectures span 4 orders of magnitude, multilingual + specialist forks, why this catalog matters for verification) + 5 DefinedTerms (Open-weight, MoE, Apache 2.0, Llama 3 Community License, Tülu). Cross-links to foundational-papers, llm-releases-2024-2025, alignment-and-rlhf, /concepts/fine-tuning, /concepts/llm-grounding, integration guides. Targets queries: 'open source LLM 2025', 'open-weight LLM list', 'best open-source LLM', 'Llama vs Mistral vs Gemma'. ALSO: TechArticle schema across all 12 /topics/[slug]/ pages now includes editor @id chain (Person Editorial Lead) — parallels concept pillars + blog posts + use-cases.",

@@ -89,6 +89,13 @@ const concepts = [
       "Definition, the 4 modality classes (vision-language, text-to-image, text-to-video, text-to-audio), 2021-2025 timeline (CLIP → DALL·E → GPT-4V → Pixtral → Sora → Veo 2 → SAM 2), 6 production patterns, 7 failure modes (hallucinated objects, counting, spatial reasoning, text-image misalignment), and how multimodal verification differs from text-only fact-checking.",
     status: "live",
   },
+  {
+    slug: "quantization",
+    title: "Quantization",
+    summary:
+      "Running large models on small hardware. Definition, 5 canonical techniques (PTQ, GPTQ, AWQ, GGUF, bitsandbytes), format comparison (GGUF vs GPTQ vs AWQ vs bitsandbytes — which to pick), precision-quality-speed tradeoff, 2022-2024 timeline (LLM.int8 → GPTQ → llama.cpp → QLoRA → AWQ → GGUF → IQ2/IQ3 K-quants), 5 failure modes, when NOT to quantize.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {
