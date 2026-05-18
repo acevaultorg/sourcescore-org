@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/concepts/context-window/ — 12th concept pillar (RoPE + ALiBi + lost-in-middle reference)",
+    body:
+      "12th /concepts/[X]/ pillar — context window complete reference. Definition + the 2018-2025 explosion timeline (13 events: 512 GPT-1 → 1024 GPT-2 → 2048 GPT-3 → 4096 GPT-3.5 → 8192/32k GPT-4 → 100k Claude 1.3 → 128k GPT-4 Turbo → 1M/2M Gemini 1.5 Pro → 200k Claude 3.7 → 128k Gemma 3), 5 architectural enablers (RoPE, ALiBi, FlashAttention + variants, sliding-window attention, Ring Attention), the 'Lost in the Middle' Stanford 2023 finding + Needle in a Haystack benchmark, 7 failure modes that limit usable vs nominal context (multi-hop reasoning collapse, tokenizer inflation for non-English, quadratic inference cost, recency bias, system-prompt leak, KV cache explosion, position-encoding break), long-context-vs-RAG decision tree. TechArticle + DefinedTermSet (7 terms — context window · token · RoPE · ALiBi · FlashAttention · Lost in the Middle · NIAH) + BreadcrumbList. Editor @id chain. Cross-links to llm-grounding + embeddings + quantization + fine-tuning + inference-optimization. Targets queries: 'context window LLM', 'long context LLM', 'Gemini 2M context', 'GPT-4 context length', 'Claude 200k tokens', 'lost in the middle', 'needle in haystack benchmark'.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "/topics/llm-observability/ — 13th topic hub (LangSmith + Langfuse + Helicone + Vellum)",
     body:
       "13th /topics/[X]/ hub — LLM observability catalog. CollectionPage schema groups production-grade observability platforms (LangSmith, Langfuse, Helicone, Vellum AI). 4 editorial sections (why LLM observability is its own product category, four production-grade platforms as of 2025, eval coverage matters more than trace volume, why verification + observability complement each other) + 5 DefinedTerms (LLM tracing · Eval set · LangSmith · Langfuse · Helicone). Cross-links to agent-frameworks + evaluation-benchmarks + /concepts/{llm-grounding, evaluation-harness, agents} + integration guides. Targets queries: 'LLM observability', 'best LangChain observability', 'open source LLM tracing', 'production LLM eval platform', 'LangSmith vs Langfuse vs Helicone'. Same-session pair with Batch 24 (added Langfuse + Helicone + Vellum + LangFlow).",

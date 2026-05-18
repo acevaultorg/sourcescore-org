@@ -96,6 +96,13 @@ const concepts = [
       "Running large models on small hardware. Definition, 5 canonical techniques (PTQ, GPTQ, AWQ, GGUF, bitsandbytes), format comparison (GGUF vs GPTQ vs AWQ vs bitsandbytes — which to pick), precision-quality-speed tradeoff, 2022-2024 timeline (LLM.int8 → GPTQ → llama.cpp → QLoRA → AWQ → GGUF → IQ2/IQ3 K-quants), 5 failure modes, when NOT to quantize.",
     status: "live",
   },
+  {
+    slug: "context-window",
+    title: "Context window",
+    summary:
+      "What it is, why size matters, the 2018-2025 explosion (512 GPT-1 → 2M Gemini 1.5 Pro), 5 architectural enablers (RoPE, ALiBi, FlashAttention, sliding-window attention, Ring Attention), the 'Lost in the Middle' problem, Needle in a Haystack benchmark, 7 failure modes (effective vs nominal context, tokenizer inflation for non-English, KV-cache explosion, position-encoding break), and when long context wins vs RAG wins.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {
