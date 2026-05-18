@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/concepts/fine-tuning/ — 9th concept pillar (LoRA + QLoRA + DPO + RLHF reference)",
+    body:
+      "9th /concepts/[X]/ pillar — fine-tuning the complete reference. Covers definition + 7 canonical techniques (full SFT, instruction tuning, LoRA, QLoRA, RLHF, DPO, Constitutional AI), the fine-tune-vs-RAG decision tree (when each wins, when to use both), 2017-2024 timeline (Christiano preferences → Houlsby PEFT → LoRA → InstructGPT → Constitutional AI → QLoRA → DPO → Tülu 3), 5 failure modes (catastrophic forgetting · overfitting · reward hacking · distribution mismatch · hidden capability degradation), when NOT to fine-tune (5 cases), and 2024 cost reality (OpenAI gpt-4o fine-tune $30-100/run; Lambda Labs A100 LoRA $3-5; QLoRA on RTX 4090 marginal-cost). TechArticle + DefinedTermSet (7 terms — fine-tuning · LoRA · QLoRA · DPO · RLHF · instruction tuning · PEFT) + BreadcrumbList schema. Editor @id chain. Cross-links to 8 other concept pillars + topic hubs + use-cases. Targets high-volume queries: 'fine-tuning vs RAG', 'LoRA vs full fine-tuning', 'when to fine-tune LLM'.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "/use-cases/news-fact-checking/ — 6th use-case (newsroom AI verification)",
     body:
       "New buyer-intent use-case for newsroom AI tools. Covers 3 integration patterns: pre-publish verification gate (extract atomic claims, verify, flag-or-strip), in-line citation injection (footnote-link verified facts to /claims/[id]/ pages), beat-reporter assistant grounding (filter VERITAS retrieval by vertical). Lists what VERITAS catches (model release dates, paper authorship, parameter counts, org facts, benchmark scores) + what it doesn't (live breaking-news, political, health/medical — Y2 expansion). Compatibility section notes every /claims/[id]/ page emits ClaimReview JSON-LD eligible for Google Fact Check Tools indexing + rich snippets. Economics tier table fitted to newsroom scale (Free / Startup €99 / Scale €499 + custom enterprise). TechArticle + BreadcrumbList schema with editor @id chain. /use-cases/ index now 5 → 6 deployment patterns.",

@@ -75,6 +75,13 @@ const concepts = [
       "An LLM that decides when to use tools, observes results, and chooses what to do next. Definition, canonical loop, history 2022-2025 (ReAct → AutoGPT → BabyAGI → LangGraph → Operator → Codex), 5 production patterns, 8 failure modes nobody publishes, and when NOT to use an agent.",
     status: "live",
   },
+  {
+    slug: "fine-tuning",
+    title: "Fine-tuning",
+    summary:
+      "Definition, the seven canonical techniques (full SFT, instruction tuning, LoRA, QLoRA, RLHF, DPO, Constitutional AI), the fine-tune-vs-RAG decision tree, 2017-2024 timeline (Christiano → InstructGPT → LoRA → QLoRA → DPO → Tülu 3), 5 failure modes, when NOT to fine-tune, and 2024 cost reality.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {
