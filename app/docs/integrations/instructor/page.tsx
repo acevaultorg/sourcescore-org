@@ -245,7 +245,7 @@ for c in result.key_claims:
           <li>• <a href="/use-cases/research-citation/" className="underline">Research citation use case</a> — Instructor-shape patterns</li>
           <li>• <a href="/playground/" className="underline">Playground</a> — try /verify before wiring it up</li>
           <li>• <a href="/api/v1/openapi.json" className="underline">OpenAPI 3.1 spec</a></li>
-          <li>• <a href="/claims/" className="underline">Catalog</a> — 306 verified AI/ML claims</li>
+          <li>• <a href="/claims/" className="underline">Catalog</a> — 316 verified AI/ML claims</li>
         </ul>
       </section>
     </article>

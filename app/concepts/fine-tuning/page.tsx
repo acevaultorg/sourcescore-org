@@ -436,7 +436,7 @@ export default function FineTuningPage() {
       <footer className="mt-12 pt-6 border-t border-zinc-200 dark:border-zinc-800">
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           Considering fine-tuning + grounding? Browse the{" "}
-          <a href="/claims/" className="underline">306 verified claims</a>
+          <a href="/claims/" className="underline">316 verified claims</a>
           {" "}or run the{" "}
           <a href="/quickstart/" className="underline">5-min quickstart</a>{" "}
           to add post-generation verification without retraining.
