@@ -331,7 +331,7 @@ the API call."""`}
           <li>• <a href="/docs/integrations/pydantic-ai/" className="underline">Pydantic AI guide</a> — typed-tool pattern with validators</li>
           <li>• <a href="/playground/" className="underline">Playground</a> — try /verify before wiring it up</li>
           <li>• <a href="/api/v1/openapi.json" className="underline">OpenAPI 3.1 spec</a> — full endpoint reference</li>
-          <li>• <a href="/claims/" className="underline">Catalog</a> — 246 verified AI/ML claims</li>
+          <li>• <a href="/claims/" className="underline">Catalog</a> — 256 verified AI/ML claims</li>
         </ul>
       </section>
     </article>

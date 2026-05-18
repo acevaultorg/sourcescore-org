@@ -377,7 +377,7 @@ export default function HallucinationConcept() {
             5 minutes
           </li>
           <li>
-            <a href="/claims/">Browse the catalog</a> — 246 hand-verified
+            <a href="/claims/">Browse the catalog</a> — 256 hand-verified
             AI/ML claims
           </li>
         </ul>
