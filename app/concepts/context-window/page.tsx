@@ -400,7 +400,7 @@ export default function ContextWindowPage() {
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           Building a long-context application and need to verify the
           factual claims the model emits across that context? Browse the{" "}
-          <a href="/claims/" className="underline">286 verified claims</a>
+          <a href="/claims/" className="underline">296 verified claims</a>
           {" "}or run the{" "}
           <a href="/quickstart/" className="underline">5-min quickstart</a>{" "}
           — verification is stateless and works regardless of context length.

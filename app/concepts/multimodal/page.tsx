@@ -425,7 +425,7 @@ export default function MultimodalPage() {
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           Building a multimodal AI pipeline that needs to verify the textual
           facts it emits? Browse the{" "}
-          <a href="/claims/" className="underline">286 verified claims</a>
+          <a href="/claims/" className="underline">296 verified claims</a>
           {" "}or run the{" "}
           <a href="/quickstart/" className="underline">5-min quickstart</a>.
         </p>
