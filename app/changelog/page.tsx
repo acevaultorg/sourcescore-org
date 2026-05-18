@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/comparisons/veritas-vs-anthropic-citations/ — 4th head-to-head (direct competitor buyer intent)",
+    body:
+      "4th /comparisons/[X]/ — direct head-to-head with Anthropic Citations API (launched 2025-01-23). At-a-glance comparison table (released date · source of truth · cite-format · provider lock · verifiability · external citability · pricing · latency · scope), explainer of what each does, decision matrix (when to use Anthropic Citations vs VERITAS vs both), explicit honest 'what VERITAS does NOT do' + 'what Anthropic Citations does NOT do' sections. Verdict: complementary not competitive — Anthropic Citations API solves user-doc-RAG citation problem within Claude API; VERITAS solves shared-knowledge-base + cryptographic-provenance + multi-LLM problem. Most production AI products use both. TechArticle + BreadcrumbList schema with editor @id chain. Targets queries: 'VERITAS vs Anthropic Citations API', 'alternative to Anthropic Citations', 'multi-LLM grounding API', 'externally citable LLM citations'. /comparisons/ index 3 → 4 head-to-heads.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "/topics/voice-and-audio-ai/ — 14th topic hub (Whisper + ElevenLabs + Suno + Stable Audio)",
     body:
       "14th /topics/[X]/ hub — voice and audio AI catalog. CollectionPage schema groups catalog claims covering speech recognition (Whisper, Whisper large-v3), text-to-speech (ElevenLabs), music generation (Suno v3/v4, Stable Audio 2.0), voice-emotion (Hume AI), and end-to-end voice agents (ElevenLabs Conversational AI). 4 editorial sections (voice + audio is the next-most-important modality after text, the 3-layer audio stack ASR/TTS/audio-generation, why voice agents are the 2025 frontier, why this catalog matters for voice-agent verification) + 6 DefinedTerms (ASR · TTS · Voice agent · Whisper · Suno · ElevenLabs). Cross-links to multimodal-ai + llm-releases-2024-2025 + /concepts/{multimodal, llm-grounding} + openai-tools + anthropic-sdk integrations. Targets queries: 'voice AI', 'AI voice agent', 'best text-to-speech 2025', 'Suno vs Udio', 'Whisper alternatives', 'ElevenLabs Conversational AI'. 13 → 14 topic hubs.",

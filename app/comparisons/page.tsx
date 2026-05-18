@@ -35,6 +35,12 @@ const COMPARISONS = [
     summary:
       "LLM-with-search grounds via live web. VERITAS grounds via signed verified-claim envelopes. Latency, reliability, citation quality, signature trade-offs.",
   },
+  {
+    slug: "veritas-vs-anthropic-citations",
+    title: "VERITAS vs Anthropic Citations API",
+    summary:
+      "Anthropic Citations API grounds in user-supplied docs (Claude only, in-context citations). VERITAS grounds in a signed externally-citable claim catalog (any LLM, public URLs, HMAC-verifiable). Complementary patterns — when to use each + when to use both.",
+  },
 ];
 
 export default function ComparisonsIndex() {
