@@ -82,6 +82,13 @@ const concepts = [
       "Definition, the seven canonical techniques (full SFT, instruction tuning, LoRA, QLoRA, RLHF, DPO, Constitutional AI), the fine-tune-vs-RAG decision tree, 2017-2024 timeline (Christiano → InstructGPT → LoRA → QLoRA → DPO → Tülu 3), 5 failure modes, when NOT to fine-tune, and 2024 cost reality.",
     status: "live",
   },
+  {
+    slug: "multimodal",
+    title: "Multimodal AI",
+    summary:
+      "Definition, the 4 modality classes (vision-language, text-to-image, text-to-video, text-to-audio), 2021-2025 timeline (CLIP → DALL·E → GPT-4V → Pixtral → Sora → Veo 2 → SAM 2), 6 production patterns, 7 failure modes (hallucinated objects, counting, spatial reasoning, text-image misalignment), and how multimodal verification differs from text-only fact-checking.",
+    status: "live",
+  },
 ];
 
 export default function ConceptsIndex() {

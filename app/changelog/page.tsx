@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "/concepts/multimodal/ — 10th concept pillar (VLM + text-to-image/video/audio)",
+    body:
+      "10th /concepts/[X]/ pillar — multimodal AI complete reference. Definition + 4 modality classes (vision-language, text-to-image, text-to-video, text-to-audio), 2021-2025 timeline (17 events from CLIP/DALL·E 2021 → Claude 3.7 + Grok 3 2025), 6 production patterns (document understanding, visual search, generative design, video summarization, accessibility, robotics), 7 failure modes (hallucinated objects, OCR errors, counting failures, spatial reasoning, text-image misalignment, watermark gaps, modality leakage in evals), and an honest scope-statement on how multimodal verification differs from text-only fact-checking (VERITAS today covers textual claims; image provenance + visual claim verification + deepfake detection are separate problems, Y2+ scope). TechArticle + DefinedTermSet (6 terms — multimodal AI · VLM · text-to-image · text-to-video · text-to-audio · CLIP) + BreadcrumbList schema. Editor @id chain. Cross-links to /concepts/hallucination, /concepts/fine-tuning, /concepts/embeddings, /topics/multimodal-ai, /use-cases/content-moderation. Targets high-volume queries: 'multimodal AI', 'vision-language model', 'text-to-image API', 'multimodal LLM 2025'.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "/concepts/fine-tuning/ — 9th concept pillar (LoRA + QLoRA + DPO + RLHF reference)",
     body:
       "9th /concepts/[X]/ pillar — fine-tuning the complete reference. Covers definition + 7 canonical techniques (full SFT, instruction tuning, LoRA, QLoRA, RLHF, DPO, Constitutional AI), the fine-tune-vs-RAG decision tree (when each wins, when to use both), 2017-2024 timeline (Christiano preferences → Houlsby PEFT → LoRA → InstructGPT → Constitutional AI → QLoRA → DPO → Tülu 3), 5 failure modes (catastrophic forgetting · overfitting · reward hacking · distribution mismatch · hidden capability degradation), when NOT to fine-tune (5 cases), and 2024 cost reality (OpenAI gpt-4o fine-tune $30-100/run; Lambda Labs A100 LoRA $3-5; QLoRA on RTX 4090 marginal-cost). TechArticle + DefinedTermSet (7 terms — fine-tuning · LoRA · QLoRA · DPO · RLHF · instruction tuning · PEFT) + BreadcrumbList schema. Editor @id chain. Cross-links to 8 other concept pillars + topic hubs + use-cases. Targets high-volume queries: 'fine-tuning vs RAG', 'LoRA vs full fine-tuning', 'when to fine-tune LLM'.",
