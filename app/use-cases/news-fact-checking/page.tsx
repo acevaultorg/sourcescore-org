@@ -303,7 +303,7 @@ def cite_verified(draft: str, verified: list[dict]) -> str:
           </li>
           <li>
             Browse the{" "}
-            <a href="/claims/" className="underline">316 verified claims</a>
+            <a href="/claims/" className="underline">326 verified claims</a>
             {" "}— check whether your beat&apos;s common facts are
             covered before integrating.
           </li>

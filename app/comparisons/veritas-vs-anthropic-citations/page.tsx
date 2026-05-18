@@ -353,7 +353,7 @@ export default function VeritasVsAnthropicCitationsPage() {
           Already on Claude API? Pair Anthropic Citations API for
           user-supplied doc RAG + VERITAS for AI/ML reference facts.
           Browse the{" "}
-          <a href="/claims/" className="underline">316 verified claims</a>
+          <a href="/claims/" className="underline">326 verified claims</a>
           {" "}or run the{" "}
           <a href="/quickstart/" className="underline">5-min quickstart</a>.
         </p>

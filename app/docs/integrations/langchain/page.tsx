@@ -378,7 +378,7 @@ print("ok — claim is genuine + unmodified")
         <h2 className="text-lg font-semibold mb-3">What VERITAS is not</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           We are deliberately not a generic fact-checker. The Day 1
-          catalog (316 claims today) covers AI/ML research — model releases,
+          catalog (326 claims today) covers AI/ML research — model releases,
           foundational papers, organizations, datasets. If your chain
           asks about &quot;the capital of France&quot; we will return no
           matches and your code should fall through to whatever
@@ -399,7 +399,7 @@ print("ok — claim is genuine + unmodified")
             • <a href="/docs/" className="underline">Full API reference</a> — every endpoint with curl + JS + Python examples
           </li>
           <li>
-            • <a href="/claims/" className="underline">Browse the catalog</a> — 316 verified AI/ML claims
+            • <a href="/claims/" className="underline">Browse the catalog</a> — 326 verified AI/ML claims
           </li>
           <li>
             • <a href="/api/v1/openapi.json" className="underline">OpenAPI spec</a> — generate clients in any language
