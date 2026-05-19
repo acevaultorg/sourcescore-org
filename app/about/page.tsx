@@ -22,6 +22,12 @@ const orgSchema = {
   description:
     "Transparent reference index for AI-citation quality (source-rating product) and signed claim verification for LLM developers (VERITAS API product).",
   email: "contact@sourcescore.org",
+  // Entity-coherence per Aleyda Solis #3 Recognizable + #7 Credible.
+  // Public surfaces where SourceScore (the brand-entity) is verifiable.
+  sameAs: [
+    "https://gitlab.com/acevault-lab",
+    "https://dev.to/paulomdevries",
+  ],
   contactPoint: {
     "@type": "ContactPoint",
     email: "contact@sourcescore.org",
@@ -82,6 +88,12 @@ const editorialPersonSchema = {
     "Claim verification",
     "HMAC signature schemes",
     "Source quality evaluation",
+  ],
+  // Entity-coherence per Aleyda Solis #3 Recognizable + #7 Credible.
+  // Public surfaces where SourceScore editorial team is verifiable.
+  sameAs: [
+    "https://gitlab.com/acevault-lab",
+    "https://dev.to/paulomdevries",
   ],
 };
 

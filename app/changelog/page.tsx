@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "sameAs entity-coherence — Organization + Person schemas link to GitLab + Dev.to",
+    body:
+      "Aleyda Solis 10-char #3 Recognizable + #7 Credible compound. Added `sameAs` array to: (1) Organization schema in /about/ (the canonical org reference), (2) Organization schema in layout.tsx site-wide JSON-LD, (3) editorialPersonSchema Person entity in /about/. Linked surfaces: gitlab.com/acevault-lab (primary git host post-2026-05-06 per Julian/accounts.md) + dev.to/paulomdevries (active 2026-05-16, canonical cross-post host). Borrowed from holdlens fleet pattern (holdlens/about page has Person+sameAs). LLM citation gravity compound: AI models that verify entity identity across multiple platforms before citing now have explicit sameAs verification path. Verified 3 sameAs JSON-LD blocks rendered in out/about/index.html.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "Resource hints in <head> — preconnect + dns-prefetch (fleet pattern from readstacks)",
     body:
       "Added 5 resource hints to <head> per readstacks fleet pattern: preconnect + dns-prefetch to pagead2.googlesyndication.com (AdSense, on every page), dns-prefetch to www.clarity.ms (Microsoft Clarity), plausible.io (analytics), googleads.g.doubleclick.net (AdSense fill). Cost: 4 cheap DNS lookups on initial page load. Benefit: ~100-300ms faster first-contentful paint when the script/image actually fires. Direct Core Web Vitals compound (LCP/FCP improvement signals Page Experience to Google + Lighthouse PWA score). Verified: 5 resource hints rendered in /out/index.html post-build. Pure additive; no regression risk.",

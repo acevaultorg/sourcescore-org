@@ -97,11 +97,19 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
+              "@id": "https://sourcescore.org/#organization",
               name: "SourceScore",
               url: "https://sourcescore.org",
               description:
                 "Score any source on Discipline, Modern Reference fitness, and Citation Velocity. The reference index for AI-citation quality.",
               logo: "https://sourcescore.org/logo-wordmark.svg",
+              // Entity-coherence per Aleyda Solis #3 Recognizable + #7
+              // Credible. Public surfaces where SourceScore + maintainers
+              // are verifiable.
+              sameAs: [
+                "https://gitlab.com/acevault-lab",
+                "https://dev.to/paulomdevries",
+              ],
             }),
           }}
         />
