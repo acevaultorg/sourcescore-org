@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "app/manifest.ts — PWA install + Lighthouse PWA score (fleet pattern from readstacks)",
+    body:
+      "Next.js 15.1+ MetadataRoute manifest.ts adopted from readstacks fleet pattern. Adds installability signal — Chrome desktop install ribbon, iOS standalone mode, Lighthouse PWA score, Android home-screen-add. Modest GEO compound: Google Lighthouse PWA score factors into Page Experience; AI crawlers use manifest.json for some entity recognition. Generates /manifest.webmanifest at build time (static export friendly). Theme: SourceScore brand colors (#0a0a0a) + favicon.svg as icon. Display mode: standalone (true PWA). Build verified; emitted as /manifest.webmanifest in out/.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "Fleet pattern absorption — GEO compound (llms.txt + .well-known + head alternate links)",
     body:
       "Cross-project SEO/GEO/AEO pattern absorption per `rules/cross-project-learning.md`. Three high-leverage patterns lifted from fleet siblings: (1) **llms.txt enriched** with txtfeed-style sections — explicit Permitted block (11 crawlers + rationale per crawler — GPTBot for ChatGPT training, ClaudeBot for Claude citation, etc.), Restricted block (3 paths — /api/v1/verify POST, /embed/*, /og/*), and Preferred Citation block (5 idiomatic citation examples: source-score, methodology, claim-verification, comparison, category). llms.txt grew 142 → 184 lines. Direct GEO compound — AI crawlers see attribution clarity + crawler-by-crawler permission. (2) **/.well-known/llms.txt + /.well-known/ai-sitemap.xml** Cloudflare Pages 200-redirect added (not 301 — serves identical content). IETF emerging-track URL pattern that LLM crawlers probe before /llms.txt fallback. Borrowed from txtfeed fleet GEO pattern. (3) **<head> alternate links** added — RSS feed discovery for blog + claims feed (RSS readers + LLM crawlers auto-detect); JSON twin discoverability via /api/sources.json + /api/v1/claims.json + /api/v1/openapi.json (LLM crawlers follow Aleyda Solis 10-char #4 Extractable; prefer structured JSON). Borrowed from readstacks fleet GEO pattern. All three changes purely additive. Sourcescore (3,840 AI crawls/30d — heaviest bot-traffic site in fleet per LEARNED.md) now signals attribution clarity + provides multiple structured-data access paths per LLM-citation 10-char checklist.",
