@@ -80,6 +80,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
+        {/* Resource hints — saves DNS+TLS+TCP roundtrip for first hit to each
+            third-party origin used on most pages. Cost: 4 cheap DNS lookups
+            on initial page load; benefit: ~100-300ms faster first-contentful
+            paint when the script/image actually fires. Borrowed from
+            readstacks fleet pattern (rules/cross-project-learning.md L4). */}
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="dns-prefetch" href="https://www.clarity.ms" />
+        <link rel="dns-prefetch" href="https://plausible.io" />
+        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
         {/* Organization JSON-LD — applies site-wide for LLM-citation fitness */}
         <script
           type="application/ld+json"

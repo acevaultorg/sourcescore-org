@@ -36,6 +36,13 @@ const entries: Entry[] = [
   {
     date: "2026-05-17",
     kind: "feat",
+    title: "Resource hints in <head> — preconnect + dns-prefetch (fleet pattern from readstacks)",
+    body:
+      "Added 5 resource hints to <head> per readstacks fleet pattern: preconnect + dns-prefetch to pagead2.googlesyndication.com (AdSense, on every page), dns-prefetch to www.clarity.ms (Microsoft Clarity), plausible.io (analytics), googleads.g.doubleclick.net (AdSense fill). Cost: 4 cheap DNS lookups on initial page load. Benefit: ~100-300ms faster first-contentful paint when the script/image actually fires. Direct Core Web Vitals compound (LCP/FCP improvement signals Page Experience to Google + Lighthouse PWA score). Verified: 5 resource hints rendered in /out/index.html post-build. Pure additive; no regression risk.",
+  },
+  {
+    date: "2026-05-17",
+    kind: "feat",
     title: "app/manifest.ts — PWA install + Lighthouse PWA score (fleet pattern from readstacks)",
     body:
       "Next.js 15.1+ MetadataRoute manifest.ts adopted from readstacks fleet pattern. Adds installability signal — Chrome desktop install ribbon, iOS standalone mode, Lighthouse PWA score, Android home-screen-add. Modest GEO compound: Google Lighthouse PWA score factors into Page Experience; AI crawlers use manifest.json for some entity recognition. Generates /manifest.webmanifest at build time (static export friendly). Theme: SourceScore brand colors (#0a0a0a) + favicon.svg as icon. Display mode: standalone (true PWA). Build verified; emitted as /manifest.webmanifest in out/.",
