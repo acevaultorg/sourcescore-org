@@ -321,7 +321,7 @@ async function verifyAssistantOutput(text: string) {
           </li>
           <li>
             Browse the{" "}
-            <a href="/claims/" className="underline">336 verified claims</a>
+            <a href="/claims/" className="underline">346 verified claims</a>
             {" "}— if your coding-tool users frequently ask about
             AI/ML topics, the catalog already covers most common
             queries

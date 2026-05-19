@@ -407,7 +407,7 @@ grounded = ground(raw)`}</code></pre>
       <footer className="mt-12 pt-6 border-t border-zinc-200 dark:border-zinc-800">
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           Build the grounding layer once, route across providers. Browse the{" "}
-          <a href="/claims/" className="underline">336 verified claims</a>
+          <a href="/claims/" className="underline">346 verified claims</a>
           {" "}or run the{" "}
           <a href="/quickstart/" className="underline">5-min quickstart</a>{" "}
           — works with any LLM provider.
