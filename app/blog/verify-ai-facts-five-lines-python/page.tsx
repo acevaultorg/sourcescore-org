@@ -200,7 +200,7 @@ It was introduced by Vaswani et al. in "Attention Is All You Need". ✅ [abc123.
 
         <h2>Scope honesty</h2>
         <p>
-          VERITAS today is bounded to AI/ML research — 326 hand-verified
+          VERITAS today is bounded to AI/ML research — 336 hand-verified
           claims across foundational papers, model releases, organizations,
           and datasets. If your chain asks about &quot;the capital of
           France&quot; we return no match and your code falls through to
@@ -230,13 +230,13 @@ It was introduced by Vaswani et al. in "Attention Is All You Need". ✅ [abc123.
             <a href="/docs/integrations/openai-tools/">OpenAI tool-calls</a> — native function-calling pattern
           </li>
           <li>
-            <a href="/claims/">Browse the catalog</a> — 326 verified AI/ML claims
+            <a href="/claims/">Browse the catalog</a> — 336 verified AI/ML claims
           </li>
         </ul>
 
         <h2>One question I get a lot</h2>
         <p>
-          <em>&quot;Why not just put all 326 claims in the prompt as
+          <em>&quot;Why not just put all 336 claims in the prompt as
           context?&quot;</em>
         </p>
         <p>

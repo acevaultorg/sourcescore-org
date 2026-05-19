@@ -173,7 +173,7 @@ for claim in assertions_to_check:
 
         <h2>What the catalog covers</h2>
         <p>
-          v0.1 catalog (~326 claims spanning 1997-2025) covers AI/ML
+          v0.1 catalog (~336 claims spanning 1997-2025) covers AI/ML
           research:
         </p>
         <ul>
