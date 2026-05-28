@@ -52,7 +52,7 @@ const urls = allUrls.filter((u) => !isNoindex(u));
 // sitemap.xml — indexable set only (noindex variants excluded above)
 const xml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
-  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap-0.9">',
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
   ...urls.map((u) => {
     const isHome = u === `${SITE}/`;
     // VERITAS-Reborn pages (v0.1, 2026-05-16): /claims/, /claims/<id>/,
@@ -280,7 +280,7 @@ function altApiFor(u) {
 // LLM crawlers (GPTBot, ClaudeBot, etc.) actually parse anyway.
 const aiXml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
-  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap-0.9">',
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
   ...aiHumanUrls.map(
     (u) =>
       `  <url><loc>${u}</loc><lastmod>${TODAY}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`
