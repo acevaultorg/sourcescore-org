@@ -25,6 +25,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description = `${s.name} scores ${score.grade} (${score.value}) on Citation Discipline — ${score.rationale}`;
 
   return {
+    // Crawl-budget concentration (2026-05-28): per-source single-dimension page
+    // that re-displays the rationale already on /source/<slug>/. Thin duplicate,
+    // near-zero query volume, ~0 clicks per GSC. noindex,follow so authority +
+    // crawl budget flow to the source page. Reversible: delete this line.
+    robots: { index: false, follow: true },
     title: `${s.name} — Citation Discipline ${score.grade} (${score.value}) — SourceScore`,
     description: description.slice(0, 200),
     alternates: { canonical: `https://sourcescore.org/discipline/${slug}/` },

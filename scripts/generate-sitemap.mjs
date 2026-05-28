@@ -29,9 +29,27 @@ function urlFromPath(absPath) {
 }
 
 const files = walk(OUT_DIR);
-const urls = files.map(urlFromPath).sort();
+const allUrls = files.map(urlFromPath).sort();
 
-// sitemap.xml — full set
+// Crawl-budget concentration (2026-05-28): thin/duplicate variant pages are
+// noindex,follow (set in their route generateMetadata). Keep them OUT of both
+// sitemaps so Google + AI crawlers spend crawl budget on the ~960 core pages
+// (sources, main comparisons, claims) instead of ~1,100 thin variants. This
+// directly targets the 3,698 "discovered/crawled - not indexed" pages in GSC.
+// JSON twins (/api/*.json) stay advertised in sitemap-ai.xml separately.
+//   - /embed/<slug>/, /embed/claim/<id>/          iframe widgets (canonical→source)
+//   - /compare/<slug>/<dimension>/                single-dimension facet of main compare
+//   - /(discipline|modern-reference|velocity)/<slug>/  per-source sub-score dupes
+// Reversible: remove a pattern here AND the route's robots line to re-index.
+const NOINDEX_RE = [
+  /\/embed\//,
+  /\/compare\/[^/]+\/(discipline|modern-reference|velocity)\/$/,
+  /^https?:\/\/[^/]+\/(discipline|modern-reference|velocity)\/[^/]+\/$/,
+];
+const isNoindex = (u) => NOINDEX_RE.some((re) => re.test(u));
+const urls = allUrls.filter((u) => !isNoindex(u));
+
+// sitemap.xml — indexable set only (noindex variants excluded above)
 const xml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap-0.9">',

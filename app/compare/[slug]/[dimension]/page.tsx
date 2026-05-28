@@ -123,6 +123,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogImage = `https://sourcescore.org/og/compare/${slug}.svg`;
 
   return {
+    // Crawl-budget concentration (2026-05-28): single-dimension facet of an
+    // already-indexed /compare/<slug>/ page — thin duplicate, near-zero query
+    // volume, ~0 clicks per GSC. noindex,follow so authority + crawl budget
+    // flow to the main comparison. Reversible: delete this line to re-index.
+    robots: { index: false, follow: true },
     title,
     description: description.slice(0, 200),
     alternates: {
