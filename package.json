@@ -10,7 +10,7 @@
     "lint": "next lint",
     "indexnow": "node scripts/ping-indexnow.mjs",
     "clean": "rm -rf .next out 2>/dev/null; find . -name '.DS_Store' -not -path './node_modules/*' -delete 2>/dev/null; true",
-    "deploy": "npm run clean && npm run build && npx wrangler pages deploy out --project-name sourcescore --branch main --commit-message='deploy: brain wrangler push' && npm run indexnow",
+    "deploy": "npm run clean && npm run build && node scripts/deploy-cf.mjs && npm run indexnow",
     "predeploy": "node scripts/predeploy-guard.mjs"
   },
   "dependencies": {
