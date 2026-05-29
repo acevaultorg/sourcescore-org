@@ -55,6 +55,19 @@ export default async function SourceDetailPage({ params }: PageProps) {
   const compPairs = comparisonsForSource(slug);
   const hasComparators = compPairs.length > 0;
 
+  // Engagement (2026-05-28): surface the highest-pull next steps ABOVE the fold.
+  // GSC/Plausible showed 1.14 pages/visit + 13s — search visitors read the score
+  // and leave. Comparison links are the strongest pull-through (aceusergrowth
+  // E-T11 ≈ +0.7 PV/session) and also feed internal links into the page-1
+  // ranking /compare/ pages. Recognizable high-Index partners first.
+  const topComparePairs = [...compPairs]
+    .sort(
+      (x, y) =>
+        (getSource(y.partner)?.scores.index.value ?? 0) -
+        (getSource(x.partner)?.scores.index.value ?? 0),
+    )
+    .slice(0, 6);
+
   // FAQPage — AEO Part 14 minimums per rules/seo-geo-mastery.md.
   // PAA-style questions for per-source lookups ("What is X's SourceScore?",
   // "Is X reliable?", "How is X scored?", "What makes X different?") drive
@@ -261,6 +274,37 @@ export default async function SourceDetailPage({ params }: PageProps) {
         </div>
         <p className="text-body-lg text-text leading-relaxed">{idx.rationale}</p>
       </section>
+
+      {/* ABOVE-FOLD NEXT STEPS — engagement pull-through (2026-05-28).
+          Comparison + peer links surfaced directly under the score so search
+          visitors go deeper instead of bouncing (1.14 PV/visit → target ≥2).
+          Also strengthens internal links into the page-1 /compare/ pages. */}
+      {hasComparators && (
+        <section className="mb-12">
+          <div className="text-eyebrow text-dim mb-3">Compare {source.name} with</div>
+          <div className="flex flex-wrap gap-2">
+            {topComparePairs.map((p) => {
+              const partner = getSource(p.partner);
+              if (!partner) return null;
+              return (
+                <a
+                  key={p.slug}
+                  href={`/compare/${p.slug}/`}
+                  className="px-3 py-1.5 rounded-pill border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 text-body-sm text-muted hover:text-text transition-colors"
+                >
+                  vs {partner.name}
+                </a>
+              );
+            })}
+            <a
+              href={`/source/${source.slug}/peers/`}
+              className="px-3 py-1.5 rounded-pill border border-brand/30 bg-surface-brand text-body-sm text-brand hover:underline whitespace-nowrap"
+            >
+              Peers at this tier →
+            </a>
+          </div>
+        </section>
+      )}
 
       {/* THE 3 SUB-SCORES ─────────────────────────────────────────── */}
       <section className="mb-12 grid sm:grid-cols-3 gap-4">

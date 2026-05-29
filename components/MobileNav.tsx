@@ -18,7 +18,7 @@ const NAV_ITEMS = [
   { href: "/discipline/", label: "Citation Discipline", desc: "Source-level citation rigor" },
   { href: "/modern-reference/", label: "Modern Reference", desc: "Fitness as a 2026+ AI-era citation" },
   { href: "/velocity/", label: "Citation Velocity", desc: "Tier-1 cite rate per week" },
-  { href: "/sources/", label: "All sources", desc: "130 hand-scored sources" },
+  { href: "/sources/", label: "All sources", desc: "Every hand-scored source" },
   { href: "/compare/", label: "Compare", desc: "Side-by-side source comparison" },
   { href: "/search/", label: "Search", desc: "Find any source by URL or domain" },
   { href: "/methodology/", label: "Methodology", desc: "How SourceScore is computed" },
