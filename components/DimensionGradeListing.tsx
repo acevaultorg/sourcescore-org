@@ -307,6 +307,11 @@ export function DimensionGradeListing({
           {otherDims.map((od) => {
             const om = DIM_META[od];
             const oList = sourcesAtDimGrade(od, grade);
+            // Broken-link fix (2026-05-29 content audit): the target page is
+            // only generated when the cohort is non-empty (generateStaticParams
+            // filters count>0). Skip the cross-link when this dim has no sources
+            // at this grade, else it 404s.
+            if (oList.length === 0) return null;
             return (
               <a
                 key={od}
@@ -332,6 +337,8 @@ export function DimensionGradeListing({
         <div className="flex flex-wrap gap-2">
           {otherGradesOnDim.map((g) => {
             const count = sourcesAtDimGrade(dim, g).length;
+            // Skip empty-cohort grade bands — those pages aren't generated.
+            if (count === 0) return null;
             return (
               <a
                 key={g}

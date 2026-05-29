@@ -39,6 +39,11 @@ export async function generateMetadata({
   const ogImage = `https://sourcescore.org/og/source/${slug}.svg`;
 
   return {
+    // Content-value audit (2026-05-29): per-source comparison hub is a thin
+    // link-aggregation (~110-200w) duplicating links already on the source
+    // page; the /compare/<a>-vs-<b>/ pages carry the content. Noindex thin
+    // ones (<6 pairs); keep follow + live. Rich hubs (≥6 pairs) stay indexed.
+    robots: pairs.length < 6 ? { index: false, follow: true } : undefined,
     title,
     description,
     alternates: {

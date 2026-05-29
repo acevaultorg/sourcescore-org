@@ -5,7 +5,7 @@
  * Walks the static export, picks every index.html, computes the URL,
  * writes both standard + AI-priority sitemaps to /out/.
  */
-import { writeFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { writeFileSync, readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const OUT_DIR = "out";
@@ -47,7 +47,24 @@ const NOINDEX_RE = [
   /^https?:\/\/[^/]+\/(discipline|modern-reference|velocity)\/[^/]+\/$/,
 ];
 const isNoindex = (u) => NOINDEX_RE.some((re) => re.test(u));
-const urls = allUrls.filter((u) => !isNoindex(u));
+
+// Content-value audit (2026-05-29): authoritative noindex detection — read the
+// built HTML and exclude ANY page carrying a noindex robots meta. This covers
+// the regex patterns above AND per-page THRESHOLD noindex set in route
+// generateMetadata (thin tag/year/comparison hubs < 6 items). Single source of
+// truth = the page itself, so the sitemap can never list a noindexed page.
+const noindexFromMeta = new Set(
+  files
+    .filter((f) => {
+      try {
+        return /<meta name="robots" content="noindex/i.test(readFileSync(f, "utf8"));
+      } catch {
+        return false;
+      }
+    })
+    .map(urlFromPath),
+);
+const urls = allUrls.filter((u) => !isNoindex(u) && !noindexFromMeta.has(u));
 
 // sitemap.xml — indexable set only (noindex variants excluded above)
 const xml = [

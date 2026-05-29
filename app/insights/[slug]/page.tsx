@@ -113,7 +113,7 @@ export default async function InsightPage({ params }: PageProps) {
       description: insight.summary,
       inDefinedTermSet:
         insight.kind === "dim-vs-composite"
-          ? `https://sourcescore.org/methodology/${DIMENSION_META[insight.dim].routeSegment}/`
+          ? `https://sourcescore.org/methodology/${DIMENSION_META[insight.dim].methodologySlug}/`
           : "https://sourcescore.org/methodology/sourcescore-index/",
     },
   };
@@ -394,7 +394,7 @@ export default async function InsightPage({ params }: PageProps) {
           <>
             <span className="text-dim">·</span>
             <a
-              href={`/methodology/${DIMENSION_META[insight.dim].routeSegment}/`}
+              href={`/methodology/${DIMENSION_META[insight.dim].methodologySlug}/`}
               className="text-muted hover:text-brand"
             >
               {DIMENSION_META[insight.dim].label} methodology →

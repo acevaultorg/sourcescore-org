@@ -147,7 +147,7 @@ export default async function BestListDimensionPage({ params }: PageProps) {
       "@type": "DefinedTerm",
       name: `${list.title} by ${dimMeta.label}`,
       description: `${list.title} re-sorted by ${dimMeta.label} only. Different signal than the composite SourceScore Index. Mean ${dimMeta.short} = ${dimMean}; mean Index = ${indexMean}.`,
-      inDefinedTermSet: `https://sourcescore.org/methodology/${dimMeta.routeSegment}/`,
+      inDefinedTermSet: `https://sourcescore.org/methodology/${dimMeta.methodologySlug}/`,
     },
   };
 
@@ -451,7 +451,7 @@ export default async function BestListDimensionPage({ params }: PageProps) {
         </a>
         <span className="text-dim">·</span>
         <a
-          href={`/methodology/${dimMeta.routeSegment}/`}
+          href={`/methodology/${dimMeta.methodologySlug}/`}
           className="text-muted hover:text-brand"
         >
           {dimMeta.label} methodology →

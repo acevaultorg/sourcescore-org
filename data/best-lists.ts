@@ -345,22 +345,29 @@ export type DimensionKey = "discipline" | "modernReference" | "velocity";
 
 export const DIMENSION_META: Record<
   DimensionKey,
-  { label: string; short: string; routeSegment: string }
+  { label: string; short: string; routeSegment: string; methodologySlug: string }
 > = {
+  // routeSegment = /discipline/ /velocity/ list-route prefix (short form).
+  // methodologySlug = the actual /methodology/<slug>/ page slug (long form) —
+  // these DIFFER for discipline + velocity, so methodology links MUST use
+  // methodologySlug, never routeSegment (fixes /methodology/velocity 404).
   discipline: {
     label: "Citation Discipline",
     short: "Discipline",
     routeSegment: "discipline",
+    methodologySlug: "citation-discipline",
   },
   modernReference: {
     label: "Modern Citation Reference",
     short: "Modern Reference",
     routeSegment: "modern-reference",
+    methodologySlug: "modern-reference",
   },
   velocity: {
     label: "Citation Velocity",
     short: "Velocity",
     routeSegment: "velocity",
+    methodologySlug: "citation-velocity",
   },
 };
 

@@ -30,6 +30,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const title = `Claims tagged "${entry.label}" — SourceScore VERITAS`;
   const description = `${entry.claims.length} verified AI/ML claim${entry.claims.length === 1 ? "" : "s"} tagged "${entry.label}". Each has 2+ primary sources, HMAC-SHA256 signature, ready-to-paste citation.`;
   return {
+    // Content-value audit (2026-05-29): tag archive pages are navigational
+    // aggregations. Thin ones (<6 claims, ~under 250w of links) are noindexed
+    // so they don't dilute index quality; the claim pages carry the value +
+    // stay indexed. Rich tag hubs (≥6 claims) stay indexed. Kept live + follow.
+    robots: entry.claims.length < 6 ? { index: false, follow: true } : undefined,
     title,
     description,
     alternates: { canonical: `https://sourcescore.org/claims/tag/${entry.slug}/` },

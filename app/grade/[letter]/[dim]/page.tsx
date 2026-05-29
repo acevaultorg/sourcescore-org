@@ -183,7 +183,7 @@ export default async function GradeDimensionPage({ params }: PageProps) {
       "@type": "DefinedTerm",
       name: `${grade} grade by ${dimMeta.label}`,
       description: `Composite ${grade}-tier (range ${gradeRange(grade)}) sources, re-sorted by ${dimMeta.label}. Mean ${dimMeta.short} = ${dimMean}; mean composite = ${compositeMean}.`,
-      inDefinedTermSet: `https://sourcescore.org/methodology/${dimMeta.routeSegment}/`,
+      inDefinedTermSet: `https://sourcescore.org/methodology/${dimMeta.methodologySlug}/`,
     },
   };
 
@@ -457,7 +457,7 @@ export default async function GradeDimensionPage({ params }: PageProps) {
         </a>
         <span className="text-dim">·</span>
         <a
-          href={`/methodology/${dimMeta.routeSegment}/`}
+          href={`/methodology/${dimMeta.methodologySlug}/`}
           className="text-muted hover:text-brand"
         >
           {dimMeta.label} methodology →

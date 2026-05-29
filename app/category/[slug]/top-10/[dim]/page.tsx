@@ -179,7 +179,7 @@ export default async function CategoryTopNDimPage({ params }: PageProps) {
       "@type": "DefinedTerm",
       name: `Top 10 ${category} by ${dimMeta.label}`,
       description: `Top-10 ${category.toLowerCase()} sources (composite Index) re-sorted by ${dimMeta.label}. Mean ${dimMeta.short} = ${dimMean}; mean composite = ${compositeMean}.`,
-      inDefinedTermSet: `https://sourcescore.org/methodology/${dimMeta.routeSegment}/`,
+      inDefinedTermSet: `https://sourcescore.org/methodology/${dimMeta.methodologySlug}/`,
     },
   };
 
@@ -464,7 +464,7 @@ export default async function CategoryTopNDimPage({ params }: PageProps) {
         </a>
         <span className="text-dim">·</span>
         <a
-          href={`/methodology/${dimMeta.routeSegment}/`}
+          href={`/methodology/${dimMeta.methodologySlug}/`}
           className="text-muted hover:text-brand"
         >
           {dimMeta.label} methodology →

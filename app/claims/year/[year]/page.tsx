@@ -53,7 +53,11 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
   if (Number.isNaN(yearNum)) return { title: "Year not found — SourceScore" };
 
   const canonical = `https://sourcescore.org/claims/year/${year}/`;
+  // Content-value audit (2026-05-29): year archives are navigational. Noindex
+  // thin years (<6 claims); keep substantial years indexed. Live + follow.
+  const yearCount = (await loadYearBuckets()).get(yearNum)?.length ?? 0;
   return {
+    robots: yearCount < 6 ? { index: false, follow: true } : undefined,
     title: { absolute: `AI/ML claims from ${year} — SourceScore VERITAS` },
     description: `Hand-verified AI/ML research claims with primary sources dated ${year}: model releases, papers, organizations, datasets.`,
     alternates: { canonical },
