@@ -4,13 +4,12 @@ import { gradeColorClass, gradeSurfaceClass } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: { absolute: "Search sources — SourceScore" },
-  description:
-    "Search 50 hand-scored sources by name, domain, category, or grade. Instant filter, no signup.",
+  description: `Search ${sources.length} hand-scored sources by name, domain, category, or grade. Instant filter, no signup.`,
   alternates: { canonical: "https://sourcescore.org/search/" },
 };
 
 // Pure-static search page. We render every source row at build time +
-// embed all 50 records as JSON in a <script>; a small inline script
+// embed all records as JSON in a <script>; a small inline script
 // filters the visible rows on input. Zero backend, zero hydration cost.
 
 const indexData = sources.map((s) => ({
@@ -29,7 +28,7 @@ const indexData = sources.map((s) => ({
 export default function SearchPage() {
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-      <div className="text-eyebrow text-brand mb-3">Search · 50 sources indexed</div>
+      <div className="text-eyebrow text-brand mb-3">Search · {sources.length} sources indexed</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         Search sources
       </h1>
