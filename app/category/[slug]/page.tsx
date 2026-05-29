@@ -55,6 +55,46 @@ export default async function CategoryPage({ params }: PageProps) {
       ? Math.round(list.reduce((a, s) => a + s.scores.index.value, 0) / list.length)
       : 0;
 
+  // FAQPage (AEO) — targets the high-volume "most reliable [category] sources
+  // to cite" query class in extractable form (top-5 · #1 pick · scoring method)
+  // so AI Overviews + featured snippets cite this page. Single block, no spam.
+  const catLc = category.toLowerCase();
+  const topCat = list.slice(0, 5);
+  const catLeader = list[0];
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `https://sourcescore.org/category/${slug}/#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `What are the most reliable ${catLc} sources to cite?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `By the SourceScore Index, the top ${topCat.length} ${catLc} sources are: ${topCat
+            .map((s, i) => `${i + 1}. ${s.name} (${s.scores.index.grade} ${s.scores.index.value}/100)`)
+            .join("; ")}. Each is hand-scored on Citation Discipline, Modern Reference, and Citation Velocity — full ranking below.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Which ${catLc} source ranks highest on SourceScore?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${catLeader.name} (${catLeader.domain}) ranks #1 of ${list.length} ${catLc} sources, scoring ${catLeader.scores.index.grade} (${catLeader.scores.index.value}/100) on the SourceScore Index. ${catLeader.summary}`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `How are ${catLc} sources scored?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Each of the ${list.length} ${catLc} sources is hand-scored against the SourceScore methodology v0.1 across Citation Discipline (sourcing rigor), Modern Reference (AI-era fitness), and Citation Velocity (tier-1 cite rate). The category averages ${avgIndex}/100 on the composite Index.`,
+        },
+      },
+    ],
+  };
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <script
@@ -97,6 +137,10 @@ export default async function CategoryPage({ params }: PageProps) {
             })
           ),
         }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="text-caption text-dim mb-6 flex gap-2">
@@ -243,6 +287,20 @@ export default async function CategoryPage({ params }: PageProps) {
           </div>
         </section>
       )}
+
+      {/* AEO FAQ — mirrors faqLd JSON-LD; visible accordion for AI Overview +
+          featured-snippet eligibility on "most reliable [category] sources" queries. */}
+      <section className="border-t border-border pt-8 mb-10">
+        <h2 className="text-heading-2 font-bold mb-4">Frequently asked questions</h2>
+        <div className="space-y-3">
+          {(faqLd.mainEntity as Array<{ name: string; acceptedAnswer: { text: string } }>).map((q, i) => (
+            <details key={i} className="rounded-card border border-border bg-panel p-4 open:border-brand/40">
+              <summary className="cursor-pointer font-semibold text-text">{q.name}</summary>
+              <p className="mt-3 text-body-sm text-muted leading-relaxed">{q.acceptedAnswer.text}</p>
+            </details>
+          ))}
+        </div>
+      </section>
 
       <section className="border-t border-border pt-8">
         <h2 className="text-heading-2 font-bold mb-3">Other categories</h2>
