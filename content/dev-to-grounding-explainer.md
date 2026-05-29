@@ -60,7 +60,7 @@ if unverified:
     response += f"\n\n*Note: {len(unverified)} claim(s) could not be independently verified.*"
 ```
 
-That's the entire pattern. No vector DB. No re-prompt loop. ~80ms per claim.
+That's the entire pattern. No vector DB. No re-prompt loop. One HTTP round-trip per claim (~130ms in testing).
 
 ## What's behind the API
 
@@ -102,7 +102,7 @@ If you want the methodology background, three concept pillars on the site cover 
 - [Hallucination categories](https://sourcescore.org/concepts/hallucination/) — root causes + mitigations
 - [RAG vs VERITAS](https://sourcescore.org/concepts/rag-vs-veritas/) — when each pattern applies
 
-The headline finding from production deployments so far: **retrieve-then-cite alone catches ~60% of fabricated-source hallucinations. Adding a verify step closes another ~30%.** The remaining 10% is in genuinely ambiguous claims (e.g., "Claude 3 Opus has 200B parameters" — Anthropic has never confirmed) and is where human review still belongs.
+The logic of the layered pattern: retrieve-then-cite catches *fabricated sources* — but not the case at the top of this post, where the source was correct and the model contradicted it anyway. That contradiction is exactly what a verify step is built to catch. What neither layer catches is genuinely ambiguous claims (e.g., "Claude 3 Opus has 200B parameters" — Anthropic has never confirmed) — that's where human review still belongs.
 
 ---
 
