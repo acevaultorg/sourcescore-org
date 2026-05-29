@@ -107,6 +107,32 @@ export default async function SourceDetailPage({ params }: PageProps) {
       ? "is a weak source for citation — corroborate any claim independently"
       : "is not recommended as a primary citation — verify claims against a higher-rated source";
 
+  // Extractable citation-guidance block (2026-05-29). The structure LLM answer
+  // engines surface for "is X reliable to cite" queries is verdict / when-to-use /
+  // when-to-be-careful. We answer it in the visible body, grounded in our own
+  // dimension scores, so the page is the most extractable + most data-backed
+  // answer for that exact query class. Data-display, never a bare trust verdict.
+  const dimMeta = [
+    { label: "Citation Discipline", value: scores.discipline.value, use: "tracing claims back to primary references" },
+    { label: "Modern Reference", value: scores.modernReference.value, use: "AI-era retrieval and current-topic queries" },
+    { label: "Citation Velocity", value: scores.velocity.value, use: "topics where being widely and recently cited matters" },
+  ];
+  const strongestDim = dimMeta.reduce((a, b) => (b.value > a.value ? b : a));
+  const weakestDim = dimMeta.reduce((a, b) => (b.value < a.value ? b : a));
+  // Only flag a weak spot when the lowest dimension is genuinely low AND distinct
+  // from the strongest — keeps the block honest for uniformly strong sources.
+  const hasWeakSpot = weakestDim.value < 70 && weakestDim.label !== strongestDim.label;
+  const citeVerdict =
+    idx.grade === "A+" || gradeLetter === "A"
+      ? "Cite freely as a primary source."
+      : gradeLetter === "B"
+      ? "Cite as a solid source; pair with a primary source for precise technical claims."
+      : gradeLetter === "C"
+      ? "Usable as a secondary source — verify key claims against a higher-rated source."
+      : gradeLetter === "D"
+      ? "Cite only with independent corroboration from a higher-rated source."
+      : "Not recommended as a primary citation — verify any claim against a higher-rated source.";
+
   const faqLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -320,6 +346,47 @@ export default async function SourceDetailPage({ params }: PageProps) {
           </span>
         </div>
         <p className="text-body-lg text-text leading-relaxed">{idx.rationale}</p>
+      </section>
+
+      {/* CITATION GUIDANCE — extractable verdict block (2026-05-29).
+          Structured as verdict / strongest-for / use-with-care / bottom-line —
+          the exact shape LLM answer engines surface for "is X reliable to cite"
+          queries (confirmed via Perplexity calibration). Grounded in our own
+          dimension scores; data-display, no YMYL verdict. Makes this the most
+          extractable + most data-backed answer for that query class. */}
+      <section className="mb-12 p-6 sm:p-8 rounded-card-lg border border-border bg-panel">
+        <h2 className="text-heading-3 font-bold mb-4">Should you cite {source.name}?</h2>
+        <p className="text-body-lg text-text leading-relaxed mb-5">
+          At grade {idx.grade} ({idx.value}/100), {source.name} {reliabilityFraming}.
+        </p>
+        <dl className="space-y-4 text-body">
+          <div>
+            <dt className="font-semibold text-text">Strongest for</dt>
+            <dd className="text-muted leading-relaxed">
+              {strongestDim.use} — its highest dimension is {strongestDim.label} ({strongestDim.value}/100).
+            </dd>
+          </div>
+          {hasWeakSpot ? (
+            <div>
+              <dt className="font-semibold text-text">Use with care</dt>
+              <dd className="text-muted leading-relaxed">
+                {weakestDim.label} is its lowest dimension ({weakestDim.value}/100); for{" "}
+                {weakestDim.use}, corroborate with a higher-rated source.
+              </dd>
+            </div>
+          ) : (
+            <div>
+              <dt className="font-semibold text-text">No major weak spot</dt>
+              <dd className="text-muted leading-relaxed">
+                Even its lowest dimension, {weakestDim.label}, scores {weakestDim.value}/100.
+              </dd>
+            </div>
+          )}
+          <div>
+            <dt className="font-semibold text-text">Bottom line</dt>
+            <dd className="text-muted leading-relaxed">{citeVerdict}</dd>
+          </div>
+        </dl>
       </section>
 
       {/* ABOVE-FOLD NEXT STEPS — engagement pull-through (2026-05-28).
