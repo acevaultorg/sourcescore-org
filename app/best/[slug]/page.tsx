@@ -83,6 +83,46 @@ export default async function BestListPage({ params }: PageProps) {
   // Other best-lists for cross-link rail
   const siblings = bestLists.filter((b) => b.slug !== slug);
 
+  // FAQPage (AEO) — best-of listicles are the highest-volume, most
+  // click-surviving query class ("best X to cite", "most reliable X").
+  // Answer them in extractable form so AI Overviews + featured snippets
+  // cite this page. Schema + visible accordion mirror each other.
+  const topItems = items.slice(0, 5);
+  const leader = items[0];
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `https://sourcescore.org/best/${slug}/#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `${list.title}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `By the SourceScore Index, the top ${topItems.length}: ${topItems
+            .map((s, i) => `${i + 1}. ${s.name} (${s.scores.index.grade} ${s.scores.index.value}/100)`)
+            .join("; ")}. Each is hand-scored on Citation Discipline, Modern Reference, and Citation Velocity — full ranking + breakdowns below.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Which source tops this list, and why?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${leader.name} ranks #1, scoring ${leader.scores.index.grade} (${leader.scores.index.value}/100) on the SourceScore Index — the highest composite citation-quality score here. ${leader.summary}`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `How is this list ranked?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Ranked by ${list.signalCriterion}, scored against the SourceScore methodology v0.1 across Citation Discipline, Modern Reference (AI-era fitness), and Citation Velocity. Regenerated automatically on every dataset update — no paid placement or editorial promotion.`,
+        },
+      },
+    ],
+  };
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <script
@@ -126,6 +166,11 @@ export default async function BestListPage({ params }: PageProps) {
             ])
           ),
         }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
 
       {/* Breadcrumbs */}
@@ -247,6 +292,21 @@ export default async function BestListPage({ params }: PageProps) {
           breakdown across the four dimensions. The list is regenerated automatically on every
           dataset update — no editorial promotion or reorder beyond the ranking signal above.
         </p>
+      </section>
+
+      {/* AEO FAQ — mirrors faqLd JSON-LD; visible accordion satisfies Google's
+          "FAQ must be visible" rule + gives AI Overviews extractable answers
+          for "best X to cite" / "most reliable X" queries. */}
+      <section className="border-t border-border pt-8 mb-10">
+        <h2 className="text-heading-2 font-bold mb-4">Frequently asked questions</h2>
+        <div className="space-y-3">
+          {(faqLd.mainEntity as Array<{ name: string; acceptedAnswer: { text: string } }>).map((q, i) => (
+            <details key={i} className="rounded-card border border-border bg-panel p-4 open:border-brand/40">
+              <summary className="cursor-pointer font-semibold text-text">{q.name}</summary>
+              <p className="mt-3 text-body-sm text-muted leading-relaxed">{q.acceptedAnswer.text}</p>
+            </details>
+          ))}
+        </div>
       </section>
 
       {/* Sibling best-lists rail */}
