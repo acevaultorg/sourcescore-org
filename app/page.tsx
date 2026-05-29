@@ -157,6 +157,34 @@ export default function HomePage() {
             tier-1 publications cite it. One paste, four numbers, one grade.
           </p>
 
+          {/* Hero lookup — completes the "paste a URL" promise end-to-end.
+              Plain GET form → the URL-aware /search (which normalizes a pasted
+              URL to its domain). Zero JS, works without hydration; known sources
+              resolve to their score, unknown domains get an honest "not scored
+              yet" panel. */}
+          <form action="/search" method="get" className="mt-8 max-w-2xl">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="search"
+                name="q"
+                inputMode="url"
+                autoComplete="off"
+                placeholder="Paste a URL or source name — e.g. reuters.com"
+                aria-label="Check a source's SourceScore"
+                className="flex-1 px-4 py-3 rounded-card border border-border bg-panel text-text placeholder-dim focus:border-brand focus:outline-none transition-colors"
+              />
+              <button
+                type="submit"
+                className="px-6 py-3 rounded-card border border-brand/50 bg-surface-brand text-brand font-semibold hover:bg-panel-hi transition-colors whitespace-nowrap"
+              >
+                Check source →
+              </button>
+            </div>
+            <p className="mt-2 text-caption text-dim">
+              Matches against {sources.length} hand-scored sources — unknown domains show how to get scored.
+            </p>
+          </form>
+
           {/* Sub-tool cards — the 4-concept bundle */}
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
