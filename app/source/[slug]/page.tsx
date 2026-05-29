@@ -89,11 +89,37 @@ export default async function SourceDetailPage({ params }: PageProps) {
   // detail surface. Factual answers only — no opinion labels. One FAQ
   // block per page (v18 LEARNED faq_schema_spam × -10 respected).
   const sourceUrl = `https://sourcescore.org/source/${source.slug}/`;
+
+  // Citation-reliability framing for the highest-intent LLM query —
+  // "Is X reliable to cite?" is the exact phrasing users ask ChatGPT/Perplexity.
+  // Answering it in extractable FAQ form maximizes AI-citation capture (the one
+  // channel proven to send humans). Data-grounded + grade-derived — never a bare
+  // trust verdict; the score IS the assessment (data-display framing, no YMYL).
+  const gradeLetter = idx.grade.charAt(0);
+  const reliabilityFraming =
+    idx.grade === "A+" || gradeLetter === "A"
+      ? "ranks among the most citable sources for AI-era retrieval and research"
+      : gradeLetter === "B"
+      ? "is a solid, generally citable source"
+      : gradeLetter === "C"
+      ? "is a mid-tier source — usable, but verify key claims against a higher-rated source"
+      : gradeLetter === "D"
+      ? "is a weak source for citation — corroborate any claim independently"
+      : "is not recommended as a primary citation — verify claims against a higher-rated source";
+
   const faqLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "@id": `${sourceUrl}#faq`,
     mainEntity: [
+      {
+        "@type": "Question",
+        name: `Is ${source.name} a reliable source to cite?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${source.name} scores ${idx.grade} (${idx.value}/100) on the SourceScore Index, which rates how citable a source is for AI-era and research use. At grade ${idx.grade}, ${source.name} ${reliabilityFraming}. The grade combines Citation Discipline ${scores.discipline.value}/100, Modern Reference ${scores.modernReference.value}/100, and Citation Velocity ${scores.velocity.value}/100 — full breakdown above.`,
+        },
+      },
       {
         "@type": "Question",
         name: `What is ${source.name}'s SourceScore?`,
