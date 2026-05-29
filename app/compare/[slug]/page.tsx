@@ -98,6 +98,16 @@ export default async function CompareDetailPage({ params }: PageProps) {
       },
       {
         "@type": "Question",
+        name: `Which is more reliable to cite, ${a.name} or ${b.name}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: winnerName
+            ? `For citation, ${winnerName} is the stronger choice — it scores ${winnerScore!.grade} (${winnerScore!.value}/100) on the SourceScore Index versus ${loserName} at ${loserScore!.grade} (${loserScore!.value}/100), a ${indexDelta}-point lead in composite citation quality (Citation Discipline, Modern Reference, Citation Velocity). Both can be cited; for higher-stakes references, prefer ${winnerName}.`
+            : `${a.name} and ${b.name} are equally citable on the SourceScore Index (both ${a.scores.index.grade} ${a.scores.index.value}/100). Choose based on the per-dimension breakdown below — Citation Discipline, Modern Reference, and Citation Velocity.`,
+        },
+      },
+      {
+        "@type": "Question",
         name: `How does ${a.name} compare to ${b.name} on citation discipline?`,
         acceptedAnswer: {
           "@type": "Answer",
