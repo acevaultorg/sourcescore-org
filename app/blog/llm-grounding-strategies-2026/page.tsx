@@ -166,7 +166,7 @@ USER: When did Llama 3.1 come out?`}</code></pre>
         <p>
           Frameworks: <a href="/docs/integrations/langchain/">LangChain</a>,{" "}
           <a href="/docs/integrations/llamaindex/">LlamaIndex</a>,{" "}
-          Haystack. Vector
+          <a href="/docs/integrations/haystack/">Haystack</a>. Vector
           DBs: <a href="/topics/vector-databases/">FAISS, Pinecone,
           Weaviate, Qdrant, Chroma, pgvector</a>.
         </p>

@@ -40,6 +40,26 @@ export const llamaindexHowTo: HowToSchema = {
   ],
 };
 
+export const haystackHowTo: HowToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "Integrate SourceScore VERITAS with Haystack",
+  description:
+    "Wire VERITAS into a Haystack 2.x pipeline as a custom retriever component plus a verify component that drops unverified documents.",
+  totalTime: "PT20M",
+  tool: [
+    { "@type": "HowToTool", name: "Haystack" },
+    { "@type": "HowToTool", name: "Python" },
+  ],
+  supply: COMMON_SUPPLY,
+  step: [
+    { "@type": "HowToStep", position: 1, name: "Install dependencies", text: "pip install haystack-ai requests" },
+    { "@type": "HowToStep", position: 2, name: "Build a VeritasRetriever component", text: "Decorate a class with @component; in run(query), GET /api/v1/search and return Haystack Documents carrying claim_id, confidence, and detailUrl in meta." },
+    { "@type": "HowToStep", position: 3, name: "Add a VeritasVerifier component", text: "A @component that POSTs each Document to /api/v1/verify and keeps only those with a bestMatch at or above minConfidence." },
+    { "@type": "HowToStep", position: 4, name: "Wire the pipeline", text: "Pipeline.add_component for retriever, PromptBuilder, and OpenAIGenerator; connect retriever.documents to prompt.documents to llm.prompt, then run." },
+  ],
+};
+
 export const openaiToolsHowTo: HowToSchema = {
   "@context": "https://schema.org",
   "@type": "HowTo",

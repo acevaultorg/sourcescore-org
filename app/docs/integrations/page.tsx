@@ -36,6 +36,13 @@ const guides = [
       "Custom retriever wrapping the VERITAS /search endpoint + post-process node verification. Compatible with QueryEngine + ChatEngine.",
   },
   {
+    slug: "haystack",
+    name: "Haystack",
+    status: "ready",
+    summary:
+      "Two Haystack 2.x components: a retriever that pulls signed VERITAS claims, and a verifier that drops any document not backed by a high-confidence claim. Wire them into a normal Pipeline with PromptBuilder + OpenAIGenerator.",
+  },
+  {
     slug: "openai-tools",
     name: "OpenAI Tool Calls",
     status: "ready",
