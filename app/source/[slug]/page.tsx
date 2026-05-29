@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getSource, allSlugs } from "@/data/sources";
+import { getSource, allSlugs, sources } from "@/data/sources";
 import { comparisonsForSource } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import type { DimensionScore } from "@/lib/types";
@@ -67,6 +67,20 @@ export default async function SourceDetailPage({ params }: PageProps) {
         (getSource(x.partner)?.scores.index.value ?? 0),
     )
     .slice(0, 6);
+
+  // Score context (2026-05-28): a bare "93" is meaningless to a first-time
+  // visitor. Showing global rank + percentile gives the number meaning,
+  // pulls visitors to the leaderboard (engagement), and yields a quotable
+  // fact for LLM citation ("X ranks #N of M on the SourceScore Index").
+  const indexRank =
+    [...sources]
+      .sort((a, b) => b.scores.index.value - a.scores.index.value)
+      .findIndex((x) => x.slug === source.slug) + 1;
+  const totalSources = sources.length;
+  const indexPercentile = Math.max(
+    1,
+    Math.round((indexRank / totalSources) * 100),
+  );
 
   // FAQPage — AEO Part 14 minimums per rules/seo-geo-mastery.md.
   // PAA-style questions for per-source lookups ("What is X's SourceScore?",
@@ -268,6 +282,13 @@ export default async function SourceDetailPage({ params }: PageProps) {
         <div className="text-eyebrow text-dim mb-3">SourceScore Index</div>
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2 mb-4">
           <ScoreBadge value={idx.value} grade={idx.grade} label="SourceScore Index" size="lg" />
+          <a
+            href="/sources/"
+            className="text-body-sm text-brand hover:underline whitespace-nowrap"
+            title="See the full SourceScore leaderboard"
+          >
+            Rank #{indexRank} of {totalSources} · top {indexPercentile}%
+          </a>
           <span className="text-muted text-body-sm">
             Composite weighted across Discipline, Modern Reference, and Velocity.
           </span>
