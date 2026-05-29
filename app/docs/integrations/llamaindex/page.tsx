@@ -111,13 +111,12 @@ class VeritasRetriever(BaseRetriever):
         )
         r.raise_for_status()
         out = []
-        for c in r.json().get("matches", []):
+        for c in r.json().get("results", []):
             node = TextNode(
                 text=c["statement"],
                 metadata={
                     "claim_id": c["id"],
                     "confidence": c["confidence"],
-                    "source_count": c["sourceCount"],
                     "url": f"https://sourcescore.org/claims/{c['id']}/",
                     "vertical": c.get("vertical", "ai-ml"),
                     "tags": c.get("tags", []),

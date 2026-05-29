@@ -179,15 +179,14 @@ def veritas_retrieve(query: str, k: int = 5) -> str:
     """Fetch top-k VERITAS claims for a query, render as numbered context."""
     r = requests.get(f"{VERITAS}/search", params={"q": query, "limit": k}, timeout=8)
     r.raise_for_status()
-    claims = r.json().get("matches", [])
+    claims = r.json().get("results", [])
     if not claims:
         return "(no VERITAS claims match this query)"
     lines = []
     for i, c in enumerate(claims, 1):
         lines.append(
             f"[{i}] {c['statement']} "
-            f"(claim_id={c['id']}, confidence={c['confidence']:.2f}, "
-            f"sources={c['sourceCount']})"
+            f"(claim_id={c['id']}, confidence={c['confidence']:.2f})"
         )
     return "\\n".join(lines)
 

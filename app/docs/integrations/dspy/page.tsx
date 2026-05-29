@@ -130,7 +130,7 @@ class VeritasRetriever(dspy.Retrieve):
                 params={"q": q, "limit": k or self.k},
                 timeout=8,
             )
-            for hit in r.json().get("matches", []):
+            for hit in r.json().get("results", []):
                 if hit.get("confidence", 0) < self.min_confidence:
                     continue
                 results.append(

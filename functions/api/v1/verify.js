@@ -23,19 +23,34 @@
 //   }
 //
 // Threshold logic (v0):
-//   - matchScore is keyword-overlap-derived, 0.0-1.0
-//   - "best match" = highest scoring above minMatchScore (0.20 default)
+//   - matchScore (0.0-1.0): per query term, credit the strongest field it hits
+//     (word-boundary match w/ prefix tolerance — stopwords filtered), summed
+//     and normalized by query-length × MAX_FIELD_WEIGHT. A query whose every
+//     term hits the subject scores 1.0; genuine claims land ~0.55-0.85.
+//   - "best match" = highest scoring above minMatchScore (0.30 default)
 //   - "verified" = bestMatch exists AND best match's claim.confidence ≥ minConfidence
 //   - else `notVerified: true`
 //
-// Day 30+: replace keyword with semantic-similarity scoring (sentence
-// transformer embeddings via Vectorize). The threshold logic stays.
+// Known limit: pure keyword overlap can't tell "AI model" from "model of car".
+// Day 30+: replace with semantic-similarity scoring (sentence-transformer
+// embeddings via Vectorize). The threshold + envelope logic stays identical.
 
 const MIN_CLAIM_LEN = 5;
 const MAX_CLAIM_LEN = 1000;
 const DEFAULT_MIN_CONFIDENCE = 0.85;
-const DEFAULT_MIN_MATCH_SCORE = 0.2;
+const DEFAULT_MIN_MATCH_SCORE = 0.3;
 const MAX_MATCHES_RETURNED = 5;
+const MAX_FIELD_WEIGHT = 5; // highest single-field weight (subject) — matchScore denominator basis
+
+// Common English function words. Filtered before matching so high-frequency
+// filler words don't drive false matches — the failure mode that made unrelated
+// queries score ~0.3 and the bestMatch gate never trip. Deliberately excludes
+// AI-domain content words ("model", "data", "open", "fast"). (2026-05-29)
+const STOPWORDS = new Set(
+  "a about after all also am an and any are as at be because been before being between both but by came can come could did do does doing during each few for from get got had has have he her here him his how i if in into is it its just like made make many me more most my no nor not now of off on only or other our out over own said same she should so some such than that the their them then there these they this those through to too under until up very was we well were what when where which while who will with would you your".split(
+    " ",
+  ),
+);
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -135,42 +150,72 @@ function rankCandidates(claims, queryClaim) {
   const queryTerms = tokenize(queryClaim);
   if (queryTerms.length === 0) return [];
 
+  // Normalize so a query whose every term hits the strongest field (subject)
+  // scores 1.0. Per-term we credit the BEST field it hits (not the sum across
+  // all fields) — this measures coverage × field-quality, so a genuine match
+  // (~0.7+) cleanly separates from incidental overlap (<0.2). The old formula
+  // divided by query-length × sum-of-all-weights, which made score track query
+  // length instead of match quality (correct match 0.32 vs nonsense 0.30).
+  const denom = queryTerms.length * MAX_FIELD_WEIGHT;
+
   const out = [];
   for (const c of claims) {
     const fields = [
-      { value: c.subject, weight: 5 },
-      { value: c.object, weight: 3 },
-      { value: c.statement ?? "", weight: 2 },
-      { value: c.predicate.replace(/_/g, " "), weight: 2 },
-      { value: (c.tags ?? []).join(" "), weight: 3 },
+      { words: wordSet(c.subject), weight: 5 },
+      { words: wordSet(c.object), weight: 3 },
+      { words: wordSet(c.statement ?? ""), weight: 2 },
+      { words: wordSet(c.predicate.replace(/_/g, " ")), weight: 2 },
+      { words: wordSet((c.tags ?? []).join(" ")), weight: 3 },
     ];
-
-    // Maximum possible score given query terms × weights (upper bound used to
-    // normalize matchScore into 0.0-1.0).
-    const maxPossible =
-      queryTerms.length * fields.reduce((acc, f) => acc + f.weight, 0);
 
     let raw = 0;
     const hits = [];
-    for (const { value, weight } of fields) {
-      const haystack = value.toLowerCase();
-      for (const t of queryTerms) {
-        if (haystack.includes(t)) {
-          raw += weight;
-          hits.push(t);
-        }
+    for (const t of queryTerms) {
+      // Credit only the strongest field a term hits — measures coverage ×
+      // field-quality, not summed redundancy. Word-boundary match (with prefix
+      // tolerance for plurals/tenses) so "rain" no longer matches "Pretraining".
+      let best = 0;
+      for (const { words, weight } of fields) {
+        if (weight > best && wordHit(words, t)) best = weight;
+      }
+      if (best > 0) {
+        raw += best;
+        hits.push(t);
       }
     }
 
     if (raw === 0) continue;
 
-    const matchScore = raw / maxPossible;
+    const matchScore = Math.min(1, raw / denom);
     const uniqueHits = Array.from(new Set(hits)).slice(0, 5);
     const rationale = `Keyword overlap on: ${uniqueHits.join(", ")}.`;
     out.push({ claim: c, matchScore, rationale });
   }
   out.sort((a, b) => b.matchScore - a.matchScore);
   return out;
+}
+
+// Split a field value into a set of lowercased words for boundary-aware matching.
+function wordSet(value) {
+  return new Set(
+    String(value)
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s.-]/gu, " ")
+      .split(/[\s.-]+/)
+      .filter(Boolean),
+  );
+}
+
+// A query term hits a field if it equals a word, or shares a ≥3-char prefix
+// with one (model↔models, release↔released) — NOT if it's merely a substring
+// inside a longer word ("rain" inside "pretraining").
+function wordHit(words, term) {
+  if (words.has(term)) return true;
+  if (term.length < 3) return false;
+  for (const w of words) {
+    if (w.length >= 3 && (w.startsWith(term) || term.startsWith(w))) return true;
+  }
+  return false;
 }
 
 function tokenize(s) {
@@ -180,7 +225,7 @@ function tokenize(s) {
         .toLowerCase()
         .replace(/[^\p{L}\p{N}\s.-]/gu, " ")
         .split(/\s+/)
-        .filter((t) => t.length >= 2),
+        .filter((t) => t.length >= 2 && !STOPWORDS.has(t)),
     ),
   );
 }

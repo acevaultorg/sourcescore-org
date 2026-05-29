@@ -113,7 +113,7 @@ class VeritasRetriever:
         )
         r.raise_for_status()
         docs = []
-        for c in r.json().get("matches", []):
+        for c in r.json().get("results", []):
             docs.append(
                 Document(
                     content=c["statement"],
@@ -121,7 +121,6 @@ class VeritasRetriever:
                     meta={
                         "claim_id": c["id"],
                         "confidence": c["confidence"],
-                        "source_count": c.get("sourceCount"),
                         "url": f"https://sourcescore.org/claims/{c['id']}/",
                         "tags": c.get("tags", []),
                     },

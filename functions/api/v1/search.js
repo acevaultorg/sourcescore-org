@@ -21,6 +21,14 @@ const MAX_RESULTS = 50;
 const MIN_QUERY_LEN = 2;
 const MAX_QUERY_LEN = 500;
 
+// Common English function words filtered before matching so high-frequency
+// words don't inflate relevance scores. Mirrors functions/api/v1/verify.js.
+const STOPWORDS = new Set(
+  "a about after all also am an and any are as at be because been before being between both but by came can come could did do does doing during each few for from get got had has have he her here him his how i if in into is it its just like made make many me more most my no nor not now of off on only or other our out over own said same she should so some such than that the their them then there these they this those through to too under until up very was we well were what when where which while who will with would you your".split(
+    " ",
+  ),
+);
+
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
@@ -148,7 +156,7 @@ function tokenize(s) {
         .toLowerCase()
         .replace(/[^\p{L}\p{N}\s.-]/gu, " ")
         .split(/\s+/)
-        .filter((t) => t.length >= 2),
+        .filter((t) => t.length >= 2 && !STOPWORDS.has(t)),
     ),
   );
 }
