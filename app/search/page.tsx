@@ -41,7 +41,7 @@ export default function SearchPage() {
         <input
           id="ss-search"
           type="search"
-          placeholder="Try: wikipedia, reuters, government, A+, .gov, …"
+          placeholder="Paste a URL (e.g. https://reuters.com/…) or search: wikipedia, .gov, A+ …"
           autoComplete="off"
           className="w-full px-4 py-3 rounded-card border border-border bg-panel text-text placeholder-dim focus:border-brand focus:outline-none transition-colors"
           aria-label="Search sources"
@@ -86,6 +86,7 @@ export default function SearchPage() {
         ))}
       </ol>
 
+      {/* Empty state — keyword miss */}
       <p
         id="ss-empty"
         className="hidden text-center py-12 text-muted text-body"
@@ -94,7 +95,40 @@ export default function SearchPage() {
         <a href="/sources/" className="text-brand hover:underline">all sources</a>.
       </p>
 
-      {/* Inline filter script — pure DOM, no framework */}
+      {/* Empty state — URL/domain pasted that isn't in the index yet.
+          Honest "not scored" state (no fabricated score) per the SourceScore
+          credibility premise: closest action paths instead of a fake grade. */}
+      <div
+        id="ss-empty-url"
+        className="hidden py-10 px-5 rounded-card-lg border border-border bg-panel text-center"
+      >
+        <div className="text-eyebrow text-dim mb-2">Not in the index yet</div>
+        <p className="text-body-lg text-text mb-1">
+          <span id="ss-empty-domain" className="font-mono text-brand">this source</span>{" "}
+          isn&apos;t scored yet.
+        </p>
+        <p className="text-body-sm text-muted mb-5 max-w-md mx-auto">
+          SourceScore covers {sources.length} hand-scored sources today. We don&apos;t show a grade
+          we haven&apos;t verified — here&apos;s how to assess it or get it added.
+        </p>
+        <div className="flex flex-wrap gap-2 justify-center">
+          <a href="/methodology/" className="px-4 py-2 rounded-pill border border-brand/40 bg-surface-brand text-body-sm text-brand hover:underline">
+            How scoring works →
+          </a>
+          <a href="/contact/" className="px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm text-muted hover:text-text">
+            Request this source
+          </a>
+          <a href="/sources/" className="px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm text-muted hover:text-text">
+            Browse all sources
+          </a>
+        </div>
+      </div>
+
+      {/* Inline filter script — pure DOM, no framework. URL-aware: a pasted
+          URL is normalized to its domain before matching, so "paste a URL" in
+          the hero actually works for known sources; unknown domains get an
+          honest "not scored yet" panel (no fabricated grade). Regex-free to
+          keep the injected string escaping-safe. */}
       <script
         dangerouslySetInnerHTML={{
           __html: `
@@ -103,7 +137,25 @@ export default function SearchPage() {
               var rows = document.querySelectorAll('.ss-row');
               var count = document.getElementById('ss-count');
               var empty = document.getElementById('ss-empty');
+              var emptyUrl = document.getElementById('ss-empty-url');
+              var emptyDomain = document.getElementById('ss-empty-domain');
               if (!input || !rows.length) return;
+
+              function normDomain(s) {
+                var i = s.indexOf('://');
+                if (i >= 0) s = s.slice(i + 3);
+                if (s.lastIndexOf('www.', 0) === 0) s = s.slice(4);
+                s = s.split('/')[0].split('?')[0].split('#')[0].split(':')[0];
+                return s.toLowerCase();
+              }
+              function isUrlish(q) {
+                if (q.indexOf('://') >= 0) return true;
+                if (!q || q.charAt(0) === '.') return false;
+                var dot = q.indexOf('.');
+                if (dot <= 0) return false;
+                var after = q.slice(dot + 1);
+                return after.length >= 2 && after.indexOf(' ') < 0;
+              }
 
               // Pre-fill from ?q= URL param so deep-links work
               var params = new URLSearchParams(window.location.search);
@@ -111,20 +163,25 @@ export default function SearchPage() {
               if (q0) input.value = q0;
 
               function filter() {
-                var q = (input.value || '').trim().toLowerCase();
+                var raw = (input.value || '').trim();
+                var q = raw.toLowerCase();
+                var urlish = isUrlish(q);
+                var dom = urlish ? normDomain(q) : '';
                 var visible = 0;
                 rows.forEach(function(row) {
-                  if (!q) {
-                    row.style.display = '';
-                    visible++;
-                    return;
+                  if (!q) { row.style.display = ''; visible++; return; }
+                  var hit;
+                  if (urlish) {
+                    var rd = row.dataset.domain;
+                    hit = rd === dom || rd.indexOf(dom) >= 0 || (dom && dom.indexOf(rd) >= 0);
+                  } else {
+                    hit =
+                      row.dataset.name.indexOf(q) >= 0 ||
+                      row.dataset.domain.indexOf(q) >= 0 ||
+                      row.dataset.cat.indexOf(q) >= 0 ||
+                      row.dataset.grade.indexOf(q) >= 0 ||
+                      row.dataset.summary.indexOf(q) >= 0;
                   }
-                  var hit =
-                    row.dataset.name.indexOf(q) >= 0 ||
-                    row.dataset.domain.indexOf(q) >= 0 ||
-                    row.dataset.cat.indexOf(q) >= 0 ||
-                    row.dataset.grade.indexOf(q) >= 0 ||
-                    row.dataset.summary.indexOf(q) >= 0;
                   row.style.display = hit ? '' : 'none';
                   if (hit) visible++;
                 });
@@ -133,7 +190,10 @@ export default function SearchPage() {
                     ? visible + ' of ${sources.length} sources'
                     : '${sources.length} sources';
                 }
-                if (empty) empty.style.display = (visible === 0 && q) ? 'block' : 'none';
+                var noResults = (visible === 0 && !!q);
+                if (empty) empty.style.display = (noResults && !urlish) ? 'block' : 'none';
+                if (emptyUrl) emptyUrl.style.display = (noResults && urlish) ? 'block' : 'none';
+                if (noResults && urlish && emptyDomain) emptyDomain.textContent = dom || raw;
               }
 
               input.addEventListener('input', filter);
