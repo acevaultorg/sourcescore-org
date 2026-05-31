@@ -3,13 +3,15 @@
 // after claim additions without a standalone Worker (whose control-plane deploy
 // can be incident-blocked). Gated by a key. Idempotent (upsert by id).
 //
-// Usage: GET /api/admin/reembed?key=<ADMIN_KEY>   (optionally &subjects=a|b to limit)
-const ADMIN_KEY = "rk_eeff0f5dd04a282b670a631d6611a6205d8e028d";
+// Usage: GET /api/admin/reembed?key=<SOURCESCORE_SIGNING_SECRET>  (optionally &subjects=a|b to limit)
+// Gated by the project's signing secret — no secret is baked into source.
 
 export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
-  if (url.searchParams.get("key") !== ADMIN_KEY) {
+  const key = url.searchParams.get("key") || "";
+  const secret = env.SOURCESCORE_SIGNING_SECRET || "";
+  if (!secret || key !== secret) {
     return json({ ok: false, error: "forbidden" }, 403);
   }
   if (!env.AI || !env.VECTORIZE) {
