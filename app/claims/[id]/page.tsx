@@ -343,6 +343,38 @@ export default async function ClaimPage({ params }: PageProps) {
         </div>
       </header>
 
+      {/* ORIENT + ONWARD — convert single-pageview claim entries (the +214% WoW
+          search traffic; 0s/single-pageview per Plausible 2026-05-30) into
+          deeper sessions toward the engaging surfaces: the source-reliability
+          leaderboard + search tool (homepage 58s, source pages up to 12min). */}
+      <section className="mb-10 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-5">
+        <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
+          <strong className="font-semibold text-zinc-900 dark:text-zinc-100">SourceScore</strong>{" "}
+          rates how reliable a source is to cite — for AI answers and research.
+          This is one verified claim from the catalog.
+        </p>
+        <div className="flex flex-wrap gap-2 text-sm">
+          <a
+            href="/sources/"
+            className="px-3 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-medium hover:opacity-90 plausible-event-name=claim_explore_sources"
+          >
+            Browse source reliability scores →
+          </a>
+          <a
+            href="/search/"
+            className="px-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=claim_explore_search"
+          >
+            Is a source reliable to cite? →
+          </a>
+          <a
+            href="/claims/"
+            className="px-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=claim_explore_claims"
+          >
+            All verified claims →
+          </a>
+        </div>
+      </section>
+
       <section className="mb-10">
         <h2 className="text-xl font-semibold mb-4">Structured fields</h2>
         <dl className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-y-2 gap-x-6 text-sm">
