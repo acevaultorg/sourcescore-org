@@ -43,7 +43,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const claim = await findClaimById(id);
   if (!claim) return { title: "Claim not found" };
 
-  const title = `${claim.statement} — SourceScore Claim`;
+  // The statement IS the query-matched answer (entities + year up front). Drop
+  // the redundant "— SourceScore Claim" bloat (the layout template already
+  // appends "· SourceScore") + the trailing period → cleaner, less-truncated
+  // titles across all claim pages. (2026-05-31, fastest-human-growth.)
+  const title = claim.statement.replace(/\.\s*$/, "");
   const description =
     `${claim.statement} — verified ${claim.lastVerified}, confidence ${Math.round(claim.confidence * 100)}%.`;
 

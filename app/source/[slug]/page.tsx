@@ -19,8 +19,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!s) return { title: "Source not found" };
 
   const idx = s.scores.index;
-  const title = `${s.name} — SourceScore ${idx.grade} (${idx.value}/100)`;
-  const description = `${s.name} (${s.domain}) scores ${idx.value}/100 on the SourceScore Index. ${idx.rationale}`;
+  // Title leads with the HUMAN query ("is X reliable to cite") — the phrasing
+  // people actually search + ask ChatGPT/Perplexity — not the brand-first
+  // "X — SourceScore A". The body/FAQ already target this; the title was the
+  // missing match (lost the click even when ranking). Grade+score kept as the
+  // unique-data CTR hook. (2026-05-31, fastest-human-growth: query-match titles.)
+  const title = `Is ${s.name} reliable to cite? ${idx.grade} · ${idx.value}/100`;
+  const description = `Is ${s.name} reliable to cite? ${s.name} (${s.domain}) scores ${idx.value}/100 (grade ${idx.grade}) on the SourceScore Index — citation discipline, modern reference & velocity. ${idx.rationale}`;
 
   const ogImage = `https://sourcescore.org/og/source/${s.slug}.svg`;
   return {
