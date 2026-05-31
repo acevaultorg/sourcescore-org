@@ -19,6 +19,18 @@ import { notFound } from "next/navigation";
 import { loadFullClaims, findClaimById, relatedClaims, tagToSlug } from "@/lib/claims-build";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
+// Claim-source publishers that map to a scored SourceScore /source page.
+// Funnels claim-entry traffic to the high-dwell source pages (Plausible 2026-05-30:
+// up to 12min) AND connects the claims ↔ source-reliability datasets — the
+// product's whole story. Only confident, exact-name matches; unmapped → no chip.
+const PUBLISHER_TO_SOURCE_SLUG: Record<string, string> = {
+  OpenAI: "openai-research",
+  Anthropic: "anthropic-research",
+  "Google DeepMind": "deepmind-research",
+  "Hugging Face": "huggingface",
+  Wikipedia: "wikipedia-en",
+};
+
 export async function generateStaticParams() {
   const claims = await loadFullClaims();
   return claims.map((c) => ({ id: c.id }));
@@ -430,6 +442,14 @@ export default async function ClaimPage({ params }: PageProps) {
                 <blockquote className="mt-2 text-sm italic text-zinc-600 dark:text-zinc-400">
                   &ldquo;{s.excerpt}&rdquo;
                 </blockquote>
+              )}
+              {PUBLISHER_TO_SOURCE_SLUG[s.publisher] && (
+                <a
+                  href={`/source/${PUBLISHER_TO_SOURCE_SLUG[s.publisher]}/`}
+                  className="mt-2 inline-flex items-center text-xs px-2.5 py-1 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=claim_source_to_scorepage"
+                >
+                  {s.publisher} is rated by SourceScore — see its reliability →
+                </a>
               )}
             </li>
           ))}
