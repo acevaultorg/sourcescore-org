@@ -179,6 +179,14 @@ export interface VerifyResponse {
   apiVersion: "v1";
   methodology: string;
   query: string;
+  /** Confidence threshold applied for the verdict (default 0.85). */
+  minConfidence?: number;
+  /**
+   * Ranking method that produced `matches`: "semantic" = Workers AI bge-m3
+   * embedding + Vectorize cosine (match floor 0.50); "keyword" = term-overlap
+   * fallback (match floor 0.30), used only when the semantic bindings are cold.
+   */
+  method?: "semantic" | "keyword";
   matches: Array<{
     claim: ClaimSummary;
     /** Match score 0.0-1.0 — keyword overlap in v0, semantic in v1+. */

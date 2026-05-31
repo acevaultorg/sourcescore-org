@@ -312,11 +312,20 @@
       },
       "VerifyResponse": {
         "type": "object",
-        "required": ["apiVersion", "methodology", "query", "matches"],
+        "required": ["apiVersion", "methodology", "query", "method", "matches"],
         "properties": {
           "apiVersion": { "type": "string", "enum": ["v1"] },
           "methodology": { "type": "string", "format": "uri" },
           "query": { "type": "string" },
+          "minConfidence": {
+            "type": "number",
+            "description": "Confidence threshold applied for the verdict (default 0.85)."
+          },
+          "method": {
+            "type": "string",
+            "enum": ["semantic", "keyword"],
+            "description": "Ranking method used: \"semantic\" = Workers AI bge-m3 embedding + Vectorize cosine similarity (match floor 0.50); \"keyword\" = term-overlap fallback (match floor 0.30), used only when the semantic bindings are unavailable."
+          },
           "matches": {
             "type": "array",
             "description": "Top 5 ranked matches.",
@@ -332,7 +341,7 @@
           },
           "bestMatch": {
             "$ref": "#/components/schemas/ClaimSummary",
-            "description": "Highest-scoring match if matchScore ≥ 0.20 AND claim.confidence ≥ minConfidence."
+            "description": "Highest-scoring match if matchScore ≥ the method's floor (0.50 semantic, 0.30 keyword) AND claim.confidence ≥ minConfidence."
           },
           "notVerified": {
             "type": "boolean",
