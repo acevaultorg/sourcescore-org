@@ -24,6 +24,8 @@
 // MATH — each verified against arXiv primary + official repo/venue + HF.
 // 2026-05-31 gap-analysis batch 2: +5 more (356 total) — HellaSwag, TruthfulQA,
 // BIG-bench, ORPO, RMSNorm — same second-order vein, same 3-source discipline.
+// 2026-05-31 gap-analysis batch 3: +5 more (361 total) — KTO, SimPO, MMLU-Pro,
+// FlashAttention-2, LiveCodeBench — alignment methods + 2024 evals + FA2.
 //
 // Expansion path: continue to ~150 claims. Vertical stays "ai-ml" for v0.
 // New verticals (cs, data, eng) deferred to Y2 enterprise tier.
@@ -11041,6 +11043,203 @@ export const seedClaims: SeedClaim[] = [
     lastVerified: "2026-05-31",
     methodologyVersion: METHODOLOGY,
     tags: ["rmsnorm", "root-mean-square-layer-normalization", "normalization", "layernorm", "architecture", "zhang", "2019"],
+  },
+
+  // ─── Gap-analysis batch 3 (2026-05-31): alignment methods + 2024 evals + FA2 ──
+  // KTO/SimPO (alignment, alongside DPO/ORPO/GRPO) · MMLU-Pro/LiveCodeBench (2024
+  // evals) · FlashAttention-2. None in the prior 356. Verified 2026-05-31 against
+  // arXiv primary + official repo + Hugging Face. Facts only (no perf numbers).
+  {
+    vertical: "ai-ml",
+    subject: "Kahneman-Tversky Optimization (KTO)",
+    predicate: "introduced_in_paper",
+    object: "KTO: Model Alignment as Prospect Theoretic Optimization (Ethayarajh et al., 2024)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2402.01306",
+        title: "KTO: Model Alignment as Prospect Theoretic Optimization",
+        publisher: "arXiv (Ethayarajh, Xu, Muennighoff, Jurafsky, Kiela)",
+        publishedDate: "2024-02-02",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "Using a Kahneman-Tversky model of human utility, we propose a HALO that directly maximizes the utility of generations instead of maximizing the log-likelihood of preferences, as current methods do.",
+      },
+      {
+        url: "https://github.com/ContextualAI/HALOs",
+        title: "HALOs library (DPO, KTO, PPO, ORPO reference implementations)",
+        publisher: "Contextual AI (ContextualAI)",
+        publishedDate: "2024-02-02",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/2402.01306",
+        title: "KTO (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["kto", "kahneman-tversky-optimization", "alignment", "preference-optimization", "rlhf", "ethayarajh", "2024"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "Simple Preference Optimization (SimPO)",
+    predicate: "introduced_in_paper",
+    object: "SimPO: Simple Preference Optimization with a Reference-Free Reward (Meng et al., 2024)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2405.14734",
+        title: "SimPO: Simple Preference Optimization with a Reference-Free Reward",
+        publisher: "arXiv (Meng, Xia, Chen — University of Virginia + Princeton)",
+        publishedDate: "2024-05-23",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "The effectiveness of SimPO is attributed to a key design: using the average log probability of a sequence as the implicit reward.",
+      },
+      {
+        url: "https://github.com/princeton-nlp/SimPO",
+        title: "SimPO official repository (NeurIPS 2024)",
+        publisher: "Princeton NLP (princeton-nlp)",
+        publishedDate: "2024-05-23",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/2405.14734",
+        title: "SimPO (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["simpo", "simple-preference-optimization", "alignment", "preference-optimization", "reference-free", "meng", "2024"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "MMLU-Pro benchmark",
+    predicate: "introduced_in_paper",
+    object:
+      "MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark (Wang et al., 2024)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2406.01574",
+        title: "MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark",
+        publisher: "arXiv (Yubo Wang et al. — TIGER-Lab)",
+        publishedDate: "2024-06-03",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "This paper introduces MMLU-Pro, an enhanced dataset designed to extend the mostly knowledge-driven MMLU benchmark by integrating more challenging, reasoning-focused questions",
+      },
+      {
+        url: "https://github.com/TIGER-AI-Lab/MMLU-Pro",
+        title: "MMLU-Pro official repository (NeurIPS 2024)",
+        publisher: "TIGER-AI-Lab",
+        publishedDate: "2024-06-03",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro",
+        title: "MMLU-Pro dataset card",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "model-card",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["mmlu-pro", "benchmark", "evaluation", "reasoning", "wang", "2024"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "FlashAttention-2",
+    predicate: "introduced_in_paper",
+    object: "FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning (Dao, 2023)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2307.08691",
+        title: "FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning",
+        publisher: "arXiv (Tri Dao — Princeton + Stanford)",
+        publishedDate: "2023-07-17",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "We propose FlashAttention-2, with better work partitioning to address these issues.",
+      },
+      {
+        url: "https://github.com/Dao-AILab/flash-attention",
+        title: "FlashAttention / FlashAttention-2 reference implementation",
+        publisher: "Dao AI Lab (Dao-AILab)",
+        publishedDate: "2023-07-17",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/2307.08691",
+        title: "FlashAttention-2 (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["flashattention-2", "flash-attention", "attention", "gpu", "inference", "dao", "2023"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "LiveCodeBench",
+    predicate: "introduced_in_paper",
+    object:
+      "LiveCodeBench: Holistic and Contamination Free Evaluation of Large Language Models for Code (Jain et al., 2024)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2403.07974",
+        title: "LiveCodeBench: Holistic and Contamination Free Evaluation of Large Language Models for Code",
+        publisher: "arXiv (Naman Jain et al.)",
+        publishedDate: "2024-03-12",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "In this work, we propose LiveCodeBench, a comprehensive and contamination-free evaluation of LLMs for code",
+      },
+      {
+        url: "https://github.com/LiveCodeBench/LiveCodeBench",
+        title: "LiveCodeBench official repository",
+        publisher: "LiveCodeBench",
+        publishedDate: "2024-03-12",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/2403.07974",
+        title: "LiveCodeBench (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["livecodebench", "benchmark", "evaluation", "code", "contamination-free", "jain", "2024"],
   },
 ];
 
