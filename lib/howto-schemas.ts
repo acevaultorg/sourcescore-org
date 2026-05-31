@@ -60,6 +60,26 @@ export const haystackHowTo: HowToSchema = {
   ],
 };
 
+export const langgraphHowTo: HowToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "Integrate SourceScore VERITAS into LangGraph",
+  description:
+    "Wire VERITAS into a LangGraph StateGraph: a retrieve node that pulls signed claims, plus a verify node that confirms the generated answer is backed by a signed claim.",
+  totalTime: "PT20M",
+  tool: [
+    { "@type": "HowToTool", name: "LangGraph" },
+    { "@type": "HowToTool", name: "Python" },
+  ],
+  supply: COMMON_SUPPLY,
+  step: [
+    { "@type": "HowToStep", position: 1, name: "Install dependencies", text: "pip install langgraph langchain-openai requests" },
+    { "@type": "HowToStep", position: 2, name: "Add a veritas_retrieve node", text: "GET /api/v1/search and put the returned results[] (signed claims) into graph state." },
+    { "@type": "HowToStep", position: 3, name: "Add a veritas_verify node", text: "POST the generated answer to /api/v1/verify; mark the run grounded when a bestMatch is returned." },
+    { "@type": "HowToStep", position: 4, name: "Wire the StateGraph", text: "set_entry_point(retrieve); conditional edge to generate when claims exist; generate to verify to END; compile + invoke." },
+  ],
+};
+
 export const openaiToolsHowTo: HowToSchema = {
   "@context": "https://schema.org",
   "@type": "HowTo",

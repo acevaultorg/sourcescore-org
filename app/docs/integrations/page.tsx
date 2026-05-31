@@ -43,6 +43,13 @@ const guides = [
       "Two Haystack 2.x components: a retriever that pulls signed VERITAS claims, and a verifier that drops any document not backed by a high-confidence claim. Wire them into a normal Pipeline with PromptBuilder + OpenAIGenerator.",
   },
   {
+    slug: "langgraph",
+    name: "LangGraph",
+    status: "ready",
+    summary:
+      "A StateGraph with two VERITAS nodes: a retrieve node that pulls signed claims, and a verify node that confirms the generated answer is backed by a signed claim before you return it. Conditional edge short-circuits when no claim matches.",
+  },
+  {
     slug: "openai-tools",
     name: "OpenAI Tool Calls",
     status: "ready",
