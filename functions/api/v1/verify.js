@@ -31,14 +31,18 @@
 //   - "verified" = bestMatch exists AND best match's claim.confidence ≥ minConfidence
 //   - else `notVerified: true`
 //
-// Known limit: pure keyword overlap can't tell "AI model" from "model of car".
-// Day 30+: replace with semantic-similarity scoring (sentence-transformer
-// embeddings via Vectorize). The threshold + envelope logic stays identical.
+// Ranking: SEMANTIC by default (Workers AI bge-m3 embedding → Vectorize cosine,
+// `method:"semantic"`, floor 0.50) which understands meaning — so "my favorite
+// model of car is fast" correctly returns notVerified. Falls back to keyword
+// overlap (`method:"keyword"`, floor 0.30) when the AI/VECTORIZE bindings are
+// absent or error, so /verify can never break. The envelope shape is identical
+// either way; the `method` field tells the caller which path ran.
 
 const MIN_CLAIM_LEN = 5;
 const MAX_CLAIM_LEN = 1000;
 const DEFAULT_MIN_CONFIDENCE = 0.85;
 const DEFAULT_MIN_MATCH_SCORE = 0.3;
+const SEMANTIC_MIN_SCORE = 0.5; // cosine-similarity floor (bge-m3) for a "verified" semantic match
 const MAX_MATCHES_RETURNED = 5;
 const MAX_FIELD_WEIGHT = 5; // highest single-field weight (subject) — matchScore denominator basis
 
@@ -104,12 +108,28 @@ export async function onRequest(context) {
   let candidates = index.claims;
   if (vertical) candidates = candidates.filter((c) => c.vertical === vertical);
 
-  const ranked = rankCandidates(candidates, claim);
+  // Prefer SEMANTIC ranking (Workers AI embed → Vectorize cosine) when the
+  // bindings are present; fall back to keyword overlap otherwise AND on any
+  // error, so /verify never breaks. Semantic understands meaning — it kills
+  // the keyword false-positive class ("my favorite model of car is fast").
+  let ranked;
+  let method = "keyword";
+  if (env.AI && env.VECTORIZE) {
+    try {
+      ranked = await rankSemantic(env, claim, candidates);
+      method = "semantic";
+    } catch {
+      ranked = undefined; // fall through to keyword
+    }
+  }
+  if (!ranked) ranked = rankCandidates(candidates, claim);
+
   const topN = ranked.slice(0, MAX_MATCHES_RETURNED);
+  const minMatch = method === "semantic" ? SEMANTIC_MIN_SCORE : DEFAULT_MIN_MATCH_SCORE;
 
   const bestRaw = ranked[0];
   const bestMatch =
-    bestRaw && bestRaw.matchScore >= DEFAULT_MIN_MATCH_SCORE && bestRaw.claim.confidence >= minConfidence
+    bestRaw && bestRaw.matchScore >= minMatch && bestRaw.claim.confidence >= minConfidence
       ? toSummary(bestRaw.claim)
       : undefined;
 
@@ -118,6 +138,7 @@ export async function onRequest(context) {
     methodology: index.methodology,
     query: claim,
     minConfidence,
+    method,
     matches: topN.map((m) => ({
       claim: toSummary(m.claim),
       matchScore: round2(m.matchScore),
@@ -144,6 +165,32 @@ async function loadIndex(env, requestUrl) {
   const res = await env.ASSETS.fetch(indexUrl);
   if (!res.ok) throw new Error(`asset fetch ${indexUrl.pathname} → ${res.status}`);
   return res.json();
+}
+
+// Semantic ranking: embed the query (Workers AI · bge-m3) and ask Vectorize for
+// the nearest claim vectors (cosine). Returns matches in the SAME shape as
+// rankCandidates so the envelope logic is identical. Throws on any binding/embed
+// failure so the caller falls back to keyword overlap — production never breaks.
+async function rankSemantic(env, queryClaim, candidates) {
+  const emb = await env.AI.run("@cf/baai/bge-m3", { text: [queryClaim] });
+  const vec = emb && emb.data && emb.data[0];
+  if (!Array.isArray(vec)) throw new Error("embed shape mismatch");
+  const res = await env.VECTORIZE.query(vec, { topK: MAX_MATCHES_RETURNED });
+  // Map id → full claim so we can hydrate (and honor any vertical pre-filter).
+  const byId = new Map(candidates.map((c) => [c.id, c]));
+  const out = [];
+  for (const m of res.matches || []) {
+    const claim = byId.get(m.id);
+    if (!claim) continue; // filtered out by vertical, or stale id in the index
+    const score = clamp(m.score, 0, 1);
+    out.push({
+      claim,
+      matchScore: score,
+      rationale: `Semantic similarity ${round2(score)} (vector embedding match).`,
+    });
+  }
+  // Vectorize returns matches sorted by score desc; keep that order.
+  return out;
 }
 
 function rankCandidates(claims, queryClaim) {
