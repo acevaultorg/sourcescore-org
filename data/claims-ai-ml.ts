@@ -19,9 +19,11 @@
 // foundational methods, datasets, and well-known organizations. Each has been
 // hand-verified against the cited sources on 2026-05-16.
 //
-// 2026-05-31 gap-analysis batch: +5 claims (351 total) closing genuine catalog
-// gaps in foundational methods + benchmark-origin papers — GQA, GRPO, GPQA,
-// GSM8K, MATH — each verified against arXiv primary + official repo/venue + HF.
+// 2026-05-31 gap-analysis batch 1: +5 claims (351) closing genuine catalog gaps
+// in foundational methods + benchmark-origin papers — GQA, GRPO, GPQA, GSM8K,
+// MATH — each verified against arXiv primary + official repo/venue + HF.
+// 2026-05-31 gap-analysis batch 2: +5 more (356 total) — HellaSwag, TruthfulQA,
+// BIG-bench, ORPO, RMSNorm — same second-order vein, same 3-source discipline.
 //
 // Expansion path: continue to ~150 claims. Vertical stays "ai-ml" for v0.
 // New verticals (cs, data, eng) deferred to Y2 enterprise tier.
@@ -10843,6 +10845,202 @@ export const seedClaims: SeedClaim[] = [
     lastVerified: "2026-05-31",
     methodologyVersion: METHODOLOGY,
     tags: ["math-dataset", "benchmark", "dataset", "mathematics", "competition", "reasoning", "hendrycks", "2021"],
+  },
+
+  // ─── Gap-analysis batch 2 (2026-05-31): more benchmark-origin + method papers ─
+  // Same second-order vein — eval benchmarks + architecture/alignment methods
+  // behind the famous models, none in the prior 351. Verified 2026-05-31 against
+  // arXiv primary + official repo + Hugging Face. Facts only (no perf numbers).
+  {
+    vertical: "ai-ml",
+    subject: "HellaSwag benchmark",
+    predicate: "introduced_in_paper",
+    object: "HellaSwag: Can a Machine Really Finish Your Sentence? (Zellers et al., 2019)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/1905.07830",
+        title: "HellaSwag: Can a Machine Really Finish Your Sentence?",
+        publisher: "arXiv (Zellers, Holtzman, Bisk, Farhadi, Choi — UW + Allen AI)",
+        publishedDate: "2019-05-19",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "In this paper, we show that commonsense inference still proves difficult for even state-of-the-art models, by presenting HellaSwag, a new challenge dataset.",
+      },
+      {
+        url: "https://github.com/rowanz/hellaswag",
+        title: "HellaSwag dataset repository",
+        publisher: "Rowan Zellers (rowanz)",
+        publishedDate: "2019-05-19",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/1905.07830",
+        title: "HellaSwag (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["hellaswag", "benchmark", "evaluation", "commonsense", "nli", "zellers", "2019"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "TruthfulQA benchmark",
+    predicate: "introduced_in_paper",
+    object: "TruthfulQA: Measuring How Models Mimic Human Falsehoods (Lin et al., 2021)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2109.07958",
+        title: "TruthfulQA: Measuring How Models Mimic Human Falsehoods",
+        publisher: "arXiv (Lin, Hilton, Evans — University of Oxford + OpenAI)",
+        publishedDate: "2021-09-08",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "The benchmark comprises 817 questions that span 38 categories, including health, law, finance and politics.",
+      },
+      {
+        url: "https://github.com/sylinrl/TruthfulQA",
+        title: "TruthfulQA benchmark repository",
+        publisher: "Stephanie Lin (sylinrl)",
+        publishedDate: "2021-09-08",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/2109.07958",
+        title: "TruthfulQA (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["truthfulqa", "benchmark", "evaluation", "truthfulness", "hallucination", "lin", "2021"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "BIG-bench",
+    predicate: "introduced_in_paper",
+    object:
+      "Beyond the Imitation Game: Quantifying and extrapolating the capabilities of language models (Srivastava et al., 2022)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2206.04615",
+        title: "Beyond the Imitation Game: Quantifying and extrapolating the capabilities of language models",
+        publisher: "arXiv (Srivastava et al. — 450 authors across 132 institutions)",
+        publishedDate: "2022-06-09",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "we introduce the Beyond the Imitation Game benchmark (BIG-bench). BIG-bench currently consists of 204 tasks, contributed by 450 authors across 132 institutions.",
+      },
+      {
+        url: "https://github.com/google/BIG-bench",
+        title: "BIG-bench collaborative benchmark repository",
+        publisher: "Google",
+        publishedDate: "2022-06-09",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/2206.04615",
+        title: "BIG-bench (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["big-bench", "bigbench", "benchmark", "evaluation", "srivastava", "2022", "google"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "Odds Ratio Preference Optimization (ORPO)",
+    predicate: "introduced_in_paper",
+    object: "ORPO: Monolithic Preference Optimization without Reference Model (Hong et al., 2024)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2403.07691",
+        title: "ORPO: Monolithic Preference Optimization without Reference Model",
+        publisher: "arXiv (Hong, Lee, Thorne — KAIST AI)",
+        publishedDate: "2024-03-12",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "we introduce a straightforward and innovative reference model-free monolithic odds ratio preference optimization algorithm, ORPO",
+      },
+      {
+        url: "https://github.com/xfactlab/orpo",
+        title: "ORPO official repository",
+        publisher: "KAIST AI (xfactlab)",
+        publishedDate: "2024-03-12",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/2403.07691",
+        title: "ORPO (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["orpo", "odds-ratio-preference-optimization", "alignment", "preference-optimization", "rlhf", "hong", "2024"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "RMSNorm (Root Mean Square Layer Normalization)",
+    predicate: "introduced_in_paper",
+    object: "Root Mean Square Layer Normalization (Zhang & Sennrich, 2019)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/1910.07467",
+        title: "Root Mean Square Layer Normalization",
+        publisher: "arXiv (Biao Zhang, Rico Sennrich — Edinburgh + Zurich)",
+        publishedDate: "2019-10-16",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "RMSNorm regularizes the summed inputs to a neuron in one layer according to root mean square (RMS), giving the model re-scaling invariance property and implicit learning rate adaptation ability.",
+      },
+      {
+        url: "https://github.com/bzhangGo/rmsnorm",
+        title: "RMSNorm reference implementation",
+        publisher: "Biao Zhang (bzhangGo)",
+        publishedDate: "2019-10-16",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/1910.07467",
+        title: "RMSNorm (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["rmsnorm", "root-mean-square-layer-normalization", "normalization", "layernorm", "architecture", "zhang", "2019"],
   },
 ];
 
