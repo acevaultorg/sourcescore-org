@@ -19,6 +19,10 @@
 // foundational methods, datasets, and well-known organizations. Each has been
 // hand-verified against the cited sources on 2026-05-16.
 //
+// 2026-05-31 gap-analysis batch: +5 claims (351 total) closing genuine catalog
+// gaps in foundational methods + benchmark-origin papers — GQA, GRPO, GPQA,
+// GSM8K, MATH — each verified against arXiv primary + official repo/venue + HF.
+//
 // Expansion path: continue to ~150 claims. Vertical stays "ai-ml" for v0.
 // New verticals (cs, data, eng) deferred to Y2 enterprise tier.
 
@@ -10641,6 +10645,204 @@ export const seedClaims: SeedClaim[] = [
     lastVerified: TODAY,
     methodologyVersion: METHODOLOGY,
     tags: ["claude-haiku-4-5", "anthropic", "fast-tier", "released_on", "2025"],
+  },
+
+  // ─── Foundational methods + benchmarks (2026-05-31 gap-analysis batch) ──────
+  // Genuine catalog gaps (none of these subjects existed in the 346-claim seed).
+  // Each verified 2026-05-31 against its arXiv primary + an official repo/venue
+  // + Hugging Face. Facts only (paper-introduction + dataset composition) — no
+  // performance numbers, per calibration rule #4.
+  {
+    vertical: "ai-ml",
+    subject: "Grouped-Query Attention (GQA)",
+    predicate: "introduced_in_paper",
+    object:
+      "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints (Ainslie et al., 2023)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2305.13245",
+        title: "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints",
+        publisher: "arXiv (Ainslie, Lee-Thorp, de Jong, Zemlyanskiy, Lebrón, Sanghai — Google Research)",
+        publishedDate: "2023-05-22",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "introduce grouped-query attention (GQA), a generalization of multi-query attention which uses an intermediate (more than one, less than number of query heads) number of key-value heads.",
+      },
+      {
+        url: "https://aclanthology.org/2023.emnlp-main.298/",
+        title: "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints (EMNLP 2023)",
+        publisher: "Association for Computational Linguistics",
+        publishedDate: "2023-12-06",
+        accessedDate: "2026-05-31",
+        type: "peer-reviewed",
+      },
+      {
+        url: "https://huggingface.co/papers/2305.13245",
+        title: "GQA (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["gqa", "grouped-query-attention", "attention", "transformer", "inference", "ainslie", "2023", "emnlp"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "Group Relative Policy Optimization (GRPO)",
+    predicate: "introduced_in_paper",
+    object:
+      "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models (Shao et al., 2024)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2402.03300",
+        title: "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models",
+        publisher: "arXiv (Shao, Wang, Zhu, Xu, Song, Bi, Zhang, Zhang, Li, Wu, Guo — DeepSeek AI)",
+        publishedDate: "2024-02-05",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "We introduce Group Relative Policy Optimization (GRPO), a variant of Proximal Policy Optimization (PPO),",
+      },
+      {
+        url: "https://github.com/deepseek-ai/DeepSeek-Math",
+        title: "DeepSeek-Math reference implementation",
+        publisher: "DeepSeek AI",
+        publishedDate: "2024-02-05",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/2402.03300",
+        title: "DeepSeekMath (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["grpo", "group-relative-policy-optimization", "deepseekmath", "reinforcement-learning", "rlhf", "reasoning", "shao", "2024", "deepseek"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "GPQA benchmark",
+    predicate: "introduced_in_paper",
+    object: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark (Rein et al., 2023)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2311.12022",
+        title: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark",
+        publisher: "arXiv (Rein, Hou, Stickland, Petty, Pang, Dirani, Michael, Bowman)",
+        publishedDate: "2023-11-20",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "We present GPQA, a challenging dataset of 448 multiple-choice questions written by domain experts in biology, physics, and chemistry.",
+      },
+      {
+        url: "https://github.com/idavidrein/gpqa",
+        title: "GPQA reference repository",
+        publisher: "David Rein (idavidrein)",
+        publishedDate: "2023-11-20",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/datasets/Idavidrein/gpqa",
+        title: "GPQA dataset card",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "model-card",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["gpqa", "benchmark", "evaluation", "graduate-level", "google-proof", "reasoning", "rein", "2023"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "GSM8K",
+    predicate: "introduced_in_paper",
+    object: "Training Verifiers to Solve Math Word Problems (Cobbe et al., 2021)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2110.14168",
+        title: "Training Verifiers to Solve Math Word Problems",
+        publisher: "arXiv (Cobbe, Kosaraju, Bavarian, Chen, Jun, Kaiser, Plappert, Tworek, Hilton, Nakano, Hesse, Schulman — OpenAI)",
+        publishedDate: "2021-10-27",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "we introduce GSM8K, a dataset of 8.5K high quality linguistically diverse grade school math word problems.",
+      },
+      {
+        url: "https://github.com/openai/grade-school-math",
+        title: "GSM8K dataset repository (grade-school-math)",
+        publisher: "OpenAI",
+        publishedDate: "2021-10-27",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/datasets/openai/gsm8k",
+        title: "GSM8K dataset card",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "model-card",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["gsm8k", "benchmark", "dataset", "math", "word-problems", "reasoning", "openai", "cobbe", "2021"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "MATH dataset",
+    predicate: "introduced_in_paper",
+    object: "Measuring Mathematical Problem Solving With the MATH Dataset (Hendrycks et al., 2021)",
+    confidence: 0.92,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/2103.03874",
+        title: "Measuring Mathematical Problem Solving With the MATH Dataset",
+        publisher: "arXiv (Hendrycks, Burns, Kadavath, Arora, Basart, Tang, Song, Steinhardt)",
+        publishedDate: "2021-03-05",
+        accessedDate: "2026-05-31",
+        type: "preprint",
+        excerpt:
+          "we introduce MATH, a new dataset of 12,500 challenging competition mathematics problems.",
+      },
+      {
+        url: "https://github.com/hendrycks/math",
+        title: "MATH dataset repository",
+        publisher: "Dan Hendrycks (hendrycks)",
+        publishedDate: "2021-03-05",
+        accessedDate: "2026-05-31",
+        type: "github-release",
+      },
+      {
+        url: "https://huggingface.co/papers/2103.03874",
+        title: "MATH dataset paper (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-05-31",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-05-31T00:00:00Z",
+    lastVerified: "2026-05-31",
+    methodologyVersion: METHODOLOGY,
+    tags: ["math-dataset", "benchmark", "dataset", "mathematics", "competition", "reasoning", "hendrycks", "2021"],
   },
 ];
 
