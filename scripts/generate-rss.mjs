@@ -1,10 +1,11 @@
 // Generate /out/feed.xml (RSS 2.0) for /blog/ posts.
 //
-// Run from postbuild. Hardcoded post list for v0 (1 post); when operator
-// adds post #2, extend POSTS array OR refactor to read from a JSON
-// catalog emitted by the blog page generator.
+// Post list is the single source of truth at data/blog-posts.json — the same
+// catalog app/blog/page.tsx renders. Previously this script kept its own
+// hardcoded array and drifted (feed lagged at 4 of 8 posts); reading the shared
+// file keeps /feed.xml in lock-step with the blog index automatically.
 //
-// Pattern: matches scripts/generate-sitemap.mjs (postbuild, writes to /out/).
+// Run from postbuild. Pattern: matches scripts/generate-sitemap.mjs.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -13,43 +14,7 @@ const OUT_DIR = "out";
 const SITE = "https://sourcescore.org";
 const TODAY = new Date().toUTCString();
 
-const POSTS = [
-  {
-    slug: "multi-llm-grounding-2026",
-    title:
-      "Multi-LLM grounding in 2026 — build once, deploy across OpenAI, Anthropic, Google, and open-weight",
-    summary:
-      "Single-provider lock-in is fragile in 2026. Pricing shifts, capability changes, and outages all argue for portability. The architecture pattern that keeps your grounding layer LLM-agnostic — same verification, citation, and source-quality across every provider.",
-    publishedDate: "2026-05-17T00:00:00Z",
-    tags: ["multi-llm", "architecture", "portability", "router", "adapter", "grounding"],
-  },
-  {
-    slug: "why-no-performance-claims",
-    title:
-      "Why VERITAS doesn't ship performance-comparison claims (and what we ship instead)",
-    summary:
-      "Benchmark numbers vary by prompt format, model version, shot count, and evaluation harness. Shipping them as verified claims is the surest way to make the catalog wrong by Thursday. The methodology rules we keep — and the trust math they preserve.",
-    publishedDate: "2026-05-16T00:00:00Z",
-    tags: ["methodology", "trust", "benchmarks", "veritas"],
-  },
-  {
-    slug: "verify-ai-facts-five-lines-python",
-    title: "Verifying AI-generated facts in 5 lines of Python",
-    summary:
-      "Drop SourceScore VERITAS into your LLM pipeline as a post-generation check. Every claim the model emits gets a confidence score plus canonical citation before the user sees it. Five-line client + a generate-then-verify loop pattern.",
-    publishedDate: "2026-05-16T00:00:00Z",
-    tags: ["tutorial", "python", "veritas", "hallucination"],
-  },
-  {
-    slug: "launching-veritas",
-    title:
-      "Stop hallucinating: a developer API for grounding LLM responses with signed, sourced claims",
-    summary:
-      "VERITAS is a free-tier-friendly API that returns hand-verified AI/ML claims with their primary sources, an HMAC-SHA256 signature, and a ready-to-paste citation. 100 claims today, expanding through Q3.",
-    publishedDate: "2026-05-16T00:00:00Z",
-    tags: ["launch", "veritas", "api", "llm-grounding"],
-  },
-];
+const POSTS = JSON.parse(fs.readFileSync("data/blog-posts.json", "utf8"));
 
 const xmlEscape = (s) =>
   s

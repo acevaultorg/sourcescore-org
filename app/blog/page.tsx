@@ -1,90 +1,20 @@
-// Blog index — single post at launch; expands as operator publishes more.
-//
-// Posts list lives inline for v0; when post count exceeds ~5, refactor to
-// a data/blog-posts.ts catalog + auto-build the index.
+// Blog index. Post list is the single source of truth at data/blog-posts.json,
+// also consumed by scripts/generate-rss.mjs so /feed.xml never drifts from this
+// index (the two were previously separate hardcoded lists — RSS lagged at 4 of 8).
 
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
+import blogPosts from "@/data/blog-posts.json";
 
 interface PostMeta {
   slug: string;
   title: string;
-  subtitle: string;
+  summary: string;
   publishedDate: string;
   tags: string[];
 }
 
-const POSTS: PostMeta[] = [
-  {
-    slug: "can-you-cite-chatgpt-ai-as-a-source",
-    title: "Can you cite ChatGPT or AI as a source? (and how to do it right)",
-    subtitle:
-      "Short answer: cite the source, not the AI. You can disclose ChatGPT as a tool you used, but never as the source of a fact — it fabricates. How to reference and verify AI properly, with APA/MLA notes.",
-    publishedDate: "2026-05-31",
-    tags: ["cite-chatgpt", "citing-ai", "academic", "apa", "mla", "ai-hallucination", "guide"],
-  },
-  {
-    slug: "how-to-tell-if-a-source-is-reliable",
-    title: "How to tell if a source is reliable: a 3-signal checklist",
-    subtitle:
-      "A practical way to judge any source — does credible work cite it, does it stay current and correct itself, and are people citing it now — plus how to check 130+ sources instantly on the SourceScore Index.",
-    publishedDate: "2026-05-31",
-    tags: ["source-reliability", "credibility", "evaluating-sources", "citation", "guide", "fact-checking"],
-  },
-  {
-    slug: "multi-llm-grounding-2026",
-    title:
-      "Multi-LLM grounding in 2026 — build once, deploy across OpenAI, Anthropic, Google, and open-weight",
-    subtitle:
-      "Single-provider lock-in is fragile in 2026. Pricing shifts, capability changes, and outages all argue for portability. The architecture pattern that keeps your grounding layer LLM-agnostic — same verification, citation, and source-quality across every provider.",
-    publishedDate: "2026-05-17",
-    tags: ["multi-llm", "architecture", "portability", "router", "adapter", "grounding"],
-  },
-  {
-    slug: "llm-grounding-strategies-2026",
-    title:
-      "Six grounding strategies that actually reduce LLM hallucination (and the trade-offs)",
-    subtitle:
-      "Prompt engineering buys 10-30%. Retrieval-augmented generation buys another 20-40%. Signed-claim verification closes the long tail. Six strategies, their measured impact, and when to combine.",
-    publishedDate: "2026-05-17",
-    tags: ["grounding", "hallucination", "rag", "verification", "production", "patterns"],
-  },
-  {
-    slug: "llm-framework-comparison-2026",
-    title:
-      "LLM framework comparison 2026 — LangChain vs LlamaIndex vs OpenAI tools vs DSPy vs Pydantic AI vs Vercel AI SDK vs Anthropic SDK",
-    subtitle:
-      "Seven LLM frameworks own most of 2026 dev mindshare. They optimize for different things — orchestration, retrieval, type-safety, vendor-native, deployment ergonomics. Pick by archetype + audience + commitment.",
-    publishedDate: "2026-05-16",
-    tags: ["framework", "comparison", "langchain", "llamaindex", "openai", "anthropic", "dspy", "pydantic-ai", "vercel-ai-sdk"],
-  },
-  {
-    slug: "why-no-performance-claims",
-    title:
-      "Why VERITAS doesn't ship performance-comparison claims (and what we ship instead)",
-    subtitle:
-      "Benchmark numbers vary by prompt format, model version, shot count, and evaluation harness. Shipping them as 'verified claims' is the surest way to make the catalog wrong by Thursday. Here's the alternative.",
-    publishedDate: "2026-05-16",
-    tags: ["methodology", "trust", "benchmarks", "veritas"],
-  },
-  {
-    slug: "verify-ai-facts-five-lines-python",
-    title: "Verifying AI-generated facts in 5 lines of Python",
-    subtitle:
-      "Drop SourceScore VERITAS into your LLM pipeline as a post-generation check. Every claim the model emits gets a confidence score + canonical citation before the user sees it.",
-    publishedDate: "2026-05-16",
-    tags: ["tutorial", "python", "veritas", "hallucination"],
-  },
-  {
-    slug: "launching-veritas",
-    title:
-      "Stop hallucinating: a developer API for grounding LLM responses with signed, sourced claims",
-    subtitle:
-      "VERITAS is a free-tier-friendly API that returns hand-verified AI/ML claims with their primary sources, an HMAC-SHA256 signature, and a ready-to-paste citation.",
-    publishedDate: "2026-05-16",
-    tags: ["launch", "veritas", "api", "llm-grounding"],
-  },
-];
+const POSTS: PostMeta[] = blogPosts;
 
 export const metadata: Metadata = {
   title: { absolute: "Blog — SourceScore" },
@@ -176,7 +106,7 @@ export default function BlogIndex() {
               </a>
             </h2>
             <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              {p.subtitle}
+              {p.summary}
             </p>
             <p className="mt-3">
               <a
