@@ -16,6 +16,14 @@ interface PostMeta {
 
 const POSTS: PostMeta[] = [
   {
+    slug: "how-to-tell-if-a-source-is-reliable",
+    title: "How to tell if a source is reliable: a 3-signal checklist",
+    subtitle:
+      "A practical way to judge any source — does credible work cite it, does it stay current and correct itself, and are people citing it now — plus how to check 130+ sources instantly on the SourceScore Index.",
+    publishedDate: "2026-05-31",
+    tags: ["source-reliability", "credibility", "evaluating-sources", "citation", "guide", "fact-checking"],
+  },
+  {
     slug: "multi-llm-grounding-2026",
     title:
       "Multi-LLM grounding in 2026 — build once, deploy across OpenAI, Anthropic, Google, and open-weight",
