@@ -30,6 +30,9 @@
 // attention, GELU, Neural Turing Machine — classic pre-transformer-era
 // foundations absent from the Day-1 cohort. arXiv primary (verbatim excerpt +
 // v1 date) + Hugging Face Papers mirror, both verified resolving 2026-06-01.
+// 2026-06-01 foundational-gap batch 2: +4 more (368 total) — Pointer Networks,
+// Deep Q-Network (Playing Atari), Show and Tell (image captioning), VGG. Same
+// discipline: arXiv primary (verbatim excerpt + v1 date) + HF Papers mirror.
 //
 // Expansion path: continue to ~150 claims. Vertical stays "ai-ml" for v0.
 // New verticals (cs, data, eng) deferred to Y2 enterprise tier.
@@ -11341,6 +11344,131 @@ export const seedClaims: SeedClaim[] = [
     lastVerified: "2026-06-01",
     methodologyVersion: METHODOLOGY,
     tags: ["neural-turing-machine", "memory-augmented", "graves", "deepmind", "foundational", "2014"],
+  },
+
+  // ─── 2026-06-01 foundational-gap batch 2: +4 ─────────────────────────
+  // More classic pre-/early-deep-learning foundations absent from the cohort.
+  // arXiv primary (verbatim abstract excerpt + v1 date) + Hugging Face Papers
+  // mirror — both verified resolving 2026-06-01. 2 independent publishers → 0.82.
+  {
+    vertical: "ai-ml",
+    subject: "Pointer Networks",
+    predicate: "introduced_in_paper",
+    object: "Pointer Networks (Vinyals et al., 2015)",
+    confidence: 0.82,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/1506.03134",
+        title: "Pointer Networks",
+        publisher: "arXiv (Oriol Vinyals, Meire Fortunato, Navdeep Jaitly)",
+        publishedDate: "2015-06-09",
+        accessedDate: "2026-06-01",
+        type: "preprint",
+        excerpt:
+          "We introduce a new neural architecture to learn the conditional probability of an output sequence with elements that are discrete tokens corresponding to positions in an input sequence.",
+      },
+      {
+        url: "https://huggingface.co/papers/1506.03134",
+        title: "Pointer Networks (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-06-01",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-06-01T00:00:00Z",
+    lastVerified: "2026-06-01",
+    methodologyVersion: METHODOLOGY,
+    tags: ["pointer-networks", "attention", "seq2seq", "vinyals", "foundational", "2015"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "Deep Q-Network (DQN)",
+    predicate: "introduced_in_paper",
+    object: "Playing Atari with Deep Reinforcement Learning (Mnih et al., 2013)",
+    confidence: 0.82,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/1312.5602",
+        title: "Playing Atari with Deep Reinforcement Learning",
+        publisher: "arXiv (Volodymyr Mnih, Koray Kavukcuoglu, David Silver, et al.)",
+        publishedDate: "2013-12-19",
+        accessedDate: "2026-06-01",
+        type: "preprint",
+        excerpt:
+          "We present the first deep learning model to successfully learn control policies directly from high-dimensional sensory input using reinforcement learning. The model is a convolutional neural network, trained with a variant of Q-learning, whose input is raw pixels and whose output is a value function estimating future rewards.",
+      },
+      {
+        url: "https://huggingface.co/papers/1312.5602",
+        title: "Playing Atari with Deep Reinforcement Learning (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-06-01",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-06-01T00:00:00Z",
+    lastVerified: "2026-06-01",
+    methodologyVersion: METHODOLOGY,
+    tags: ["dqn", "deep-reinforcement-learning", "q-learning", "atari", "mnih", "deepmind", "foundational", "2013"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "Show and Tell (Neural Image Caption Generator)",
+    predicate: "introduced_in_paper",
+    object: "Show and Tell: A Neural Image Caption Generator (Vinyals et al., 2014)",
+    confidence: 0.82,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/1411.4555",
+        title: "Show and Tell: A Neural Image Caption Generator",
+        publisher: "arXiv (Oriol Vinyals, Alexander Toshev, Samy Bengio, Dumitru Erhan)",
+        publishedDate: "2014-11-17",
+        accessedDate: "2026-06-01",
+        type: "preprint",
+        excerpt:
+          "Automatically describing the content of an image is a fundamental problem in artificial intelligence that connects computer vision and natural language processing. In this paper, we present a generative model based on a deep recurrent architecture that combines recent advances in computer vision and machine translation and that can be used to generate natural sentences describing an image.",
+      },
+      {
+        url: "https://huggingface.co/papers/1411.4555",
+        title: "Show and Tell: A Neural Image Caption Generator (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-06-01",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-06-01T00:00:00Z",
+    lastVerified: "2026-06-01",
+    methodologyVersion: METHODOLOGY,
+    tags: ["show-and-tell", "image-captioning", "vision-language", "vinyals", "foundational", "2014"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "VGG (Very Deep Convolutional Networks)",
+    predicate: "introduced_in_paper",
+    object: "Very Deep Convolutional Networks for Large-Scale Image Recognition (Simonyan & Zisserman, 2014)",
+    confidence: 0.82,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/1409.1556",
+        title: "Very Deep Convolutional Networks for Large-Scale Image Recognition",
+        publisher: "arXiv (Karen Simonyan, Andrew Zisserman)",
+        publishedDate: "2014-09-04",
+        accessedDate: "2026-06-01",
+        type: "preprint",
+        excerpt:
+          "In this work we investigate the effect of the convolutional network depth on its accuracy in the large-scale image recognition setting. Our main contribution is a thorough evaluation of networks of increasing depth using an architecture with very small (3x3) convolution filters, which shows that a significant improvement on the prior-art configurations can be achieved by pushing the depth to 16-19 weight layers.",
+      },
+      {
+        url: "https://huggingface.co/papers/1409.1556",
+        title: "Very Deep Convolutional Networks for Large-Scale Image Recognition (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-06-01",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-06-01T00:00:00Z",
+    lastVerified: "2026-06-01",
+    methodologyVersion: METHODOLOGY,
+    tags: ["vgg", "convolutional-network", "image-recognition", "simonyan", "zisserman", "foundational", "2014"],
   },
 ];
 
