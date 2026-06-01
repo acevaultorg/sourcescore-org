@@ -26,6 +26,10 @@
 // BIG-bench, ORPO, RMSNorm — same second-order vein, same 3-source discipline.
 // 2026-05-31 gap-analysis batch 3: +5 more (361 total) — KTO, SimPO, MMLU-Pro,
 // FlashAttention-2, LiveCodeBench — alignment methods + 2024 evals + FA2.
+// 2026-06-01 foundational-gap batch: +3 more (364 total) — Additive (Bahdanau)
+// attention, GELU, Neural Turing Machine — classic pre-transformer-era
+// foundations absent from the Day-1 cohort. arXiv primary (verbatim excerpt +
+// v1 date) + Hugging Face Papers mirror, both verified resolving 2026-06-01.
 //
 // Expansion path: continue to ~150 claims. Vertical stays "ai-ml" for v0.
 // New verticals (cs, data, eng) deferred to Y2 enterprise tier.
@@ -11240,6 +11244,103 @@ export const seedClaims: SeedClaim[] = [
     lastVerified: "2026-05-31",
     methodologyVersion: METHODOLOGY,
     tags: ["livecodebench", "benchmark", "evaluation", "code", "contamination-free", "jain", "2024"],
+  },
+
+  // ─── 2026-06-01 foundational-gap batch: +3 ───────────────────────────
+  // Classic pre-transformer-era foundations absent from the Day-1 cohort.
+  // Each: arXiv primary (verbatim abstract excerpt + v1 date) + Hugging Face
+  // Papers mirror — both verified resolving 2026-06-01. 2 independent
+  // publishers → confidence 0.82 (per calibration rule 1, 0.70-0.85 tier).
+  {
+    vertical: "ai-ml",
+    subject: "Additive (Bahdanau) attention",
+    predicate: "introduced_in_paper",
+    object:
+      "Neural Machine Translation by Jointly Learning to Align and Translate (Bahdanau et al., 2014)",
+    confidence: 0.82,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/1409.0473",
+        title: "Neural Machine Translation by Jointly Learning to Align and Translate",
+        publisher: "arXiv (Dzmitry Bahdanau, Kyunghyun Cho, Yoshua Bengio)",
+        publishedDate: "2014-09-01",
+        accessedDate: "2026-06-01",
+        type: "preprint",
+        excerpt:
+          "Neural machine translation is a recently proposed approach to machine translation. Unlike the traditional statistical machine translation, the neural machine translation aims at building a single neural network that can be jointly tuned to maximize the translation performance.",
+      },
+      {
+        url: "https://huggingface.co/papers/1409.0473",
+        title: "Neural Machine Translation by Jointly Learning to Align and Translate (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-06-01",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-06-01T00:00:00Z",
+    lastVerified: "2026-06-01",
+    methodologyVersion: METHODOLOGY,
+    tags: ["attention", "bahdanau", "alignment", "neural-machine-translation", "seq2seq", "foundational", "2014"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "GELU (Gaussian Error Linear Unit)",
+    predicate: "introduced_in_paper",
+    object: "Gaussian Error Linear Units (GELUs) (Hendrycks & Gimpel, 2016)",
+    confidence: 0.82,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/1606.08415",
+        title: "Gaussian Error Linear Units (GELUs)",
+        publisher: "arXiv (Dan Hendrycks, Kevin Gimpel)",
+        publishedDate: "2016-06-27",
+        accessedDate: "2026-06-01",
+        type: "preprint",
+        excerpt:
+          "We propose the Gaussian Error Linear Unit (GELU), a high-performing neural network activation function.",
+      },
+      {
+        url: "https://huggingface.co/papers/1606.08415",
+        title: "Gaussian Error Linear Units (GELUs) (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-06-01",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-06-01T00:00:00Z",
+    lastVerified: "2026-06-01",
+    methodologyVersion: METHODOLOGY,
+    tags: ["gelu", "activation-function", "hendrycks", "gimpel", "foundational", "transformers", "2016"],
+  },
+  {
+    vertical: "ai-ml",
+    subject: "Neural Turing Machine",
+    predicate: "introduced_in_paper",
+    object: "Neural Turing Machines (Graves et al., 2014)",
+    confidence: 0.82,
+    sources: [
+      {
+        url: "https://arxiv.org/abs/1410.5401",
+        title: "Neural Turing Machines",
+        publisher: "arXiv (Alex Graves, Greg Wayne, Ivo Danihelka)",
+        publishedDate: "2014-10-20",
+        accessedDate: "2026-06-01",
+        type: "preprint",
+        excerpt:
+          "We extend the capabilities of neural networks by coupling them to external memory resources, which they can interact with by attentional processes.",
+      },
+      {
+        url: "https://huggingface.co/papers/1410.5401",
+        title: "Neural Turing Machines (Hugging Face Papers)",
+        publisher: "Hugging Face",
+        accessedDate: "2026-06-01",
+        type: "docs",
+      },
+    ],
+    publishedAt: "2026-06-01T00:00:00Z",
+    lastVerified: "2026-06-01",
+    methodologyVersion: METHODOLOGY,
+    tags: ["neural-turing-machine", "memory-augmented", "graves", "deepmind", "foundational", "2014"],
   },
 ];
 
