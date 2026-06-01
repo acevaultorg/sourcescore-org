@@ -120,6 +120,19 @@ export default function MethodologyPage() {
         </a>
       </section>
 
+      {/* Reader-facing application of the methodology — cross-links the
+          broad-audience pillar so high-authority /methodology/ passes equity to it. */}
+      <p className="text-body-sm text-muted leading-relaxed mb-10 max-w-2xl">
+        Want the plain-English version? See{" "}
+        <a
+          href="/blog/how-to-tell-if-a-source-is-reliable/"
+          className="text-brand font-medium hover:underline"
+        >
+          how to tell if a source is reliable
+        </a>{" "}
+        — the same three signals, applied by hand to any source you&rsquo;re vetting.
+      </p>
+
       <section className="prose prose-invert max-w-none text-body text-text leading-relaxed space-y-6">
         <h2 className="text-heading-2 font-bold">The four sub-scores</h2>
         <ol className="list-decimal pl-5 space-y-2 text-muted">

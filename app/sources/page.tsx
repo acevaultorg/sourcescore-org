@@ -23,9 +23,29 @@ export default function SourcesIndexPage() {
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <h1 className="text-display-2 font-bold tracking-tight mb-3">All sources</h1>
-      <p className="text-body-lg text-muted leading-relaxed mb-6 max-w-2xl">
+      <p className="text-body-lg text-muted leading-relaxed mb-4 max-w-2xl">
         {sources.length} hand-scored sources across {categories.length} categories.
         Each links to a full SourceScore breakdown.
+      </p>
+
+      {/* Guide cross-link — passes link equity + funnels readers into the
+          broad-audience pillars (the three signals = the dimensions scored below). */}
+      <p className="text-body-sm text-muted leading-relaxed mb-8 max-w-2xl">
+        New here?{" "}
+        <a
+          href="/blog/how-to-tell-if-a-source-is-reliable/"
+          className="text-brand font-medium hover:underline"
+        >
+          How to tell if a source is reliable
+        </a>{" "}
+        explains the three signals behind every score below — or learn{" "}
+        <a
+          href="/blog/can-you-cite-chatgpt-ai-as-a-source/"
+          className="text-brand font-medium hover:underline"
+        >
+          whether you can cite ChatGPT as a source
+        </a>
+        .
       </p>
 
       {/* Browse by grade — quick filter chips */}
