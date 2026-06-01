@@ -16,6 +16,14 @@ interface PostMeta {
 
 const POSTS: PostMeta[] = [
   {
+    slug: "can-you-cite-chatgpt-ai-as-a-source",
+    title: "Can you cite ChatGPT or AI as a source? (and how to do it right)",
+    subtitle:
+      "Short answer: cite the source, not the AI. You can disclose ChatGPT as a tool you used, but never as the source of a fact — it fabricates. How to reference and verify AI properly, with APA/MLA notes.",
+    publishedDate: "2026-05-31",
+    tags: ["cite-chatgpt", "citing-ai", "academic", "apa", "mla", "ai-hallucination", "guide"],
+  },
+  {
     slug: "how-to-tell-if-a-source-is-reliable",
     title: "How to tell if a source is reliable: a 3-signal checklist",
     subtitle:
