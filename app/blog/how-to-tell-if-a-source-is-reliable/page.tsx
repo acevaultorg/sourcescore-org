@@ -235,6 +235,11 @@ export default function HowToTellSourceReliablePost() {
             <a href="/compare/">compare two sources head-to-head</a>.
           </li>
         </ul>
+        <p>
+          Starting a paper from scratch? See{" "}
+          <a href="/blog/how-to-find-reliable-sources/">how to find reliable sources for a research paper</a> —
+          the type-first approach that finds credible sources faster than scanning search results.
+        </p>
 
         <h2>Quick red flags</h2>
         <ul>
