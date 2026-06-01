@@ -62,3 +62,30 @@ deploy:
     - wrangler pages deploy out --project-name sourcescore --branch main --commit-dirty=true
   only:
     - main
+
+# Re-sync the CF Vectorize semantic index after claim-catalog changes, so
+# /api/v1/verify (semantic) returns newly-added claims. Runs ONLY when the
+# claims file (or this CI file) changed — content-only deploys skip it. CI
+# already holds SOURCESCORE_SIGNING_SECRET (used to sign the catalog); the same
+# secret gates /api/admin/reembed. Non-blocking: a transient re-embed failure
+# (e.g. a CF incident) does NOT fail the deploy — re-run by re-touching the file.
+reembed:
+  stage: deploy
+  image: node:24-bookworm-slim
+  needs:
+    - deploy
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends curl ca-certificates
+  script:
+    - test -n "$SOURCESCORE_SIGNING_SECRET"
+    # let the new deployment's claims.json propagate before the function reads it
+    - sleep 25
+    - 'KEY=$(node -e "console.log(encodeURIComponent(process.env.SOURCESCORE_SIGNING_SECRET||\"\"))")'
+    - 'curl -fsS --max-time 180 "https://sourcescore.org/api/admin/reembed?key=$KEY"'
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
+        - data/claims-ai-ml.ts
+        - .gitlab-ci.yml
+  allow_failure: true
