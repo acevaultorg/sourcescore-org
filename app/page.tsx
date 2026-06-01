@@ -448,7 +448,7 @@ export default function HomePage() {
               <strong className="text-text"> SourceScore Index</strong> &mdash; a single 0&ndash;100 grade per source.
             </p>
             <p>
-              We ship 25 hand-scored sources at this stage of v0.1. Methodology is intentionally
+              We ship {sources.length} hand-scored sources at this stage of v0.1. Methodology is intentionally
               transparent: every score has explicit signals you can re-derive. The production index will
               expand to 10,000+ sources via the same methodology, with weekly velocity refreshes and
               quarterly discipline re-audits.
@@ -460,6 +460,12 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-btn border border-brand/40 bg-surface-brand text-brand hover:bg-brand/15 transition-colors text-body-sm font-semibold"
             >
               Read the full methodology →
+            </a>
+            <a
+              href="/blog/how-to-tell-if-a-source-is-reliable/"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-btn border border-border bg-panel hover:bg-panel-hi text-text transition-colors text-body-sm"
+            >
+              How to tell if a source is reliable →
             </a>
             <a
               href="/about/"
