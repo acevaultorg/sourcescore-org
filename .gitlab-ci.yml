@@ -79,8 +79,12 @@ reembed:
     - apt-get install -y --no-install-recommends curl ca-certificates
   script:
     - test -n "$SOURCESCORE_SIGNING_SECRET"
-    # let the new deployment's claims.json propagate before the function reads it
-    - sleep 25
+    # Wait until the live claims.json reflects THIS deploy (count matches the
+    # committed source) before re-embedding — fixes the propagation race where
+    # a fixed sleep let reembed read a stale (pre-deploy) catalog.
+    - 'EXPECTED=$(grep -c "subject:" data/claims-ai-ml.ts)'
+    - 'echo "expected live claim count = $EXPECTED"'
+    - 'for i in $(seq 1 18); do LIVE=$(curl -fsS --max-time 20 "https://sourcescore.org/api/v1/claims.json" | grep -o "\"id\"" | wc -l | tr -d " "); echo "attempt $i live=$LIVE expected=$EXPECTED"; [ "$LIVE" = "$EXPECTED" ] && break; sleep 10; done'
     - 'KEY=$(node -e "console.log(encodeURIComponent(process.env.SOURCESCORE_SIGNING_SECRET||\"\"))")'
     - 'curl -fsS --max-time 180 "https://sourcescore.org/api/admin/reembed?key=$KEY"'
   rules:
