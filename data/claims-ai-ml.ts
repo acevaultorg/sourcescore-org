@@ -936,7 +936,7 @@ export const seedClaims: SeedClaim[] = [
         accessedDate: TODAY,
         type: "preprint",
         excerpt:
-          "In this paper, we explore the landscape of transfer learning techniques for NLP by introducing a unified framework that converts every language problem into a text-to-text format.",
+          "In this paper, we explore the landscape of transfer learning techniques for NLP by introducing a unified framework that converts all text-based language problems into a text-to-text format.",
       },
       {
         url: "https://www.jmlr.org/papers/v21/20-074.html",
@@ -1083,7 +1083,7 @@ export const seedClaims: SeedClaim[] = [
         accessedDate: TODAY,
         type: "preprint",
         excerpt:
-          "We identify that a key weakness of such models is their inability to perform content-based reasoning, and make several improvements. … Mamba enjoys fast inference (5× higher throughput than Transformers).",
+          "We integrate these selective SSMs into a simplified end-to-end neural network architecture without attention or even MLP blocks (Mamba).",
       },
       {
         url: "https://github.com/state-spaces/mamba",
@@ -3051,7 +3051,7 @@ export const seedClaims: SeedClaim[] = [
         accessedDate: TODAY,
         type: "preprint",
         excerpt:
-          "We introduce the General Language Understanding Evaluation (GLUE) benchmark, a collection of tools for evaluating the performance of models across a diverse set of existing NLU tasks.",
+          "In pursuit of this objective, we introduce the General Language Understanding Evaluation benchmark (GLUE), a tool for evaluating and analyzing the performance of models across a diverse range of existing NLU tasks.",
       },
       {
         url: "https://gluebenchmark.com/",
@@ -3692,7 +3692,7 @@ export const seedClaims: SeedClaim[] = [
         accessedDate: TODAY,
         type: "preprint",
         excerpt:
-          "In this technical report, we detail the first release of OLMo, a state-of-the-art, truly Open Language Model and its framework to build and study the science of language modeling. Unlike most prior efforts that have only released model weights and inference code, we release OLMo and the whole framework, including training data and training and evaluation code.",
+          "To this end, we have built OLMo, a competitive, truly Open Language Model, to enable the scientific study of language models.",
       },
       {
         url: "https://allenai.org/olmo",
@@ -5362,7 +5362,7 @@ export const seedClaims: SeedClaim[] = [
         accessedDate: TODAY,
         type: "preprint",
         excerpt:
-          "We introduce SGLang, a framework for efficient programming and execution of structured language model programs. SGLang consists of a frontend language and a runtime. The frontend simplifies programming with primitives for generation and parallelism control. The runtime accelerates the execution with optimizations like RadixAttention for KV cache reuse.",
+          "We introduce SGLang, a system for efficient execution of complex language model programs.",
       },
       {
         url: "https://github.com/sgl-project/sglang",
@@ -6633,7 +6633,7 @@ export const seedClaims: SeedClaim[] = [
         accessedDate: TODAY,
         type: "preprint",
         excerpt:
-          "We present a Graph RAG approach to question answering over private text corpora that scales with both the generality of user questions and the quantity of source text to be indexed.",
+          "To combine the strengths of these contrasting methods, we propose GraphRAG, a graph-based approach to question answering over private text corpora that scales with both the generality of user questions and the quantity of source text.",
       },
       {
         url: "https://github.com/microsoft/graphrag",
@@ -7594,7 +7594,7 @@ export const seedClaims: SeedClaim[] = [
         accessedDate: TODAY,
         type: "preprint",
         excerpt:
-          "LongBench is the first bilingual, multitask benchmark for long context understanding, covering 21 datasets across 6 task categories in English and Chinese.",
+          "In this paper, we introduce LongBench, the first bilingual, multi-task benchmark for long context understanding, enabling a more rigorous evaluation of long context understanding.",
       },
       {
         url: "https://github.com/THUDM/LongBench",
@@ -7997,7 +7997,7 @@ export const seedClaims: SeedClaim[] = [
         accessedDate: TODAY,
         type: "preprint",
         excerpt:
-          "HELM evaluates 30 prominent language models on 42 scenarios, measuring 7 metrics (accuracy, calibration, robustness, fairness, bias, toxicity, efficiency) across each scenario.",
+          "We present Holistic Evaluation of Language Models (HELM) to improve the transparency of language models.",
       },
       {
         url: "https://crfm.stanford.edu/helm/latest/",
@@ -8336,7 +8336,7 @@ export const seedClaims: SeedClaim[] = [
         accessedDate: TODAY,
         type: "preprint",
         excerpt:
-          "We introduce Hunyuan-Large, the largest open-source Transformer-based mixture of experts model with a total of 389B parameters and 52B activated parameters.",
+          "In this paper, we introduce Hunyuan-Large, which is currently the largest open-source Transformer-based mixture of experts model, with a total of 389 billion parameters and 52 billion activation parameters, capable of handling up to 256K tokens.",
       },
       {
         url: "https://huggingface.co/tencent/Tencent-Hunyuan-Large",
