@@ -36,7 +36,7 @@ signature, and a ready-to-paste citation.
 Try it:
 
   curl https://sourcescore.org/api/v1/claims.json | jq '.count'
-  # → 216
+  # → 380
 
   curl -X POST https://sourcescore.org/api/v1/verify \
     -H 'Content-Type: application/json' \
