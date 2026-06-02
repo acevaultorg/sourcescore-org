@@ -90,6 +90,12 @@ to expand to after AI/ML. Will be in-thread for the next few hours.
 
 ---
 
+**Top critical take #5: "I pasted a false claim and /verify still returned a match — so it doesn't actually verify anything?"**
+
+> Reply: "Right, and worth being precise: /verify is semantic RETRIEVAL, not a truth oracle. It returns the nearest verified claim in the catalog + a similarity score so your RAG pipeline (or you) can ground against it — it does NOT assert your input is true. matchScore is semantic similarity, not 'confidence this is true.' Example: 'GPT-5 was released in 2023' returns the nearest claim (GPT-4) because the catalog has NO claim confirming a 2023 GPT-5 release — that absence is the grounding signal; your model shouldn't assert it. The HMAC signature attests the RETRIEVED claim is genuine + sourced; it never attests your query. Mental model: 'here's the closest thing we've actually verified,' not 'true/false.' Low-similarity matches should be read as 'related, not a confirmation.'"
+
+---
+
 ## Monitoring checklist (first 3 hours post-submission)
 
 - [ ] Refresh /show every 30 min for first 90 min
