@@ -139,6 +139,11 @@ export async function onRequest(context) {
     query: claim,
     minConfidence,
     method,
+    // Honesty note: matchScore is semantic similarity, not an entailment/truth verdict.
+    // A false query ("GPT-5 released in 2023") can still surface a topically-similar
+    // real claim (GPT-4) at a high score — so consumers must compare, not trust the score.
+    note:
+      "matchScore is semantic similarity to your query (0-1), NOT a verdict that your query is true. Returned claims are the nearest VERIFIED catalog entries — compare each claim.statement to your input to ground your own assertion. A false query can still surface a topically-similar real claim at a high score.",
     matches: topN.map((m) => ({
       claim: toSummary(m.claim),
       matchScore: round2(m.matchScore),
