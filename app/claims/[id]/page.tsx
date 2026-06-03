@@ -48,8 +48,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   // appends "· SourceScore") + the trailing period → cleaner, less-truncated
   // titles across all claim pages. (2026-05-31, fastest-human-growth.)
   const title = claim.statement.replace(/\.\s*$/, "");
+  // Description must NOT duplicate the title (= statement). Front-load the
+  // differentiated click-reason — verification recency, confidence, source
+  // count, and the promise of primary references — so a bare SERP fact doesn't
+  // satisfy intent. CTR lever for the high-impression /claims surface (was 0.1%
+  // CTR on ~20.9k impressions). (2026-06-03)
+  const pct = Math.round(claim.confidence * 100);
+  const srcCount = claim.sources.length;
   const description =
-    `${claim.statement} — verified ${claim.lastVerified}, confidence ${Math.round(claim.confidence * 100)}%.`;
+    `Verified ${claim.lastVerified} · ${pct}% confidence · checked against ${srcCount} independent source${srcCount === 1 ? "" : "s"}. See the primary references and how SourceScore verified this claim.`;
 
   const ogImage = `https://sourcescore.org/og/claim/${claim.id}.svg`;
 
