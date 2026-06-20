@@ -321,6 +321,7 @@ function SiteFooter() {
             <li><a href="/docs/" className="hover:text-text">API docs</a></li>
             <li><a href="/docs/integrations/" className="hover:text-text">Integrations</a></li>
             <li><a href="/pricing/" className="hover:text-text">Pricing</a></li>
+            <li><a href="/api-access/" className="hover:text-text">Request API access</a></li>
             <li><a href="/blog/" className="hover:text-text">Blog</a></li>
             <li><a href="/changelog/" className="hover:text-text">Changelog</a></li>
           </ul>

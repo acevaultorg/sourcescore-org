@@ -171,6 +171,29 @@ export default function PricingPage() {
         </p>
       </header>
 
+      {/* Demand-validation pointer (2026-06-19 decision · TaskPrio mqkx7wduvm7zjl).
+          Additive + honest; does not alter the tier cards or the operator's
+          pending paid-pitch decision (mpwzjzpsr220u5) — true whether paid tiers
+          turn on or stay early-access. */}
+      <div className="mb-12 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-5 text-sm">
+        <p className="text-zinc-700 dark:text-zinc-300">
+          <strong className="text-zinc-900 dark:text-zinc-100">
+            Paid tiers are in early access.
+          </strong>{" "}
+          The free tier is live now — 1,000 claims/mo, no card. For a
+          higher-volume plan,{" "}
+          <a
+            href="/api-access/"
+            data-clarity-upgrade="pricing-to-api-access"
+            className="underline font-medium hover:text-zinc-900 dark:hover:text-zinc-100 plausible-event-name=pricing_request_access"
+          >
+            request access
+          </a>{" "}
+          and we&rsquo;ll email you the moment pricing goes live — no card, no
+          commitment.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
         {TIERS.map((tier) => {
           const isFree = tier.name === "free";
