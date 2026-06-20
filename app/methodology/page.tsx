@@ -4,6 +4,7 @@ import {
   methodologyVersion,
   methodologyVersionStamp,
 } from "@/lib/methodology-version";
+import { CitationDeskCTA } from "@/components/CitationDeskCTA";
 
 export const metadata: Metadata = {
   title: `Methodology v${methodologyVersion.version} — how SourceScore is computed`,
@@ -248,6 +249,12 @@ export default function MethodologyPage() {
           links to the methodology version it was computed under.
         </p>
       </section>
+
+      {/* CitationDesk funnel — SourceScore measures source citability; its
+          sister product measures YOUR site's AI citability (2026-06-19 decision). */}
+      <div className="mt-12">
+        <CitationDeskCTA variant="panel" source="methodology" />
+      </div>
     </article>
   );
 }

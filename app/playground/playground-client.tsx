@@ -6,6 +6,7 @@
 "use client";
 
 import { useState } from "react";
+import { CitationDeskCTA } from "@/components/CitationDeskCTA";
 
 type ClaimSummary = {
   id: string;
@@ -243,6 +244,10 @@ r = requests.post(
 )
 best = r.json().get("bestMatch")`}</code></pre>
           </div>
+
+          {/* CitationDesk funnel — high-intent moment: they just ran a verify.
+              SourceScore = top-of-funnel for CitationDesk (2026-06-19). */}
+          <CitationDeskCTA variant="strip" source="playground" />
         </div>
       )}
     </div>

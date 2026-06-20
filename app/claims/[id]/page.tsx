@@ -18,6 +18,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { loadFullClaims, findClaimById, relatedClaims, tagToSlug } from "@/lib/claims-build";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { CitationDeskCTA } from "@/components/CitationDeskCTA";
 
 // Claim-source publishers that map to a scored SourceScore /source page.
 // Funnels claim-entry traffic to the high-dwell source pages (Plausible 2026-05-30:
@@ -644,6 +645,9 @@ def get_${claim.subject.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$
           </a>
         </div>
       </section>
+
+      {/* CitationDesk funnel footer — SourceScore = top-of-funnel (2026-06-19). */}
+      <CitationDeskCTA variant="strip" source="claim" />
     </article>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { CitationDeskCTA } from "@/components/CitationDeskCTA";
 
 export const metadata: Metadata = {
   title: { absolute: "SourceScore — the AI-Citation Quality Index" },
@@ -474,6 +475,17 @@ export default function HomePage() {
               About SourceScore
             </a>
           </div>
+        </div>
+      </section>
+
+      {/* CitationDesk funnel ──────────────────────────────────────────
+          SourceScore = FREE top-of-funnel for CitationDesk (2026-06-19
+          strategic decision). Honest audience-fit bridge: you measure how
+          citable OTHER sources are → CitationDesk measures how citable YOUR
+          site is to AI engines. */}
+      <section className="border-t border-border">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <CitationDeskCTA variant="panel" source="home" />
         </div>
       </section>
     </>

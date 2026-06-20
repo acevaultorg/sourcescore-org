@@ -295,6 +295,19 @@ function SiteFooter() {
             Source-rating reference + VERITAS signed-claim API. Two
             surfaces, one trust layer for AI-era citation.
           </p>
+          <p className="mt-3 text-muted leading-relaxed">
+            <a
+              href="https://citationdesk.com/tools/citation-readiness/"
+              target="_blank"
+              rel="noopener"
+              data-clarity-upgrade="citationdesk-cta-footer"
+              className="hover:text-text plausible-event-name=citationdesk_cta plausible-event-source=footer"
+            >
+              Sister product:{" "}
+              <span className="text-brand">CitationDesk</span> — is your own site
+              cited by AI? ↗
+            </a>
+          </p>
         </div>
         <div>
           <div className="text-text font-semibold mb-2">VERITAS API</div>
