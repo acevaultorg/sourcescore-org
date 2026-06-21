@@ -21,7 +21,7 @@ const orgSchema = {
   logo: "https://sourcescore.org/logo.svg",
   description:
     "Transparent reference index for AI-citation quality (source-rating product) and signed claim verification for LLM developers (VERITAS API product).",
-  email: "contact@sourcescore.org",
+  email: "contact@acevault.org",
   // Entity-coherence per Aleyda Solis #3 Recognizable + #7 Credible.
   // Public surfaces where SourceScore (the brand-entity) is verifiable.
   sameAs: [
@@ -30,7 +30,7 @@ const orgSchema = {
   ],
   contactPoint: {
     "@type": "ContactPoint",
-    email: "contact@sourcescore.org",
+    email: "contact@acevault.org",
     contactType: "Customer Support",
     availableLanguage: ["English"],
   },
@@ -79,7 +79,7 @@ const editorialPersonSchema = {
   description:
     "Maintainers of SourceScore methodology and the VERITAS verified-claim catalog. Editorial decisions follow the published methodology at /methodology/; corrections are timestamped and public.",
   url: "https://sourcescore.org/about/",
-  email: "contact@sourcescore.org",
+  email: "contact@acevault.org",
   worksFor: { "@id": "https://sourcescore.org/#organization" },
   knowsAbout: [
     "AI/ML research methodology",
@@ -199,10 +199,10 @@ export default function AboutPage() {
           </a>{" "}
           or email{" "}
           <a
-            href="mailto:contact@sourcescore.org"
+            href="mailto:contact@acevault.org"
             className="text-brand hover:underline"
           >
-            contact@sourcescore.org
+            contact@acevault.org
           </a>
           .
         </p>

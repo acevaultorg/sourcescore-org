@@ -108,7 +108,7 @@ The logic of the layered pattern: retrieve-then-cite catches *fabricated sources
 
 Try it: `curl -X POST https://sourcescore.org/api/v1/verify -H 'Content-Type: application/json' -d '{"claim": "GPT-4 was released in March 2023"}'`
 
-Comments / questions / catalog requests welcome. [contact@sourcescore.org](mailto:contact@sourcescore.org).
+Comments / questions / catalog requests welcome. [contact@acevault.org](mailto:contact@acevault.org).
 
 <!-- Tags: ai, ml, llm, rag, langchain, hallucination, api, python, typescript, opensource
      Canonical URL: https://sourcescore.org/blog/verify-ai-facts-five-lines-python/

@@ -260,7 +260,7 @@ export default function LaunchPost() {
 
         <p>
           Try it; break it; tell me what&rsquo;s missing.{" "}
-          <a href="mailto:contact@sourcescore.org">contact@sourcescore.org</a>{" "}
+          <a href="mailto:contact@acevault.org">contact@acevault.org</a>{" "}
           or join the conversation on the Dev.to cross-post.
         </p>
 

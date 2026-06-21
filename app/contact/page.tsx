@@ -19,10 +19,10 @@ export default function ContactPage() {
         <div>
           <div className="text-eyebrow text-dim mb-1">Email</div>
           <a
-            href="mailto:contact@sourcescore.org"
+            href="mailto:contact@acevault.org"
             className="text-body-lg text-brand hover:underline font-mono"
           >
-            contact@sourcescore.org
+            contact@acevault.org
           </a>
         </div>
         <div>

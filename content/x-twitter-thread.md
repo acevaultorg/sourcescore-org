@@ -94,7 +94,7 @@ catalog → https://sourcescore.org/claims/
 quickstart → https://sourcescore.org/quickstart/
 playground → https://sourcescore.org/playground/
 
-email contact@sourcescore.org for catalog requests or vertical expansion suggestions.
+email contact@acevault.org for catalog requests or vertical expansion suggestions.
 ```
 
 ---

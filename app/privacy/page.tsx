@@ -58,8 +58,8 @@ export default function PrivacyPage() {
           If you are an EU/EEA, UK, or California resident you have rights to access, correction,
           erasure, restriction, and portability of your personal data. To exercise any of these
           rights, email{" "}
-          <a href="mailto:contact@sourcescore.org" className="text-brand hover:underline">
-            contact@sourcescore.org
+          <a href="mailto:contact@acevault.org" className="text-brand hover:underline">
+            contact@acevault.org
           </a>.
         </p>
 
@@ -78,8 +78,8 @@ export default function PrivacyPage() {
         <h2 className="text-heading-2 font-bold pt-4">Contact</h2>
         <p className="text-muted">
           Questions about this policy:{" "}
-          <a href="mailto:contact@sourcescore.org" className="text-brand hover:underline">
-            contact@sourcescore.org
+          <a href="mailto:contact@acevault.org" className="text-brand hover:underline">
+            contact@acevault.org
           </a>.
         </p>
       </section>

@@ -44,10 +44,10 @@ export async function onRequest(context) {
       {
         error: "Signup not yet provisioned.",
         detail:
-          "Free tier needs no auth — call /api/v1/* directly. For paid tiers, email contact@sourcescore.org for early-access invoice (manual key issuance, <24h).",
+          "Free tier needs no auth — call /api/v1/* directly. For paid tiers, email contact@acevault.org for early-access invoice (manual key issuance, <24h).",
         free_tier_path: "https://sourcescore.org/docs/#quick-start",
         paid_early_access:
-          "mailto:contact@sourcescore.org?subject=Early-access%20signup",
+          "mailto:contact@acevault.org?subject=Early-access%20signup",
         operator_action: "Provision Postgres + Stripe per /docs/#auth roadmap.",
       },
       503,
@@ -113,7 +113,7 @@ export async function onRequest(context) {
     {
       error: "Signup handler stub — Postgres path not yet wired in v0.",
       detail:
-        "DATABASE_URL is set, but the full INSERT + Stripe Checkout integration ships when SDK + dashboard + webhook handler land together (Day 8+). For now, email contact@sourcescore.org.",
+        "DATABASE_URL is set, but the full INSERT + Stripe Checkout integration ships when SDK + dashboard + webhook handler land together (Day 8+). For now, email contact@acevault.org.",
     },
     503,
   );

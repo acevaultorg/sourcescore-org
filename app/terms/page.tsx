@@ -127,8 +127,8 @@ export default function TermsPage() {
         <h2 className="text-heading-2 font-bold pt-4">12. Contact</h2>
         <p className="text-muted">
           Questions about these Terms:{" "}
-          <a href="mailto:contact@sourcescore.org" className="text-brand hover:underline">
-            contact@sourcescore.org
+          <a href="mailto:contact@acevault.org" className="text-brand hover:underline">
+            contact@acevault.org
           </a>.
         </p>
 

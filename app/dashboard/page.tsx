@@ -76,8 +76,8 @@ export default function DashboardPage() {
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
           The free tier ({TIERS[0]!.includedClaims.toLocaleString()} claims/mo)
           is fully usable today — no signup required. For paid tiers, email{" "}
-          <a href="mailto:contact@sourcescore.org" className="underline">
-            contact@sourcescore.org
+          <a href="mailto:contact@acevault.org" className="underline">
+            contact@acevault.org
           </a>{" "}
           and we&rsquo;ll send an invoice + issue a key manually in &lt;24h.
         </p>
@@ -106,7 +106,7 @@ export default function DashboardPage() {
       <section className="text-sm text-zinc-600 dark:text-zinc-400">
         <p>
           Want a specific dashboard feature on day 1?{" "}
-          <a href="mailto:contact@sourcescore.org" className="underline">
+          <a href="mailto:contact@acevault.org" className="underline">
             Tell us
           </a>{" "}
           — we prioritize the dev portal by what paid customers ask for first.

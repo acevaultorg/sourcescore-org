@@ -516,8 +516,8 @@ Content-Type: application/json
         </p>
         <p className="mt-2">
           Paid tier email support:{" "}
-          <a href="mailto:contact@sourcescore.org" className="underline">
-            contact@sourcescore.org
+          <a href="mailto:contact@acevault.org" className="underline">
+            contact@acevault.org
           </a>{" "}
           (SLA per <a href="/pricing/" className="underline">tier</a>).
         </p>

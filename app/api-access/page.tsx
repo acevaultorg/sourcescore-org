@@ -7,7 +7,7 @@
 // NO paid tier here; the no-Stripe directive stays until validated demand
 // exists (then it's the operator's call to reverse it).
 //
-// Capture mechanism = mailto:contact@sourcescore.org — the EXISTING fleet
+// Capture mechanism = mailto:contact@acevault.org — the EXISTING fleet
 // pattern (functions/api/v1/auth/signup.js's "early-access invoice" path uses
 // the same mailto; no DB/KV/email infra is wired, and the task explicitly
 // sanctions the mailto fallback). Zero new infra. The signal = requests landing
@@ -44,7 +44,7 @@ Stack (LangChain / LlamaIndex / direct REST / other):
 
 Thanks!`;
 
-const MAILTO = `mailto:contact@sourcescore.org?subject=${encodeURIComponent(
+const MAILTO = `mailto:contact@acevault.org?subject=${encodeURIComponent(
   REQUEST_SUBJECT,
 )}&body=${encodeURIComponent(REQUEST_BODY)}`;
 
@@ -103,7 +103,7 @@ export default function ApiAccessPage() {
         </a>
         <p className="mt-3 text-caption text-dim">
           Opens your mail app, pre-addressed to{" "}
-          <span className="font-mono text-muted">contact@sourcescore.org</span> with
+          <span className="font-mono text-muted">contact@acevault.org</span> with
           a short template. Prefer to write it yourself? Email us directly.
         </p>
       </div>

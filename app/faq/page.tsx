@@ -91,7 +91,7 @@ const faqs = [
   },
   {
     q: "Can I submit a claim for inclusion in the catalog?",
-    a: "Yes — email contact@sourcescore.org with the proposed claim (subject + predicate + object), ≥2 primary sources you'd cite (preferred: arxiv preprint + official-blog or model-card; avoid Wikipedia-as-sole-source), and an exact verbatim excerpt from each. We aim to review within 7 days. Approved submissions appear in the next catalog rebuild and the contributor is credited (opt-in) on the contributors page.",
+    a: "Yes — email contact@acevault.org with the proposed claim (subject + predicate + object), ≥2 primary sources you'd cite (preferred: arxiv preprint + official-blog or model-card; avoid Wikipedia-as-sole-source), and an exact verbatim excerpt from each. We aim to review within 7 days. Approved submissions appear in the next catalog rebuild and the contributor is credited (opt-in) on the contributors page.",
   },
   {
     q: "What does VERITAS not do?",
