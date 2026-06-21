@@ -1,6 +1,6 @@
 # Stop hallucinating: a developer API for grounding LLM responses with signed, sourced claims
 
-> **TL;DR**: I shipped [SourceScore VERITAS](https://sourcescore.org/claims/) — a free-tier-friendly API that returns hand-verified AI/ML claims with their primary sources, an HMAC-SHA256 signature, and a ready-to-paste citation. 380 hand-verified claims spanning 1997-2025. `curl https://sourcescore.org/api/v1/claims.json` and you're in.
+> **TL;DR**: I shipped [SourceScore VERITAS](https://sourcescore.org/claims/) — a free-tier-friendly API that returns hand-verified AI/ML claims with their primary sources, an HMAC-SHA256 signature, and a ready-to-paste citation. 384 hand-verified claims spanning 1997-2025. `curl https://sourcescore.org/api/v1/claims.json` and you're in.
 
 ---
 
@@ -50,7 +50,7 @@ Three things make this useful for grounding LLMs:
 
 There are great academic fact-checking datasets. There are great benchmark leaderboards. There's Wikipedia. None of them are an API you can call from your RAG pipeline at request time with a ~80ms response.
 
-I picked a narrow vertical to start — **AI/ML research**. 380 hand-verified claims spanning 1997-2025 covering:
+I picked a narrow vertical to start — **AI/ML research**. 384 hand-verified claims spanning 1997-2025 covering:
 
 - **Foundational papers + methods**: Transformer (Vaswani 2017), LSTM (Hochreiter 1997), Attention, RLHF, Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, CLIP, RAG, BLEU, ROUGE, AdamW, Dropout, BatchNorm, LayerNorm
 - **RL milestones**: AlphaGo (Nature 2016), AlphaZero (Science 2018), AlphaFold 2 + 3, PPO

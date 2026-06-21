@@ -64,7 +64,7 @@ That's the entire pattern. No vector DB. No re-prompt loop. One HTTP round-trip 
 
 ## What's behind the API
 
-[SourceScore VERITAS](https://sourcescore.org/claims/) is a free-tier API I shipped that returns hand-verified AI/ML claims with HMAC-SHA256 signatures. 380 claims at the moment, growing weekly.
+[SourceScore VERITAS](https://sourcescore.org/claims/) is a free-tier API I shipped that returns hand-verified AI/ML claims with HMAC-SHA256 signatures. 384 claims at the moment, growing weekly.
 
 Three properties that matter for the verify-step pattern:
 
@@ -78,7 +78,7 @@ You might be thinking: *"I'll just paste a verified-fact reference into the syst
 
 Three reasons that doesn't work at scale:
 
-- **Token cost.** 380 claims × ~200 tokens each = ~76k tokens per request. Even at GPT-4o pricing, that's noticeable. With 5,000 claims (Year 1 target), it's prohibitive.
+- **Token cost.** 384 claims × ~200 tokens each = ~77k tokens per request. Even at GPT-4o pricing, that's noticeable. With 5,000 claims (Year 1 target), it's prohibitive.
 - **No coverage signal.** If the model emits a claim *not* in your prompt, you don't know whether it's verified or hallucinated. The verify step explicitly returns `verified` / `unverified`.
 - **Stale prompts.** New claim shipped today won't be in last week's deployed prompt template. The API always returns the latest catalog state.
 
