@@ -77,12 +77,11 @@ useful for evaluating whether the catalog covers your use case before you wire i
 ```
 pricing:
 
-• free: 1k claims/mo, no auth
-• indie: €19/mo, 50k claims
-• startup: €99/mo, 500k claims  
-• scale: €499/mo, 5M claims + 4h support SLA
+• free: 1k claims/mo, no auth, no signup. just curl.
+• need more? a higher-volume paid API is in private beta.
 
-stripe metered billing. no sales call. no enterprise tier by design.
+request access → sourcescore.org/api-access
+no sales call. no enterprise tier by design.
 ```
 
 **Tweet 7 — CTA**

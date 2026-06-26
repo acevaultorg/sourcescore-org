@@ -248,7 +248,7 @@ export default function PricingPage() {
                 </a>
               ) : (
                 <a
-                  href="/signup/"
+                  href="/api-access/"
                   data-clarity-upgrade={`pricing-cta-${tier.name}`}
                   className={`w-full text-center px-4 py-2 rounded font-medium plausible-event-name=pricing_cta plausible-event-tier=${tier.name} ${
                     tier.name === "indie"
@@ -256,7 +256,7 @@ export default function PricingPage() {
                       : "border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-900"
                   }`}
                 >
-                  Subscribe
+                  Request access
                 </a>
               )}
             </div>

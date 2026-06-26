@@ -62,7 +62,7 @@ What it explicitly doesn't do:
 
 Docs: https://sourcescore.org/docs/
 OpenAPI 3.1 spec: https://sourcescore.org/api/v1/openapi.json
-Pricing (free + 3 paid tiers): https://sourcescore.org/pricing/
+Free tier (1,000 claims/mo, no auth, no signup) — higher-volume paid API in private beta: https://sourcescore.org/api-access/
 
 Open to feedback on what claim types are most valuable + what vertical
 to expand to after AI/ML. Will be in-thread for the next few hours.

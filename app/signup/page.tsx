@@ -96,13 +96,17 @@ export default function SignupPage() {
       <section className="mb-12">
         <h2 className="text-xl font-semibold mb-2">Paid plans</h2>
         <p className="text-zinc-600 dark:text-zinc-400 mb-6">
-          Stripe metered billing wires the week of 2026-05-26 (operator-side
-          setup pending). Until live, email{" "}
+          The paid API is in private beta — self-serve billing isn&rsquo;t live
+          yet. Request access via the{" "}
+          <a href="/api-access/" className="underline">
+            API access page
+          </a>{" "}
+          (or email{" "}
           <a href="mailto:contact@acevault.org" className="underline">
             contact@acevault.org
           </a>{" "}
-          with your tier choice for early-access: we&rsquo;ll send an invoice
-          + manually issue your API key in &lt;24h.
+          with your tier choice): we&rsquo;ll manually issue your API key in
+          &lt;24h.
         </p>
 
         <div className="space-y-3">

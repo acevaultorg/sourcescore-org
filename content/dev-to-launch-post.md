@@ -76,7 +76,7 @@ There's also a [browser playground](https://sourcescore.org/playground/) — try
 
 ## Free tier, no signup
 
-The free tier is **1,000 claims/month, no auth required**. Just curl. Get familiar with the data shape, the signature format, the search behavior. If you outgrow it, paid tiers are €19 (Indie) / €99 (Startup) / €499 (Scale) — Stripe metered billing.
+The free tier is **1,000 claims/month, no auth required**. Just curl. Get familiar with the data shape, the signature format, the search behavior. If you outgrow it, a higher-volume paid API is in private beta — [request access](https://sourcescore.org/api-access/) and I'll wire you in.
 
 - OpenAPI 3.1 spec: [/api/v1/openapi.json](https://sourcescore.org/api/v1/openapi.json)
 - Full docs: [/docs/](https://sourcescore.org/docs/)

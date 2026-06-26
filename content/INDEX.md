@@ -2,7 +2,7 @@
 
 Brain-authored, ready-to-paste content for operator distribution. Each file is one channel + one or more variants. Operator publishes; brain never auto-posts (I-34 hard-reject).
 
-**Goal:** reach €1k/mo MRR. Math at the bottom.
+**Goal (current launch):** maximize developer adoption of the FREE API + validate paid-API demand via the `/api-access` private-beta waitlist (the sanctioned demand test per the 2026-06-19 free-asset strategy — Stripe is paused). The €1k/mo-MRR math at the bottom is the *downstream* path once the waitlist proves demand and you flip the paid API on — NOT this launch's pitch. Every draft now pitches the free tier + waitlist (no dead Stripe checkout).
 
 ## Files
 
@@ -71,7 +71,7 @@ Before posting any content from this folder:
 
 - [ ] Verify the URLs cited in the post are live (load each one in browser, check 200)
 - [ ] Verify the count number (currently `384`) matches `https://sourcescore.org/api/v1/claims.json | jq '.count'`
-- [ ] Verify the Stripe checkout flow on /pricing/ works (operator's payment gate)
+- [ ] Verify the `/api-access/` waitlist page loads + the "Request access" email link works (this is the current conversion surface — Stripe is paused, no checkout to test). The `/pricing/` "Request access" CTAs route here too.
 - [ ] Operator's social-account profile is updated (bio mentions SourceScore + link)
 - [ ] OG image at /og-default.png or per-page OG renders correctly when URL is pasted in a Slack/Discord preview
 

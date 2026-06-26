@@ -70,7 +70,7 @@ Three properties that matter for the verify-step pattern:
 
 1. **Every claim has ≥2 primary sources.** Official Meta blog, the Llama 3.1 model card, the announcement post — not "TechCrunch said." This means when your verify step matches, you can return the source URL alongside the verification.
 2. **Every response is signed.** HMAC-SHA256, so your application can prove the answer came from VERITAS and wasn't tampered. Useful for audit trails in regulated pipelines.
-3. **Free tier with no signup.** 1,000 verifies/month, no auth. Just `curl`. Pricing kicks in beyond that — Indie €19 / Startup €99 / Scale €499 (Stripe metered billing).
+3. **Free tier with no signup.** 1,000 verifies/month, no auth. Just `curl`. Need more volume? A paid API is in private beta — [request access](https://sourcescore.org/api-access/).
 
 ## Why a verify step beats "just put it in the prompt"
 
