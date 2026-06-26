@@ -8,15 +8,6 @@ import { WebVitals } from "@/components/WebVitals";
 import { ScrollDepth } from "@/components/ScrollDepth";
 import { MobileNav } from "@/components/MobileNav";
 
-// Google AdSense client ID. Env-var override available for per-site
-// AdSense accounts; fleet-default is the operator's primary account
-// (same ID used on holdlens.com + readinglist.school + readminute.com +
-// fermentcalc.com). Hardcoded fallback because the AdSense client ID
-// is fully public (exposed in served HTML) and CF Pages env var wiring
-// requires dashboard access — fallback ships the snippet without that.
-const ADSENSE_CLIENT =
-  process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-7449214764048186";
-
 export const metadata: Metadata = {
   metadataBase: new URL("https://sourcescore.org"),
   title: {
@@ -81,15 +72,12 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         {/* Resource hints — saves DNS+TLS+TCP roundtrip for first hit to each
-            third-party origin used on most pages. Cost: 4 cheap DNS lookups
+            third-party origin used on most pages. Cost: 2 cheap DNS lookups
             on initial page load; benefit: ~100-300ms faster first-contentful
             paint when the script/image actually fires. Borrowed from
             readstacks fleet pattern (rules/cross-project-learning.md L4). */}
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
-        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://www.clarity.ms" />
         <link rel="dns-prefetch" href="https://plausible.io" />
-        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
         {/* Organization JSON-LD — applies site-wide for LLM-citation fitness */}
         <script
           type="application/ld+json"
@@ -132,16 +120,14 @@ export default function RootLayout({
         />
         <Analytics />
         <Clarity />
-        {/* Google AdSense — verification snippet. AdSense application
-            requires this loaded on every page in <head> before review.
-            ADSENSE_CLIENT env-var-conditional; fleet-default fallback. */}
-        {ADSENSE_CLIENT ? (
-          <script
-            async
-            crossOrigin="anonymous"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-          />
-        ) : null}
+        {/* No Google AdSense on SourceScore — removed 2026-06-26 (autopilot).
+            Binding strategy (board anchors mqkx5yh8q913j0 + mpv4arecshtbzw):
+            SourceScore is a FREE citation/authority asset → NO ads. The
+            shared fleet AdSense pub ID on a 480:1-bot, 1,172-programmatic-page
+            site is a Gate-0 / invalid-traffic cascade risk to the EARNING
+            fleet sites (holdlens / readinglist / readminute / fermentcalc)
+            that share the account. Stale verification snippet from the
+            since-abandoned AdSense application (Gate 0 = DO-NOT-SUBMIT). */}
 
         {/* llms.txt advertise per `rules/bot-harvest.md` Day-1 manifest spec.
             sourcescore is the heaviest bot-traffic site in the fleet

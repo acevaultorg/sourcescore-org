@@ -2,8 +2,8 @@
 # IAB Authorized Digital Sellers v1.0.2
 # https://iabtechlab.com/ads-txt/
 #
-# Fleet AdSense publisher: pub-7449214764048186 (verified DIRECT relationship
-# on txtfeed.com, readinglist.school, zipradar.org, readminute.com via the
-# same operator account paulomdevries@gmail.com).
-
-google.com, pub-7449214764048186, DIRECT, f08c47fec0942fa0
+# No authorized digital sellers. SourceScore runs NO display ads — it is a
+# free citation/authority asset (board anchors mqkx5yh8q913j0 + mpv4arecshtbzw),
+# not an ad-monetized site. The shared fleet AdSense DIRECT declaration was
+# removed 2026-06-26 (autopilot) to de-associate this 480:1-bot / programmatic
+# site from the earning fleet sites' AdSense account (Gate-0 cascade-risk).
