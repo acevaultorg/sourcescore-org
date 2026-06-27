@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+"""CF Pages chunked-upload deployer for readinglist.school.
+
+WHY: readinglist out/ is ~962MB / 11,981 files. `wrangler pages deploy` closes
+the upload socket at a hard ~56MB PER CONNECTION (log-verified EPIPE), and Next's
+build-ID churn makes ~all HTML re-upload each build → the changed payload is
+hundreds of MB → wrangler deterministically EPIPEs. RSC-pruning is not enough
+here (still way over 56MB). This script uploads in 8-file/1MB batches (each a
+fresh connection, far under the cap) and then creates the deployment.
+
+AUTH (verified 2026-06-20): create-deployment requires an Account·Cloudflare
+Pages·Edit API token. The asset-upload JWT alone returns error 9106 on
+create-deployment, and the wrangler OAuth token is NOT accepted as a raw API
+Bearer, and the session $CLOUDFLARE_API_TOKEN has no Pages scope. So a Pages:Edit
+token is mandatory and is read from (in order):
+    $CLOUDFLARE_PAGES_TOKEN   OR   ~/.cf-pages-token   OR   $CLOUDFLARE_API_TOKEN
+Create it once: dash.cloudflare.com → My Profile → API Tokens → Create Token →
+"Edit Cloudflare Pages" template → Continue → Create →
+    echo 'THE_TOKEN' > ~/.cf-pages-token
+Then: python3 scripts/cf-pages-chunked-deploy.py   (after `npm run build` + RSC prune)
+
+Run-from-clean wrapper: scripts/deploy-cf-chunked.sh (build + prune + this).
+"""
+import base64, hashlib, json, mimetypes, os, pathlib, sys, time, uuid, urllib.request, urllib.error
+
+ACCOUNT = "72bfd26c5f3c935393a25e5c0dea6039"
+PROJECT = "sourcescore"
+BRANCH = "main"
+OUT_DIR = pathlib.Path(os.environ.get("OUT_DIR",
+    str(pathlib.Path(__file__).resolve().parent.parent / "out"))).resolve()
+
+def _load_token() -> str:
+    # Pages:Edit token. Prefer explicit Pages vars (the session $CLOUDFLARE_API_TOKEN
+    # is DNS-scoped and has NO Pages scope). ~/.zshenv ships CF_PAGES_TOKEN (verified
+    # Pages:Edit 2026-06-20). Order: explicit Pages env → token file → generic.
+    for var in ("CLOUDFLARE_PAGES_TOKEN", "CF_PAGES_TOKEN", "CLOUDFLARE_PAGES_API_TOKEN"):
+        t = os.environ.get(var)
+        if t and t.strip():
+            return t.strip()
+    f = pathlib.Path.home() / ".cf-pages-token"
+    if f.is_file():
+        v = f.read_text().strip()
+        if v:
+            return v
+    return (os.environ.get("CLOUDFLARE_API_TOKEN") or "").strip()
+
+API_TOKEN = _load_token()
+MAX_BATCH_FILES = 1000
+MAX_BATCH_BYTES = 20 * 1024 * 1024  # 20MB raw (~27MB base64 body) — stays well under
+# the ~56MB/connection cap (each batch is a fresh Connection: close), but drops the
+# batch COUNT ~25× (1MB/8-file → ~1600 batches ≈ 23min; 20MB → ~48 batches ≈ 2-4min).
+# The per-batch connection/SSL-handshake overhead (~0.85s) dominated total upload time,
+# so big batches finish FAST — critical when the env kills long-running deploys mid-upload
+# (CF doesn't persist uploaded assets without a created deployment, so a killed run can't
+# resume → the whole upload must complete in one shot). 2026-06-21.
+
+if not API_TOKEN:
+    print("ERROR: no Pages token. Create 'Edit Cloudflare Pages' token, then:\n"
+          "  echo 'THE_TOKEN' > ~/.cf-pages-token", file=sys.stderr)
+    sys.exit(2)
+if not OUT_DIR.is_dir():
+    print(f"ERROR: build dir not found: {OUT_DIR} (run `npm run build` first)", file=sys.stderr)
+    sys.exit(2)
+
+def http(url, method="GET", headers=None, data=None, timeout=120):
+    # Transport via curl, not urllib: macOS system Python (/usr/bin/python3) ships
+    # LibreSSL 2.8.3, which intermittently fails CF's TLS with SSLV3_ALERT_BAD_RECORD_MAC
+    # on POST bodies (log-verified 2026-06-21, while curl/OpenSSL on the same host+network
+    # succeeds). curl makes this deployer SSL-stack-immune fleet-wide.
+    import subprocess, tempfile
+    # --http1.1: CF's assets/upload edge over a flaky/proxied path resets HTTP/2 streams,
+    # surfacing as SSL_read/bad-record-mac; HTTP/1.1 + curl's own --retry is far more robust.
+    args = ["curl", "-sS", "--http1.1", "--retry", "3", "--retry-all-errors", "--max-time", str(timeout), "-X", method, "-w", "\n%{http_code}", url]
+    for k, v in (headers or {}).items():
+        args += ["-H", f"{k}: {v}"]
+    tmp = None
+    if data is not None:
+        tmp = tempfile.NamedTemporaryFile(delete=False)
+        tmp.write(data); tmp.flush(); tmp.close()
+        args += ["--data-binary", f"@{tmp.name}"]
+    try:
+        p = subprocess.run(args, capture_output=True, timeout=timeout + 15)
+    finally:
+        if tmp is not None:
+            try: os.unlink(tmp.name)
+            except OSError: pass
+    if p.returncode != 0:
+        raise RuntimeError(f"curl {p.returncode} on {url}: {p.stderr.decode('utf-8','replace')[:200]}")
+    raw = p.stdout; nl = raw.rfind(b"\n")
+    body, code = (raw[:nl], raw[nl + 1:].decode().strip()) if nl >= 0 else (raw, "")
+    if code and not code.startswith("2"):
+        raise RuntimeError(f"HTTP {code} on {url}: {body.decode('utf-8','replace')[:300]}")
+    return json.loads(body) if body else {"success": True}
+
+def get_jwt():
+    r = http(f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT}/pages/projects/{PROJECT}/upload-token",
+             headers={"Authorization": f"Bearer {API_TOKEN}"})
+    if not r.get("success"):
+        raise RuntimeError(f"upload-token fetch failed (is the token Pages:Edit scoped?): {r}")
+    return r["result"]["jwt"]
+
+def walk(root):
+    out = []
+    for p in sorted(root.rglob("*")):
+        if not p.is_file(): continue
+        rel = "/" + str(p.relative_to(root)).replace(os.sep, "/")
+        c = p.read_bytes(); ext = p.suffix.lstrip(".")
+        h = hashlib.sha256(); h.update(c); h.update(ext.encode())
+        out.append((rel, c, h.hexdigest()[:32]))
+    return out
+
+def check_missing(jwt, hashes):
+    miss = []
+    for i in range(0, len(hashes), 5000):
+        r = http("https://api.cloudflare.com/client/v4/pages/assets/check-missing", method="POST",
+                 headers={"Authorization": f"Bearer {jwt}", "Content-Type": "application/json"},
+                 data=json.dumps({"hashes": hashes[i:i+5000]}).encode(), timeout=60)
+        if not r.get("success"): raise RuntimeError(f"check-missing failed: {r}")
+        miss.extend(r.get("result", []))
+    return miss
+
+def upload(jwt, batch, attempts=40):
+    body = json.dumps(batch).encode(); last = None
+    for a in range(1, attempts+1):
+        try:
+            r = http("https://api.cloudflare.com/client/v4/pages/assets/upload", method="POST",
+                     headers={"Authorization": f"Bearer {jwt}", "Content-Type": "application/json", "Connection": "close"},
+                     data=body, timeout=60)
+            if not r.get("success"): raise RuntimeError(f"upload failed: {r}")
+            return
+        except Exception as e:
+            last = e; s = min(30, 2**(a-1))
+            sys.stderr.write(f"  ⚠ batch {a}/{attempts}: {str(e)[:110]} — retry {s}s\n"); sys.stderr.flush()
+            time.sleep(s)
+    raise RuntimeError(f"batch failed after {attempts}: {last}")
+
+def create_deployment(manifest):
+    b = f"----cf{uuid.uuid4().hex}"; parts = []
+    def fld(n, v):
+        parts.append(f"--{b}\r\nContent-Disposition: form-data; name=\"{n}\"\r\n\r\n{v}\r\n".encode())
+    fld("manifest", json.dumps(manifest)); fld("branch", BRANCH)
+    parts.append(f"--{b}--\r\n".encode())
+    return http(f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT}/pages/projects/{PROJECT}/deployments",
+                method="POST", data=b"".join(parts),
+                headers={"Authorization": f"Bearer {API_TOKEN}", "Content-Type": f"multipart/form-data; boundary={b}"},
+                timeout=180)
+
+def mime(p):
+    m, _ = mimetypes.guess_type(p); return m or "application/octet-stream"
+
+def main():
+    t0 = time.time()
+    print(f"[+] chunked deploy · project={PROJECT} · out={OUT_DIR}")
+    entries = walk(OUT_DIR); print(f"[+] {len(entries)} files")
+    manifest = {rel: sha for rel, _, sha in entries}
+    idx = {}
+    for rel, c, sha in entries: idx.setdefault(sha, (c, rel))
+    uniq = list(idx.keys())
+    jwt = get_jwt(); jwt_at = time.time()
+    miss = check_missing(jwt, uniq)
+    print(f"[+] {len(miss)} need upload ({len(uniq)-len(miss)} cached)")
+    if miss:
+        miss.sort(key=lambda h: len(idx[h][0]))
+        batch, nb, up, by = [], 0, 0, 0
+        for h in miss:
+            c, path = idx[h]
+            if batch and (len(batch) >= MAX_BATCH_FILES or by + len(c) > MAX_BATCH_BYTES):
+                if time.time() - jwt_at > 1500: jwt = get_jwt(); jwt_at = time.time()  # refresh < 30min
+                upload(jwt, batch); nb += 1; up += len(batch); batch, by = [], 0
+                if nb % 25 == 0: print(f"[+] {up}/{len(miss)} · {nb} batches · {int(time.time()-t0)}s")
+            batch.append({"key": h, "value": base64.b64encode(c).decode("ascii"),
+                          "metadata": {"contentType": mime(path)}, "base64": True}); by += len(c)
+        if batch:
+            if time.time() - jwt_at > 1500: jwt = get_jwt()
+            upload(jwt, batch); nb += 1; up += len(batch)
+        print(f"[+] uploaded {up} files in {nb} batches · {int(time.time()-t0)}s")
+    print("[+] creating deployment…")
+    r = create_deployment(manifest)
+    if not r.get("success"):
+        print(f"ERROR: create-deployment failed: {r}", file=sys.stderr); sys.exit(1)
+    res = r["result"]
+    print(f"[✓] DEPLOYED · id={res.get('id')} · {res.get('url')} · {int(time.time()-t0)}s")
+
+if __name__ == "__main__":
+    main()

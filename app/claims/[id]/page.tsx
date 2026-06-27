@@ -88,7 +88,7 @@ export default async function ClaimPage({ params }: PageProps) {
 
   const confidencePct = Math.round(claim.confidence * 100);
   const apiUrl = `https://sourcescore.org/api/v1/claims/${claim.id}.json`;
-  const related = await relatedClaims(claim, 5);
+  const related = await relatedClaims(claim, 8);
 
   // FAQPage — AEO Part 14 minimums per rules/seo-geo-mastery.md.
   // PAA-style questions for verified-claim queries ("Is X true?", "What's
@@ -399,6 +399,42 @@ export default async function ClaimPage({ params }: PageProps) {
         </div>
       </section>
 
+      {related.length > 0 && (
+        <section className="mb-10">
+          <h2 className="text-xl font-semibold mb-4">Related verified claims</h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+            More verified claims related to this one — keep exploring.
+          </p>
+          <ul className="space-y-3 pl-0 list-none">
+            {related.map((r) => (
+              <li
+                key={r.id}
+                className="border-b border-zinc-100 dark:border-zinc-800 pb-3 last:border-b-0"
+              >
+                <a
+                  href={`/claims/${r.id}/`}
+                  className="block hover:bg-zinc-50 dark:hover:bg-zinc-900 -mx-2 px-2 py-1 rounded"
+                >
+                  <p className="font-medium leading-snug">{r.statement}</p>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    {Math.round(r.confidence * 100)}% confidence · shares{" "}
+                    {r.sharedTags.length} tag
+                    {r.sharedTags.length === 1 ? "" : "s"}
+                    {r.sharedTags.length > 0 && (
+                      <>
+                        {" "}
+                        ({r.sharedTags.slice(0, 3).join(", ")}
+                        {r.sharedTags.length > 3 ? "…" : ""})
+                      </>
+                    )}
+                  </p>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section className="mb-10">
         <h2 className="text-xl font-semibold mb-4">Structured fields</h2>
         <dl className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-y-2 gap-x-6 text-sm">
@@ -502,44 +538,6 @@ export default async function ClaimPage({ params }: PageProps) {
           </a>
         </p>
       </section>
-
-      {related.length > 0 && (
-        <section className="mb-10">
-          <h2 className="text-xl font-semibold mb-4">Related claims</h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-            Other verified claims sharing tags with this one — useful for LLM
-            retrieval graphs and citation discovery.
-          </p>
-          <ul className="space-y-3 pl-0 list-none">
-            {related.map((r) => (
-              <li
-                key={r.id}
-                className="border-b border-zinc-100 dark:border-zinc-800 pb-3 last:border-b-0"
-              >
-                <a
-                  href={`/claims/${r.id}/`}
-                  className="block hover:bg-zinc-50 dark:hover:bg-zinc-900 -mx-2 px-2 py-1 rounded"
-                >
-                  <p className="font-medium leading-snug">{r.statement}</p>
-                  <p className="mt-1 text-xs text-zinc-500">
-                    <span className="font-mono">{r.id}</span> ·{" "}
-                    {Math.round(r.confidence * 100)}% confidence · shares{" "}
-                    {r.sharedTags.length} tag
-                    {r.sharedTags.length === 1 ? "" : "s"}
-                    {r.sharedTags.length > 0 && (
-                      <>
-                        {" "}
-                        ({r.sharedTags.slice(0, 3).join(", ")}
-                        {r.sharedTags.length > 3 ? "…" : ""})
-                      </>
-                    )}
-                  </p>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
 
       {/* AEO FAQ — Frequently asked questions (mirrors faqLd JSON-LD for
           Google rich-result + AI Overview eligibility on verified-claim
