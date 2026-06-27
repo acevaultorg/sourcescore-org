@@ -28,44 +28,50 @@ https://sourcescore.org/claims/
 ```
 Hey HN,
 
-I'm a solo dev who got tired of watching LLMs invent release dates and
-hallucinate paper citations in production. So I built a small API that
-returns hand-verified claims with primary sources, an HMAC-SHA256
-signature, and a ready-to-paste citation.
+I'm a solo dev. I built this because I kept shipping LLM features that would
+confidently make up release dates and cite papers that don't say what the model
+claims. One told a user in prod that a library shipped a feature about a year
+before it actually existed. That was the "ok, enough" moment.
 
-Try it:
+[!! OPERATOR: replace the line above with YOUR real "an LLM burned me" moment —
+which model, what it claimed. A true specific story is what makes HN believe a
+human wrote this. This whole post must be re-typed in your own voice before
+posting — see the authenticity notes below the body. !!]
+
+So it's a small API that returns hand-verified claims with their primary sources,
+a signature so you can tell the response wasn't tampered with, and a citation you
+can paste straight into output.
+
+Two things to try:
 
   curl https://sourcescore.org/api/v1/claims.json | jq '.count'
-  # → 384
+  # 384
 
   curl -X POST https://sourcescore.org/api/v1/verify \
     -H 'Content-Type: application/json' \
     -d '{"claim": "Llama 3.1 was released in July 2024"}'
-  # → bestMatch with sources + HMAC signature
 
-The v0 wedge is AI/ML research claims (release dates, paper introductions,
-architecture facts, parameter counts, organizational dates). 384 claims at
-launch spanning 1997-2025 — every one has 2+ primary sources. Free tier is
-1,000 claims/mo with no auth, no signup.
+First version only covers AI/ML facts (release dates, which paper introduced what,
+parameter counts, org dates) because that's what I kept getting burned on. 384
+claims right now, 1997 to 2025, each with at least 2 primary sources. Free tier is
+1,000/mo, no signup, no auth, just curl it.
 
-Built on Next.js + Cloudflare Pages + Pages Functions. Static envelopes
-signed at build time; runtime verify endpoint re-signs each response.
-HMAC-SHA256 in v0; migration to W3C Verifiable Credentials with Ed25519
-on the roadmap for Year 2 enterprise customers.
+Stack is Next.js on Cloudflare Pages + Pages Functions. Envelopes signed at build
+time, the verify endpoint re-signs each response. HMAC-SHA256 for now (Web Crypto
+native, zero deps). I'll move to Ed25519 / verifiable credentials if someone
+actually needs offline verification.
 
-What it explicitly doesn't do:
-- Performance comparisons (benchmark numbers depend on version + prompt
-  format; too much "actually that's not quite right" surface for v0)
-- Confidence below 0.85 (claims below threshold aren't published)
-- Black-box scoring (every claim links to primary sources you can
-  re-verify)
+Stuff it deliberately doesn't do:
+- benchmark/perf comparisons (depend on version + prompt, too easy to be wrong)
+- anything below 0.85 confidence (not published)
+- black-box scoring. every claim links its sources, go re-check them.
 
 Docs: https://sourcescore.org/docs/
-OpenAPI 3.1 spec: https://sourcescore.org/api/v1/openapi.json
-Free tier (1,000 claims/mo, no auth, no signup) — higher-volume paid API in private beta: https://sourcescore.org/api-access/
+OpenAPI: https://sourcescore.org/api/v1/openapi.json
+Free, no signup: https://sourcescore.org/api-access/ (bigger paid tier in private beta)
 
-Open to feedback on what claim types are most valuable + what vertical
-to expand to after AI/ML. Will be in-thread for the next few hours.
+Genuinely curious what claim types would be useful to you, and what to cover after
+AI/ML. I'll be in the thread.
 ```
 
 ---
