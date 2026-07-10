@@ -4,8 +4,6 @@ import { Analytics } from "@/components/Analytics";
 import { Clarity } from "@/components/Clarity";
 import { ClarityRouteTagger } from "@/components/ClarityRouteTagger";
 import { ClarityClickListener } from "@/components/ClarityClickListener";
-import { WebVitals } from "@/components/WebVitals";
-import { ScrollDepth } from "@/components/ScrollDepth";
 import { MobileNav } from "@/components/MobileNav";
 
 export const metadata: Metadata = {
@@ -181,8 +179,6 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-bg text-text min-h-screen flex flex-col antialiased">
-        <WebVitals />
-        <ScrollDepth />
         <ClarityRouteTagger />
         <ClarityClickListener />
         <SiteHeader />
