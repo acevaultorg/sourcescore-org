@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 import { gradeColorClass, gradeSurfaceClass } from "@/lib/types";
+import { SourceSearchFilter } from "@/components/SourceSearchFilter";
 
 export const metadata: Metadata = {
   title: { absolute: "Search sources — SourceScore" },
@@ -124,84 +125,11 @@ export default function SearchPage() {
         </div>
       </div>
 
-      {/* Inline filter script — pure DOM, no framework. URL-aware: a pasted
-          URL is normalized to its domain before matching, so "paste a URL" in
-          the hero actually works for known sources; unknown domains get an
-          honest "not scored yet" panel (no fabricated grade). Regex-free to
-          keep the injected string escaping-safe. */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              var input = document.getElementById('ss-search');
-              var rows = document.querySelectorAll('.ss-row');
-              var count = document.getElementById('ss-count');
-              var empty = document.getElementById('ss-empty');
-              var emptyUrl = document.getElementById('ss-empty-url');
-              var emptyDomain = document.getElementById('ss-empty-domain');
-              if (!input || !rows.length) return;
+      {/* Client-side filter runs post-hydration (useEffect) — a raw inline
+          <script> here was silently wiped by React hydration, killing the
+          filter. See components/SourceSearchFilter.tsx. */}
+      <SourceSearchFilter total={sources.length} />
 
-              function normDomain(s) {
-                var i = s.indexOf('://');
-                if (i >= 0) s = s.slice(i + 3);
-                if (s.lastIndexOf('www.', 0) === 0) s = s.slice(4);
-                s = s.split('/')[0].split('?')[0].split('#')[0].split(':')[0];
-                return s.toLowerCase();
-              }
-              function isUrlish(q) {
-                if (q.indexOf('://') >= 0) return true;
-                if (!q || q.charAt(0) === '.') return false;
-                var dot = q.indexOf('.');
-                if (dot <= 0) return false;
-                var after = q.slice(dot + 1);
-                return after.length >= 2 && after.indexOf(' ') < 0;
-              }
-
-              // Pre-fill from ?q= URL param so deep-links work
-              var params = new URLSearchParams(window.location.search);
-              var q0 = params.get('q');
-              if (q0) input.value = q0;
-
-              function filter() {
-                var raw = (input.value || '').trim();
-                var q = raw.toLowerCase();
-                var urlish = isUrlish(q);
-                var dom = urlish ? normDomain(q) : '';
-                var visible = 0;
-                rows.forEach(function(row) {
-                  if (!q) { row.style.display = ''; visible++; return; }
-                  var hit;
-                  if (urlish) {
-                    var rd = row.dataset.domain;
-                    hit = rd === dom || rd.indexOf(dom) >= 0 || (dom && dom.indexOf(rd) >= 0);
-                  } else {
-                    hit =
-                      row.dataset.name.indexOf(q) >= 0 ||
-                      row.dataset.domain.indexOf(q) >= 0 ||
-                      row.dataset.cat.indexOf(q) >= 0 ||
-                      row.dataset.grade.indexOf(q) >= 0 ||
-                      row.dataset.summary.indexOf(q) >= 0;
-                  }
-                  row.style.display = hit ? '' : 'none';
-                  if (hit) visible++;
-                });
-                if (count) {
-                  count.textContent = q
-                    ? visible + ' of ${sources.length} sources'
-                    : '${sources.length} sources';
-                }
-                var noResults = (visible === 0 && !!q);
-                if (empty) empty.style.display = (noResults && !urlish) ? 'block' : 'none';
-                if (emptyUrl) emptyUrl.style.display = (noResults && urlish) ? 'block' : 'none';
-                if (noResults && urlish && emptyDomain) emptyDomain.textContent = dom || raw;
-              }
-
-              input.addEventListener('input', filter);
-              filter();
-            })();
-          `,
-        }}
-      />
     </article>
   );
 }
