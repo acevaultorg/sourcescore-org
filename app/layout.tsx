@@ -120,6 +120,14 @@ export default function RootLayout({
         />
         <Analytics />
         <Clarity />
+        {/* Google Analytics 4 (added 2026-07-07 per operator directive; anonymize_ip).
+            Raw <script> for HTML-visible signal, matching the Clarity snippet. */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZ82M72J06" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WZ82M72J06',{anonymize_ip:true});`,
+          }}
+        />
         {/* No Google AdSense on SourceScore — removed 2026-06-26 (autopilot).
             Binding strategy (board anchors mqkx5yh8q913j0 + mpv4arecshtbzw):
             SourceScore is a FREE citation/authority asset → NO ads. The
