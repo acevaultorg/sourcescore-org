@@ -163,7 +163,7 @@ export default function HomePage() {
               URL to its domain). Zero JS, works without hydration; known sources
               resolve to their score, unknown domains get an honest "not scored
               yet" panel. */}
-          <form action="/search" method="get" className="mt-8 max-w-2xl">
+          <form action="/check" method="get" className="mt-8 max-w-2xl">
             <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="search"

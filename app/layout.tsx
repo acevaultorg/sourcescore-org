@@ -225,6 +225,12 @@ function SiteHeader() {
             Index
           </a>
           <a
+            href="/check/"
+            className="px-3 py-1.5 rounded-btn bg-surface-brand border border-brand/30 text-brand font-semibold hover:bg-brand/15 transition-colors"
+          >
+            Check a source
+          </a>
+          <a
             href="/discipline/"
             className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors"
           >
