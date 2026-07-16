@@ -13,8 +13,11 @@ export const metadata: Metadata = {
 export default function HomePage() {
   // Top 5 by Index for the hero leaderboard.
   const top = [...sources].sort((a, b) => b.scores.index.value - a.scores.index.value).slice(0, 5);
-  // Full sample list (10) for below-fold table.
-  const all = [...sources].sort((a, b) => b.scores.index.value - a.scores.index.value);
+  // Below-fold table: top 25 only. The full 133-row table shipped 624 KB HTML +
+  // a duplicated ~373 KB RSC hydration blob (3,697 DOM nodes) on every homepage
+  // load — a site-wide CWV drag. Full list lives at /sources/ (zero content loss).
+  const sorted = [...sources].sort((a, b) => b.scores.index.value - a.scores.index.value);
+  const all = sorted.slice(0, 25);
 
   // Dataset schema — the homepage IS a leaderboard dataset of scored sources.
   // Aleyda Solis 10-char LLM-citation checklist #4 (Extractable) + #2 (Useful).
@@ -241,7 +244,7 @@ export default function HomePage() {
           <div className="flex items-baseline justify-between gap-4 mb-6">
             <h2 className="text-heading-1 font-bold tracking-tight">Top 5 by SourceScore Index</h2>
             <a
-              href="#full-table"
+              href="/sources/"
               className="text-body-sm text-brand hover:underline whitespace-nowrap"
             >
               See all {sources.length} sources →
@@ -278,10 +281,11 @@ export default function HomePage() {
       {/* FULL TABLE ───────────────────────────────────────────────── */}
       <section className="border-t border-border" id="full-table">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-          <h2 className="text-heading-1 font-bold tracking-tight mb-2">All sources scored</h2>
+          <h2 className="text-heading-1 font-bold tracking-tight mb-2">Top 25 sources</h2>
           <p className="text-body text-muted mb-6 max-w-2xl">
-            {sources.length} sources scored across A+ to D grades. Each row links to the full breakdown with
-            the underlying signals you can re-derive.
+            The 25 highest-scoring of {sources.length} hand-scored sources. Each row links to the full
+            breakdown with the underlying signals you can re-derive —{" "}
+            <a href="/sources/" className="text-brand hover:underline">browse all {sources.length} sources</a>.
           </p>
 
           <div className="overflow-x-auto -mx-4 sm:mx-0 rounded-card border border-border bg-panel">

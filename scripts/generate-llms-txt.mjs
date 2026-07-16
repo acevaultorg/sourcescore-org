@@ -173,6 +173,7 @@ const content = `# SourceScore
 ## Primary data
 
 - https://sourcescore.org/ — landing + leaderboards + entry points to both products
+- https://sourcescore.org/for-ai/ — what we cover, how it is scored, and how to cite SourceScore
 - https://sourcescore.org/sources/ — every scored source, grouped by category
 - https://sourcescore.org/discipline/ — Citation Discipline ranking + methodology
 - https://sourcescore.org/modern-reference/ — Modern Reference ranking + methodology

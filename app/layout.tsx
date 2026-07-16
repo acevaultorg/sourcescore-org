@@ -338,6 +338,7 @@ function SiteFooter() {
           <div className="text-text font-semibold mb-2">Trust</div>
           <ul className="space-y-1 text-muted">
             <li><a href="/methodology/" className="hover:text-text">Methodology</a></li>
+            <li><a href="/for-ai/" className="hover:text-text">For AI assistants</a></li>
             <li><a href="/glossary/" className="hover:text-text">Glossary</a></li>
             <li><a href="/security/" className="hover:text-text">Security</a></li>
             <li><a href="/about/" className="hover:text-text">About</a></li>

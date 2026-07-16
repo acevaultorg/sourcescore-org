@@ -99,6 +99,7 @@ writeFileSync(`${OUT_DIR}/sitemap.xml`, xml);
 //   - sub-tool ranking pages, methodology, sources index, /grade/ landing
 const aiPriorityPaths = [
   "/",
+  "/for-ai/",
   "/methodology/",
   "/sources/",
   "/grade/",
