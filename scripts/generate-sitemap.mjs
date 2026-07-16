@@ -292,10 +292,21 @@ function altApiFor(u) {
 // Per Google sitemap spec: `xhtml:link rel="alternate"` is reserved for
 // hreflang language alternates. Using it for JSON twin association
 // (`type="application/json"`) is non-standard and produces an
-// "Incorrect namespace" error in GSC sitemap audit.
-// JSON twin URLs are listed as their OWN <url> entries below — that's
-// the spec-compliant way to surface them to crawlers, and it's what
-// LLM crawlers (GPTBot, ClaudeBot, etc.) actually parse anyway.
+// "Incorrect namespace" error in GSC sitemap audit — so the twins are NOT
+// emitted as xhtml:link alternates here.
+//
+// 2026-07-16 — JSON <url> entries REMOVED (they used to be listed here).
+// MEASURED: 1,993 JSON URLs submitted as index candidates produced 1,229 GSC
+// "Crawled – currently not indexed" pages (raw JSON is not indexable), i.e. a
+// 2,426-rejected vs 1,210-indexed ratio = a site-wide low-value signal that
+// coincides with the ~97% June visibility collapse. A sitemap is for indexable
+// documents; the twins are machine-readable data, not documents.
+// Discovery is NOT lost — it moves to the correct mechanisms, all already live:
+//   · every page's <head>: <link rel="alternate" type="application/json" …>
+//   · /llms.txt § JSON API — every endpoint, openapi-first
+//   · /for-ai + /api/openapi.json (OpenAPI 3.1 spec)
+// Paired with `X-Robots-Tag: googlebot: noindex` on /api/* in public/_headers,
+// which keeps Bingbot + every AI crawler fetching the twins untouched.
 const aiXml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -303,14 +314,10 @@ const aiXml = [
     (u) =>
       `  <url><loc>${u}</loc><lastmod>${TODAY}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`
   ),
-  ...apiUrls.map(
-    (u) =>
-      `  <url><loc>${u}</loc><lastmod>${TODAY}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`
-  ),
   "</urlset>",
 ].join("\n");
 writeFileSync(`${OUT_DIR}/sitemap-ai.xml`, aiXml);
 
 console.log(
-  `✓ sitemap.xml (${urls.length} URLs) + sitemap-ai.xml (${aiHumanUrls.length} HTML + ${apiUrls.length} JSON)`
+  `✓ sitemap.xml (${urls.length} URLs) + sitemap-ai.xml (${aiHumanUrls.length} HTML; ${apiUrls.length} JSON twins intentionally excluded — see comment)`
 );

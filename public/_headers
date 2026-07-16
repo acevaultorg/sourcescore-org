@@ -7,6 +7,20 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 
+# JSON twins — machine-readable, never an index candidate (2026-07-16).
+# MEASURED ROOT CAUSE: GSC "Crawled – currently not indexed" = 1,229 pages,
+# overwhelmingly /api/*.json. Google crawls raw JSON, cannot index it, and each
+# rejection piles onto a site-wide low-value signal (2,426 rejected vs 1,210
+# indexed) — a 2026-core-update-class quality drag that coincides with the ~97%
+# June visibility collapse (avg position 48.8).
+# `googlebot:` scope is deliberate + surgical: ONLY Google's indexer honors it.
+# Bingbot, GPTBot, ClaudeBot, PerplexityBot and every AI crawler still fetch
+# these fully — that channel is the site's ONE live human channel; do not break it.
+# Discovery is unaffected: each page's <head> carries its twin as
+# <link rel="alternate" type="application/json">, and llms.txt lists the API.
+/api/*
+  X-Robots-Tag: googlebot: noindex
+
 # Embeddable widgets — must allow cross-origin iframe embedding.
 # `! X-Frame-Options` removes SAMEORIGIN; CSP frame-ancestors then governs.
 # Layer 5 archetype: embeddable_widget x +80 per rules/aceusergrowth.md
