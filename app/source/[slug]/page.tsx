@@ -332,6 +332,14 @@ export default async function SourceDetailPage({ params }: PageProps) {
           {source.domain} ↗
         </a>
         <p className="mt-4 text-body-lg text-muted leading-relaxed max-w-2xl">{source.summary}</p>
+        {/* Direct answer immediately after the H1 (AEO: AI engines cite from the
+            first ~30% of a page; the verdict previously first appeared in the
+            3rd section). Same grade-derived data-display framing as the
+            citation-guidance block — never a bare YMYL trust verdict. */}
+        <p className="mt-4 text-body-lg text-text leading-relaxed max-w-2xl">
+          <strong>Is {source.name} reliable to cite?</strong> At grade {idx.grade} (
+          {idx.value}/100 on the SourceScore Index), {source.name} {reliabilityFraming}.
+        </p>
       </header>
 
       {/* INDEX HERO — the headline number ─────────────────────────── */}
