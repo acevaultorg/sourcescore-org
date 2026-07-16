@@ -63,6 +63,22 @@ deploy:
   only:
     - main
 
+# IndexNow ping after every deploy (Bing = the index ChatGPT/Copilot cite from —
+# the site's one live human channel). ping-indexnow.mjs auto-detects the key from
+# out/<KEY>.txt and has a wait-for-key-live guard (never pings before the key
+# file serves, which would cache-poison the key at Bing). Non-blocking.
+indexnow:
+  stage: deploy
+  image: node:24-bookworm-slim
+  needs:
+    - deploy
+  script:
+    - test -d out
+    - node scripts/ping-indexnow.mjs
+  only:
+    - main
+  allow_failure: true
+
 # Re-sync the CF Vectorize semantic index after claim-catalog changes, so
 # /api/v1/verify (semantic) returns newly-added claims. Runs ONLY when the
 # claims file (or this CI file) changed — content-only deploys skip it. CI

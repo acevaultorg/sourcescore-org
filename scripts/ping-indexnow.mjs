@@ -68,6 +68,28 @@ const body = {
   urlList: urls,
 };
 
+// Wait-for-key guard: NEVER ping before the key file verifiably serves live —
+// a premature ping cache-poisons the key at Bing indefinitely (fleet lesson,
+// feedback_indexnow_403_means_verify_in_bing_wmt). Retries ~2 min then aborts.
+let keyLive = false;
+for (let i = 1; i <= 12; i++) {
+  try {
+    const r = await fetch(body.keyLocation, { signal: AbortSignal.timeout(10000) });
+    if (r.ok && (await r.text()).trim() === KEY) {
+      keyLive = true;
+      break;
+    }
+  } catch {
+    /* transient — retry */
+  }
+  console.log(`… key file not live yet (attempt ${i}/12), waiting 10s`);
+  await new Promise((r) => setTimeout(r, 10000));
+}
+if (!keyLive) {
+  console.error("⚠ Key file never served live + matching — refusing to ping (protects the key from Bing cache-poisoning).");
+  process.exit(0);
+}
+
 try {
   const res = await fetch("https://api.indexnow.org/indexnow", {
     method: "POST",
