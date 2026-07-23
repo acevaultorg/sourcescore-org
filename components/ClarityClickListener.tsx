@@ -27,6 +27,18 @@ export function ClarityClickListener() {
       const reason = flagged.dataset.clarityUpgrade;
       if (!reason) return;
       clarityUpgrade(reason);
+      // GA4 mirror — the fleet metrics layer reads conversions from GA4 key
+      // events, so the funnel stays measurable now that Plausible is retired.
+      // CitationDesk CTA clicks (the site's one conversion action) fire the
+      // stable event name `citationdesk_cta` with the placement as a param.
+      const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+      if (typeof gtag === "function") {
+        if (reason.startsWith("citationdesk-cta-")) {
+          gtag("event", "citationdesk_cta", { source: reason.slice("citationdesk-cta-".length) });
+        } else {
+          gtag("event", "cta_click", { cta: reason });
+        }
+      }
     };
     document.addEventListener("click", onClick, { capture: true, passive: true });
     return () => document.removeEventListener("click", onClick, { capture: true });
