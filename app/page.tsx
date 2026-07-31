@@ -127,7 +127,7 @@ export default function HomePage() {
       <a
         href="/claims/"
         data-clarity-upgrade="veritas-launch-banner"
-        className="block border-b border-brand/30 bg-brand/5 hover:bg-brand/10 transition-colors plausible-event-name=veritas_banner_click"
+        className="block border-b border-brand/30 bg-brand/5 hover:bg-brand/10 transition-colors" data-event="veritas_banner_click"
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3 text-body-sm">
           <span className="px-2 py-0.5 rounded-pill bg-brand/15 text-brand text-caption font-mono uppercase tracking-wide whitespace-nowrap">
@@ -225,7 +225,7 @@ export default function HomePage() {
                 key={t.href}
                 href={t.href}
                 data-clarity-upgrade={`hero-subtool-${t.event.toLowerCase()}`}
-                className={`group block p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all plausible-event-name=hero_subtool_click plausible-event-tool=${t.event}`}
+                className={`group block p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all`} data-event="hero_subtool_click" data-event-tool={t.event}
               >
                 <div className="text-eyebrow text-brand mb-1.5">{t.badge}</div>
                 <div className="font-semibold text-text mb-1.5 group-hover:text-brand transition-colors">
@@ -257,7 +257,7 @@ export default function HomePage() {
                 <a
                   href={`/source/${s.slug}/`}
                   data-clarity-upgrade={`top5-rank-${i + 1}`}
-                  className={`block h-full p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all plausible-event-name=top5_click plausible-event-rank=${i + 1}`}
+                  className={`block h-full p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all`} data-event="top5_click" data-event-rank={i + 1}
                 >
                   <div className="flex items-baseline justify-between mb-2">
                     <span className="text-eyebrow text-dim">#{i + 1}</span>
@@ -396,7 +396,7 @@ export default function HomePage() {
                 key={t.href}
                 href={t.href}
                 data-clarity-upgrade={`veritas-cta-${t.event}`}
-                className={`group block p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all plausible-event-name=veritas_cta plausible-event-target=${t.event}`}
+                className={`group block p-4 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 hover:shadow-hover-lift transition-all`} data-event="veritas_cta" data-event-target={t.event}
               >
                 <div className="text-eyebrow text-brand mb-1.5">{t.badge}</div>
                 <div className="font-semibold text-text mb-1.5 group-hover:text-brand transition-colors">

@@ -75,7 +75,6 @@ export default function RootLayout({
             paint when the script/image actually fires. Borrowed from
             readstacks fleet pattern (rules/cross-project-learning.md L4). */}
         <link rel="dns-prefetch" href="https://www.clarity.ms" />
-        <link rel="dns-prefetch" href="https://plausible.io" />
         {/* Organization JSON-LD — applies site-wide for LLM-citation fitness */}
         <script
           type="application/ld+json"
@@ -297,7 +296,7 @@ function SiteFooter() {
               target="_blank"
               rel="noopener"
               data-clarity-upgrade="citationdesk-cta-footer"
-              className="hover:text-text plausible-event-name=citationdesk_cta plausible-event-source=footer"
+              className="hover:text-text" data-event="citationdesk_cta" data-event-source="footer"
             >
               Sister product:{" "}
               <span className="text-brand">CitationDesk</span> — is your own site

@@ -97,7 +97,7 @@ export default function ApiAccessPage() {
         <a
           href={MAILTO}
           data-clarity-upgrade="api-access-request"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn border border-brand/50 bg-brand/15 text-brand font-semibold hover:bg-brand/25 transition-colors plausible-event-name=api_access_request"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn border border-brand/50 bg-brand/15 text-brand font-semibold hover:bg-brand/25 transition-colors" data-event="api_access_request"
         >
           Request access by email &rarr;
         </a>

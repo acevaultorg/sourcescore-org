@@ -171,7 +171,7 @@ export default async function TopicPage({ params }: PageParams) {
             )}&url=${encodeURIComponent(canonical)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_twitter"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="share_twitter"
           >
             Share on X
           </a>
@@ -179,7 +179,7 @@ export default async function TopicPage({ params }: PageParams) {
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_linkedin"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="share_linkedin"
           >
             Share on LinkedIn
           </a>
@@ -187,7 +187,7 @@ export default async function TopicPage({ params }: PageParams) {
             href={`https://news.ycombinator.com/submitlink?u=${encodeURIComponent(canonical)}&t=${encodeURIComponent(topic.title)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_hn"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="share_hn"
           >
             Submit to HN
           </a>

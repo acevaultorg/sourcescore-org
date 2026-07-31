@@ -133,7 +133,7 @@ export default function SignupPage() {
               <a
                 href={`mailto:contact@acevault.org?subject=Early-access%20%E2%80%94%20${tier.name}%20tier&body=Tier:%20${tier.name}%0AEmail:%20%5Byour%20email%5D%0AUse%20case:%20%5Bbrief%20description%5D%0A%0AThanks!`}
                 data-clarity-upgrade={`signup-email-${tier.name}`}
-                className={`px-4 py-2 border border-zinc-900 dark:border-zinc-100 rounded font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 text-sm whitespace-nowrap plausible-event-name=signup_email plausible-event-tier=${tier.name}`}
+                className={`px-4 py-2 border border-zinc-900 dark:border-zinc-100 rounded font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 text-sm whitespace-nowrap`} data-event="signup_email" data-event-tier={tier.name}
               >
                 Email for early access
               </a>

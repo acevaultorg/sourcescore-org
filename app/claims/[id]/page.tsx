@@ -320,7 +320,7 @@ export default async function ClaimPage({ params }: PageProps) {
             )}&url=${encodeURIComponent(`https://sourcescore.org/claims/${claim.id}/`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_twitter"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="share_twitter"
           >
             Share on X
           </a>
@@ -330,7 +330,7 @@ export default async function ClaimPage({ params }: PageProps) {
             )}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_linkedin"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="share_linkedin"
           >
             Share on LinkedIn
           </a>
@@ -340,7 +340,7 @@ export default async function ClaimPage({ params }: PageProps) {
             )}&t=${encodeURIComponent(`Verified: ${claim.statement}`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_hn"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="share_hn"
           >
             Submit to HN
           </a>
@@ -350,7 +350,7 @@ export default async function ClaimPage({ params }: PageProps) {
             )}&title=${encodeURIComponent(`Verified: ${claim.statement}`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_reddit"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="share_reddit"
           >
             Share on Reddit
           </a>
@@ -360,7 +360,7 @@ export default async function ClaimPage({ params }: PageProps) {
             )}&body=${encodeURIComponent(
               `${claim.statement}\n\nVerified at: https://sourcescore.org/claims/${claim.id}/\n\nWith ${claim.sources.length} primary sources and an HMAC signature.`,
             )}`}
-            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=share_email"
+            className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="share_email"
           >
             Email
           </a>
@@ -380,19 +380,19 @@ export default async function ClaimPage({ params }: PageProps) {
         <div className="flex flex-wrap gap-2 text-sm">
           <a
             href="/sources/"
-            className="px-3 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-medium hover:opacity-90 plausible-event-name=claim_explore_sources"
+            className="px-3 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-medium hover:opacity-90" data-event="claim_explore_sources"
           >
             Browse source reliability scores →
           </a>
           <a
             href="/search/"
-            className="px-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=claim_explore_search"
+            className="px-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="claim_explore_search"
           >
             Is a source reliable to cite? →
           </a>
           <a
             href="/claims/"
-            className="px-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=claim_explore_claims"
+            className="px-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="claim_explore_claims"
           >
             All verified claims →
           </a>
@@ -494,7 +494,7 @@ export default async function ClaimPage({ params }: PageProps) {
               {PUBLISHER_TO_SOURCE_SLUG[s.publisher] && (
                 <a
                   href={`/source/${PUBLISHER_TO_SOURCE_SLUG[s.publisher]}/`}
-                  className="mt-2 inline-flex items-center text-xs px-2.5 py-1 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 plausible-event-name=claim_source_to_scorepage"
+                  className="mt-2 inline-flex items-center text-xs px-2.5 py-1 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="claim_source_to_scorepage"
                 >
                   {s.publisher} is rated by SourceScore — see its reliability →
                 </a>

@@ -185,7 +185,7 @@ export default function PricingPage() {
           <a
             href="/api-access/"
             data-clarity-upgrade="pricing-to-api-access"
-            className="underline font-medium hover:text-zinc-900 dark:hover:text-zinc-100 plausible-event-name=pricing_request_access"
+            className="underline font-medium hover:text-zinc-900 dark:hover:text-zinc-100" data-event="pricing_request_access"
           >
             request access
           </a>{" "}
@@ -242,7 +242,7 @@ export default function PricingPage() {
                 <a
                   href="/docs/"
                   data-clarity-upgrade={`pricing-cta-${tier.name}`}
-                  className="w-full text-center px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 plausible-event-name=pricing_cta plausible-event-tier=free"
+                  className="w-full text-center px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900" data-event="pricing_cta" data-event-tier="free"
                 >
                   Start in docs
                 </a>
@@ -250,11 +250,7 @@ export default function PricingPage() {
                 <a
                   href="/api-access/"
                   data-clarity-upgrade={`pricing-cta-${tier.name}`}
-                  className={`w-full text-center px-4 py-2 rounded font-medium plausible-event-name=pricing_cta plausible-event-tier=${tier.name} ${
-                    tier.name === "indie"
-                      ? "bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-300"
-                      : "border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-900"
-                  }`}
+                  className={`w-full text-center px-4 py-2 rounded font-medium ${ tier.name === "indie" ? "bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-300" : "border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-900" }`} data-event="pricing_cta" data-event-tier={tier.name}
                 >
                   Request access
                 </a>

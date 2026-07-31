@@ -31,7 +31,6 @@ type Props = {
 };
 
 export function CitationDeskCTA({ variant = "panel", source = "generic" }: Props) {
-  const track = `plausible-event-name=citationdesk_cta plausible-event-source=${source}`;
 
   if (variant === "strip") {
     return (
@@ -40,7 +39,7 @@ export function CitationDeskCTA({ variant = "panel", source = "generic" }: Props
         target="_blank"
         rel="noopener"
         data-clarity-upgrade={`citationdesk-cta-${source}`}
-        className={`group block rounded-card border border-brand/30 bg-surface-brand hover:bg-brand/10 hover:border-brand/50 transition-colors p-4 ${track}`}
+        className={`group block rounded-card border border-brand/30 bg-surface-brand hover:bg-brand/10 hover:border-brand/50 transition-colors p-4`} data-event="citationdesk_cta" data-event-source={source}
       >
         <div className="flex items-start gap-3">
           <span className="mt-0.5 px-2 py-0.5 rounded-pill bg-brand/15 text-brand text-caption font-mono uppercase tracking-wide whitespace-nowrap shrink-0">
@@ -67,7 +66,7 @@ export function CitationDeskCTA({ variant = "panel", source = "generic" }: Props
       target="_blank"
       rel="noopener"
       data-clarity-upgrade={`citationdesk-cta-${source}`}
-      className={`group block rounded-card-lg border border-brand/30 bg-surface-brand hover:bg-brand/10 hover:border-brand/50 transition-colors p-6 sm:p-7 ${track}`}
+      className={`group block rounded-card-lg border border-brand/30 bg-surface-brand hover:bg-brand/10 hover:border-brand/50 transition-colors p-6 sm:p-7`} data-event="citationdesk_cta" data-event-source={source}
     >
       <div className="text-eyebrow text-brand mb-2">Sister tool &middot; CitationDesk</div>
       <h2 className="text-heading-2 font-bold tracking-tight text-text mb-2">
