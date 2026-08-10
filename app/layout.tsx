@@ -95,6 +95,14 @@ export default function RootLayout({
                 "https://gitlab.com/acevault-lab",
                 "https://dev.to/paulomdevries",
               ],
+              // Publisher attribution — lets partners and networks verify
+              // common ownership across the Caslon Media network.
+              parentOrganization: {
+                "@type": "Organization",
+                "@id": "https://caslonmedia.com/#organization",
+                name: "Caslon Media",
+                url: "https://caslonmedia.com/",
+              },
             }),
           }}
         />
@@ -351,7 +359,13 @@ function SiteFooter() {
       </div>
       <div className="border-t border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 text-caption text-dim flex flex-col sm:flex-row justify-between gap-2">
-          <span>© {new Date().getFullYear()} SourceScore. Methodology v0.1.</span>
+          <span>
+            © {new Date().getFullYear()} SourceScore. Methodology v0.1. Published by{" "}
+            <a href="https://caslonmedia.com/" className="hover:text-text underline underline-offset-2">
+              Caslon Media
+            </a>
+            , Amsterdam.
+          </span>
           <span className="font-mono">sourcescore.org</span>
         </div>
       </div>
