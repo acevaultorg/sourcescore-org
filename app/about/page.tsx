@@ -157,7 +157,9 @@ export default function AboutPage() {
 
         <h2 className="text-heading-2 font-bold pt-4">Who we are</h2>
         <p className="text-muted">
-          SourceScore is operated by a small independent team. The site is a
+          SourceScore is operated by a small independent team and published by
+          Caslon Media, a registered Dutch company running a network of
+          independent data and reference sites. The site is a
           sister project to HoldLens (sec-filings reference index) and other
           reference-grade fleet sites. The methodology is our intellectual
           property; the underlying public-source data we score and the

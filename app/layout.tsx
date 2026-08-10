@@ -342,6 +342,8 @@ function SiteFooter() {
             <li><a href="/security/" className="hover:text-text">Security</a></li>
             <li><a href="/about/" className="hover:text-text">About</a></li>
             <li><a href="/contact/" className="hover:text-text">Contact</a></li>
+            <li><a href="/partners/" className="hover:text-text">Partner with us</a></li>
+            <li><a href="/disclosure/" className="hover:text-text">Affiliate disclosure</a></li>
             <li><a href="/privacy/" className="hover:text-text">Privacy</a></li>
             <li><a href="/terms/" className="hover:text-text">Terms</a></li>
           </ul>
