@@ -12,11 +12,19 @@ variables:
   # Baked into static export at build time; components/Clarity.tsx loads Clarity
   # script only when this is set. Project: SourceScore (wk6sqdp5vn).
   NEXT_PUBLIC_CLARITY_PROJECT_ID: "wk6sqdp5vn"
+  # RankScale affiliate link — LIVE since 2026-08-11 (Rewardful program, approved).
+  # Committed on purpose: this is a PUBLIC referral URL, not a secret — it ships
+  # verbatim in the rendered HTML anyway. It lives here rather than in the CF Pages
+  # dashboard because THIS GitLab CI job runs the build, and dashboard env vars are
+  # not visible to it; a dashboard-only value would silently produce an empty slot.
+  # Deactivate = delete this line and push. See docs/AFFILIATE-ACTIVATION.md.
+  NEXT_PUBLIC_AFF_RANKSCALE: "https://rankscale.ai?via=paulo"
 
 cache:
-  # v2 = invalidate when NEXT_PUBLIC_* env-baked vars change (e.g., Clarity ID added 2026-05-08).
+  # v3 = invalidate when NEXT_PUBLIC_* env-baked vars change (Clarity ID 2026-05-08,
+  # RankScale affiliate URL 2026-08-11).
   # Bumping the key forces fresh `.next/cache/` so static-export HTML re-renders with new env.
-  key: sourcescore-cache-v2
+  key: sourcescore-cache-v3
   paths:
     - node_modules/
     - .next/cache/

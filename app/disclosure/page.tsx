@@ -27,7 +27,7 @@ export default function DisclosurePage() {
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         Affiliate Disclosure
       </h1>
-      <p className="text-body text-dim mb-8">Last updated: 2026-08-10</p>
+      <p className="text-body text-dim mb-8">Last updated: 2026-08-11</p>
 
       <section className="prose prose-invert max-w-none text-body text-text leading-relaxed space-y-5">
         <p className="text-muted">

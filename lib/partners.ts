@@ -14,7 +14,9 @@
 // (SLOT1 / SLOT2) carry name + note env vars too, so a program we have not
 // anticipated still activates without touching code.
 //
-// ZERO APPROVED PROGRAMS AS OF 2026-08-11. Nothing here renders today.
+// LIVE AS OF 2026-08-11: Rankscale.ai (approved, Rewardful). Its URL is set in
+// .gitlab-ci.yml `variables:` — a public referral link, committed so the CI build
+// that actually renders the HTML can see it. Every other slot is still dormant.
 
 export type Partner = {
   /** Stable analytics key — becomes the `partner` prop on the affiliate_click event. */

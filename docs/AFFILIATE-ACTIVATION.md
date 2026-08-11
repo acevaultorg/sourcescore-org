@@ -1,38 +1,56 @@
 # Affiliate activation — one env var, no code edit
 
-**Status as of 2026-08-11: zero approved programs. Nothing affiliate-related renders on the site.**
-
-The activation layer is already built and already placed on the pages. It is
-dormant: `components/PartnerTools.tsx` returns `null` while no partner URL is
-configured, so there is no box, no heading, no whitespace, and no layout shift.
-The day a program approves, you set one environment variable and redeploy.
+**Status as of 2026-08-11: Rankscale.ai is LIVE** (approved via Rewardful,
+`https://rankscale.ai?via=paulo`). Every other slot is still dormant:
+`components/PartnerTools.tsx` only renders the partners that are configured, so
+an unapproved program contributes no box, no heading, and no layout shift.
 
 ---
 
+## ⚠️ Where the variable actually goes: `.gitlab-ci.yml`, NOT the CF dashboard
+
+This repo is built by **GitLab CI** (`.gitlab-ci.yml` → `npm run build` →
+`wrangler pages deploy out`). Cloudflare Pages only receives the finished
+`out/` directory — it never runs the build. So a `NEXT_PUBLIC_*` variable set
+in the **Cloudflare Pages dashboard is never seen by the build** and silently
+produces an empty slot. (Earlier revisions of this runbook said to use the
+dashboard. That was wrong; corrected 2026-08-11.)
+
+Affiliate URLs are **public** — they ship verbatim in the rendered HTML — so
+committing them to `.gitlab-ci.yml` is safe and is the reliable path. Real
+secrets (`CLOUDFLARE_API_TOKEN`, `SOURCESCORE_SIGNING_SECRET`) stay in GitLab
+**Settings → CI/CD → Variables** and must never be committed.
+
 ## Activate a partner (2 minutes)
 
-1. **Cloudflare Pages → `sourcescore` → Settings → Environment variables →
-   Production.** Add the variable for the partner (table below), value = your
-   full affiliate URL. It **must** start with `https://` — anything else is
-   ignored by design, so a typo fails closed instead of shipping a broken link.
-2. **Redeploy.** `NEXT_PUBLIC_*` values are baked in at build time, so an env
-   change alone does nothing until a build runs. Push any commit to `main`, or
-   hit *Retry deployment* on the latest Pages deployment.
-3. **Verify it is live:**
+1. **Edit `.gitlab-ci.yml` → `variables:`.** Add the variable for the partner
+   (table below), value = the full affiliate URL. It **must** start with
+   `https://` — anything else is ignored by design, so a typo fails closed
+   instead of shipping a broken link.
+2. **Bump the `cache:` key** (`sourcescore-cache-vN` → `vN+1`). `NEXT_PUBLIC_*`
+   values are baked into the HTML at build time, so a stale `.next/cache` can
+   re-emit pre-change markup.
+3. **Push to `main`.** That is the deploy — CI builds and ships it. Local
+   `npm run deploy` is blocked by the predeploy guard.
+4. **Verify it is live:**
    ```bash
-   curl -s https://sourcescore.org/source/wikipedia/ | grep -c 'data-event="affiliate_click"'   # ≥1
-   curl -s https://sourcescore.org/source/wikipedia/ | grep -o 'rel="sponsored nofollow noopener"' | head -1
+   # NOTE: the slug is `wikipedia-en`, not `wikipedia` — an earlier version of
+   # this runbook used a 404 slug, which returns 0 for every grep and looks
+   # exactly like a failed activation. Corrected 2026-08-11.
+   curl -s https://sourcescore.org/source/wikipedia-en/ | grep -c 'data-event="affiliate_click"'   # ≥1
+   curl -s https://sourcescore.org/source/wikipedia-en/ | grep -o 'rel="sponsored nofollow noopener"' | head -1
+   curl -s https://sourcescore.org/source/wikipedia-en/ | grep -o 'href="https://rankscale.ai?via=paulo"' | head -1
    curl -s https://sourcescore.org/disclosure/ | grep -c 'currently carries affiliate links'    # 1
    ```
 
-Deactivate by clearing the variable and redeploying. Same 2 minutes.
+Deactivate by deleting the line from `.gitlab-ci.yml` and pushing. Same 2 minutes.
 
 ## Variables
 
 | Partner | URL variable | Notes |
 |---|---|---|
 | Otterly.AI | `NEXT_PUBLIC_AFF_OTTERLY` | name + description built in |
-| Rankscale.ai | `NEXT_PUBLIC_AFF_RANKSCALE` | name + description built in |
+| **Rankscale.ai** | **`NEXT_PUBLIC_AFF_RANKSCALE`** | ✅ **LIVE since 2026-08-11** — `https://rankscale.ai?via=paulo`, set in `.gitlab-ci.yml`. The `?via=` param is appendable to any rankscale.ai URL. |
 | Profound | `NEXT_PUBLIC_AFF_PROFOUND` | name + description built in |
 | Semrush | `NEXT_PUBLIC_AFF_SEMRUSH` | name + description built in |
 | Ahrefs | `NEXT_PUBLIC_AFF_AHREFS` | name + description built in |
