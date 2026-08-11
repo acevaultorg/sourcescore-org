@@ -27,7 +27,11 @@ export function Clarity() {
   return (
     <script
       dangerouslySetInnerHTML={{
-        __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${CLARITY_PROJECT_ID}");`,
+        // Guarded by the fleet-agent gate in app/layout.tsx, which runs immediately
+        // before this. Clarity has no documented runtime opt-out the way GA4 has
+        // ga-disable-<ID>, so the only way to stop it recording an agent session is
+        // to never inject the tag at all.
+        __html: `if(!window.__FLEET_AGENT__){(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${CLARITY_PROJECT_ID}");}`,
       }}
     />
   );

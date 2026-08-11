@@ -136,6 +136,36 @@ export default function RootLayout({
           }}
         />
         <Analytics />
+        {/* FLEET-AGENT GATE — keeps our own verification traffic out of Clarity + GA4, so
+            session/engagement numbers describe humans. Ported from readstacks /
+            colorcombinations 2026-08-06.
+
+            Visit any page once with ?__fa=1 from an agent-driven browser; persists in
+            localStorage. Undo: localStorage.removeItem('__fleet_agent').
+            Covers Chrome MCP too (real Chrome UA, webdriver false — invisible to any UA
+            test, and it is the fleet's default verification browser), and the in-app
+            Browser pane, where navigator.webdriver was MEASURED false. Also excludes the
+            operator's own self-visits.
+
+            SELF-DECLARATION, NOT UA-SNIFFING — deliberately. A UA-matching version was
+            written and reverted on readstacks: matching a vendor client string drops real
+            humans who browse in that client, silently and uncountably. This site's whole
+            thesis is AI-assistant citation traffic, so an invisible UNDER-count there is
+            the worst available error. Do not reintroduce.
+
+            ⚠️ The GA4 id is HARDCODED here on purpose, matching the loader below. The
+            readstacks original emits its kill-switch only when an env var is set, which is
+            safe there because GA4 also only loads under that var. Here GA4 loads from a
+            literal id, so an env-conditioned copy would emit NO ga-disable while GA4 still
+            loaded — a gate that reports success and suppresses nothing.
+
+            Ordering: the async gtag.js below dispatches no hit by itself; the first hit is
+            the inline gtag('config'), which runs after this. ga-disable is read per-hit. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var a=false;try{if(location.search.indexOf("__fa=1")>-1){localStorage.setItem("__fleet_agent","1");}a=localStorage.getItem("__fleet_agent")==="1";}catch(e){}if(navigator.webdriver===true||(navigator.userAgent||"").indexOf("HeadlessChrome")>-1){a=true;}if(a){window.__FLEET_AGENT__=1;document.documentElement.setAttribute("data-google-analytics-opt-out","");window["ga-disable-G-WZ82M72J06"]=true;}})();`,
+          }}
+        />
         <Clarity />
         {/* Google Analytics 4 (added 2026-07-07 per operator directive; anonymize_ip).
             Raw <script> for HTML-visible signal, matching the Clarity snippet. */}
