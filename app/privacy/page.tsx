@@ -10,7 +10,7 @@ export default function PrivacyPage() {
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Privacy Policy</h1>
-      <p className="text-body text-dim mb-8">Last updated: 2026-04-28</p>
+      <p className="text-body text-dim mb-8">Last updated: 2026-08-11</p>
 
       <section className="prose prose-invert max-w-none text-body text-text leading-relaxed space-y-5">
         <p className="text-muted">
@@ -25,8 +25,12 @@ export default function PrivacyPage() {
             request timestamp, referrer.
           </li>
           <li>
-            <strong className="text-text">Privacy-first analytics:</strong> aggregated page-view
-            counts via privacy-respecting analytics (no individual tracking, no cross-site cookies).
+            <strong className="text-text">Analytics:</strong> we use{" "}
+            <strong className="text-text">Google Analytics 4</strong> (page views, referrer,
+            device and browser type, approximate location, with IP anonymisation enabled) and{" "}
+            <strong className="text-text">Microsoft Clarity</strong> (anonymised interaction
+            data — clicks, scroll depth, and session replays — so we can see where pages confuse
+            people). We do not use either to identify you personally, and we do not sell data.
           </li>
           <li>
             <strong className="text-text">Email contact:</strong> if you email us, we retain the
@@ -36,21 +40,51 @@ export default function PrivacyPage() {
 
         <h2 className="text-heading-2 font-bold pt-4">Cookies + advertising</h2>
         <p className="text-muted">
-          The Site may use third-party advertising (Google AdSense or equivalent) that uses cookies,
-          web beacons, and other identifiers to serve ads based on prior visits to this and other
-          websites. Google&apos;s use of advertising cookies enables it and its partners to serve
-          ads based on your visit to our sites and other sites. You may opt out of personalized
-          advertising by visiting <a href="https://adssettings.google.com" className="text-brand hover:underline" rel="nofollow">Google&apos;s Ad Settings</a>{" "}
-          or learn more at <a href="https://policies.google.com/technologies/partner-sites" className="text-brand hover:underline" rel="nofollow">How Google uses data when you use our partners&apos; sites or apps</a>.
+          <strong className="text-text">We run no advertising network on this Site.</strong> There
+          is no Google AdSense, no ad tags, and no advertising cookies set by us.
+        </p>
+        <p className="text-muted">
+          The analytics above may set first-party cookies or use equivalent browser storage to tell
+          one session from another. Google Analytics 4 is configured with{" "}
+          <a href="https://support.google.com/analytics/answer/9976101" className="text-brand hover:underline" rel="nofollow">
+            Google Consent Mode
+          </a>{" "}
+          defaults of <code className="font-mono text-text">denied</code> for analytics and
+          advertising storage for visitors in the EU/EEA, the UK, Switzerland, and California — so
+          for those visitors GA4 runs without storing analytics cookies. Outside those regions the
+          default is <code className="font-mono text-text">granted</code> and GA4 sets its standard
+          first-party analytics cookies. You can block either tool with any standard content
+          blocker; the Site works normally without them.
+        </p>
+        <p className="text-muted">
+          Some links on the Site may be affiliate links (see our{" "}
+          <a href="/disclosure/" className="text-brand hover:underline">affiliate disclosure</a>).
+          Those are ordinary outbound links — we set no cookie for them. If you follow one, the
+          destination site may set its own cookies under its own privacy policy. On our side we
+          record only an anonymous &ldquo;a link was clicked&rdquo; event in the analytics above.
         </p>
 
         <h2 className="text-heading-2 font-bold pt-4">Third-party services</h2>
         <p className="text-muted">
-          We use Cloudflare for hosting and edge delivery. Cloudflare may collect and process
-          information per their{" "}
+          We use Cloudflare for hosting and edge delivery, Google Analytics 4 for aggregate traffic
+          measurement, and Microsoft Clarity for anonymised interaction analytics. Each processes
+          data under its own policy:{" "}
           <a href="https://www.cloudflare.com/privacypolicy/" className="text-brand hover:underline" rel="nofollow">
-            privacy policy
-          </a>.
+            Cloudflare
+          </a>
+          ,{" "}
+          <a href="https://policies.google.com/privacy" className="text-brand hover:underline" rel="nofollow">
+            Google
+          </a>{" "}
+          (and{" "}
+          <a href="https://policies.google.com/technologies/partner-sites" className="text-brand hover:underline" rel="nofollow">
+            how Google uses data from partner sites
+          </a>
+          ),{" "}
+          <a href="https://privacy.microsoft.com/privacystatement" className="text-brand hover:underline" rel="nofollow">
+            Microsoft
+          </a>
+          .
         </p>
 
         <h2 className="text-heading-2 font-bold pt-4">Your rights (GDPR / CCPA)</h2>
@@ -58,8 +92,8 @@ export default function PrivacyPage() {
           If you are an EU/EEA, UK, or California resident you have rights to access, correction,
           erasure, restriction, and portability of your personal data. To exercise any of these
           rights, email{" "}
-          <a href="mailto:contact@acevault.org" className="text-brand hover:underline">
-            contact@acevault.org
+          <a href="mailto:hello@caslonmedia.com" className="text-brand hover:underline">
+            hello@caslonmedia.com
           </a>.
         </p>
 
@@ -78,8 +112,8 @@ export default function PrivacyPage() {
         <h2 className="text-heading-2 font-bold pt-4">Contact</h2>
         <p className="text-muted">
           Questions about this policy:{" "}
-          <a href="mailto:contact@acevault.org" className="text-brand hover:underline">
-            contact@acevault.org
+          <a href="mailto:hello@caslonmedia.com" className="text-brand hover:underline">
+            hello@caslonmedia.com
           </a>.
         </p>
       </section>

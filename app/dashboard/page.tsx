@@ -19,7 +19,7 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 export const metadata: Metadata = {
   title: "Dashboard — SourceScore VERITAS API",
   description:
-    "Manage API keys, view usage, and configure your subscription. Live dashboard ships Day 8+ once auth + Postgres land.",
+    "Manage API keys, view usage, and configure your subscription. The self-serve dashboard is not live yet — keys are issued manually in the meantime.",
   alternates: { canonical: "https://sourcescore.org/dashboard/" },
   robots: {
     // Placeholder page until real dashboard ships; no indexing value.
@@ -56,7 +56,8 @@ export default function DashboardPage() {
           Dashboard
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg">
-          Live dashboard ships Day 8+ once auth + database land.
+          The self-serve dashboard is not live yet. Until it is, API keys are
+          issued manually — here is exactly how that works today.
         </p>
       </header>
 
@@ -76,8 +77,8 @@ export default function DashboardPage() {
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
           The free tier ({TIERS[0]!.includedClaims.toLocaleString()} claims/mo)
           is fully usable today — no signup required. For paid tiers, email{" "}
-          <a href="mailto:contact@acevault.org" className="underline">
-            contact@acevault.org
+          <a href="mailto:hello@caslonmedia.com" className="underline">
+            hello@caslonmedia.com
           </a>{" "}
           and we&rsquo;ll send an invoice + issue a key manually in &lt;24h.
         </p>
@@ -106,7 +107,7 @@ export default function DashboardPage() {
       <section className="text-sm text-zinc-600 dark:text-zinc-400">
         <p>
           Want a specific dashboard feature on day 1?{" "}
-          <a href="mailto:contact@acevault.org" className="underline">
+          <a href="mailto:hello@caslonmedia.com" className="underline">
             Tell us
           </a>{" "}
           — we prioritize the dev portal by what paid customers ask for first.

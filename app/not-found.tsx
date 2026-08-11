@@ -4,8 +4,8 @@ export default function NotFound() {
       <div className="text-eyebrow text-brand mb-3">404</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Source not in the index</h1>
       <p className="text-body-lg text-muted leading-relaxed mb-8">
-        The source you&apos;re looking for isn&apos;t in our Day 1 sample. The production index
-        will scale to 10,000+ sources via the same methodology.
+        The source you&apos;re looking for isn&apos;t in the index yet. We only publish grades for
+        sources we have hand-scored — the index keeps expanding under the same methodology.
       </p>
       <div className="flex flex-wrap gap-3 justify-center">
         <a

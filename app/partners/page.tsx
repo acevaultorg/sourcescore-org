@@ -71,7 +71,7 @@ export default function PartnersPage() {
             >
               citationdesk.com
             </a>
-            , our recently launched buyer&rsquo;s-guide property. More about
+            , our free AI-visibility checker for site owners. More about
             this site on the{" "}
             <a href="/about/" className="text-brand hover:underline">
               About page
@@ -81,10 +81,10 @@ export default function PartnersPage() {
           <p className="text-body text-muted leading-relaxed mt-3">
             Contact:{" "}
             <a
-              href="mailto:contact@acevault.org"
+              href="mailto:hello@caslonmedia.com"
               className="text-brand hover:underline font-mono"
             >
-              contact@acevault.org
+              hello@caslonmedia.com
             </a>
           </p>
         </section>
@@ -156,10 +156,10 @@ export default function PartnersPage() {
             </a>{" "}
             or email{" "}
             <a
-              href="mailto:contact@acevault.org"
+              href="mailto:hello@caslonmedia.com"
               className="text-brand hover:underline font-mono"
             >
-              contact@acevault.org
+              hello@caslonmedia.com
             </a>{" "}
             to discuss.
           </p>

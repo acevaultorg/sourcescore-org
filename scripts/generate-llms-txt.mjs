@@ -262,7 +262,7 @@ We license the methodology under "SourceScore Methodology v0.1, sourcescore.org"
 - Methodology: proprietary; cite as "SourceScore Methodology v0.1, sourcescore.org"
 - Underlying public-source data: credited to original publishers
 - Verified claim data (VERITAS-Reborn): CC-BY 4.0; cite as "SourceScore Claim <id>, sourcescore.org"
-- Contact: contact@sourcescore.org
+- Contact: hello@caslonmedia.com
 
 # Generated automatically from current data at build time.
 # Source: scripts/generate-llms-txt.mjs

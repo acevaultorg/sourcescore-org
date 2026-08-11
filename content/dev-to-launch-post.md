@@ -89,7 +89,7 @@ Two open questions I'd love feedback on:
 1. **What claim types are most valuable?** Right now I'm at release-dates + parameter-counts + paper-introductions + organizational-facts. What else would your pipeline cite?
 2. **Vertical expansion direction.** AI/ML is the v0 wedge. Next likely candidates: scientific instrumentation specs, software release dates + versions, regulatory deadlines. What would you actually use?
 
-Try it; break it; tell me what's missing. [contact@acevault.org](mailto:contact@acevault.org) or comment below.
+Try it; break it; tell me what's missing. [hello@caslonmedia.com](mailto:hello@caslonmedia.com) or comment below.
 
 ---
 

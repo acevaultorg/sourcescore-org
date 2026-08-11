@@ -1,8 +1,8 @@
 # SourceScore VERITAS — security contacts
-# RFC 9116 (security.txt) — last updated 2026-05-16
+# RFC 9116 (security.txt) — last updated 2026-08-11
 
-Contact: mailto:security@sourcescore.org
-Expires: 2027-05-16T00:00:00.000Z
+Contact: mailto:hello@caslonmedia.com
+Expires: 2027-08-11T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://sourcescore.org/.well-known/security.txt
 Policy: https://sourcescore.org/security/

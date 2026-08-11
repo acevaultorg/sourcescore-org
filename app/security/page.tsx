@@ -64,15 +64,15 @@ export default function SecurityPage() {
         <ul className="text-sm space-y-2 list-disc pl-6 mb-3">
           <li>
             <strong>Email:</strong>{" "}
-            <a href="mailto:security@sourcescore.org" className="underline">
-              security@sourcescore.org
+            <a href="mailto:hello@caslonmedia.com" className="underline">
+              hello@caslonmedia.com
             </a>
             {" "}— preferred for first contact.
           </li>
           <li>
-            <strong>PGP:</strong> on request via the email above. We'll
-            publish a key fingerprint here once the rotation cadence is
-            stable (Day 30).
+            <strong>PGP:</strong> on request via the email above. A published
+            key fingerprint is not available yet; we will add one here once the
+            rotation cadence is stable.
           </li>
           <li>
             <strong>GitLab issue (public):</strong> only for issues without
@@ -150,8 +150,8 @@ export default function SecurityPage() {
           <li>Revoke it immediately in your dashboard.</li>
           <li>Generate a replacement.</li>
           <li>Email{" "}
-            <a href="mailto:security@sourcescore.org" className="underline">
-              security@sourcescore.org
+            <a href="mailto:hello@caslonmedia.com" className="underline">
+              hello@caslonmedia.com
             </a>{" "}with the prefix so we can fingerprint the abuse pattern fleet-wide.</li>
         </ol>
       </section>
@@ -162,8 +162,8 @@ export default function SecurityPage() {
           <li>
             <strong>HTTPS everywhere.</strong> All endpoints
             (<code className="font-mono">/api/v1/*</code>, dashboard,
-            docs) serve over TLS 1.2+. Cloudflare edge handles termination;
-            HSTS preload pending Day 30.
+            docs) serve over TLS 1.2+. Cloudflare edge handles termination.
+            HSTS preload submission is still pending.
           </li>
           <li>
             <strong>No PII in logs.</strong> We log request paths, status

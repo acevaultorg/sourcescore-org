@@ -246,7 +246,9 @@ else:
           Query parameter <code>q</code> (2-500 chars), optional{" "}
           <code>limit</code> (default 20, max 50). v0 uses keyword-overlap
           scoring across subject / object / statement / predicate / tags.
-          Semantic similarity via embeddings ships Day 30+.
+          Semantic similarity via embeddings is planned for a later version of
+          this endpoint (semantic matching is already available on{" "}
+          <code>POST /api/v1/verify</code>).
         </p>
         <CodeTabs
           tabs={[
@@ -372,8 +374,8 @@ Content-Type: application/json
           browser, server, and LLM-agent callers all work.
         </p>
         <p className="mt-3">
-          <strong>Day 8+ — API keys + per-tier rate limits.</strong> When
-          authentication is required, send your key as a Bearer token:
+          <strong>Planned — API keys + per-tier rate limits.</strong> When
+          authentication ships, you will send your key as a Bearer token:
         </p>
         <CodeBlock
           language="bash"
@@ -397,7 +399,7 @@ Content-Type: application/json
           per IP. No explicit per-key limits yet.
         </p>
         <p className="mt-3">
-          <strong>Day 8+ (per-tier, per-key):</strong>
+          <strong>Planned (per-tier, per-key):</strong>
         </p>
         <ul className="list-disc pl-5 space-y-1 text-sm">
           {TIERS.map((t) => (
@@ -516,8 +518,8 @@ Content-Type: application/json
         </p>
         <p className="mt-2">
           Paid tier email support:{" "}
-          <a href="mailto:contact@acevault.org" className="underline">
-            contact@acevault.org
+          <a href="mailto:hello@caslonmedia.com" className="underline">
+            hello@caslonmedia.com
           </a>{" "}
           (SLA per <a href="/pricing/" className="underline">tier</a>).
         </p>

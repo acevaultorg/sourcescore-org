@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { activePartners, hasActivePartners } from "@/lib/partners";
 
 export const metadata: Metadata = {
   title: { absolute: "Affiliate Disclosure — SourceScore" },
@@ -70,25 +71,51 @@ export default function DisclosurePage() {
         </ul>
 
         <h2 className="text-heading-2 font-bold pt-4">Current status</h2>
-        <p className="text-muted">
-          As of the date above, sourcescore.org carries no active affiliate
-          links — partnerships are launching now (see{" "}
-          <a href="/partners/" className="text-brand hover:underline">
-            Partner with SourceScore
-          </a>
-          ). This page exists so the policy is public before the first
-          affiliate link ever appears.
-        </p>
+        {/* Derived from the live partner config (lib/partners.ts), not hand-written,
+            so this statement cannot go stale the moment a partner is switched on. */}
+        {hasActivePartners ? (
+          <>
+            <p className="text-muted">
+              sourcescore.org currently carries affiliate links to the following{" "}
+              {activePartners.length === 1 ? "partner" : "partners"}:
+            </p>
+            <ul className="list-disc pl-5 space-y-1 text-muted">
+              {activePartners.map((partner) => (
+                <li key={partner.slug}>
+                  <strong className="text-text">{partner.name}</strong>
+                </li>
+              ))}
+            </ul>
+            <p className="text-muted">
+              Every one of those links is labeled on the page where it appears
+              and carries{" "}
+              <code className="font-mono text-text">
+                rel=&quot;sponsored nofollow noopener&quot;
+              </code>
+              . None of them influenced a score.
+            </p>
+          </>
+        ) : (
+          <p className="text-muted">
+            As of the date above, sourcescore.org carries no active affiliate
+            links — partnerships are launching now (see{" "}
+            <a href="/partners/" className="text-brand hover:underline">
+              Partner with SourceScore
+            </a>
+            ). This page exists so the policy is public before the first
+            affiliate link ever appears.
+          </p>
+        )}
 
         <h2 className="text-heading-2 font-bold pt-4">Questions</h2>
         <p className="text-muted">
           SourceScore is published by Caslon Media. Questions about this
           policy:{" "}
           <a
-            href="mailto:contact@acevault.org"
+            href="mailto:hello@caslonmedia.com"
             className="text-brand hover:underline"
           >
-            contact@acevault.org
+            hello@caslonmedia.com
           </a>
           .
         </p>

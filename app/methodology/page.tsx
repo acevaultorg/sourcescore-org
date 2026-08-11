@@ -186,8 +186,9 @@ export default function MethodologyPage() {
             <span className="text-text font-semibold">Performance comparisons excluded</span> from
             v0 because benchmark numbers depend on prompt format, decoding strategy, evaluation
             harness version, and shot count. Six dimensions of methodology drift make any single
-            &ldquo;model X scores Y on benchmark Z&rdquo; claim unreproducible. Day 30+ adds them
-            back with explicit benchmark-version + prompt-format metadata bundled into the envelope.
+            &ldquo;model X scores Y on benchmark Z&rdquo; claim unreproducible. A future methodology
+            version adds them back with explicit benchmark-version + prompt-format metadata bundled
+            into the envelope.
           </li>
           <li>
             <span className="text-text font-semibold">Signed with HMAC-SHA256</span> by{" "}
@@ -218,11 +219,11 @@ export default function MethodologyPage() {
           <a href="/grade/" className="text-brand hover:underline">grading-scale overview</a>.
         </p>
 
-        <h2 className="text-heading-2 font-bold pt-4">Day-1 limitations (honest)</h2>
+        <h2 className="text-heading-2 font-bold pt-4">Current limitations (honest)</h2>
         <ul className="list-disc pl-5 space-y-2 text-muted">
           <li>v0.1 publishes 130 hand-scored sources; production scales to 10,000+ via the same rubric.</li>
           <li>
-            Velocity scores are static estimates on Day 1. The production index will refresh
+            Velocity scores are static estimates in v0.1. A future version will refresh
             Velocity weekly via tier-1 referrer + LLM-citation polling.
           </li>
           <li>

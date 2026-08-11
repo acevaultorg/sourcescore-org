@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getSource, allSlugs, sources } from "@/data/sources";
 import { comparisonsForSource } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { PartnerTools } from "@/components/PartnerTools";
 import type { DimensionScore } from "@/lib/types";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
@@ -401,6 +402,15 @@ export default async function SourceDetailPage({ params }: PageProps) {
           </div>
         </dl>
       </section>
+
+      {/* HIGHEST-INTENT SLOT — the activation layer (dormant until a partner
+          env var is set; renders literally nothing today). Placed immediately
+          after the score + "should you cite it" answer: the reader now has the
+          grade and the verdict, which is the peak moment for "how do I keep
+          watching this over time?". Deliberately NOT between the score hero
+          and the citation-guidance block — that block is the AEO-extractable
+          verdict and must stay in the first ~30% of the page. */}
+      <PartnerTools variant="panel" source="source-detail" className="mb-12" />
 
       {/* ABOVE-FOLD NEXT STEPS — engagement pull-through (2026-05-28).
           Comparison + peer links surfaced directly under the score so search

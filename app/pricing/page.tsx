@@ -295,8 +295,8 @@ export default function PricingPage() {
             demos, custom contracts, or procurement cycles. The Scale tier
             covers 5M claims/month with a 4h-response SLA; if your workload
             exceeds that, email{" "}
-            <a href="mailto:contact@acevault.org" className="underline">
-              contact@acevault.org
+            <a href="mailto:hello@caslonmedia.com" className="underline">
+              hello@caslonmedia.com
             </a>{" "}
             and we&rsquo;ll work out overage pricing on the same Stripe
             subscription.

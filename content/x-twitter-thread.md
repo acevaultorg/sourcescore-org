@@ -93,7 +93,7 @@ catalog → https://sourcescore.org/claims/
 quickstart → https://sourcescore.org/quickstart/
 playground → https://sourcescore.org/playground/
 
-email contact@acevault.org for catalog requests or vertical expansion suggestions.
+email hello@caslonmedia.com for catalog requests or vertical expansion suggestions.
 ```
 
 ---

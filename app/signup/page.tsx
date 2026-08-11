@@ -102,8 +102,8 @@ export default function SignupPage() {
             API access page
           </a>{" "}
           (or email{" "}
-          <a href="mailto:contact@acevault.org" className="underline">
-            contact@acevault.org
+          <a href="mailto:hello@caslonmedia.com" className="underline">
+            hello@caslonmedia.com
           </a>{" "}
           with your tier choice): we&rsquo;ll manually issue your API key in
           &lt;24h.
@@ -131,7 +131,7 @@ export default function SignupPage() {
                 </p>
               </div>
               <a
-                href={`mailto:contact@acevault.org?subject=Early-access%20%E2%80%94%20${tier.name}%20tier&body=Tier:%20${tier.name}%0AEmail:%20%5Byour%20email%5D%0AUse%20case:%20%5Bbrief%20description%5D%0A%0AThanks!`}
+                href={`mailto:hello@caslonmedia.com?subject=Early-access%20%E2%80%94%20${tier.name}%20tier&body=Tier:%20${tier.name}%0AEmail:%20%5Byour%20email%5D%0AUse%20case:%20%5Bbrief%20description%5D%0A%0AThanks!`}
                 data-clarity-upgrade={`signup-email-${tier.name}`}
                 className={`px-4 py-2 border border-zinc-900 dark:border-zinc-100 rounded font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 text-sm whitespace-nowrap`} data-event="signup_email" data-event-tier={tier.name}
               >
@@ -155,7 +155,8 @@ export default function SignupPage() {
           <a href="/dashboard/" className="underline">
             Dashboard
           </a>{" "}
-          (Day 8+, currently shows a placeholder).
+          (the self-serve dashboard is not live yet — the page explains what it
+          will do and how to get a key in the meantime).
         </p>
         <p className="mt-2">
           Questions?{" "}
