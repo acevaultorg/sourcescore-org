@@ -41,8 +41,20 @@ export default function PartnersPage() {
           <div className="text-eyebrow text-dim mb-3">Audience</div>
           <ul className="space-y-3 text-body text-muted leading-relaxed">
             <li>
-              <strong className="text-text">Monthly human visitors:</strong>{" "}
-              6,182 in the last 30 days (GA4, human visitors, August 2026).
+              <strong className="text-text">Traffic:</strong> 6,099 users in
+              the last 30 days (GA4, 30-day window ending 11 August 2026).
+            </li>
+            <li>
+              <strong className="text-text">
+                What that number is, and what it is not:
+              </strong>{" "}
+              those visits are predominantly direct and referral. Organic
+              search is still a small share — Search Console records 2 clicks
+              from 1,483 impressions at an average position of 43.9 over the
+              same window, because the index is young and still gaining
+              rankings. Sessions average about one page (6,128 pageviews across
+              6,099 users) and we record no conversion events yet. Read it as
+              early-stage reach, not as 6,000 engaged professional readers.
             </li>
             <li>
               <strong className="text-text">Geography:</strong> predominantly
@@ -55,6 +67,15 @@ export default function PartnersPage() {
               research-intent audience.
             </li>
           </ul>
+          <p className="text-body text-muted leading-relaxed mt-4">
+            We report our own numbers the way we report our scores: instrument
+            named, window stated, caveat attached. If a figure on this page
+            cannot be re-derived from those sources, treat it as a defect and{" "}
+            <a href="/contact/" className="text-brand hover:underline">
+              tell us
+            </a>
+            .
+          </p>
         </section>
 
         {/* About the publisher */}
