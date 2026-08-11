@@ -19,12 +19,30 @@ variables:
   # not visible to it; a dashboard-only value would silently produce an empty slot.
   # Deactivate = delete this line and push. See docs/AFFILIATE-ACTIVATION.md.
   NEXT_PUBLIC_AFF_RANKSCALE: "https://rankscale.ai?via=paulo"
+  # Mangools affiliate — LIVE since 2026-08-11. Auto-enrolled for every account,
+  # no approval step. Commission is tiered on trailing-3-month revenue you bring:
+  # Silver 25% (current) → Gold 30% at $100/mo → Platinum 35% at $500/mo, and it
+  # recurs for as long as the referred customer pays.
+  #
+  # The affiliate ID is a URL *fragment* (`#a<accountId>`), appended to any
+  # Mangools property URL — their client-side JS reads the hash and sets the
+  # tracking cookie. That means the ID never reaches their server as a query
+  # param, so don't "normalise" it into `?ref=`; the fragment IS the mechanism.
+  #
+  # Pointed at AI Search Watcher rather than the KWFinder homepage: it tracks
+  # visibility inside ChatGPT/Gemini answers, which is the one Mangools tool this
+  # audience is actually shopping for.
+  NEXT_PUBLIC_AFF_SLOT1_NAME: "Mangools AI Search Watcher"
+  NEXT_PUBLIC_AFF_SLOT1_NOTE: "Tracks whether ChatGPT and Gemini mention your site, alongside a full SEO suite."
+  NEXT_PUBLIC_AFF_SLOT1_URL: "https://mangools.com/ai-search-watcher#a6a7b136b6aee0841ae53d49e"
 
 cache:
-  # v3 = invalidate when NEXT_PUBLIC_* env-baked vars change (Clarity ID 2026-05-08,
-  # RankScale affiliate URL 2026-08-11).
+  # v4 = invalidate when NEXT_PUBLIC_* env-baked vars change (Clarity ID 2026-05-08,
+  # RankScale affiliate URL 2026-08-11, Mangools slot-1 2026-08-11).
   # Bumping the key forces fresh `.next/cache/` so static-export HTML re-renders with new env.
-  key: sourcescore-cache-v3
+  # Forgetting this bump is a silent failure: the build succeeds and the new slot
+  # renders empty, because Next serves the cached HTML from before the var existed.
+  key: sourcescore-cache-v4
   paths:
     - node_modules/
     - .next/cache/
