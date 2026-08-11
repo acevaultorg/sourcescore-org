@@ -69,6 +69,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
+        {/* Impact.com channel ownership verification (publisher account
+            7598036, Caslon Media). Emitted as a literal tag rather than via
+            Next's `metadata.verification`/`other` because Impact's crawler
+            reads the non-standard `value` attribute, and the Metadata API
+            would rewrite it to `content`. Do not "fix" that to content=. */}
+        <meta name="impact-site-verification" value="5597c6c3-c5cf-4b9a-b559-785e206b5533" />
         {/* Resource hints — saves DNS+TLS+TCP roundtrip for first hit to each
             third-party origin used on most pages. Cost: 2 cheap DNS lookups
             on initial page load; benefit: ~100-300ms faster first-contentful
