@@ -75,15 +75,10 @@ export default function SecurityPage() {
             rotation cadence is stable.
           </li>
           <li>
-            <strong>GitLab issue (public):</strong> only for issues without
-            an exploit primitive (e.g., dependency-CVE notices).{" "}
-            <a
-              href="https://gitlab.com/acevault-lab/sourcescore-api/-/issues"
-              className="underline"
-            >
-              acevault-lab/sourcescore-api/-/issues
-            </a>
-            .
+            <strong>Low-severity reports</strong> without an exploit primitive
+            (e.g. dependency-CVE notices) can go to the same address — put
+            &ldquo;low severity&rdquo; in the subject. Our source repository is
+            private, so there is no public issue tracker to file against.
           </li>
         </ul>
         <p className="text-sm leading-relaxed">

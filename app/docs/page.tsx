@@ -507,14 +507,12 @@ Content-Type: application/json
 
       <Section id="support" title="Support">
         <p>
-          Community support: open an issue on{" "}
-          <a
-            href="https://gitlab.com/acevault-lab/sourcescore-api/-/issues"
-            className="underline"
-          >
-            gitlab.com/acevault-lab/sourcescore-api
-          </a>{" "}
-          (SDK + docs repo, public).
+          Questions, bug reports, and SDK feedback:{" "}
+          <a href="mailto:hello@caslonmedia.com" className="underline">
+            hello@caslonmedia.com
+          </a>
+          . The source repository is private, so there is no public issue
+          tracker — email is the single support channel.
         </p>
         <p className="mt-2">
           Paid tier email support:{" "}

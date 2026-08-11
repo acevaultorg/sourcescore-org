@@ -24,8 +24,9 @@ const orgSchema = {
   email: "hello@caslonmedia.com",
   // Entity-coherence per Aleyda Solis #3 Recognizable + #7 Credible.
   // Public surfaces where SourceScore (the brand-entity) is verifiable.
+  // Only publicly resolvable URLs — see the note in app/layout.tsx.
   sameAs: [
-    "https://gitlab.com/acevault-lab",
+    "https://caslonmedia.com/",
     "https://dev.to/paulomdevries",
   ],
   contactPoint: {
@@ -91,8 +92,9 @@ const editorialPersonSchema = {
   ],
   // Entity-coherence per Aleyda Solis #3 Recognizable + #7 Credible.
   // Public surfaces where SourceScore editorial team is verifiable.
+  // Only publicly resolvable URLs — see the note in app/layout.tsx.
   sameAs: [
-    "https://gitlab.com/acevault-lab",
+    "https://caslonmedia.com/",
     "https://dev.to/paulomdevries",
   ],
 };

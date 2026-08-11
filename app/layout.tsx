@@ -89,10 +89,13 @@ export default function RootLayout({
                 "Score any source on Discipline, Modern Reference fitness, and Citation Velocity. The reference index for AI-citation quality.",
               logo: "https://sourcescore.org/logo-wordmark.svg",
               // Entity-coherence per Aleyda Solis #3 Recognizable + #7
-              // Credible. Public surfaces where SourceScore + maintainers
-              // are verifiable.
+              // Credible. Only PUBLICLY RESOLVABLE surfaces belong here — a
+              // sameAs that 403s is an unverifiable identity claim and hurts
+              // the signal it exists to provide. gitlab.com/acevault-lab was
+              // removed 2026-08-11: the group is private (403 anonymously,
+              // verified against a public control group).
               sameAs: [
-                "https://gitlab.com/acevault-lab",
+                "https://caslonmedia.com/",
                 "https://dev.to/paulomdevries",
               ],
               // Publisher attribution — lets partners and networks verify
