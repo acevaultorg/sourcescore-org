@@ -74,7 +74,10 @@ export default function RootLayout({
             Next's `metadata.verification`/`other` because Impact's crawler
             reads the non-standard `value` attribute, and the Metadata API
             would rewrite it to `content`. Do not "fix" that to content=. */}
-        <meta name="impact-site-verification" value="5597c6c3-c5cf-4b9a-b559-785e206b5533" />
+        {/* Spread-cast because React's MetaHTMLAttributes type has no `value`
+            prop (TS2322) — the attribute is still emitted verbatim at runtime,
+            confirmed via renderToStaticMarkup. */}
+        <meta {...({ name: "impact-site-verification", value: "5597c6c3-c5cf-4b9a-b559-785e206b5533" } as React.MetaHTMLAttributes<HTMLMetaElement>)} />
         {/* Resource hints — saves DNS+TLS+TCP roundtrip for first hit to each
             third-party origin used on most pages. Cost: 2 cheap DNS lookups
             on initial page load; benefit: ~100-300ms faster first-contentful
