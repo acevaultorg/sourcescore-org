@@ -85,4 +85,57 @@ if (existsSync(claimsCatalogPath)) {
   process.exit(1);
 }
 
+// ── Affiliate-link integrity ──────────────────────────────────────────────
+// Same failure shape as the dev-fallback-signature check above, and it nearly
+// shipped on 2026-08-11: the NEXT_PUBLIC_AFF_* values live ONLY in
+// .gitlab-ci.yml, so a local `npm run deploy` (clean → build → wrangler) builds
+// them as empty strings. lib/partners.ts then filters those slots out silently,
+// the build succeeds, and every affiliate link on 131 pages disappears. Nothing
+// is broken-looking; the site just stops earning.
+//
+// It was already half-realised when this guard was written — out/ carried 131
+// RankScale links and 0 Mangools, because the tree predated the Mangools slot.
+//
+// So: out/ must contain EVERY live program, each with its full tracking ID.
+//
+// Note the first draft of this guard only failed on a PARTIAL set and waved
+// through zero-across-the-board as "a legitimately unmonetized build". That is
+// precisely backwards: a local build produces ZERO, not a partial set, so the
+// lenient branch would have permitted the exact deploy this guard exists to
+// stop. This site has live programs — zero is never legitimate here. If a
+// program is ever genuinely retired, delete its row below in the same commit
+// that removes its .gitlab-ci.yml var.
+{
+  const PROGRAMS = [
+    { name: "RankScale", needle: "https://rankscale.ai?via=paulo" },
+    // The referral ID is a URL fragment. dotenv eats an unquoted '#' as a
+    // comment, which is exactly how citationdesk shipped this link stripped on
+    // 2026-08-11 — so assert on the ID, never on the bare domain.
+    { name: "Mangools", needle: "a6a7b136b6aee0841ae53d49e" },
+  ];
+
+  // /sources/ is the affiliate hub — the one page guaranteed to carry every
+  // active program. Cheaper and more reliable than walking all 131 pages.
+  const hub = resolve(root, "out/sources/index.html");
+  if (existsSync(hub)) {
+    const html = readFileSync(hub, "utf8");
+    const absent = PROGRAMS.filter((p) => !html.includes(p.needle));
+
+    if (absent.length > 0) {
+      console.error("❌ predeploy-guard: deploy blocked — affiliate links MISSING from out/.");
+      console.error(`   missing: ${absent.map((p) => p.name).join(", ")}`);
+      console.error(`   present: ${PROGRAMS.filter((p) => html.includes(p.needle)).map((p) => p.name).join(", ") || "(none)"}`);
+      console.error("");
+      console.error("   This is the silent-$0 build: the NEXT_PUBLIC_AFF_* vars were empty at build time, so");
+      console.error("   lib/partners.ts dropped those slots. The pages render perfectly and earn nothing.");
+      console.error("   Those vars live in .gitlab-ci.yml and CANNOT reach a local build.");
+      console.error("");
+      console.error("   Deploy via `git push origin main` → GitLab CI. Do NOT `npm run deploy` locally.");
+      console.error("   Shipping this out/ would zero the affiliate links on all 131 live pages.");
+      process.exit(1);
+    }
+    console.log(`✓ predeploy-guard: all ${PROGRAMS.length} affiliate programs intact in out/ (${PROGRAMS.map((p) => p.name).join(", ")}).`);
+  }
+}
+
 console.log(`✓ predeploy-guard: out/ has all required artifacts (${required.length} checked, age ${ageHours.toFixed(1)}h)`);
