@@ -82,6 +82,14 @@ const LIVE_DEFAULTS = {
     "Tracks whether ChatGPT and Gemini mention your site, alongside a full SEO suite.",
   slot1Url:
     "https://mangools.com/ai-search-watcher#a6a7b136b6aee0841ae53d49e",
+  // Analytics-only identity for slot-1. The registry `slug` below stays
+  // "slot-1" as the DEFAULT (unattributed) fallback for a program we have
+  // not yet named; the moment a program goes live here, its analytics slug
+  // moves into LIVE_DEFAULTS so GA4/Clarity can name it, same as name/note/url
+  // above. Without this, every click on the live program lands in analytics
+  // as partner="slot-1" and can never be ranked by $/click (see
+  // reference_amazon_per_tag_july_2026 — naming the earner IS the lever).
+  slot1Slug: "mangools",
 } as const;
 
 // ── Slots ──────────────────────────────────────────────────────────────
@@ -119,13 +127,15 @@ const SLOTS: Slot[] = [
     url: process.env.NEXT_PUBLIC_AFF_AHREFS,
   },
   {
-    slug: "slot-1",
+    slug: process.env.NEXT_PUBLIC_AFF_SLOT1_SLUG ?? LIVE_DEFAULTS.slot1Slug,
     name: process.env.NEXT_PUBLIC_AFF_SLOT1_NAME ?? LIVE_DEFAULTS.slot1Name,
     note: process.env.NEXT_PUBLIC_AFF_SLOT1_NOTE ?? LIVE_DEFAULTS.slot1Note,
     url: process.env.NEXT_PUBLIC_AFF_SLOT1_URL ?? LIVE_DEFAULTS.slot1Url,
   },
   {
-    slug: "slot-2",
+    // No live default yet — this slot is dormant, so its analytics slug
+    // falls all the way back to the generic "slot-2" placeholder.
+    slug: process.env.NEXT_PUBLIC_AFF_SLOT2_SLUG ?? "slot-2",
     name: process.env.NEXT_PUBLIC_AFF_SLOT2_NAME,
     note: process.env.NEXT_PUBLIC_AFF_SLOT2_NOTE,
     url: process.env.NEXT_PUBLIC_AFF_SLOT2_URL,
