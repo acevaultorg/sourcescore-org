@@ -52,6 +52,38 @@ function isHttpsUrl(value: string | undefined): boolean {
   return /^https:\/\/[^\s"'<>]+$/i.test(url);
 }
 
+// ── Live-program defaults ──────────────────────────────────────────────
+// The env-only design above is right for DORMANT slots: a program we have not
+// been approved for must never render, and approval should be a one-variable
+// change. It is WRONG for a program that is already approved and already live.
+//
+// Those two URLs lived ONLY in .gitlab-ci.yml `variables:`, so CI builds
+// rendered them and any LOCAL build silently rendered zero affiliate links —
+// a perfect-looking, $0-earning site. That is not hypothetical: on 2026-08-11
+// a local build was deployed and zeroed the affiliate links on all 131 pages
+// live. `scripts/predeploy-guard.mjs` now BLOCKS that deploy, but a guard
+// detects the failure; it does not remove it. This does.
+//
+// These are public referral URLs — they are visible in the shipped HTML, there
+// is nothing here to keep out of git. The env var still wins where it is set,
+// so changing a link remains a one-variable change with no code edit.
+//
+// Add a default here ONLY when a program is approved and live. A dormant slot
+// must stay env-only.
+const LIVE_DEFAULTS = {
+  // Rankscale.ai — approved 2026-08-11 (Rewardful). 10% recurring, 12 months.
+  rankscale: "https://rankscale.ai?via=paulo",
+  // Mangools AI Search Watcher — approved 2026-08-11. Tiered 25/30/35%.
+  // The referral ID is a URL FRAGMENT. Never store this unquoted in a .env:
+  // dotenv reads an unquoted `#` as an inline comment and silently strips the
+  // ID, which is exactly how citationdesk shipped this link unattributed.
+  slot1Name: "Mangools AI Search Watcher",
+  slot1Note:
+    "Tracks whether ChatGPT and Gemini mention your site, alongside a full SEO suite.",
+  slot1Url:
+    "https://mangools.com/ai-search-watcher#a6a7b136b6aee0841ae53d49e",
+} as const;
+
 // ── Slots ──────────────────────────────────────────────────────────────
 // Named slots for tools in this site's own category (AI-citation / AI-search
 // visibility monitoring), plus two free-form slots for anything else.
@@ -66,7 +98,7 @@ const SLOTS: Slot[] = [
     slug: "rankscale",
     name: "Rankscale.ai",
     note: "AI-search visibility audits and rank tracking across AI engines.",
-    url: process.env.NEXT_PUBLIC_AFF_RANKSCALE,
+    url: process.env.NEXT_PUBLIC_AFF_RANKSCALE ?? LIVE_DEFAULTS.rankscale,
   },
   {
     slug: "profound",
@@ -88,9 +120,9 @@ const SLOTS: Slot[] = [
   },
   {
     slug: "slot-1",
-    name: process.env.NEXT_PUBLIC_AFF_SLOT1_NAME,
-    note: process.env.NEXT_PUBLIC_AFF_SLOT1_NOTE,
-    url: process.env.NEXT_PUBLIC_AFF_SLOT1_URL,
+    name: process.env.NEXT_PUBLIC_AFF_SLOT1_NAME ?? LIVE_DEFAULTS.slot1Name,
+    note: process.env.NEXT_PUBLIC_AFF_SLOT1_NOTE ?? LIVE_DEFAULTS.slot1Note,
+    url: process.env.NEXT_PUBLIC_AFF_SLOT1_URL ?? LIVE_DEFAULTS.slot1Url,
   },
   {
     slug: "slot-2",
