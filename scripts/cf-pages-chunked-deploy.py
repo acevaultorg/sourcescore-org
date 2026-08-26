@@ -135,11 +135,31 @@ def upload(jwt, batch, attempts=40):
             time.sleep(s)
     raise RuntimeError(f"batch failed after {attempts}: {last}")
 
-def create_deployment(manifest):
+# CF Pages treats these four as CONFIGURATION, not static assets. They must be
+# posted as their own multipart FILE parts on create-deployment; anything left in
+# the asset manifest is stored as an inert file and never executed. Shipping
+# _worker.js only in the manifest is what silently killed meeplepick's affiliate
+# gate on 2026-08-26: every /go/ link 404'd because the worker was uploaded as a
+# static asset and Pages never entered advanced mode. Keep this list in sync with
+# wrangler's own special-file handling.
+# Scoped deliberately to the two ADVANCED-MODE files. _headers/_redirects are
+# read fine from the asset manifest on these sites today, and moving them to
+# form fields unverified would risk a header/redirect regression for no gain.
+SPECIAL_FILES = ("_worker.js", "_routes.json")
+
+def create_deployment(manifest, specials=None):
     b = f"----cf{uuid.uuid4().hex}"; parts = []
     def fld(n, v):
         parts.append(f"--{b}\r\nContent-Disposition: form-data; name=\"{n}\"\r\n\r\n{v}\r\n".encode())
+    def filefld(n, content, ctype):
+        parts.append(
+            f"--{b}\r\nContent-Disposition: form-data; name=\"{n}\"; filename=\"{n}\"\r\n"
+            f"Content-Type: {ctype}\r\n\r\n".encode() + content + b"\r\n")
     fld("manifest", json.dumps(manifest)); fld("branch", BRANCH)
+    for name, content in (specials or {}).items():
+        ctype = "application/javascript" if name.endswith(".js") else (
+            "application/json" if name.endswith(".json") else "text/plain")
+        filefld(name, content, ctype)
     parts.append(f"--{b}--\r\n".encode())
     return http(f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT}/pages/projects/{PROJECT}/deployments",
                 method="POST", data=b"".join(parts),
@@ -152,7 +172,18 @@ def mime(p):
 def main():
     t0 = time.time()
     print(f"[+] chunked deploy · project={PROJECT} · out={OUT_DIR}")
-    entries = walk(OUT_DIR); print(f"[+] {len(entries)} files")
+    entries = walk(OUT_DIR)
+    # Pull the configuration files out of the asset set — they ship as multipart
+    # fields below, and leaving them in the manifest is what breaks the worker.
+    specials = {}
+    kept = []
+    for rel, c, sha in entries:
+        if rel.lstrip("/") in SPECIAL_FILES:
+            specials[rel.lstrip("/")] = c
+        else:
+            kept.append((rel, c, sha))
+    entries = kept
+    print(f"[+] {len(entries)} files" + (f" + specials: {sorted(specials)}" if specials else " (no _worker.js/_routes.json)"))
     manifest = {rel: sha for rel, _, sha in entries}
     idx = {}
     for rel, c, sha in entries: idx.setdefault(sha, (c, rel))
@@ -176,7 +207,7 @@ def main():
             upload(jwt, batch); nb += 1; up += len(batch)
         print(f"[+] uploaded {up} files in {nb} batches · {int(time.time()-t0)}s")
     print("[+] creating deployment…")
-    r = create_deployment(manifest)
+    r = create_deployment(manifest, specials)
     if not r.get("success"):
         print(f"ERROR: create-deployment failed: {r}", file=sys.stderr); sys.exit(1)
     res = r["result"]
