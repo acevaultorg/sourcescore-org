@@ -420,8 +420,8 @@ export const seedClaims: SeedClaim[] = [
           "GPT-4 Turbo … supports up to 128K tokens of context — equivalent to more than 300 pages of text in a single prompt.",
       },
       {
-        url: "https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4",
-        title: "OpenAI GPT-4 Turbo model documentation",
+        url: "https://developers.openai.com/api/docs/models/gpt-4-turbo",
+        title: "GPT-4 Turbo",
         publisher: "OpenAI",
         accessedDate: TODAY,
         type: "docs",
@@ -9081,10 +9081,9 @@ export const seedClaims: SeedClaim[] = [
           "Skills are curated capability packs that Claude can invoke — designed for repeatable workflows in specialized domains.",
       },
       {
-        url: "https://docs.anthropic.com/en/docs/skills",
-        title: "Anthropic Skills documentation",
+        url: "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+        title: "Agent Skills",
         publisher: "Anthropic",
-        publishedDate: "2025-10-16",
         accessedDate: TODAY,
         type: "docs",
       },
@@ -9993,14 +9992,12 @@ export const seedClaims: SeedClaim[] = [
     confidence: 0.95,
     sources: [
       {
-        url: "https://x.ai/news/colossus",
-        title: "Colossus — xAI's 100,000-GPU supercomputer",
-        publisher: "xAI",
-        publishedDate: "2024-09-02",
+        url: "https://nvidianews.nvidia.com/news/spectrum-x-ethernet-networking-xai-colossus",
+        title: "NVIDIA Ethernet Networking Accelerates World's Largest AI Supercomputer, Built by xAI",
+        publisher: "NVIDIA",
+        publishedDate: "2024-10-28",
         accessedDate: TODAY,
-        type: "official-blog",
-        excerpt:
-          "Colossus is the world's largest AI supercomputer with 100,000 NVIDIA H100 GPUs in Memphis, Tennessee, brought online in 122 days.",
+        type: "press-release",
       },
       {
         url: "https://en.wikipedia.org/wiki/Colossus_(supercomputer)",
