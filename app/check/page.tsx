@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 import { SourceTrustChecker, type CheckerRow } from "@/components/SourceTrustChecker";
+import { PartnerTools } from "@/components/PartnerTools";
 
 export const metadata: Metadata = {
   title: { absolute: "AI Source-Trust Checker — is any source citable by AI? | SourceScore" },
@@ -69,7 +70,16 @@ export default function CheckPage() {
           an embeddable trust badge for your own site.
         </p>
 
-        <SourceTrustChecker rows={rows} total={sources.length} />
+        <SourceTrustChecker
+          rows={rows}
+          total={sources.length}
+          /* Peak intent: this fires only after a reader has typed a domain — usually
+             their OWN — and seen the verdict. A reader who just learned their site is
+             not in the index is precisely the buyer for AI-visibility monitoring.
+             Rendered here (server) and passed down, because PartnerTools is a server
+             component and SourceTrustChecker is "use client". */
+          partnerSlot={<PartnerTools variant="strip" source="check-result" />}
+        />
 
         {/* Below-fold trust + explainer (AEO-extractable). */}
         <div className="mt-14 pt-10 border-t border-border prose prose-invert max-w-none text-body text-muted leading-relaxed space-y-4">

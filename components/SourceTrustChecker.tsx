@@ -61,7 +61,18 @@ function verdict(i: number): string {
   return "Weak — low AI-citation fitness; corroborate before relying on it.";
 }
 
-export function SourceTrustChecker({ rows, total }: { rows: CheckerRow[]; total: number }) {
+// `partnerSlot` is rendered, not imported. PartnerTools is a SERVER component and
+// this file is "use client" — importing it here would pull it into the client
+// bundle. The server page passes the already-rendered element down instead.
+export function SourceTrustChecker({
+  rows,
+  total,
+  partnerSlot,
+}: {
+  rows: CheckerRow[];
+  total: number;
+  partnerSlot?: React.ReactNode;
+}) {
   const [raw, setRaw] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -194,6 +205,7 @@ export function SourceTrustChecker({ rows, total }: { rows: CheckerRow[]; total:
               A live, always-current grade badge linking back to your SourceScore page.
             </p>
           </div>
+          {partnerSlot}
         </div>
       )}
 
@@ -227,6 +239,7 @@ export function SourceTrustChecker({ rows, total }: { rows: CheckerRow[]; total:
               Browse all sources
             </a>
           </div>
+          {partnerSlot}
         </div>
       )}
     </div>
