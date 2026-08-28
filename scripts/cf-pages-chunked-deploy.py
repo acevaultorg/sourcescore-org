@@ -25,8 +25,11 @@ Run-from-clean wrapper: scripts/deploy-cf-chunked.sh (build + prune + this).
 import base64, hashlib, json, mimetypes, os, pathlib, sys, time, uuid, urllib.request, urllib.error
 
 ACCOUNT = "72bfd26c5f3c935393a25e5c0dea6039"
-PROJECT = "sourcescore"
-BRANCH = "main"
+# Env-driven. These were hardcoded, which on 2026-08-25 sent another site's
+# out/ to THIS project and overwrote sourcescore.org production. A deployer
+# that ignores CF_PAGES_PROJECT is a loaded gun the moment it is copy-forked.
+PROJECT = os.environ.get("CF_PAGES_PROJECT", "sourcescore")
+BRANCH = os.environ.get("CF_BRANCH", "main")
 OUT_DIR = pathlib.Path(os.environ.get("OUT_DIR",
     str(pathlib.Path(__file__).resolve().parent.parent / "out"))).resolve()
 
