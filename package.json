@@ -11,7 +11,7 @@
     "indexnow": "node scripts/ping-indexnow.mjs",
     "clean": "rm -rf .next out 2>/dev/null; find . -name '.DS_Store' -not -path './node_modules/*' -delete 2>/dev/null; true",
     "deploy": "npm run clean && npm run build && node scripts/deploy-cf.mjs && npm run indexnow",
-    "predeploy": "node scripts/predeploy-guard.mjs"
+    "predeploy": "node scripts/predeploy-git-guard.mjs && node scripts/predeploy-guard.mjs"
   },
   "dependencies": {
     "next": "15.1.12",
