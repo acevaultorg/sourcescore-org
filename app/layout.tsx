@@ -344,7 +344,7 @@ function SiteFooter() {
             <a
               href="https://citationdesk.com/tools/citation-readiness/"
               target="_blank"
-              rel="noopener"
+              rel="nofollow noopener"
               data-clarity-upgrade="citationdesk-cta-footer"
               className="hover:text-text" data-event="citationdesk_cta" data-event-source="footer"
             >

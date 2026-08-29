@@ -88,6 +88,7 @@ export default function PartnersPage() {
             sites. Sister properties include{" "}
             <a
               href="https://citationdesk.com/"
+              rel="nofollow noreferrer"
               className="text-brand hover:underline"
             >
               citationdesk.com
