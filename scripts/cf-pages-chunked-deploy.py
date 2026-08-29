@@ -37,6 +37,31 @@ ACCOUNT = "72bfd26c5f3c935393a25e5c0dea6039"
 # out/ to THIS project and overwrote sourcescore.org production. A deployer
 # that ignores CF_PAGES_PROJECT is a loaded gun the moment it is copy-forked.
 PROJECT = os.environ.get("CF_PAGES_PROJECT", "sourcescore")
+
+def _assert_out_belongs_to_project():
+    """Refuse to publish one site's build into another site's Pages project.
+    Pages replaces the WHOLE directory, so a mismatched deploy swaps a live site
+    entirely and reports success (askedwell -> meeplepick, 2026-08-26: meeplepick.com
+    served AskedWell's homepage for ~16 minutes). Ported fleet-wide 2026-08-29.
+    CF_SKIP_PROJECT_GUARD=1 only for a deliberate cross-deploy."""
+    if os.environ.get("CF_SKIP_PROJECT_GUARD") == "1":
+        return
+    import re as _re
+    idx = os.path.join(str(OUT_DIR), "index.html")
+    if not os.path.exists(idx):
+        return
+    head = open(idx, encoding="utf-8", errors="replace").read(20000)
+    mm = _re.search(r'<link[^>]+rel="canonical"[^>]+href="https?://([^/"]+)', head)
+    host = mm.group(1).lower() if mm else ""
+    if not host:
+        return
+    stem = PROJECT.replace("-com", "").replace("-org", "").replace("-school", "").replace("-", "")
+    if stem and stem not in host.replace("-", "").replace(".", ""):
+        raise SystemExit(
+            "REFUSING TO DEPLOY: out/ canonical host is '" + host + "' but target project is '"
+            + PROJECT + "' - that would replace a different live site. Fix CF_PAGES_PROJECT."
+        )
+
 BRANCH = os.environ.get("CF_BRANCH", "main")
 OUT_DIR = pathlib.Path(os.environ.get("OUT_DIR",
     str(pathlib.Path(__file__).resolve().parent.parent / "out"))).resolve()
@@ -231,6 +256,7 @@ def assert_build_is_complete():
 
 
 def main():
+    _assert_out_belongs_to_project()
     assert_build_is_complete()
     t0 = time.time()
     print(f"[+] chunked deploy · project={PROJECT} · out={OUT_DIR}")
