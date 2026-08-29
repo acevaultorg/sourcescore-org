@@ -6,9 +6,22 @@
 // shows how citable THEIR OWN site/brand is to ChatGPT, Claude, Perplexity & Gemini
 // (free AI Visibility Score). Minimal, honest, no dark patterns, no interstitials.
 //
-// CitationDesk is an OWNED sister property, not an affiliate → a normal external
-// link (passes authority; no rel=sponsored). target=_blank + rel=noopener keeps the
-// SourceScore session alive and passes the referrer for funnel attribution.
+// CitationDesk is an OWNED sister property, not an affiliate.
+//
+// ⚠️ SUPERSEDED 2026-08-29 (BacklinkPilot cycle 1 hygiene check): this comment
+// previously said "passes authority; no rel=sponsored" — a deliberate 2026-06-19
+// choice to pass SEO authority sister-to-sister. The fleet's own later audit
+// (BACKLINK-AUTOPILOT-PROMPT.md, 2026-08-27) independently flagged citationdesk.com
+// -> sourcescore.org as a template-repeated, site-wide, followed link (footer,
+// identical anchor across 259 pages) — the exact "PBN fingerprint" pattern the
+// audit warns the fleet already tripped once. This CTA is the RECIPROCAL half of
+// that same pair (sourcescore.org -> citationdesk.com, site-wide via home +
+// methodology + claim + playground + footer). Two owned properties linking to each
+// other, site-wide, followed, both directions = the textbook shape regardless of
+// intent — Google's spam systems detect the pattern, not the ownership story.
+// `nofollow` costs NOTHING here: the funnel this CTA exists for is 100%
+// human-click-driven (the visible copy + placement), never SEO-authority-driven.
+// Added `nofollow` alongside `noopener`; the funnel is unaffected, the risk is not.
 //
 // Click tracking mirrors the fleet's dual pattern already used across the site:
 // data-clarity-upgrade (Clarity — the live fleet analytics; ClarityClickListener
@@ -37,7 +50,7 @@ export function CitationDeskCTA({ variant = "panel", source = "generic" }: Props
       <a
         href={CITATIONDESK_TOOL}
         target="_blank"
-        rel="noopener"
+        rel="nofollow noopener"
         data-clarity-upgrade={`citationdesk-cta-${source}`}
         className={`group block rounded-card border border-brand/30 bg-surface-brand hover:bg-brand/10 hover:border-brand/50 transition-colors p-4`} data-event="citationdesk_cta" data-event-source={source}
       >
@@ -64,7 +77,7 @@ export function CitationDeskCTA({ variant = "panel", source = "generic" }: Props
     <a
       href={CITATIONDESK_TOOL}
       target="_blank"
-      rel="noopener"
+      rel="nofollow noopener"
       data-clarity-upgrade={`citationdesk-cta-${source}`}
       className={`group block rounded-card-lg border border-brand/30 bg-surface-brand hover:bg-brand/10 hover:border-brand/50 transition-colors p-6 sm:p-7`} data-event="citationdesk_cta" data-event-source={source}
     >
