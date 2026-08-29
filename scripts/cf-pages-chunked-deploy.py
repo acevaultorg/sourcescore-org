@@ -23,6 +23,7 @@ Then: python3 scripts/cf-pages-chunked-deploy.py   (after `npm run build` + RSC 
 Run-from-clean wrapper: scripts/deploy-cf-chunked.sh (build + prune + this).
 """
 import base64, hashlib, json, mimetypes, os, pathlib, sys, time, uuid, urllib.request, urllib.error
+import re
 
 ACCOUNT = "72bfd26c5f3c935393a25e5c0dea6039"
 # Env-driven. These were hardcoded, which on 2026-08-25 sent another site's
@@ -181,7 +182,49 @@ def create_deployment(manifest, specials=None):
 def mime(p):
     m, _ = mimetypes.guess_type(p); return m or "application/octet-stream"
 
+def assert_build_is_complete():
+    """Refuse to deploy a TRUNCATED build.
+
+    A Cloudflare Pages deploy REPLACES the directory, so shipping a partial out/
+    does not merge — it takes the live site down to whatever fragment you uploaded.
+    On 2026-08-29 zipradar produced three builds that died mid-static-export and
+    left exactly that: ~4,100 of 6,203 pages, no out/index.html, four route
+    families empty, and NO error anywhere (Next buffers, so the log was 0 bytes).
+
+    Two conditions, both self-contained — no network, no memory of the previous
+    deploy. The sitemap is written by prebuild (complete) while pages are written
+    by the export (partial when it dies), so a truncation fails condition 2 at once.
+
+    ALLOW_PARTIAL_DEPLOY=1 overrides, for a deliberately-built subset.
+    """
+    if os.environ.get("ALLOW_PARTIAL_DEPLOY") == "1":
+        print("[!] ALLOW_PARTIAL_DEPLOY=1 — skipping build-completeness check")
+        return
+    root_index = OUT_DIR / "index.html"
+    if not root_index.exists():
+        sys.exit(f"[x] REFUSING TO DEPLOY: {root_index} is missing — the build is "
+                 f"truncated. A CF Pages deploy REPLACES the site.")
+    sitemap = OUT_DIR / "sitemap.xml"
+    if not sitemap.exists():
+        print("[!] no out/sitemap.xml — skipping per-URL completeness check")
+        return
+    locs = re.findall(r"<loc>([^<]+)</loc>", sitemap.read_text(encoding="utf-8", errors="ignore"))
+    missing = []
+    for loc in locs:
+        rel = re.sub(r"^https?://[^/]+", "", loc).strip("/")
+        if not (OUT_DIR / (rel + "/index.html" if rel else "index.html")).exists():
+            missing.append(loc)
+            if len(missing) > 25:
+                break
+    if missing:
+        sys.exit(f"[x] REFUSING TO DEPLOY: {len(missing)}+ of {len(locs)} sitemap URLs "
+                 f"have no built page — the export did not finish. First few:\n    "
+                 + "\n    ".join(missing[:5]))
+    print(f"[+] build completeness OK · homepage present · {len(locs)} sitemap URLs all have pages")
+
+
 def main():
+    assert_build_is_complete()
     t0 = time.time()
     print(f"[+] chunked deploy · project={PROJECT} · out={OUT_DIR}")
     entries = walk(OUT_DIR)
