@@ -28,6 +28,30 @@ const die = (...lines) => { for (const l of lines) console.error(l); process.exi
 try { sh('git rev-parse --is-inside-work-tree'); }
 catch { console.log('✓ predeploy-git-guard: not a git repo — skipping'); process.exit(0); }
 
+// WRONG-BRANCH ADDENDUM (2026-09-02, fleet task mtk9rrqrubziml, pattern from readinglist 0946f10):
+// the freshness check below only compares HEAD to THIS branch's own upstream, so a deploy run from
+// any other branch sails through clean and REPLACES production with that branch's content
+// (readinglist shipped from 3 branches in 8h and each deploy silently deleted the others' work).
+// The ONE branch sourcescore.org ships from. Resolved 2026-09-02 from evidence: CF Pages project sourcescore production_branch=main; last 4 production deploys (08-28/29) branch=main via the chunked deployer (records no commit hash); package.json deploy → scripts/deploy-cf.mjs declares --branch main.
+// Change it only alongside actually re-declaring the deploy branch.
+const DEPLOY_BRANCH = 'main';
+const currentBranch = (() => { try { return sh('git branch --show-current'); } catch { return ''; } })();
+if (!currentBranch) {
+  die('❌ predeploy-git-guard: DEPLOY BLOCKED — detached HEAD (no branch name).',
+      `   sourcescore.org ships from exactly one branch: ${DEPLOY_BRANCH}.`,
+      '   Fix:  git checkout ' + DEPLOY_BRANCH);
+}
+if (currentBranch !== DEPLOY_BRANCH) {
+  die(`❌ predeploy-git-guard: DEPLOY BLOCKED — on branch "${currentBranch}", not "${DEPLOY_BRANCH}".`,
+      '',
+      `   sourcescore.org ships from exactly ONE branch: ${DEPLOY_BRANCH}. A deploy from any other branch`,
+      `   REPLACES the live site with "${currentBranch}"'s content and silently reverts whatever`,
+      `   ${DEPLOY_BRANCH} shipped that this branch lacks (this exact failure took out a live feature`,
+      '   ship on readinglist.school on 2026-09-02).',
+      '',
+      `   Fix:  git checkout ${DEPLOY_BRANCH}   (merge/cherry-pick your work there first)`);
+}
+
 // The ref that matters is the one you would DEPLOY from: this branch's own upstream.
 // Being behind it means a rebuild silently reverts live commits — that is a hard block.
 // origin/main is checked too, but only as a WARNING: a repo can legitimately deploy from

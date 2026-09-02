@@ -25,6 +25,13 @@ Run-from-clean wrapper: scripts/deploy-cf-chunked.sh (build + prune + this).
 import base64, hashlib, json, mimetypes, os, pathlib, sys, time, uuid, urllib.request, urllib.error
 import re
 
+# Fleet task mtk9rrqrubziml (2026-09-02): this script is also invoked DIRECTLY, bypassing the npm predeploy hook.
+# Run the git guard here too (wrong branch / stale checkout => a Pages deploy REPLACES the live site).
+import subprocess as _sp, pathlib as _pl, sys as _sys
+_g = _pl.Path(__file__).resolve().with_name("predeploy-git-guard.mjs")
+if _g.exists() and _sp.run(["node", str(_g)], cwd=str(_g.parent.parent)).returncode != 0:
+    _sys.exit("predeploy-git-guard blocked the deploy (see message above); SKIP_GIT_GUARD=1 is the only override")
+
 ACCOUNT = "72bfd26c5f3c935393a25e5c0dea6039"
 # Env-driven. These were hardcoded, which on 2026-08-25 sent another site's
 # out/ to THIS project and overwrote sourcescore.org production. A deployer
