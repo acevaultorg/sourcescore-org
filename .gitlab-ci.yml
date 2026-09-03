@@ -76,7 +76,15 @@ deploy:
     - build
   before_script:
     - apt-get update
-    - apt-get install -y --no-install-recommends ca-certificates
+    # `git` is installed deliberately: node:24-bookworm-slim ships without it, and
+    # without git in PATH `wrangler --commit-dirty=true` cannot read a SHA, so CF
+    # records commit_hash=None for every CI deploy. Measured 2026-09-03 — pipeline
+    # 2813969140's deploy job ran 16:09:23-16:11:05 and produced the CF deployment
+    # at 16:10:46 with commit_hash=None, while sibling colorcombinations (full
+    # node:22, which HAS git) records the SHA on every CI deploy. The deploy was
+    # real; only its provenance was missing, which is the deploy-truth question
+    # ("which commit is live?") going unanswerable.
+    - apt-get install -y --no-install-recommends ca-certificates git
     - npm install -g wrangler@4
   script:
     - test -d out
@@ -85,7 +93,75 @@ deploy:
     # Re-run the guard at deploy stage too — defends against artifact corruption between jobs
     # OR against any future ad_hoc CI workflow that skips build.
     - node scripts/predeploy-guard.mjs
-    - wrangler pages deploy out --project-name sourcescore --branch main --commit-dirty=true
+    - |
+      set -o pipefail
+      wrangler pages deploy out --project-name sourcescore --branch main --commit-dirty=true 2>&1 | tee /tmp/deploy.log
+    # POST-DEPLOY ASSERTION. wrangler can exit 0 having uploaded nothing, and until
+    # now nothing here would have noticed.
+    #
+    # ASSERTS THE DEPLOYMENT URL, NOT commit_hash — deliberately. The equality form
+    # used by colorcombinations/haulchart would FALSE-RED here: this project's CI
+    # deploys record commit_hash=None (measured above). Installing git should fix
+    # that, but the assertion must not DEPEND on a fix whose effect is unproven in
+    # this image. wrangler prints https://<short_id>.<project>.pages.dev, and CF's
+    # deployment record carries that exact string in `url` — a unique handle that
+    # works regardless of whether git metadata lands, and that a sibling lane
+    # deploying in the same window cannot satisfy.
+    - |
+      cat > /tmp/assert.mjs <<'JS'
+      const acc = process.env.CLOUDFLARE_ACCOUNT_ID;
+      const tok = process.env.CLOUDFLARE_API_TOKEN;
+      const want = process.env.CF_DEPLOY_URL;
+      const url = `https://api.cloudflare.com/client/v4/accounts/${acc}/pages/projects/sourcescore/deployments?per_page=10&env=production`;
+      for (let i = 1; i <= 10; i++) {
+        let body;
+        try {
+          const res = await fetch(url, { headers: { Authorization: `Bearer ${tok}` } });
+          body = await res.json();
+        } catch (e) {
+          console.error(`  attempt ${i}: CF API unreachable — ${e.message}`);
+          await new Promise(s => setTimeout(s, 15000));
+          continue;
+        }
+        // An API that cannot answer is a FAILURE, never a pass.
+        if (!body.success) {
+          console.error('ASSERTION FAILED: CF API returned success:false —', JSON.stringify(body.errors || []).slice(0, 300));
+          process.exit(1);
+        }
+        const list = body.result || [];
+        if (list.length === 0) {
+          console.error('ASSERTION FAILED: CF reports zero production deployments for this project.');
+          process.exit(1);
+        }
+        const mine = list.find(d => d.url === want);
+        if (mine) {
+          if (mine.environment !== 'production') {
+            console.error(`ASSERTION FAILED: ${want} is '${mine.environment}', not production.`);
+            process.exit(1);
+          }
+          const st = (mine.latest_stage || {}).status;
+          if (st === 'success') { console.log(`VERIFIED: production deployment ${mine.id} is live at ${want}.`); process.exit(0); }
+          if (st === 'failure' || st === 'canceled') { console.error(`ASSERTION FAILED: ${want} ended '${st}'.`); process.exit(1); }
+          console.log(`  attempt ${i}: found ${want}, stage '${st}' — waiting.`);
+        } else {
+          console.log(`  attempt ${i}: newest is ${list[0].url} — waiting for ${want}.`);
+        }
+        await new Promise(s => setTimeout(s, 15000));
+      }
+      console.error(`ASSERTION FAILED: after ~2.5 min no successful production deployment exists at ${want}.`);
+      console.error('wrangler exited 0 but nothing reached production — the green-and-wrong case this assertion exists to catch.');
+      process.exit(1);
+      JS
+    - |
+      DEP_URL=$(grep -oE 'https://[0-9a-f]{8}\.sourcescore\.pages\.dev' /tmp/deploy.log | tail -1)
+      if [ -z "$DEP_URL" ]; then
+        echo "ASSERTION FAILED: no deployment URL in wrangler output."
+        echo "Either nothing was created, or wrangler changed its output format."
+        echo "A check that cannot see must not report OK — failing loudly rather than passing blind."
+        exit 1
+      fi
+      echo "asserting $DEP_URL reached production..."
+      CF_DEPLOY_URL="$DEP_URL" node /tmp/assert.mjs
   only:
     - main
 
