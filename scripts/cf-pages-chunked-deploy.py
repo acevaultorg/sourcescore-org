@@ -246,6 +246,21 @@ def main():
             kept.append((rel, c, sha))
     entries = kept
     print(f"[+] {len(entries)} files" + (f" + specials: {sorted(specials)}" if specials else " (no _worker.js/_routes.json)"))
+    # Fail-fast BEFORE the (expensive, ~minutes-long) upload: CF Pages create_deployment
+    # rejects a manifest >20,000 files (HTTP 400) -- and per
+    # positive-control-before-absence.md this failure is otherwise SILENT: the uploader
+    # runs its full length and no deployment ever appears, which reads exactly like a
+    # hung upload. Measured 2026-09-03: this tree was 9,849 files (49% of the cap) --
+    # comfortable today, but this deployer had NO guard at all, unlike 16 of its 18
+    # fleet siblings. Counting `entries` (post special-file split) so this matches
+    # what actually gets uploaded, not the raw walk() total.
+    if len(entries) > 20000:
+        print(f"ERROR: {len(entries)} files exceeds CF Pages' 20,000/deployment cap.\n"
+              f"  Prune the out/ tree before deploying (RSC .txt soft-nav payloads and/or\n"
+              f"  unindexed page-type twins -- prune by CONTENT SIGNATURE, never by filename:\n"
+              f"  robots.txt/ads.txt/llms.txt/IndexNow-key files are also .txt).",
+              file=sys.stderr)
+        sys.exit(2)
     manifest = {rel: sha for rel, _, sha in entries}
     idx = {}
     for rel, c, sha in entries: idx.setdefault(sha, (c, rel))
