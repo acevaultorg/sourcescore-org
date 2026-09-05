@@ -73,6 +73,11 @@ function isHttpsUrl(value: string | undefined): boolean {
 const LIVE_DEFAULTS = {
   // Rankscale.ai — approved 2026-08-11 (Rewardful). 10% recurring, 12 months.
   rankscale: "https://rankscale.ai?via=paulo",
+  // Morningscore — approved 2026-09-05. 25% recurring (10% on the "Journey"
+  // plan). 180-day cookie, monthly Net-20 above $50, payout via bank transfer.
+  morningscore: "https://morningscore.io?fpr=paulo-de-vries-6a8fac",
+  // SE Ranking — approved 2026-09-05. 30% (program page), biweekly at $50.
+  seranking: "https://seranking.com/?ga=5248316&source=link",
   // Mangools AI Search Watcher — approved 2026-08-11. Tiered 25/30/35%.
   // The referral ID is a URL FRAGMENT. Never store this unquoted in a .env:
   // dotenv reads an unquoted `#` as an inline comment and silently strips the
@@ -125,6 +130,18 @@ const SLOTS: Slot[] = [
     name: "Ahrefs",
     note: "SEO suite whose Brand Radar tracks mentions in AI answers.",
     url: process.env.NEXT_PUBLIC_AFF_AHREFS,
+  },
+  {
+    slug: "morningscore",
+    name: "Morningscore",
+    note: "SEO dashboard tracking rankings, traffic, and backlinks over time.",
+    url: process.env.NEXT_PUBLIC_AFF_MORNINGSCORE ?? LIVE_DEFAULTS.morningscore,
+  },
+  {
+    slug: "seranking",
+    name: "SE Ranking",
+    note: "All-in-one SEO platform for rank tracking, site audits, and backlink monitoring.",
+    url: process.env.NEXT_PUBLIC_AFF_SERANKING ?? LIVE_DEFAULTS.seranking,
   },
   {
     slug: process.env.NEXT_PUBLIC_AFF_SLOT1_SLUG ?? LIVE_DEFAULTS.slot1Slug,
