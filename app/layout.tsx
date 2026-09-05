@@ -107,6 +107,7 @@ export default function RootLayout({
                 "https://caslonmedia.com/",
                 "https://dev.to/paulomdevries",
               ],
+              founder: { "@id": "https://sourcescore.org/#founder" },
               // Publisher attribution — lets partners and networks verify
               // common ownership across the Caslon Media network.
               parentOrganization: {
@@ -115,6 +116,26 @@ export default function RootLayout({
                 name: "Caslon Media",
                 url: "https://caslonmedia.com/",
               },
+            }),
+          }}
+        />
+        {/* Person (founder) JSON-LD — E-E-A-T / AI-citation credibility signal
+            (seo-geo-mastery.md "Credible" characteristic). Fleet-wide gap
+            check 2026-09-05 found sourcescore.org had none. sameAs reuses the
+            same two verified-live URLs already used on Organization above
+            (dev.to/paulomdevries is the named author's own byline). */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "@id": "https://sourcescore.org/#founder",
+              name: "Paulo de Vries",
+              url: "https://sourcescore.org/about",
+              jobTitle: "Founder & Editor",
+              sameAs: ["https://dev.to/paulomdevries"],
+              worksFor: { "@id": "https://sourcescore.org/#organization" },
             }),
           }}
         />
