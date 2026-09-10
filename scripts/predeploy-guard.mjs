@@ -138,4 +138,57 @@ if (existsSync(claimsCatalogPath)) {
   }
 }
 
+// ── Analytics-tag guard (2026-09-10, fleet port of askedwell ab43f30) ─────────
+// deploy-truth.md § "a detached worktree builds tracked code but drops UNTRACKED
+// env files": a worktree/CI checkout without the gitignored env file builds a
+// perfectly normal out/ whose <head> carries NO GA4 and NO Clarity, deploys with
+// exit 0, and the tracker only notices days later. Measured 2026-09-10 on
+// askedwell.com (deploy 080855fa shipped untagged). This block resolves each tag
+// ID the way the layout does (process.env -> env files -> hardcoded fallback) and
+// refuses to deploy unless the BUILT index.html carries every resolved ID.
+import { readFileSync as __rfTag, existsSync as __exTag } from "node:fs";
+import { resolve as __rsTag } from "node:path";
+{
+  const root = __rsTag(process.cwd());
+  const ENV_FILES = [".env.local", ".env.production"];
+  const TAGS = [["GA4", "NEXT_PUBLIC_GA4_ID", "G-WZ82M72J06"], ["Clarity", "NEXT_PUBLIC_CLARITY_PROJECT_ID", null]]; // [name, envKey, fallback]
+  const fileEnv = {};
+  for (const f of ENV_FILES) {
+    const p = __rsTag(root, f);
+    if (!__exTag(p)) continue;
+    for (const l of __rfTag(p, "utf8").split("\n")) {
+      if (!/^[A-Z0-9_]+=/.test(l)) continue;
+      const i = l.indexOf("=");
+      const k = l.slice(0, i);
+      if (!(k in fileEnv)) fileEnv[k] = l.slice(i + 1).trim().replace(/^["']|["']$/g, "");
+    }
+  }
+  const idx = __rsTag(root, "out/index.html");
+  if (!__exTag(idx)) {
+    console.error("❌ predeploy-guard: analytics check — out/index.html missing; run the build first.");
+    process.exit(1);
+  }
+  const html = __rfTag(idx, "utf8");
+  const missingEnv = ENV_FILES.filter((f) => !__exTag(__rsTag(root, f)));
+  const lost = [];
+  for (const [name, key, fallback] of TAGS) {
+    const id = (process.env[key] || fileEnv[key] || fallback || "").trim();
+    if (!id) {
+      console.error(`❌ predeploy-guard: deploy blocked — ${name} ID unresolvable (${key} not in process.env, not in ${ENV_FILES.join(" / ")}, no fallback).`);
+      if (missingEnv.length) console.error(`   Missing env file(s) in this checkout: ${missingEnv.join(", ")} — a detached worktree / fresh clone drops untracked env files.`);
+      console.error(`   Fix: copy the env file from the main checkout, rebuild, retry. Never deploy an untagged site.`);
+      process.exit(1);
+    }
+    if (!html.includes(id)) lost.push(`${name} ${key}=${id}`);
+  }
+  if (lost.length) {
+    console.error("❌ predeploy-guard: deploy blocked — built out/index.html does not carry the analytics IDs the layout should emit:");
+    for (const l of lost) console.error(`   - ${l}`);
+    if (missingEnv.length) console.error(`   Missing env file(s) in this checkout: ${missingEnv.join(", ")} — the build ran without them.`);
+    console.error("   Fix: ensure the env file is present, run the build again, retry deploy.");
+    process.exit(1);
+  }
+  console.log(`✓ predeploy-guard: analytics tags present in out/index.html (${TAGS.map(([n, k, fb]) => n + "=" + (process.env[k] || fileEnv[k] || fb)).join(", ")})`);
+}
+
 console.log(`✓ predeploy-guard: out/ has all required artifacts (${required.length} checked, age ${ageHours.toFixed(1)}h)`);

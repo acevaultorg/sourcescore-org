@@ -39,6 +39,14 @@ const args = [
   "--commit-message", process.env.DEPLOY_MSG || "deploy: brain wrangler push",
 ];
 
+// Analytics-tag guard (2026-09-10): this script is the LOCAL fallback path that the
+// npm `predeploy` hook does not protect once `npm run build` has re-emitted out/.
+// Refuse to upload an out/ built without the GA4/Clarity IDs.
+{
+  const g = spawnSync("node", ["scripts/predeploy-guard.mjs"], { stdio: "inherit", env: process.env });
+  if (g.status !== 0) { console.error("✗ predeploy-guard refused the deploy — not uploading."); process.exit(g.status || 1); }
+}
+
 let ok = false;
 for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
   console.log(`\n→ Cloudflare Pages deploy — attempt ${attempt}/${MAX_ATTEMPTS}`);
