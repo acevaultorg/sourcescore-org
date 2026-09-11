@@ -17,6 +17,35 @@
  */
 import { execSync } from 'node:child_process';
 
+// ── rg-freeze-guard hook v1 (2026-09-11, operator-approved) ─────────────────────────────────────────────────
+// Refuse to deploy over an RG-frozen experiment or a local deploy hold. On 2026-09-11 lanes deployed
+// over frozen RG experiments twice (espressospecdb 55882be/f5b9c26 changed the frozen
+// /compare/ascaso-steel-duo-pid-vs-profitec-go/ page through a site-wide nav edit) because nothing
+// read RG_CONTROL_REGISTER.json at deploy time. Runs BEFORE the SKIP_GIT_GUARD exit on purpose —
+// that flag is for offline git, not for freezes. Overrides are the guard's own:
+// RG_FREEZE_ACK / RG_FREEZE_OVERRIDE / DEPLOY_HOLD_OVERRIDE. SITE resolved from site constant
+// (never from the directory name). If this runs before the build, the page compare sees the
+// PREVIOUS build; the upload-time call (chunked deployer / deploy.sh) sees the fresh one.
+{
+  const { spawnSync: rgSpawn } = await import('node:child_process');
+  const { existsSync: rgExists } = await import('node:fs');
+  const rgPath = await import('node:path');
+  const { fileURLToPath: rgUrl } = await import('node:url');
+  const rgRoot = rgPath.resolve(rgPath.dirname(rgUrl(import.meta.url)), '..');
+  const rgHome = process.env.HOME || '';
+  const rgGuard = [`${rgHome}/.claude/bin/rg-freeze-guard.mjs`, `${rgHome}/Local/VAULT-Fleet/scripts/rg-freeze-guard.mjs`].find((p) => rgExists(p));
+  if (!rgGuard) {
+    console.warn('⚠️  rg-freeze-guard not found (~/.claude/bin or ~/Local/VAULT-Fleet/scripts) — RG freeze check SKIPPED on this Mac');
+  } else {
+    const r = rgSpawn(process.execPath, [rgGuard, '--site', 'sourcescore.org', '--out', rgPath.join(rgRoot, 'out')], { stdio: 'inherit' });
+    if (r.status !== 0) {
+      console.error('❌ predeploy-git-guard: DEPLOY BLOCKED by rg-freeze-guard (see above)');
+      process.exit(r.status || 1);
+    }
+  }
+}
+// ── end rg-freeze-guard hook v1 ───────────────────────────────────────────────────────────────────────────────
+
 if (process.env.SKIP_GIT_GUARD === '1') {
   console.log('⚠️  predeploy-git-guard: SKIPPED via SKIP_GIT_GUARD=1');
   process.exit(0);
