@@ -353,6 +353,17 @@ function SiteFooter() {
               cited by AI? ↗
             </a>
           </p>
+          <p className="mt-2 text-muted leading-relaxed">
+            <a
+              href="https://secfilingdex.com/"
+              target="_blank"
+              rel="nofollow noopener"
+              className="hover:text-text"
+            >
+              Also from Caslon Media:{" "}
+              <span className="text-brand">SecFilingDex</span> — SEC filing search ↗
+            </a>
+          </p>
         </div>
         <div>
           <div className="text-text font-semibold mb-2">VERITAS API</div>
