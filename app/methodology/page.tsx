@@ -123,7 +123,7 @@ export default function MethodologyPage() {
 
       {/* Reader-facing application of the methodology — cross-links the
           broad-audience pillar so high-authority /methodology/ passes equity to it. */}
-      <p className="text-body-sm text-muted leading-relaxed mb-10 max-w-2xl">
+      <p className="text-body-sm text-muted leading-relaxed mb-4 max-w-2xl">
         Want the plain-English version? See{" "}
         <a
           href="/blog/how-to-tell-if-a-source-is-reliable/"
@@ -132,6 +132,16 @@ export default function MethodologyPage() {
           how to tell if a source is reliable
         </a>{" "}
         — the same three signals, applied by hand to any source you&rsquo;re vetting.
+      </p>
+      <p className="text-body-sm text-muted leading-relaxed mb-10 max-w-2xl">
+        Coming from SEO? See how this relates to{" "}
+        <a
+          href="/methodology/sourcescore-vs-domain-authority/"
+          className="text-brand font-medium hover:underline"
+        >
+          SourceScore vs Domain Authority
+        </a>{" "}
+        — different question, different inputs, not a competing score for the same thing.
       </p>
 
       <section className="prose prose-invert max-w-none text-body text-text leading-relaxed space-y-6">
