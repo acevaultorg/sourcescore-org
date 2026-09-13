@@ -174,6 +174,10 @@ indexnow:
   image: node:24-bookworm-slim
   needs:
     - deploy
+    # `needs: [deploy]` does not transitively download build artifacts. Fetch the
+    # static export explicitly because ping-indexnow reads its key from out/.
+    - job: build
+      artifacts: true
   script:
     - test -d out
     - node scripts/ping-indexnow.mjs
