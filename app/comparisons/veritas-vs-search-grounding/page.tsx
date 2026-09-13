@@ -100,12 +100,12 @@ export default function VeritasVsSearchGroundingPage() {
           <tbody>
             <tr><td>Source</td><td>Live web search results</td><td>Hand-curated catalog</td></tr>
             <tr><td>Coverage</td><td>Whatever&apos;s on the web</td><td>AI/ML (v0); narrow but deep</td></tr>
-            <tr><td>Latency</td><td>~2-10s (search + read + generate)</td><td>~80ms (single envelope fetch)</td></tr>
+            <tr><td>Latency</td><td>Multiple network and generation steps</td><td>One additional catalog request; measure from your deployment region</td></tr>
             <tr><td>Recency</td><td>Up-to-the-minute</td><td>Weekly + on-event refresh</td></tr>
-            <tr><td>Citation quality</td><td>Variable (depends on retrieved pages)</td><td>Always ≥2 primary sources</td></tr>
-            <tr><td>Signature</td><td>None</td><td>HMAC-SHA256 on every envelope</td></tr>
+            <tr><td>Citation quality</td><td>Variable (depends on retrieved pages)</td><td>Cited primary evidence; source count per record</td></tr>
+            <tr><td>Integrity metadata</td><td>None</td><td>SourceScore-issued HMAC tag (not publicly verifiable)</td></tr>
             <tr><td>Reliability</td><td>Variable (search index quality matters)</td><td>Deterministic (catalog hand-verified)</td></tr>
-            <tr><td>Cost</td><td>$5-20/1000 queries</td><td>Free 1k/mo, then €19+</td></tr>
+            <tr><td>Cost</td><td>Provider-dependent</td><td>Free 1k/mo; proposed higher-volume tiers are not for sale</td></tr>
             <tr><td>Atomic-claim shape</td><td>Free-text response with citations</td><td>Subject + predicate + object envelope</td></tr>
           </tbody>
         </table>
@@ -135,16 +135,14 @@ export default function VeritasVsSearchGroundingPage() {
           The audit trail degrades over time.
         </p>
         <p>
-          VERITAS&apos;s HMAC-SHA256 signature gives you a
-          cryptographically-anchored response: log the envelope, log
-          the signature, log the public DID (did:web:sourcescore.org).
-          Three years later you can verify the response was genuine
-          and unmodified.
+          VERITAS records have a stable URL and cited evidence. Refetch the
+          canonical HTTPS record when checking a current record; its HMAC tag is
+          SourceScore-issued metadata, not a public cryptographic proof.
         </p>
         <p>
-          For regulated industries (finance, legal, healthcare-research,
-          academic citation), signed envelopes matter. For general
-          consumer apps, they don&apos;t.
+          In regulated or high-stakes settings, cited evidence and canonical
+          record comparison can support an audit trail. SourceScore&apos;s HMAC tag
+          is not public cryptographic proof and should not be treated as one.
         </p>
 
         <h2>The atomic-claim shape trade-off</h2>
@@ -167,16 +165,16 @@ export default function VeritasVsSearchGroundingPage() {
         <ul>
           <li>You need recent events (today&apos;s news, this month&apos;s product launches)</li>
           <li>You need broad knowledge coverage</li>
-          <li>You&apos;re fine with ~2-10s latency</li>
-          <li>You don&apos;t need cryptographic signatures</li>
+          <li>You can measure and accept the retrieval-and-generation latency in your stack</li>
+          <li>You do not need SourceScore&apos;s structured integrity metadata</li>
           <li>Your application generates free-text responses (chat, search)</li>
         </ul>
 
         <h3>Use VERITAS when:</h3>
         <ul>
           <li>Your domain is AI/ML (or future Y2 verticals)</li>
-          <li>You need sub-100ms latency</li>
-          <li>You need cryptographic signatures for audit trails</li>
+          <li>You prefer one structured catalog request and will benchmark it from your region</li>
+          <li>You need structured claim records and cited evidence</li>
           <li>You need atomic claim shape</li>
           <li>You need deterministic responses (same query → same answer)</li>
           <li>You&apos;re building generate-then-verify pipelines</li>
@@ -185,8 +183,8 @@ export default function VeritasVsSearchGroundingPage() {
         <h3>Use both when:</h3>
         <p>
           Sophisticated agents do both. Search-grounding for breaking
-          news / breadth; VERITAS for AI/ML facts requiring signature
-          + structure. The agent decides which tool to invoke based on
+          news / breadth; VERITAS for scoped AI/ML claim records and structure.
+          The agent decides which tool to invoke based on
           query shape.
         </p>
 

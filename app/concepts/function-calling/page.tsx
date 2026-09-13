@@ -180,18 +180,18 @@ export default function FunctionCallingConcept() {
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`{
   "type": "function",
   "function": {
-    "name": "verify_claim",
-    "description": "Verify a natural-language factual claim about AI/ML.",
+    "name": "find_claim_candidate",
+    "description": "Find a similar AI/ML catalog record for evidence review; not a truth verdict.",
     "parameters": {
       "type": "object",
       "properties": {
         "claim": {
           "type": "string",
-          "description": "Natural-language claim to verify"
+          "description": "Natural-language assertion to look up"
         },
         "min_confidence": {
           "type": "number",
-          "description": "Minimum confidence threshold (0.0-1.0)",
+          "description": "Minimum legacy record confidence (0.0-1.0)",
           "default": 0.85
         }
       },
@@ -265,11 +265,12 @@ export default function FunctionCallingConcept() {
           them. Compare with <a href="/concepts/rag-vs-veritas/">RAG vs
           VERITAS</a>.
         </p>
-        <h3>Verify-before-asserting</h3>
+        <h3>Retrieve-and-review before asserting</h3>
         <p>
-          The model has a <code>verify_claim</code> tool. When the
-          model is about to assert a factual claim, it calls verify
-          first; only asserts confirmed claims. This is the <a href="/use-cases/ai-agent-grounding/">
+          The model has a <code>find_claim_candidate</code> tool. When it
+          is about to assert a factual claim, it retrieves a possible record,
+          then the application compares that record and its evidence with the
+          assertion. This is the <a href="/use-cases/ai-agent-grounding/">
           AI agent grounding</a> use case.
         </p>
         <h3>Code execution</h3>
@@ -316,7 +317,7 @@ export default function FunctionCallingConcept() {
 
         <h2 id="related">Related</h2>
         <ul>
-          <li><a href="/concepts/llm-grounding/">LLM grounding</a> — function calling enables verify-before-asserting</li>
+          <li><a href="/concepts/llm-grounding/">LLM grounding</a> — function calling enables retrieve-and-review workflows</li>
           <li><a href="/topics/agent-frameworks/">Agent frameworks topic hub</a></li>
           <li><a href="/use-cases/ai-agent-grounding/">AI agent grounding use case</a></li>
           <li><a href="/docs/integrations/openai-tools/">OpenAI tool-calls integration</a></li>

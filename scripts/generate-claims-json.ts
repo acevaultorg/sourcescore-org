@@ -164,18 +164,23 @@ async function main() {
     generated: new Date().toISOString(),
     title: "VERITAS-Reborn Verification Methodology v0.1",
     summary:
-      "Each claim is verified against ≥2 primary sources (preprint / peer-reviewed / official-blog / model-card / docs / github-release). Confidence reflects source convergence: 1.00 = primary-source confirmation + independent verification; 0.95 = primary-source single attestation; 0.85 = strong secondary convergence. Claims at confidence <0.70 are not published. Performance-comparison claims are intentionally excluded from v0 because benchmark numbers depend on version + prompt format.",
+      "Every current claim cites primary evidence; 368 of 384 claims include two or more sources and 16 have one primary source. Confidence is legacy editorial metadata and should be read alongside each record's cited evidence and source count, not as an external correctness guarantee. Performance-comparison claims are excluded because benchmark results depend on version, prompt format, and evaluation setup.",
     signing: {
       algorithm: "HMAC-SHA256",
       signedBy: "did:web:sourcescore.org",
       verificationEndpoint: `${SITE}/api/v1/verify`,
       migrationNote:
-        "v1 (Y2) migrates to W3C Verifiable Credentials with Ed25519 keys for offline verification. signedBy identity stays did:web:sourcescore.org.",
+        "HMAC tags are SourceScore-issued integrity metadata. The shared secret is not public, so users cannot independently verify a tag; refetch the canonical HTTPS record and inspect cited evidence.",
     },
     citation: {
       license: "Methodology v0.1 + verified claim data are CC-BY 4.0",
       citationFormat:
         "SourceScore Claim <id> (verified <YYYY-MM-DD>, signed <sig-prefix>). https://sourcescore.org/claims/<id>/",
+    },
+    commercialAvailability: {
+      freeApi: "live_no_signup",
+      paidAccess: "proposal_only_not_purchasable",
+      details: `${SITE}/pricing/`,
     },
     tiers: TIERS,
     count: claims.length,

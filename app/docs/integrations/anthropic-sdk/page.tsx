@@ -6,13 +6,13 @@ import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 import { anthropicSdkHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
-  title: "Anthropic SDK + SourceScore VERITAS — tool-use claim verification for Claude",
+  title: "Anthropic SDK + SourceScore VERITAS — candidate evidence retrieval for Claude",
   description:
-    "Expose SourceScore VERITAS as a Claude tool via the Anthropic SDK. The model auto-invokes verify_claim when it needs to ground a factual assertion. Python + TypeScript examples.",
+    "Expose SourceScore VERITAS as a Claude tool for candidate-record retrieval. Require statement and evidence comparison before using a match. Python + TypeScript examples.",
   alternates: { canonical: "https://sourcescore.org/docs/integrations/anthropic-sdk/" },
   openGraph: {
     title: "Anthropic SDK + SourceScore VERITAS",
-    description: "Claude tool-use pattern for signed claim verification.",
+    description: "Claude tool-use pattern for candidate evidence retrieval.",
     url: "https://sourcescore.org/docs/integrations/anthropic-sdk/",
     type: "article",
   },
@@ -27,9 +27,9 @@ export default function AnthropicSDKIntegration() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TechArticle",
-            headline: "Anthropic SDK + SourceScore VERITAS: tool-use claim verification for Claude",
+            headline: "Anthropic SDK + SourceScore VERITAS: candidate evidence retrieval for Claude",
             description:
-              "Expose SourceScore VERITAS as a Claude tool via the Anthropic SDK. Python + TypeScript examples.",
+              "Expose SourceScore VERITAS as a Claude candidate-retrieval tool and review its cited evidence before use. Python + TypeScript examples.",
             datePublished: "2026-05-16",
             dateModified: "2026-05-16",
             author: { "@type": "Organization", name: "SourceScore", url: "https://sourcescore.org" },
@@ -72,12 +72,12 @@ export default function AnthropicSDKIntegration() {
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
           Expose VERITAS as a Claude tool via the Anthropic SDK. When
-          Claude needs to ground a factual claim, it emits a{" "}
+          Claude needs catalog evidence, it emits a{" "}
           <code className="text-sm">tool_use</code> block calling{" "}
-          <code className="text-sm">verify_claim</code>; you execute the
+          <code className="text-sm">find_claim_candidate</code>; you execute the
           API call and feed the result back as a{" "}
           <code className="text-sm">tool_result</code>; Claude composes
-          the final answer with the verified data.
+          a final answer after comparing the returned statement and evidence.
         </p>
       </header>
 
@@ -107,24 +107,24 @@ npm install @anthropic-ai/sdk`}
 {`import anthropic
 import httpx
 import json
+import os
 
 client = anthropic.Anthropic()  # picks up ANTHROPIC_API_KEY
+model = os.environ["ANTHROPIC_MODEL"]  # pin and test the model used in production
 
 tools = [
     {
-        "name": "verify_claim",
+        "name": "find_claim_candidate",
         "description": (
-            "Verify a natural-language factual claim about AI/ML "
-            "research (model releases, papers, dates, parameter counts). "
-            "Returns a verified-claim envelope with primary sources and "
-            "HMAC signature, or no match if the claim isn't in the catalog."
+            "Find a similar SourceScore catalog record for an AI/ML assertion. "
+            "A result is a candidate for evidence review, not a truth verdict."
         ),
         "input_schema": {
             "type": "object",
             "properties": {
                 "claim": {
                     "type": "string",
-                    "description": "Natural-language claim to verify",
+                    "description": "Natural-language assertion to look up",
                 },
                 "min_confidence": {
                     "type": "number",
@@ -137,8 +137,8 @@ tools = [
     },
 ]
 
-async def execute_verify_claim(claim: str, min_confidence: float = 0.85) -> dict:
-    """Call SourceScore VERITAS /verify endpoint."""
+async def execute_find_claim_candidate(claim: str, min_confidence: float = 0.85) -> dict:
+    """Retrieve catalog candidates; compare cited evidence before use."""
     async with httpx.AsyncClient() as http:
         r = await http.post(
             "https://sourcescore.org/api/v1/verify",
@@ -152,7 +152,7 @@ async def chat(user_message: str) -> str:
 
     while True:
         response = client.messages.create(
-            model="claude-opus-4-7",
+            model=model,
             max_tokens=1024,
             tools=tools,
             messages=messages,
@@ -164,8 +164,8 @@ async def chat(user_message: str) -> str:
                 b for b in response.content if b.type == "tool_use"
             )
 
-            if tool_use_block.name == "verify_claim":
-                result = await execute_verify_claim(
+            if tool_use_block.name == "find_claim_candidate":
+                result = await execute_find_claim_candidate(
                     claim=tool_use_block.input["claim"],
                     min_confidence=tool_use_block.input.get("min_confidence", 0.85),
                 )
@@ -187,12 +187,11 @@ async def chat(user_message: str) -> str:
         # No more tool use; return Claude's final response
         return "".join(b.text for b in response.content if b.type == "text")
 
-# Use it:
+# Use it, then inspect the returned candidate evidence:
 import asyncio
 answer = asyncio.run(chat("When was Llama 3.1 released?"))
 print(answer)
-# → "Llama 3.1 was released on 2024-07-23, per the Meta AI announcement
-#    and the model card on Hugging Face."`}
+`}
         </pre>
       </section>
 
@@ -202,13 +201,15 @@ print(answer)
 {`import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
+const model = process.env.ANTHROPIC_MODEL;
+if (!model) throw new Error("Set ANTHROPIC_MODEL to a pinned, tested model ID.");
 
 const tools: Anthropic.Tool[] = [
   {
-    name: "verify_claim",
+    name: "find_claim_candidate",
     description: (
-      "Verify a natural-language factual claim about AI/ML research. " +
-      "Returns a verified-claim envelope with primary sources and HMAC signature."
+      "Find a similar SourceScore catalog record for an AI/ML assertion. " +
+      "A result is a candidate for evidence review, not a truth verdict."
     ),
     input_schema: {
       type: "object",
@@ -221,7 +222,7 @@ const tools: Anthropic.Tool[] = [
   },
 ];
 
-async function executeVerifyClaim(claim: string, minConfidence = 0.85) {
+async function executeFindClaimCandidate(claim: string, minConfidence = 0.85) {
   const r = await fetch("https://sourcescore.org/api/v1/verify", {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -237,7 +238,7 @@ async function chat(userMessage: string): Promise<string> {
 
   while (true) {
     const response = await client.messages.create({
-      model: "claude-opus-4-7",
+      model,
       max_tokens: 1024,
       tools,
       messages,
@@ -249,8 +250,8 @@ async function chat(userMessage: string): Promise<string> {
       );
       if (!toolUseBlock) break;
 
-      if (toolUseBlock.name === "verify_claim") {
-        const result = await executeVerifyClaim(
+      if (toolUseBlock.name === "find_claim_candidate") {
+        const result = await executeFindClaimCandidate(
           (toolUseBlock.input as { claim: string }).claim,
           (toolUseBlock.input as { min_confidence?: number }).min_confidence ?? 0.85,
         );
@@ -284,33 +285,31 @@ console.log(answer);`}
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">When Claude self-corrects with verify_claim</h2>
+        <h2 className="text-xl font-semibold mb-3">Require evidence comparison in the agent prompt</h2>
         <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 mb-3">
           One useful pattern: a system prompt that instructs Claude to
-          verify any claim it&apos;s about to emit about AI/ML before
-          including it in the response. Claude will autonomously decide
-          to call verify_claim mid-reasoning, then either confirm or
-          correct its initial assertion.
+          retrieve a candidate for AI/ML assertions, then compare the candidate
+          statement and cited evidence before including a citation. The tool
+          result alone must never confirm the assertion.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 text-xs p-4 rounded-md overflow-x-auto">
 {`system_prompt = """You are a research assistant for AI/ML topics.
 
-CRITICAL: When you make ANY factual claim about an AI model, paper,
-release date, parameter count, or architecture decision — you MUST
-verify it via the verify_claim tool BEFORE including it in your response.
+CRITICAL: Before making a factual claim about an AI model, paper,
+release date, parameter count, or architecture decision, call
+find_claim_candidate to retrieve possible catalog evidence.
 
-If verify_claim returns best_match with confidence >= 0.85, cite the
-detail_url in your response. If best_match is null OR confidence < 0.85,
-explicitly mark the assertion as "unverified" in your response.
+bestMatch and matchScore describe retrieval, not truth. Compare the exact
+candidate statement and cited primary evidence with your assertion. Cite the
+detailUrl only when that evidence supports the assertion. If no candidate is
+returned, say the bounded catalog supplied no evidence; do not call it false.
 
 NEVER assert a release date or parameter count without first calling
-verify_claim. The cost of being wrong is higher than the latency of
-the API call."""`}
+find_claim_candidate and completing the evidence comparison."""`}
         </pre>
         <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 mt-3">
-          With this system prompt, Claude self-grounds. The downstream
-          application doesn&apos;t need to extract claims + verify
-          them — Claude does it inline.
+          For higher-stakes uses, enforce the comparison outside the model as
+          well; a prompt is not a security or accuracy boundary.
         </p>
       </section>
 
@@ -331,7 +330,7 @@ the API call."""`}
           <li>• <a href="/docs/integrations/pydantic-ai/" className="underline">Pydantic AI guide</a> — typed-tool pattern with validators</li>
           <li>• <a href="/playground/" className="underline">Playground</a> — try /verify before wiring it up</li>
           <li>• <a href="/api/v1/openapi.json" className="underline">OpenAPI 3.1 spec</a> — full endpoint reference</li>
-          <li>• <a href="/claims/" className="underline">Catalog</a> — 346 verified AI/ML claims</li>
+          <li>• <a href="/claims/" className="underline">Catalog</a> — 384 reviewed AI/ML claim records</li>
         </ul>
       </section>
     </article>

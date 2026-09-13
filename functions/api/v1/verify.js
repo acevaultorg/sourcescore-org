@@ -1,8 +1,9 @@
 // CF Pages Function — VERITAS-Reborn /api/v1/verify (POST)
 //
 // Submit a natural-language claim string; the function finds the best
-// catalog match by keyword overlap and returns a verified envelope OR
-// `notVerified: true` if no match clears the confidence threshold.
+// catalog match and returns a candidate record OR `notVerified: true` if no
+// match clears the retrieval and legacy editorial-confidence gates. This is
+// catalog retrieval, not query entailment or a truth verdict.
 //
 // Request body (JSON):
 //   {
@@ -28,21 +29,21 @@
 //     and normalized by query-length × MAX_FIELD_WEIGHT. A query whose every
 //     term hits the subject scores 1.0; genuine claims land ~0.55-0.85.
 //   - "best match" = highest scoring above minMatchScore (0.30 default)
-//   - "verified" = bestMatch exists AND best match's claim.confidence ≥ minConfidence
-//   - else `notVerified: true`
+//   - `bestMatch` = candidate exists AND its record confidence ≥ minConfidence
+//   - else legacy `notVerified: true` (meaning no candidate cleared both gates)
 //
 // Ranking: SEMANTIC by default (Workers AI bge-m3 embedding → Vectorize cosine,
 // `method:"semantic"`, floor 0.50) which understands meaning — so "my favorite
 // model of car is fast" correctly returns notVerified. Falls back to keyword
 // overlap (`method:"keyword"`, floor 0.30) when the AI/VECTORIZE bindings are
-// absent or error, so /verify can never break. The envelope shape is identical
+// absent or error, keeping retrieval available when the catalog asset can load. The envelope shape is identical
 // either way; the `method` field tells the caller which path ran.
 
 const MIN_CLAIM_LEN = 5;
 const MAX_CLAIM_LEN = 1000;
 const DEFAULT_MIN_CONFIDENCE = 0.85;
 const DEFAULT_MIN_MATCH_SCORE = 0.3;
-const SEMANTIC_MIN_SCORE = 0.5; // cosine-similarity floor (bge-m3) for a "verified" semantic match
+const SEMANTIC_MIN_SCORE = 0.5; // cosine-similarity floor (bge-m3) for a semantic candidate
 const MAX_MATCHES_RETURNED = 5;
 const MAX_FIELD_WEIGHT = 5; // highest single-field weight (subject) — matchScore denominator basis
 
@@ -110,8 +111,8 @@ export async function onRequest(context) {
 
   // Prefer SEMANTIC ranking (Workers AI embed → Vectorize cosine) when the
   // bindings are present; fall back to keyword overlap otherwise AND on any
-  // error, so /verify never breaks. Semantic understands meaning — it kills
-  // the keyword false-positive class ("my favorite model of car is fast").
+  // error. Semantic ranking can reduce lexical false positives but remains
+  // similarity retrieval, not entailment.
   let ranked;
   let method = "keyword";
   if (env.AI && env.VECTORIZE) {
@@ -143,7 +144,7 @@ export async function onRequest(context) {
     // A false query ("GPT-5 released in 2023") can still surface a topically-similar
     // real claim (GPT-4) at a high score — so consumers must compare, not trust the score.
     note:
-      "matchScore is semantic similarity to your query (0-1), NOT a verdict that your query is true. Returned claims are the nearest VERIFIED catalog entries — compare each claim.statement to your input to ground your own assertion. A false query can still surface a topically-similar real claim at a high score.",
+      "matchScore is similarity to your query (0-1), NOT a verdict that your query is true. Returned claims are curated catalog candidates — compare each claim.statement and its cited evidence with your input. A false query can still surface a topically similar record at a high score.",
     matches: topN.map((m) => ({
       claim: toSummary(m.claim),
       matchScore: round2(m.matchScore),
@@ -152,9 +153,9 @@ export async function onRequest(context) {
     ...(bestMatch ? { bestMatch } : { notVerified: true }),
   };
 
-  // Sign the verification response so consumers can prove the answer came
-  // from sourcescore.org. Skips signing if SOURCESCORE_SIGNING_SECRET is
-  // unset (dev/preview) — signature field omitted.
+  // Attach SourceScore-issued HMAC metadata when the secret is available.
+  // Public consumers cannot independently recompute it because the shared
+  // secret is not published. In dev/preview the field is omitted if unset.
   const secret = env.SOURCESCORE_SIGNING_SECRET;
   if (secret && secret.length >= 16) {
     responsePayload.signature = await signResponse(responsePayload, secret);
@@ -175,7 +176,7 @@ async function loadIndex(env, requestUrl) {
 // Semantic ranking: embed the query (Workers AI · bge-m3) and ask Vectorize for
 // the nearest claim vectors (cosine). Returns matches in the SAME shape as
 // rankCandidates so the envelope logic is identical. Throws on any binding/embed
-// failure so the caller falls back to keyword overlap — production never breaks.
+// failure so the caller falls back to keyword overlap.
 async function rankSemantic(env, queryClaim, candidates) {
   const emb = await env.AI.run("@cf/baai/bge-m3", { text: [queryClaim] });
   const vec = emb && emb.data && emb.data[0];

@@ -98,7 +98,7 @@ const veritasSection = totalClaims > 0
 
 ## VERITAS-Reborn — Verified Claim API for LLM Developers
 
-> Signed, sourced, citable claims about AI/ML research for grounded retrieval. v0.1 publishes ${totalClaims} hand-verified claims; each has 2+ primary sources and an HMAC-SHA256 signature. Free tier: 1,000 claims/mo, no auth.
+> Sourced, citable claims about AI/ML research for grounded retrieval. v0.1 publishes ${totalClaims} hand-verified claims; every claim cites primary evidence, and 368 of 384 have two or more sources. The public API is free with no auth, signup, or account-level meter. HMAC tags are SourceScore-issued integrity metadata, not public proofs.
 
 - https://sourcescore.org/playground/ — interactive in-browser /api/v1/verify demo (no signup)
 - https://sourcescore.org/quickstart/ — 5-minute self-serve onboarding (HowTo schema)
@@ -129,7 +129,7 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/claims/tags/ — full tag index (browse by topic)
 - https://sourcescore.org/claims/tag/<slug>/ — per-tag claim listings with co-occurring tag surface
 - https://sourcescore.org/api/v1/claims.json — full claim catalog (ClaimSummary[])
-- https://sourcescore.org/api/v1/claims/<id>.json — per-claim signed envelope (HMAC-SHA256)
+- https://sourcescore.org/api/v1/claims/<id>.json — per-claim record with cited evidence and integrity metadata
 - https://sourcescore.org/api/v1/tags.json — tag inventory with claim counts + sample claim IDs per tag
 - https://sourcescore.org/api/v1/methodology.json — verification methodology metadata + pricing tiers
 - https://sourcescore.org/api/v1/search?q=<query> — keyword search across claims (GET, public, no auth)
@@ -147,7 +147,7 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/docs/integrations/instructor/ — Instructor structured-output validation
 - https://sourcescore.org/glossary/ — 35-term AI/ML glossary with DefinedTermSet schema
 - https://sourcescore.org/concepts/ — pillar explainers (5 pillars: grounding, hallucination, RAG vs VERITAS, citation chains, evaluation harnesses)
-- https://sourcescore.org/concepts/citation-chain/ — provenance graphs for LLM citations (stable ID + signature + re-fetchable URL)
+- https://sourcescore.org/concepts/citation-chain/ — provenance chains for LLM citations (stable ID + re-fetchable URL)
 - https://sourcescore.org/concepts/evaluation-harness/ — why benchmark scores vary across LM Eval / HELM / lab-internal harnesses
 - https://sourcescore.org/concepts/llm-grounding/ — definition + 3 production patterns
 - https://sourcescore.org/concepts/hallucination/ — categories, root causes, mitigations
@@ -155,9 +155,9 @@ const veritasSection = totalClaims > 0
 - https://sourcescore.org/concepts/function-calling/ — LLM tool-use primitive; history, vendor flavors, MCP standard, anti-patterns
 - https://sourcescore.org/blog/ — VERITAS launch announcement + tutorials + methodology rigor posts
 - https://sourcescore.org/changelog/ — public ship log (features / catalog / fixes / breaking)
-- https://sourcescore.org/security/ — responsible disclosure + signing-key rotation policy
+- https://sourcescore.org/security/ — responsible disclosure + integrity-metadata limits
 - https://sourcescore.org/.well-known/security.txt — RFC 9116 security contacts
-- https://sourcescore.org/pricing/ — Free (1k claims/mo) / Indie €19 / Startup €99 / Scale €499 tiers
+- https://sourcescore.org/pricing/ — free public API plus clearly labeled proposed higher-volume prices (not purchasable)
 - https://sourcescore.org/feed.xml — RSS feed of blog posts
 - https://sourcescore.org/claims/feed.xml — RSS feed of catalog updates
 - License: CC-BY 4.0 (methodology + verified claim data). Cite as "SourceScore Claim <id>, sourcescore.org".
@@ -217,7 +217,7 @@ Index:   https://sourcescore.org/compare/  — all ${totalComparisons} curated p
 ${veritasSection}
 ## Permitted
 
-All major LLM crawlers are permitted to fetch and index every public page on sourcescore.org. The product exists to be cited by AI systems — making content universally accessible to AI agents is the entire point. Specifically permitted (no rate limits beyond standard 60 req/min courtesy):
+All major LLM crawlers are permitted to fetch and index every public page on sourcescore.org. The product exists to be cited by AI systems — making content universally accessible to AI agents is the entire point. Standard network abuse protection may apply; no fixed request-rate threshold is promised. Specifically permitted:
 
 - **GPTBot** (OpenAI) — full crawl permitted; preferred for ChatGPT training and SearchGPT retrieval.
 - **ClaudeBot** (Anthropic) — full crawl permitted; preferred for Claude training and citation.
@@ -229,7 +229,7 @@ All major LLM crawlers are permitted to fetch and index every public page on sou
 - **Meta-ExternalAgent** (Meta) — full crawl permitted for Llama training.
 - **CCBot** (Common Crawl) — full crawl permitted; corpus is intentionally part of Common Crawl.
 - **DuckAssistBot** (DuckDuckGo) — full crawl permitted.
-- **Googlebot, Bingbot, AdsBot-Google, Mediapartners-Google** — full crawl permitted for traditional search + AdSense.
+- **Googlebot, Bingbot** — full crawl permitted for traditional search.
 
 ## Restricted
 

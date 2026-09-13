@@ -1,7 +1,7 @@
 // VERITAS-Reborn — Instructor integration guide (8th framework).
 // Jason Liu's Instructor library is the canonical pattern for getting
 // typed structured outputs from LLMs. Pairs cleanly with VERITAS for
-// verified-claim structured responses.
+// candidate-record structured responses.
 
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
@@ -9,11 +9,11 @@ import { instructorHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
   title: "Instructor + SourceScore VERITAS — structured-output claim verification",
   description:
-    "Wire SourceScore VERITAS into Instructor for type-safe structured responses with verified claims. Pydantic-validated outputs where every cited fact resolves to a SourceScore envelope.",
+    "Wire SourceScore VERITAS into Instructor for type-safe structured responses with candidate records. Pydantic validates retrieval data; compare primary evidence before asserting a fact.",
   alternates: { canonical: "https://sourcescore.org/docs/integrations/instructor/" },
   openGraph: {
     title: "Instructor + SourceScore VERITAS",
-    description: "Type-safe structured outputs with verified claims.",
+    description: "Type-safe structured outputs with candidate records.",
     url: "https://sourcescore.org/docs/integrations/instructor/",
     type: "article",
   },
@@ -30,7 +30,7 @@ export default function InstructorIntegration() {
             "@type": "TechArticle",
             headline: "Instructor + SourceScore VERITAS: structured-output claim verification",
             description:
-              "Wire SourceScore VERITAS into Instructor for type-safe structured responses with verified claims.",
+              "Wire SourceScore VERITAS into Instructor for type-safe structured responses with candidate records.",
             datePublished: "2026-05-17",
             dateModified: "2026-05-17",
             author: { "@type": "Organization", name: "SourceScore", url: "https://sourcescore.org" },
@@ -74,9 +74,10 @@ export default function InstructorIntegration() {
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
           Instructor (Jason Liu&apos;s library) is the canonical pattern
           for getting typed structured outputs from LLMs. Pair it with
-          VERITAS for structured responses where every cited fact
-          resolves to a verified envelope — caught by Pydantic
-          validators before the response reaches the user.
+          VERITAS for structured responses where cited assertions can
+          carry a candidate record. Pydantic validates that the
+          retrieval shape is usable; your application must still compare
+          its primary evidence before making a factual assertion.
         </p>
       </header>
 
@@ -88,13 +89,13 @@ export default function InstructorIntegration() {
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Pattern: typed claim with verified-source field</h2>
+        <h2 className="text-xl font-semibold mb-3">Pattern: typed claim with candidate-source field</h2>
         <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 mb-4">
           Define a Pydantic model where the LLM populates structured
           fields including a <code className="text-sm">source_url</code>{" "}
-          field validated against a VERITAS lookup. The validator runs
-          at response-parsing time; if VERITAS doesn&apos;t verify, the
-          response fails and Instructor retries.
+          field populated from a VERITAS lookup. The validator runs at
+          response-parsing time; a match is retrieval similarity, not a
+          truth verdict, so compare the linked primary evidence before use.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 text-xs p-4 rounded-md overflow-x-auto">
 {`from pydantic import BaseModel, field_validator, model_validator
@@ -105,15 +106,15 @@ import httpx
 client = instructor.from_openai(OpenAI())
 
 class ClaimAnswer(BaseModel):
-    """LLM response with a verified claim."""
+    """LLM response with a candidate catalog record."""
     claim: str
     answer: str
     source_url: str | None = None
     confidence: float = 0.0
 
     @model_validator(mode="after")
-    def verify_with_veritas(self) -> "ClaimAnswer":
-        """Look up the claim in SourceScore VERITAS; populate source_url + confidence."""
+    def retrieve_candidate(self) -> "ClaimAnswer":
+        """Retrieve a candidate record; compare its evidence before asserting truth."""
         r = httpx.post(
             "https://sourcescore.org/api/v1/verify",
             json={"claim": self.claim, "minConfidence": 0.85},
@@ -127,7 +128,7 @@ class ClaimAnswer(BaseModel):
         else:
             # Trigger Instructor retry with a different LLM phrasing
             raise ValueError(
-                f"Claim '{self.claim}' could not be verified. "
+                f"No sufficiently similar catalog candidate for '{self.claim}'. "
                 "Please rephrase using a more specific fact."
             )
         return self
@@ -150,23 +151,24 @@ print(result.confidence)   # 1.0`}
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Pattern: list of verified claims</h2>
+        <h2 className="text-xl font-semibold mb-3">Pattern: list of candidate records</h2>
         <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 mb-4">
           For research-assistant agents that produce multiple claims,
-          extract a list of verified-claim objects:
+          extract a list of candidate-record objects, then independently
+          review the linked evidence for each assertion:
         </p>
         <pre className="bg-zinc-900 text-zinc-100 text-xs p-4 rounded-md overflow-x-auto">
 {`from typing import List
 from pydantic import BaseModel, field_validator
 
-class VerifiedClaim(BaseModel):
+class CandidateRecord(BaseModel):
     statement: str
     source_url: str
     confidence: float
 
     @field_validator("source_url", mode="before")
     @classmethod
-    def verify(cls, v, info):
+    def retrieve_candidate(cls, v, info):
         statement = info.data.get("statement", "")
         r = httpx.post(
             "https://sourcescore.org/api/v1/verify",
@@ -176,13 +178,13 @@ class VerifiedClaim(BaseModel):
         result = r.json()
         match = result.get("bestMatch")
         if not match or match["confidence"] < 0.85:
-            raise ValueError(f"Unverified claim: {statement!r}")
+            raise ValueError(f"No sufficiently similar catalog candidate: {statement!r}")
         return match["detailUrl"]
 
 class ResearchSummary(BaseModel):
     topic: str
     summary: str
-    key_claims: List[VerifiedClaim]
+    key_claims: List[CandidateRecord]
 
 result = client.chat.completions.create(
     model="gpt-4o",
@@ -193,30 +195,31 @@ result = client.chat.completions.create(
     max_retries=3,
 )
 
-# result is a fully-typed ResearchSummary
-# every key_claims entry was verified by SourceScore before parsing succeeded
+# result is a typed ResearchSummary; typing does not prove its assertions
+# every key_claims entry has a retrieved catalog candidate; compare primary
+# sources yourself before presenting the statement as fact
 for c in result.key_claims:
     print(f"{c.statement} — {c.source_url} (conf: {c.confidence})")`}
         </pre>
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Why this pattern beats free-text + post-hoc verification</h2>
+        <h2 className="text-xl font-semibold mb-3">Why this pattern beats free-text + post-hoc retrieval</h2>
         <ul className="text-sm space-y-2 list-disc pl-5">
-          <li><strong>Validation happens at parse-time.</strong> Failed verification triggers Instructor's retry mechanism with the original prompt — model gets to self-correct before the user sees a response.</li>
-          <li><strong>Type-safety at the application boundary.</strong> Downstream code receives a typed Pydantic object; can't accidentally render an unverified claim because the field is never populated without verification.</li>
-          <li><strong>No regex extraction.</strong> Free-text + post-hoc verification needs heuristic claim extraction (which fails on multi-clause sentences). Instructor-validated approach extracts claims at structured-output time.</li>
-          <li><strong>Retries are automatic.</strong> max_retries=3 means three attempts at a verifiable response before failing. Tunable per-call.</li>
+          <li><strong>Validation happens at parse-time.</strong> A missing candidate triggers Instructor&apos;s retry mechanism before the user sees a response.</li>
+          <li><strong>Type-safety at the application boundary.</strong> Downstream code receives a typed Pydantic object and can require an evidence-review step before rendering a factual assertion.</li>
+          <li><strong>No regex extraction.</strong> Free-text + post-hoc retrieval needs heuristic claim extraction (which fails on multi-clause sentences). Instructor extracts claims at structured-output time.</li>
+          <li><strong>Retries are automatic.</strong> max_retries=3 means three attempts at a catalog match before failing. Tunable per-call.</li>
         </ul>
       </section>
 
       <section className="mb-10 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
         <h2 className="text-lg font-semibold mb-3">When this pattern fits</h2>
         <ul className="text-sm space-y-2 list-disc pl-5">
-          <li>Production AI/ML research assistants where every cited fact needs verification</li>
+          <li>Production AI/ML research assistants with a human or programmatic primary-evidence review step</li>
           <li>Documentation chatbots that summarize technical content</li>
-          <li>Internal company knowledge tools where the LLM cites verified-only facts</li>
-          <li>Citation-heavy reports or briefs where unverified claims are unacceptable</li>
+          <li>Internal company knowledge tools that need typed candidate records and citations</li>
+          <li>Citation-heavy reports or briefs where each assertion is reviewed against its sources</li>
         </ul>
       </section>
 
@@ -245,7 +248,7 @@ for c in result.key_claims:
           <li>• <a href="/use-cases/research-citation/" className="underline">Research citation use case</a> — Instructor-shape patterns</li>
           <li>• <a href="/playground/" className="underline">Playground</a> — try /verify before wiring it up</li>
           <li>• <a href="/api/v1/openapi.json" className="underline">OpenAPI 3.1 spec</a></li>
-          <li>• <a href="/claims/" className="underline">Catalog</a> — 346 verified AI/ML claims</li>
+          <li>• <a href="/claims/" className="underline">Catalog</a> — 384 reviewed AI/ML claim records</li>
         </ul>
       </section>
     </article>

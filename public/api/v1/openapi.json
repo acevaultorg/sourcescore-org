@@ -3,7 +3,7 @@
   "info": {
     "title": "SourceScore VERITAS API",
     "summary": "Signed, sourced, citable claim verification for LLM developers building grounded retrieval systems.",
-    "description": "VERITAS-Reborn v0.1 — every claim has 2+ primary sources, an HMAC-SHA256 signature (`did:web:sourcescore.org`), and a stable JSON envelope. Designed for grounding LLM responses, fact-checking generated content, and reducing hallucinations in production AI applications.\n\nv0 covers the **ai-ml** vertical (AI/ML research, model releases, foundational papers, organizational facts). Current catalog: 346 hand-verified claims (Day 20), expanding to 500+ in 30 days, 5,000+ by Year-1.\n\nFree tier: 1,000 claims/mo, no auth, public-read. Paid tiers (Indie €19, Startup €99, Scale €499) unlock higher rate limits, API key management, and dedicated support. See `/pricing/`.\n\nAll endpoints are CORS-enabled (`Access-Control-Allow-Origin: *`); browser, server, and LLM-agent callers all work. No authentication required for v0 read endpoints — auth + per-key rate limits land Day 8+ alongside Stripe metered billing.\n\nCite as: `SourceScore Claim <id>, sourcescore.org`. Data licensed CC-BY 4.0.",
+    "description": "VERITAS v0.1 is a sourced AI/ML claim catalog with stable JSON records. Every current claim cites primary evidence; 368 of 384 claims have two or more sources and 16 have one primary source. Records include SourceScore-issued HMAC integrity metadata, which is not publicly independently verifiable because no shared secret is published.\n\nThe public API is free with no auth, signup, or account-level meter. Standard network abuse protection may apply. Proposed higher-volume tiers are demand collection only; no paid checkout, billing, API-key provisioning, dashboard, or SLA is live.\n\nAll endpoints are CORS-enabled (`Access-Control-Allow-Origin: *`). Cite as: `SourceScore Claim <id>, sourcescore.org`. Data licensed CC-BY 4.0.",
     "version": "0.1.0",
     "contact": {
       "name": "SourceScore VERITAS",
@@ -53,8 +53,8 @@
     "/api/v1/claims/{id}.json": {
       "get": {
         "tags": ["Claims"],
-        "summary": "Per-claim signed envelope",
-        "description": "Returns the full signed envelope for a single claim: subject + predicate + object + 2+ sources + HMAC-SHA256 signature + ready-to-paste citation.",
+        "summary": "Per-claim envelope with SourceScore-issued integrity metadata",
+        "description": "Returns the full record for a claim: subject, predicate, object, cited evidence, SourceScore-issued integrity metadata, and a ready-to-paste citation.",
         "operationId": "getClaimById",
         "parameters": [
           {
@@ -67,7 +67,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Signed claim envelope.",
+            "description": "Claim envelope with cited evidence and SourceScore-issued HMAC metadata; the tag is not publicly independently verifiable.",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ClaimEnvelope" }
@@ -96,7 +96,7 @@
       "get": {
         "tags": ["Search"],
         "summary": "Keyword search across claims",
-        "description": "Returns claims matching the query. v0 implementation: keyword-overlap scoring across subject/object/statement/predicate/tags with field weights. v1 (Day 30+) migrates to semantic-similarity scoring via sentence-transformer embeddings.",
+        "description": "Returns claims matching the query using keyword-overlap scoring across subject, object, statement, predicate, and tags.",
         "operationId": "searchClaims",
         "parameters": [
           {
@@ -130,8 +130,8 @@
     "/api/v1/verify": {
       "post": {
         "tags": ["Verify"],
-        "summary": "Verify a natural-language claim against the catalog",
-        "description": "Submit a natural-language claim string. Returns the best matching catalog claim (if any) above the configurable confidence threshold, or `notVerified: true`. v0: keyword-overlap match scoring. v1 (Day 30+): semantic-similarity via embeddings.\n\nResponse is HMAC-signed when `SOURCESCORE_SIGNING_SECRET` is available at the edge — consumers can prove the answer came from sourcescore.org at a specific time.",
+        "summary": "Match a natural-language claim against the catalog",
+        "description": "Submit a natural-language claim string. When Workers AI and Vectorize are available, the endpoint ranks semantic similarity; otherwise it falls back to keyword overlap. `bestMatch` is a candidate catalog record, not entailment or a truth verdict. Compare the returned statement and cited evidence with the input.",
         "operationId": "verifyClaim",
         "requestBody": {
           "required": true,
@@ -180,7 +180,7 @@
           "apiVersion": { "type": "string", "enum": ["v1"] },
           "methodology": { "type": "string", "format": "uri" },
           "generated": { "type": "string", "format": "date-time" },
-          "count": { "type": "integer", "example": 26 },
+          "count": { "type": "integer", "example": 384 },
           "claims": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/ClaimSummary" }
@@ -198,7 +198,7 @@
           "object": { "type": "string", "example": "2024-07-23" },
           "statement": { "type": "string", "example": "Llama 3.1 released on: 2024-07-23." },
           "confidence": { "type": "number", "minimum": 0.7, "maximum": 1.0 },
-          "signatureShort": { "type": "string", "example": "3e28e071" },
+          "signatureShort": { "type": "string", "description": "Illustrative eight-character prefix; refetch the canonical record for the current value.", "example": "a1b2c3d4" },
           "detailUrl": { "type": "string", "format": "uri" }
         }
       },
@@ -263,6 +263,7 @@
       },
       "Signature": {
         "type": "object",
+        "description": "SourceScore-issued HMAC integrity metadata. The shared secret is not public, so consumers cannot independently recompute this tag.",
         "required": ["algorithm", "signedBy", "signedAt", "signature"],
         "properties": {
           "algorithm": { "type": "string", "enum": ["HMAC-SHA256"] },
@@ -306,25 +307,29 @@
             "minimum": 0,
             "maximum": 1,
             "default": 0.85,
-            "description": "Minimum claim confidence to count as 'verified'. Best match below threshold returns notVerified:true."
+            "description": "Minimum legacy editorial-confidence value for a candidate record. This does not set a query-entailment or truth threshold."
           }
         }
       },
       "VerifyResponse": {
         "type": "object",
-        "required": ["apiVersion", "methodology", "query", "method", "matches"],
+        "required": ["apiVersion", "methodology", "query", "minConfidence", "method", "note", "matches"],
         "properties": {
           "apiVersion": { "type": "string", "enum": ["v1"] },
           "methodology": { "type": "string", "format": "uri" },
           "query": { "type": "string" },
           "minConfidence": {
             "type": "number",
-            "description": "Confidence threshold applied for the verdict (default 0.85)."
+            "description": "Legacy editorial record-confidence threshold applied to bestMatch (default 0.85); not a truth threshold."
           },
           "method": {
             "type": "string",
             "enum": ["semantic", "keyword"],
             "description": "Ranking method used: \"semantic\" = Workers AI bge-m3 embedding + Vectorize cosine similarity (match floor 0.50); \"keyword\" = term-overlap fallback (match floor 0.30), used only when the semantic bindings are unavailable."
+          },
+          "note": {
+            "type": "string",
+            "description": "Warning that matches are retrieval candidates and must not be treated as entailment or truth verdicts."
           },
           "matches": {
             "type": "array",
@@ -341,11 +346,11 @@
           },
           "bestMatch": {
             "$ref": "#/components/schemas/ClaimSummary",
-            "description": "Highest-scoring match if matchScore ≥ the method's floor (0.50 semantic, 0.30 keyword) AND claim.confidence ≥ minConfidence."
+            "description": "Highest-scoring candidate if matchScore clears the method floor and the record's legacy editorial confidence clears minConfidence. It is not a truth verdict."
           },
           "notVerified": {
             "type": "boolean",
-            "description": "True if no match cleared the threshold."
+            "description": "True if no candidate record cleared the retrieval and editorial-confidence gates."
           },
           "signature": { "$ref": "#/components/schemas/Signature" }
         }
@@ -374,6 +379,14 @@
               "citationFormat": { "type": "string" }
             }
           },
+          "commercialAvailability": {
+            "type": "object",
+            "properties": {
+              "freeApi": { "type": "string", "enum": ["live_no_signup"] },
+              "paidAccess": { "type": "string", "enum": ["proposal_only_not_purchasable"] },
+              "details": { "type": "string", "format": "uri" }
+            }
+          },
           "tiers": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/Tier" }
@@ -387,15 +400,12 @@
       },
       "Tier": {
         "type": "object",
-        "required": ["name", "monthlyEur", "includedClaims", "overageEurPerClaim", "maxApiKeys", "supportSlaHours", "uptimeSla"],
+        "required": ["name", "monthlyEur", "includedClaims", "availability"],
         "properties": {
           "name": { "type": "string", "enum": ["free", "indie", "startup", "scale"] },
           "monthlyEur": { "type": "number" },
-          "includedClaims": { "type": "integer" },
-          "overageEurPerClaim": { "type": "number" },
-          "maxApiKeys": { "oneOf": [{ "type": "integer" }, { "type": "string", "enum": ["unlimited"] }] },
-          "supportSlaHours": { "type": "integer" },
-          "uptimeSla": { "type": "number" }
+          "includedClaims": { "oneOf": [{ "type": "integer" }, { "type": "null" }] },
+          "availability": { "type": "string", "enum": ["live_free", "proposal_only"] }
         }
       }
     }

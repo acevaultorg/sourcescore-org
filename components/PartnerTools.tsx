@@ -1,4 +1,7 @@
-// PartnerTools — the site's only affiliate surface, dormant by default.
+// PartnerTools — reusable affiliate-list component, dormant when no partners
+// are configured. Current production placement is the explicit buyer-intent
+// /ai-visibility-tools/ guide, which uses the same registry with job-specific
+// ordering. Keep this component for future controlled placement tests only.
 //
 // Renders NOTHING (no wrapper, no heading, no whitespace, no layout shift)
 // until at least one partner URL env var is set — see lib/partners.ts. That is

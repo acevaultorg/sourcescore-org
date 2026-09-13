@@ -141,8 +141,9 @@ export default async function YearPage({ params }: PageParams) {
           AI/ML claims from {year}
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
-          Hand-verified research claims with primary sources dated {year}.
-          Each claim has ≥2 primary sources and an HMAC-SHA256 signature.
+          Hand-verified research claims with cited primary evidence dated {year}.
+          The source count is shown on every record; some claims have one source
+          and others have two or more.
         </p>
       </header>
 

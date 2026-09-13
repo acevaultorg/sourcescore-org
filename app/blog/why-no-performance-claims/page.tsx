@@ -167,9 +167,11 @@ export default function NoPerformanceClaimsPost() {
 
         <h2>What a wrong-by-Thursday claim costs us</h2>
         <p>
-          VERITAS sells trust. Every claim ships with HMAC-SHA256
-          signature + ≥2 primary sources + verbatim excerpts so developers
-          can build production hallucination filters on top. The moment
+          VERITAS aims to make evidence review easier. Every current claim cites
+          primary evidence; 368 of 384 have two or more sources, and records
+          include SourceScore-issued HMAC integrity metadata that is not publicly
+          independently verifiable. Developers still need to validate final use.
+          The moment
           one claim turns out to be wrong-in-context, the trust contract
           breaks for every claim.
         </p>
@@ -213,12 +215,12 @@ export default function NoPerformanceClaimsPost() {
             Transformer architecture was introduced in Attention Is All
             You Need (Vaswani et al., 2017)&quot; — verbatim from the
             arXiv preprint + NeurIPS proceedings + Google Research index.
-            Three independent primary sources; doesn&apos;t move.
+            Multiple cited sources; check the live record for its current source count.
           </li>
           <li>
             <strong>Founding dates of well-known organizations.</strong>{" "}
-            Wikipedia + the org&apos;s own About page. Two independent
-            verifications.
+            The organization&apos;s own About page plus a separately listed
+            reference, with each source visible on the record.
           </li>
         </ul>
         <p>
@@ -234,8 +236,8 @@ export default function NoPerformanceClaimsPost() {
         <p>The current methodology gate has five rules:</p>
         <ol>
           <li>
-            ≥2 primary sources (preprint / model-card / docs / official-
-            blog) with verbatim excerpts.
+            Primary evidence (preprint / model-card / docs / official-blog)
+            with verbatim excerpts where available; source counts are shown per record.
           </li>
           <li>
             At least one source must be the originator or operator
@@ -257,11 +259,11 @@ export default function NoPerformanceClaimsPost() {
 
         <h2>The honest exception</h2>
         <p>
-          Some performance facts <em>are</em> documented enough to ship —
+          Some performance facts <em>can be</em> documented precisely —
           like the LMSYS Chatbot Arena Elo rating system or the specific
-          version-locked HELM evaluation reports. We may add a separate
-          methodology tier (confidence 0.70-0.85, &quot;methodology-
-          conditional&quot;) for these in Y2. Until then, we&apos;d
+          version-locked HELM evaluation reports. A future methodology
+          could represent these as explicitly versioned, methodology-
+          conditional records. Until that work is implemented, we&apos;d
           rather under-promise on coverage than over-promise on accuracy.
         </p>
 
@@ -269,16 +271,17 @@ export default function NoPerformanceClaimsPost() {
         <p>
           If your LLM emits a benchmark-shape claim and you POST it to{" "}
           <code>/api/v1/verify</code>, expect a <code>bestMatch: null</code>{" "}
-          response. That&apos;s correct behavior, not catalog incompleteness.
-          Wire your code so unverified ≠ wrong:
+          response when the catalog has no close record. That is not a
+          verdict that the assertion is false. Wire your code so a candidate
+          match triggers evidence review rather than an automatic badge:
         </p>
 
-        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`if best := verify(claim):
-    badge = f"verified [{best['id']}]"
+        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`if best := find_candidate(claim):
+    badge = f"candidate evidence [{best['id']}] — compare before publishing"
 elif looks_like_benchmark(claim):
     badge = "benchmark figure — verify against eval harness"
 else:
-    badge = "unverified — sourced retrieval recommended"`}</code></pre>
+    badge = "no catalog candidate — sourced research required"`}</code></pre>
 
         <p>
           The middle branch handles the &quot;we don&apos;t ship this
@@ -296,8 +299,8 @@ else:
           based on the prompt format. The discipline is the moat.
         </p>
         <p>
-          We&apos;d rather ship 116 claims that are right for the next
-          decade than 10,000 that are right today and broken by Thursday.
+          We&apos;d rather maintain a bounded, inspectable catalog than publish
+          thousands of context-sensitive numbers without adequate evidence.
         </p>
       </section>
 
@@ -307,7 +310,7 @@ else:
           <a href="/methodology/" className="underline">the methodology page</a>{" "}
           or browse{" "}
           <a href="/claims/" className="underline">the verified claim catalog</a>{" "}
-          (100 entries today).
+          (384 entries today).
         </p>
       </footer>
     </article>

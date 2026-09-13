@@ -6,7 +6,6 @@ import { ALL_DIMENSIONS, DIMENSION_META } from "@/data/best-lists";
 import { gradeColorClass } from "@/lib/types";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
-import { PartnerTools } from "@/components/PartnerTools";
 
 // Day 29 — Per-source peers hub.
 // Auto-computed nearest-neighbor peer group: 5 closest sources by
@@ -456,16 +455,6 @@ export default async function SourcePeersPage({ params }: PageProps) {
           and it surfaces neighbors regardless of editorial selection.
         </p>
       </section>
-
-      {/* HIGHEST-INTENT SLOT — the live activation layer (renders nothing while
-          every partner slot is dormant; see lib/partners.ts). Placed after the
-          ranked peer list + editorial and BEFORE the cross-links: the reader has
-          just seen where this source sits against its neighbours, which is the
-          same "how do I keep watching this over time?" moment that justifies the
-          slot on the parent /source/<slug>/ page. Deliberately NOT above the
-          ranked list — that list is the AEO-extractable payload and must stay in
-          the first ~30% of the page. */}
-      <PartnerTools variant="panel" source="source-peers" className="mb-12" />
 
       {/* Cross-links */}
       <nav className="flex flex-wrap gap-3 border-t border-border pt-6 text-body-sm">

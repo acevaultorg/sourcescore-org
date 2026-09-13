@@ -1,4 +1,4 @@
-// Example: verify a natural-language claim against the catalog.
+// Example: retrieve candidate records for a natural-language assertion.
 // Run with: npx tsx examples/02-verify-claim.ts
 
 import { SourceScoreClient } from "../src/index.js";
@@ -17,12 +17,13 @@ for (const query of queries) {
   const result = await ss.claims.verify(query);
 
   if (result.bestMatch) {
-    console.log(`  ✓ VERIFIED — ${result.bestMatch.statement}`);
+    console.log(`  CANDIDATE — ${result.bestMatch.statement}`);
     console.log(
-      `    confidence ${Math.round(result.bestMatch.confidence * 100)}% · ${result.bestMatch.detailUrl}`,
+      `    record confidence ${Math.round(result.bestMatch.confidence * 100)}% · ${result.bestMatch.detailUrl}`,
     );
+    console.log("    Compare the statement and cited evidence before asserting the query.");
   } else {
-    console.log(`  ✗ NOT VERIFIED — no match cleared the confidence threshold.`);
+    console.log(`  NO CATALOG CANDIDATE — this is not a verdict that the query is false.`);
     if (result.matches.length > 0) {
       console.log(`  Top suggestion: ${result.matches[0]?.claim.statement}`);
       console.log(`    rationale: ${result.matches[0]?.rationale}`);

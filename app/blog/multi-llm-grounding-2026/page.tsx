@@ -8,10 +8,11 @@ import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 const PUBLISHED = "2026-05-17";
+const MODIFIED = "2026-09-13";
 const TITLE =
   "Multi-LLM grounding in 2026 — build once, deploy across OpenAI, Anthropic, Google, and open-weight";
 const SUBTITLE =
-  "Single-provider lock-in is fragile in 2026. Pricing shifts, capability changes, and outages all argue for portability. Here's the architecture pattern that keeps your grounding layer LLM-agnostic — same verification, citation, and source-quality across every provider.";
+  "Single-provider lock-in is fragile in 2026. Pricing shifts, capability changes, and outages all argue for portability. Here's an architecture pattern that keeps evidence retrieval and citation review LLM-agnostic across providers.";
 const SLUG = "multi-llm-grounding-2026";
 const CANONICAL = `https://sourcescore.org/blog/${SLUG}/`;
 
@@ -35,7 +36,7 @@ const articleSchema = {
   headline: TITLE,
   description: SUBTITLE,
   datePublished: PUBLISHED,
-  dateModified: PUBLISHED,
+  dateModified: MODIFIED,
   mainEntityOfPage: CANONICAL,
   author: {
     "@type": "Organization",
@@ -106,54 +107,45 @@ export default function MultiLlmGroundingPost() {
       <section className="prose prose-zinc dark:prose-invert max-w-none">
         <h2>The single-provider problem</h2>
         <p>
-          You picked OpenAI in 2023. Two years later: Anthropic shipped
-          a better reasoning model for half the price, Google&apos;s
-          Gemini handles your specific document type more cleanly, and
-          DeepSeek-V3 is 10× cheaper than GPT-4o on equivalent tasks.
-          Your customer asks why response quality varies week-to-week.
-          Your CFO asks why the API line in the budget keeps doubling.
+          A provider that fits one workload today may not fit its next
+          workload, geography, budget, or reliability target. Without an
+          adapter boundary, changing providers also means rewriting routing,
+          evidence, and citation behavior.
         </p>
         <p>
-          Single-LLM-provider lock-in cost roughly 30-50% of buyers in
-          the 2024-2025 wave: a model gets deprecated, pricing shifts,
-          or capabilities lag. The teams that survived these shifts
-          built a <strong>portable grounding layer</strong> from day
-          one. This post shows the architecture.
+          Model deprecations, pricing changes, outages, and capability gaps
+          can all make a single-provider design expensive to change. A
+          <strong>portable evidence layer</strong> reduces that coupling. This
+          post shows the architecture; measure the switching value in your own stack.
         </p>
 
-        <h2>Why 2026 makes multi-LLM mandatory</h2>
+        <h2>Why portability matters</h2>
         <ul>
           <li>
-            <strong>Pricing variance is 5-10x.</strong> DeepSeek-V3
-            input tokens are ~$0.27/M. GPT-4o input tokens are ~$2.50/M.
-            For high-volume RAG retrieval contexts, the input-token
-            cost dominates. Switching models can cut bills in half.
+            <strong>Pricing changes.</strong> Token prices and billing units
+            differ by provider and model. Use current provider price sheets and
+            your own token mix before making a routing decision.
           </li>
           <li>
-            <strong>Capability gaps shift quarterly.</strong> Claude
-            3.7 Sonnet (Feb 2025) was the best coding model for ~3
-            months; o3 (Dec 2024) was the best reasoning model;
-            Gemini 1.5 Pro had the best long-context. No single
-            model wins on all dimensions.
+            <strong>Capability depends on the workload.</strong> Evaluate
+            coding, extraction, long-context, reasoning, and structured-output
+            tasks separately on your own examples.
           </li>
           <li>
-            <strong>Outages happen.</strong> Major provider outages
-            of 1-4 hours per quarter are routine. A multi-LLM stack
-            with automatic failover keeps you up while competitors
-            blank.
+            <strong>Availability differs.</strong> A second tested provider can
+            offer a fallback, but failover only helps when prompts, tools,
+            safety rules, and output validation work on both paths.
           </li>
           <li>
-            <strong>Regulatory + data-residency rules.</strong>
-            {" "}Different providers have different jurisdictional
-            footprints + compliance certifications. EU customers
-            often need Anthropic-EU or self-hosted Llama; US gov
-            needs FedRAMP-certified options.
+            <strong>Regulatory and data-residency needs vary.</strong>
+            {" "}Check each provider&apos;s current contract, processing
+            region, retention controls, and certifications against your own
+            obligations; a model name alone does not establish compliance.
           </li>
           <li>
-            <strong>Open-weight quality crossed the line.</strong>
-            {" "}Llama 3.1 405B, DeepSeek-V3, Qwen 2.5 are
-            production-quality. Self-host or run via Fireworks /
-            Together AI for cost + privacy.
+            <strong>Hosted and self-managed options have different trade-offs.</strong>
+            {" "}Compare measured quality, operations work, privacy controls,
+            throughput, and total cost rather than assuming either route wins.
           </li>
         </ul>
 
@@ -174,10 +166,10 @@ export default function MultiLlmGroundingPost() {
             request shapes; the adapter hides this.
           </li>
           <li>
-            <strong>Grounding layer</strong> — verification + citation
-            applied to LLM output regardless of which provider produced
-            it. Same claim catalog, same signatures, same canonical
-            URLs.
+            <strong>Evidence layer</strong> — candidate-record retrieval
+            and citation review applied to LLM output regardless of which
+            provider produced it. The same catalog and canonical URLs are
+            available after a provider switch.
           </li>
         </ol>
 
@@ -185,28 +177,34 @@ export default function MultiLlmGroundingPost() {
 from openai import OpenAI
 from anthropic import Anthropic
 import google.generativeai as genai
-import requests
+import os, requests
+
+# Pin models in deployment configuration and retest before changing them.
+OPENAI_MODEL = os.environ["OPENAI_MODEL"]
+ANTHROPIC_MODEL = os.environ["ANTHROPIC_MODEL"]
+GEMINI_MODEL = os.environ["GEMINI_MODEL"]
+GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 
 class LlmRouter:
     def __init__(self):
         self.openai = OpenAI()
         self.anthropic = Anthropic()
         genai.configure(api_key=GEMINI_API_KEY)
-        self.gemini = genai.GenerativeModel("gemini-2.5-pro")
+        self.gemini = genai.GenerativeModel(GEMINI_MODEL)
 
     def call(self, task: str, provider: str = None) -> str:
         # Router: pick provider based on task + budget + SLA
         provider = provider or self._pick_provider(task)
         if provider == "openai":
             r = self.openai.chat.completions.create(
-                model="gpt-4o-mini",
+                model=OPENAI_MODEL,
                 messages=[{"role": "user", "content": task}],
                 temperature=0,
             )
             return r.choices[0].message.content
         elif provider == "anthropic":
             r = self.anthropic.messages.create(
-                model="claude-sonnet-4-5-20250929",
+                model=ANTHROPIC_MODEL,
                 max_tokens=1024,
                 messages=[{"role": "user", "content": task}],
             )
@@ -222,38 +220,41 @@ class LlmRouter:
         if "long" in task.lower(): return "gemini"
         return "openai"
 
-def ground(response: str) -> dict:
-    """Verify factual assertions via SourceScore VERITAS regardless
-    of which LLM produced the response. Same call, same citations."""
+def find_evidence_candidates(response: str) -> dict:
+    """Retrieve SourceScore catalog candidates for human or programmatic
+    comparison with each assertion. A match is not a truth verdict."""
     assertions = extract_assertions(response)  # split into atomic claims
-    verified = []
+    candidates = []
     for a in assertions:
         r = requests.post(
             "https://sourcescore.org/api/v1/verify",
             json={"claim": a, "minConfidence": 0.85},
             timeout=8,
         )
-        verified.append(r.json().get("bestMatch"))
-    return {"response": response, "citations": verified}
+        match = r.json().get("bestMatch")
+        if match:
+            candidates.append({"assertion": a, "candidate": match})
+    return {"response": response, "candidates_for_review": candidates}
 
 # Usage
 router = LlmRouter()
 raw = router.call("When was Llama 3.1 released?", provider="anthropic")
-grounded = ground(raw)`}</code></pre>
+review_packet = find_evidence_candidates(raw)`}</code></pre>
 
         <p>
           The grounding layer is provider-agnostic — it sees only the
           response text. Switch the router&apos;s provider per request
           (cost, capability, latency, failover) without changing the
-          verification logic.
+          candidate-retrieval logic. Compare each assertion with the
+          returned record and its cited evidence before publishing it.
         </p>
 
-        <h2>Adapter libraries that work as of 2026</h2>
+        <h2>Adapter options to evaluate</h2>
         <ul>
           <li>
             <a href="/docs/integrations/vercel-ai-sdk/">Vercel AI SDK</a>
-            {" "}— TypeScript-first; standardizes OpenAI, Anthropic,
-            Google, Mistral, Cohere, Replicate. Stream support.
+            {" "}— a TypeScript option for normalizing provider calls and
+            streaming; verify current provider support in its documentation.
           </li>
           <li>
             <a href="/docs/integrations/dspy/">DSPy</a> — Python; signature
@@ -268,47 +269,42 @@ grounded = ground(raw)`}</code></pre>
             structured output across providers via Pydantic models.
           </li>
           <li>
-            <strong>LiteLLM</strong> — proxy-style adapter; drop-in
-            replacement for OpenAI client across 100+ providers.
+            <strong>Proxy-style adapters</strong> — centralize routing and
+            credentials, at the cost of another operational dependency.
           </li>
           <li>
-            <strong>OpenRouter</strong> — hosted-proxy; single API
-            key for 200+ models. Good for cost-optimized routing.
+            <strong>Hosted model gateways</strong> — offer one integration
+            surface across vendors; review data handling, routing transparency,
+            pricing, and failure behavior before adopting one.
           </li>
         </ul>
 
-        <h2>Routing rules that work in production</h2>
+        <h2>Routing rules to validate in production</h2>
         <ol>
           <li>
-            <strong>Task type → model.</strong> Code-gen → Claude
-            Sonnet 4.5 or Codestral. Long-context document analysis
-            → Gemini 1.5 Pro. Reasoning → o3 or Claude 3.7 with
-            extended thinking. Cheap classification → Gemini Flash
-            or Mistral Small 3.
+            <strong>Task type → evaluated model.</strong> Maintain a small,
+            versioned test set for each task family and route only after a model
+            clears your quality and safety threshold.
           </li>
           <li>
-            <strong>User tier → cost-budget.</strong> Free-tier users
-            → cheapest acceptable model (DeepSeek-V3, Mistral Small,
-            Gemini Flash). Paid-tier → premium (Claude Sonnet 4.5,
-            GPT-4o). Enterprise → premium + self-hosted fallback.
+            <strong>User tier → cost budget.</strong> Set explicit per-request
+            and monthly limits, then select the least expensive model that
+            passes the relevant task evaluation.
           </li>
           <li>
-            <strong>Latency SLA → streaming + sub-second models.</strong>
-            {" "}When &lt;500ms first-token matters, use sub-second
-            providers (Fireworks-hosted Llama, OpenAI gpt-4o-mini,
-            Cohere Command R).
+            <strong>Latency target → measured route.</strong> Benchmark first
+            token and completion time from your deployment regions. Streaming
+            improves perceived responsiveness but does not guarantee a target.
           </li>
           <li>
-            <strong>Outage → automatic failover.</strong> Wrap each
-            provider call in a try/except chain. Anthropic down →
-            try OpenAI → try Gemini → try self-hosted Llama. Don&apos;t
-            return errors to user; degrade gracefully.
+            <strong>Provider error → tested fallback.</strong> Bound retries,
+            preserve safety and evidence checks across routes, and tell users
+            when the system returns a reduced-capability result.
           </li>
           <li>
-            <strong>Regulatory zone → compliant provider.</strong>
-            {" "}EU customer → Anthropic-EU or self-hosted. US
-            government → FedRAMP-certified. China → Doubao or
-            Hunyuan.
+            <strong>Regulatory zone → approved deployment.</strong>
+            {" "}Route only to configurations your legal and security review
+            has approved for the relevant data, region, and customer.
           </li>
         </ol>
 
@@ -316,8 +312,8 @@ grounded = ground(raw)`}</code></pre>
         <p>
           The temptation is to use a provider&apos;s built-in
           grounding feature: Anthropic Citations API, OpenAI&apos;s
-          new search-grounded responses, Google&apos;s built-in
-          retrieval. Each is excellent within its provider.
+          search-grounded responses, or built-in retrieval. These can preserve
+          useful provider-native context and citation metadata.
         </p>
         <p>
           But when you switch providers (cost, capability, outage),
@@ -330,10 +326,10 @@ grounded = ground(raw)`}</code></pre>
           A <em>provider-agnostic</em> grounding layer (like
           SourceScore VERITAS, or a self-built RAG pipeline against a
           shared knowledge store) survives provider switches. The
-          citations on Monday and Tuesday are identical — same claim
-          IDs, same signatures, same canonical URLs — regardless of
-          which LLM produced the raw response. Users don&apos;t see
-          your infrastructure churn.
+          review workflow can stay consistent — same catalog and same
+          canonical URLs — regardless of which LLM produced the raw
+          response. A returned candidate still needs an entailment or
+          editorial check.
         </p>
 
         <h2>Provider-locked grounding still has its place</h2>
@@ -387,7 +383,7 @@ grounded = ground(raw)`}</code></pre>
         <h2>Related</h2>
         <ul>
           <li>
-            <a href="/blog/llm-grounding-strategies-2026/">Six grounding strategies that reduce hallucination</a>
+            <a href="/blog/llm-grounding-strategies-2026/">Six grounding strategies and their trade-offs</a>
           </li>
           <li>
             <a href="/blog/llm-framework-comparison-2026/">LLM framework comparison 2026</a>
@@ -407,7 +403,7 @@ grounded = ground(raw)`}</code></pre>
       <footer className="mt-12 pt-6 border-t border-zinc-200 dark:border-zinc-800">
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           Build the grounding layer once, route across providers. Browse the{" "}
-          <a href="/claims/" className="underline">346 verified claims</a>
+          <a href="/claims/" className="underline">384 reviewed claim records</a>
           {" "}or run the{" "}
           <a href="/quickstart/" className="underline">5-min quickstart</a>{" "}
           — works with any LLM provider.

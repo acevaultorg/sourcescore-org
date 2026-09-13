@@ -96,7 +96,7 @@ export function Playground() {
     <div>
       <form onSubmit={handleSubmit} className="mb-4">
         <label htmlFor="claim" className="block text-sm font-medium mb-2">
-          Claim to verify
+          Claim to match against the catalog
         </label>
         <textarea
           id="claim"
@@ -112,10 +112,10 @@ export function Playground() {
             disabled={loading || !claim.trim()}
             className="px-4 py-2 bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 rounded font-medium text-sm hover:bg-zinc-700 dark:hover:bg-zinc-300 disabled:opacity-50"
           >
-            {loading ? "Verifying…" : "Verify claim"}
+            {loading ? "Searching…" : "Find catalog match"}
           </button>
           <span className="text-xs text-zinc-500">
-            POST /api/v1/verify · ~80 ms p95 · no auth, no quota for read-only
+            POST /api/v1/verify · no auth · measure latency in your own stack
           </span>
         </div>
       </form>
@@ -145,34 +145,37 @@ export function Playground() {
       {result && (
         <div className="space-y-6">
           <div>
-            <h2 className="text-lg font-semibold mb-3">Best match</h2>
+            <h2 className="text-lg font-semibold mb-3">Candidate catalog record</h2>
             {result.bestMatch ? (
-              <div className="border border-emerald-200 dark:border-emerald-900 bg-emerald-50/30 dark:bg-emerald-950/20 rounded-md p-4">
+              <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-900/20 rounded-md p-4">
                 <p className="font-medium mb-2">
-                  ✅ {result.bestMatch.statement}
+                  {result.bestMatch.statement}
                 </p>
                 <p className="text-xs text-zinc-500 mb-3">
                   <span className="font-mono">{result.bestMatch.id}</span>
                   {" · "}
-                  {Math.round(result.bestMatch.confidence * 100)}% confidence
+                  {Math.round(result.bestMatch.confidence * 100)}% legacy record-confidence metadata
+                </p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+                  This is the closest eligible catalog record, not a verdict on
+                  your input. Compare the statements and review the cited evidence.
                 </p>
                 <a
                   href={`/claims/${result.bestMatch.id}/`}
                   className="text-sm underline"
                 >
-                  Open canonical claim page (full sources + signed envelope) →
+                  Open canonical claim page (cited sources + integrity metadata) →
                 </a>
               </div>
             ) : (
               <div className="border border-zinc-200 dark:border-zinc-800 rounded-md p-4 text-sm">
                 <p className="font-medium mb-1">
-                  ⚠️ No high-confidence match above {Math.round((result.minConfidence ?? SENT_MIN_CONFIDENCE) * 100)}%
+                  No candidate record cleared the retrieval gates
                 </p>
                 <p className="text-zinc-600 dark:text-zinc-400">
-                  Either this assertion is outside the AI/ML catalog
-                  scope, or it&apos;s phrased in a way that doesn&apos;t
-                  match any verified claim. Try rephrasing, or check
-                  the top-N matches below.
+                  The assertion may be outside the AI/ML catalog, or the
+                  retrieval method may not have found a close record. This does
+                  not mean the assertion is false. Review the top matches below.
                 </p>
               </div>
             )}
@@ -200,7 +203,7 @@ export function Playground() {
                     </div>
                     <p className="text-xs text-zinc-500 pl-5">
                       <span className="font-mono">{m.claim.id}</span> ·{" "}
-                      {Math.round(m.claim.confidence * 100)}% confidence ·
+                      {Math.round(m.claim.confidence * 100)}% record confidence ·
                       match {m.matchScore.toFixed(2)}
                       {m.rationale && (
                         <> · {m.rationale}</>

@@ -253,8 +253,8 @@ export default function AgentsConcept() {
         <ul>
           <li>Goal is well-defined + single-turn (summarize this; classify this; extract structured data)</li>
           <li>Tool catalog is empty or one tool deep (just do RAG; no agent needed)</li>
-          <li>Latency budget is &lt;500ms (agent loops add 2-10s minimum)</li>
-          <li>Cost budget is tight (an agent costs 5-50× a single chat call)</li>
+          <li>Latency budget is strict (agent loops add model and tool calls)</li>
+          <li>Cost budget is tight (measure the extra model and tool calls)</li>
           <li>Failure is unrecoverable (an agent doing something wrong autonomously is worse than a chatbot saying something wrong)</li>
         </ul>
 

@@ -8,6 +8,7 @@
 
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
+import { CitationDeskCTA } from "@/components/CitationDeskCTA";
 
 const PUBLISHED = "2026-05-31";
 const TITLE = "How to tell if a source is reliable: a 3-signal checklist";
@@ -235,6 +236,23 @@ export default function HowToTellSourceReliablePost() {
             <a href="/compare/">compare two sources head-to-head</a>.
           </li>
         </ul>
+        <div className="not-prose my-7 rounded-card-lg border border-brand/30 bg-surface-brand p-5 sm:p-6">
+          <h3 className="text-heading-3 font-bold text-text mb-2">
+            Check a source now
+          </h3>
+          <p className="text-body-sm text-muted leading-relaxed mb-4">
+            Paste a URL or source name. You&rsquo;ll get the verified SourceScore
+            record when it exists—and an honest “not scored” result when it doesn&rsquo;t.
+          </p>
+          <a
+            href="/check/"
+            data-event="source_checker_cta"
+            data-event-source="reliability-guide"
+            className="inline-flex px-4 py-2 rounded-btn border border-brand/50 bg-brand/15 text-brand font-semibold hover:bg-brand/25 transition-colors text-body-sm"
+          >
+            Open the free source checker &rarr;
+          </a>
+        </div>
         <p>
           Starting a paper from scratch? See{" "}
           <a href="/blog/how-to-find-reliable-sources/">how to find reliable sources for a research paper</a> —
@@ -270,6 +288,14 @@ export default function HowToTellSourceReliablePost() {
           ))}
         </div>
       </section>
+
+      <div className="mt-10">
+        <CitationDeskCTA
+          variant="strip"
+          source="reliability-guide"
+          intent="own-site-check"
+        />
+      </div>
     </article>
   );
 }

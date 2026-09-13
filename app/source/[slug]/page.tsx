@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getSource, allSlugs, sources } from "@/data/sources";
 import { comparisonsForSource } from "@/data/comparisons";
 import { ScoreBadge } from "@/components/ScoreBadge";
-import { PartnerTools } from "@/components/PartnerTools";
+import { CitationDeskCTA } from "@/components/CitationDeskCTA";
 import type { DimensionScore } from "@/lib/types";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
@@ -403,14 +403,29 @@ export default async function SourceDetailPage({ params }: PageProps) {
         </dl>
       </section>
 
-      {/* HIGHEST-INTENT SLOT — the activation layer (dormant until a partner
-          env var is set; renders literally nothing today). Placed immediately
-          after the score + "should you cite it" answer: the reader now has the
-          grade and the verdict, which is the peak moment for "how do I keep
-          watching this over time?". Deliberately NOT between the score hero
-          and the citation-guidance block — that block is the AEO-extractable
-          verdict and must stay in the first ~30% of the page. */}
-      <PartnerTools variant="panel" source="source-detail" className="mb-12" />
+      {/* Self-selecting owner path. A reader researching whether to cite this
+          source is not automatically a software buyer; only the "my site"
+          branch gets the commercial next step. */}
+      <div className="mb-12">
+        <CitationDeskCTA
+          variant="strip"
+          source="source-detail"
+          intent="own-site-check"
+          targetUrl={`https://${source.domain}`}
+        />
+        <p className="mt-3 text-caption text-dim">
+          Need recurring mention tracking rather than a one-off readiness audit?{" "}
+          <a
+            href="/ai-visibility-tools/"
+            className="text-brand hover:underline"
+            data-event="ai_visibility_guide_click"
+            data-event-source="source-detail"
+          >
+            Compare AI-visibility tools
+          </a>
+          .
+        </p>
+      </div>
 
       {/* ABOVE-FOLD NEXT STEPS — engagement pull-through (2026-05-28).
           Comparison + peer links surfaced directly under the score so search

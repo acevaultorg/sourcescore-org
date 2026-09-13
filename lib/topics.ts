@@ -50,7 +50,7 @@ export const TOPICS: TopicHub[] = [
     sections: [
       {
         heading: "Why a canonical reading list matters",
-        body: "Production AI engineers don't have time to triangulate dates from sometimes-wrong blog posts. \"When was the transformer paper published?\" should be a 100ms lookup, not a 10-minute SERP triangulation. This hub catalogs the foundational papers with verified dates, authors, venues, and verbatim excerpts — every claim has ≥2 primary sources.",
+        body: "Production AI engineers often need to triangulate dates from conflicting pages. This hub catalogs foundational papers with dates, authors, venues, and verbatim excerpts; every record cites primary evidence and shows its source count.",
       },
       {
         heading: "Pre-Transformer era",

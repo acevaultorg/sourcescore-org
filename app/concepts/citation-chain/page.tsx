@@ -7,9 +7,10 @@ import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 const PUBLISHED = "2026-05-16";
-const TITLE = "Citation chains — verifiable provenance for LLM-generated assertions";
+const MODIFIED = "2026-09-13";
+const TITLE = "Citation chains — inspectable provenance for LLM-generated assertions";
 const SUBTITLE =
-  "A citation chain is the auditable trail from an LLM's emitted claim back to the primary source that proves it. Three building blocks make a chain inspectable: stable identifiers, signed envelopes, and re-fetchable canonical URLs. Here's how they fit together.";
+  "A citation chain is the auditable trail from an LLM's emitted claim to the evidence meant to support it. Stable identifiers, source-issued integrity metadata, and re-fetchable URLs make that trail inspectable—with important limits.";
 const SLUG = "citation-chain";
 const CANONICAL = `https://sourcescore.org/concepts/${SLUG}/`;
 
@@ -33,7 +34,7 @@ const articleSchema = {
   headline: TITLE,
   description: SUBTITLE,
   datePublished: PUBLISHED,
-  dateModified: PUBLISHED,
+  dateModified: MODIFIED,
   mainEntityOfPage: CANONICAL,
   author: {
     "@type": "Organization",
@@ -60,7 +61,7 @@ const definedTermSchema = {
   "@type": "DefinedTerm",
   name: "Citation chain",
   description:
-    "The auditable trail linking an LLM's emitted assertion to the primary source(s) that prove it. Three building blocks: a stable identifier for the claim, a cryptographic signature over the canonical claim fields, and a re-fetchable URL where the verbatim source excerpts live. Together these let a downstream consumer verify a claim wasn't fabricated, wasn't modified in transit, and traces back to an actual human-authored document.",
+    "The auditable trail linking an LLM's emitted assertion to the evidence meant to support it. Stable identifiers and re-fetchable canonical records let consumers inspect the trail. SourceScore records also carry source-issued HMAC metadata, but the unpublished secret means that tag is not independently verifiable by public users.",
   inDefinedTermSet: "https://sourcescore.org/concepts/",
   url: CANONICAL,
 };
@@ -114,29 +115,25 @@ export default function CitationChainConcept() {
         <p>
           A <strong>citation chain</strong> is the auditable trail linking
           an LLM&apos;s emitted assertion to the primary source(s) that
-          prove it. Three building blocks make a chain inspectable:
+          are meant to support it. Three building blocks make a chain inspectable:
         </p>
         <ol>
           <li>
             <strong>Stable identifier</strong> — every claim has a
-            content-addressable ID that doesn&apos;t move when wording
-            shifts. If the canonical fields (subject, predicate, object)
-            change, the ID changes too — a brand-new claim, distinguishable
-            from the original.
+            stable ID for the published record. A material change to the
+            canonical claim fields creates a different record and ID.
           </li>
           <li>
-            <strong>Cryptographic signature</strong> — the claim envelope
-            ships with an HMAC-SHA256 or Ed25519 signature over its
-            canonical serialization. A downstream consumer can re-compute
-            the signature and prove the envelope wasn&apos;t modified
-            in transit.
+            <strong>Integrity metadata</strong> — the claim envelope
+            includes a SourceScore-issued HMAC-SHA256 tag over its
+            canonical serialization. SourceScore can recompute this tag, but
+            public users cannot because the shared secret is not published.
           </li>
           <li>
             <strong>Re-fetchable canonical URL</strong> — the chain leads
             to a stable URL where the verbatim source excerpts live.
-            Even if the original sources go 404, the excerpts preserved
-            in the envelope mean the textual evidence is preserved
-            alongside the claim ID.
+            Excerpts are preserved alongside the claim ID, but an excerpt is
+            not a substitute for independently checking the original source.
           </li>
         </ol>
 
@@ -149,14 +146,14 @@ export default function CitationChainConcept() {
           fluency.
         </p>
         <p>
-          A citation chain makes fabrication detectable:
+          A citation chain makes several failure modes easier to detect:
         </p>
         <ul>
           <li>
             The ID either resolves to a real envelope or it doesn&apos;t
           </li>
           <li>
-            The signature either verifies or it doesn&apos;t
+            A fresh API record either matches the copy you received or it does not
           </li>
           <li>
             The canonical URL either loads with matching content or it
@@ -164,9 +161,9 @@ export default function CitationChainConcept() {
           </li>
         </ul>
         <p>
-          Three independent checkpoints. An attacker would have to forge
-          all three to bypass the chain. Compare against unauditable
-          citations where the only check is &quot;does it sound real?&quot;
+          These are inspectable checks, not proof that the underlying claim is
+          true. The cited evidence still needs editorial or application-specific
+          review.
         </p>
 
         <h2 id="anatomy">Anatomy of a SourceScore chain</h2>
@@ -198,7 +195,7 @@ export default function CitationChainConcept() {
     ],
     "tags": ["transformer", "attention", "foundational"]
   },
-  "signature": {                       // ← cryptographic proof of integrity
+  "signature": {                       // ← SourceScore-issued HMAC metadata
     "algorithm": "HMAC-SHA256",
     "signedBy": "did:web:sourcescore.org",
     "signedAt": "2026-05-16T00:00:00.000Z",
@@ -207,46 +204,41 @@ export default function CitationChainConcept() {
   "citedAs": "Transformer architecture introduced in paper: ... — SourceScore Claim ad17e76a8baad7a1 (verified 2026-05-16). https://sourcescore.org/claims/ad17e76a8baad7a1/"
 }`}</code></pre>
         <p>
-          Three orthogonal verifications are possible from a single
-          envelope: ID lookup, signature re-compute, URL re-fetch.
+          Public users can resolve the ID, refetch the current record, and
+          inspect its cited evidence. They cannot independently recompute the
+          HMAC tag without SourceScore&apos;s unpublished secret.
         </p>
 
-        <h2 id="verification">How to verify a chain locally</h2>
+        <h2 id="verification">How to inspect a chain locally</h2>
         <p>
-          A consumer of a VERITAS claim envelope can perform all three
-          checks in a few lines of code:
+          A consumer can compare a received envelope with the current canonical
+          API record and collect the cited source URLs for review:
         </p>
-        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`import hmac, hashlib, json, requests
+        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`import requests
 
-def verify_chain(envelope: dict, shared_secret: str) -> dict:
+def inspect_chain(envelope: dict) -> dict:
     claim = envelope["claim"]
-    sig   = envelope["signature"]
 
-    # Check 1 — re-fetch the canonical URL and compare
-    canonical = requests.get(envelope["canonical"]).text
-    url_ok = claim["id"] in canonical  # canonical page shows claim id
+    # Check 1 — the public claim page still resolves
+    page = requests.get(envelope["canonical"], timeout=8)
+    page_ok = page.ok and claim["id"] in page.text
 
-    # Check 2 — re-compute HMAC-SHA256 over canonical-JSON of claim + signing metadata
-    payload = json.dumps(
-        {**claim, "signedAt": sig["signedAt"], "signedBy": sig["signedBy"]},
-        sort_keys=True, separators=(",", ":"), ensure_ascii=False
-    ).encode()
-    expected = hmac.new(shared_secret.encode(), payload, hashlib.sha256).hexdigest()
-    sig_ok = hmac.compare_digest(expected, sig["signature"])
+    # Check 2 — compare with SourceScore's current JSON record
+    api_url = f"https://sourcescore.org/api/v1/claims/{claim['id']}.json"
+    current = requests.get(api_url, timeout=8).json()
+    matches_current = current.get("claim") == claim
 
-    # Check 3 — at least one source URL must still be reachable
-    sources_ok = any(requests.head(s["url"], timeout=4).ok for s in claim["sources"])
+    # Check 3 — hand the original evidence URLs to your review layer
+    source_urls = [source["url"] for source in claim.get("sources", [])]
 
-    return {"url_ok": url_ok, "sig_ok": sig_ok, "sources_ok": sources_ok,
-            "verified": all([url_ok, sig_ok, sources_ok])}
+    return {"page_ok": page_ok, "matches_current": matches_current,
+            "source_urls": source_urls, "hmac_publicly_verifiable": False}
 `}</code></pre>
         <p>
-          Three independent signals. Each can be inspected separately.
-          A failure in any one tells you something different — URL not
-          found means catalog moved, signature mismatch means the
-          envelope was modified, source 404 means the original document
-          went away (the verbatim excerpt in the envelope is still your
-          fallback evidence).
+          A missing page, record mismatch, or unsupported source citation is a
+          reason to withhold a verified label. Matching SourceScore&apos;s current
+          copy shows consistency with the publisher&apos;s canonical record; it is
+          not independent cryptographic authentication or proof of truth.
         </p>
 
         <h2 id="chains-and-agents">Chains and LLM agents</h2>
@@ -266,7 +258,7 @@ def verify_chain(envelope: dict, shared_secret: str) -> dict:
 }`}</code></pre>
         <p>
           The downstream UI can render each citation as a clickable
-          badge. Click → expand the chain → see sources, signature,
+          badge. Click → expand the chain → see sources, integrity metadata,
           confidence. Users get human-readable answers plus auditable
           provenance, available on demand.
         </p>
@@ -279,9 +271,9 @@ def verify_chain(envelope: dict, shared_secret: str) -> dict:
             &quot;⚠ unverified&quot; in UI.
           </li>
           <li>
-            <strong>Modified-in-transit envelopes</strong> — someone
-            edits the claim text but the signature doesn&apos;t match
-            recomputed value. Surface as &quot;⚠ tampered.&quot;
+            <strong>Record mismatches</strong> — a received copy differs from
+            the current canonical API record. Surface it as changed or
+            unverified; public users cannot use the HMAC alone to identify why.
           </li>
           <li>
             <strong>Stale citations</strong> — claim ID resolves but the
@@ -299,24 +291,19 @@ def verify_chain(envelope: dict, shared_secret: str) -> dict:
 
         <h2 id="future-roadmap">Where chains are heading</h2>
         <p>
-          The current state of the art (2026) ships HMAC-SHA256 with
-          shared secrets. Two evolutions are visible on the horizon:
+          Public HMAC tags do not provide independent verification without a
+          published shared secret. SourceScore does not currently offer one.
         </p>
         <ul>
           <li>
-            <strong>W3C Verifiable Credentials</strong> — replaces
-            shared-secret HMAC with public-key signing (Ed25519). Any
-            consumer can verify without sharing a secret. SourceScore
-            plans to migrate VERITAS Y2; envelope shape is
-            forward-compatible.
+            <strong>Public-key signatures</strong> would let any consumer
+            verify record integrity without a shared secret. SourceScore has
+            not shipped or committed to that migration.
           </li>
           <li>
-            <strong>Decentralized verification networks</strong> —
-            instead of one signing authority (did:web:sourcescore.org),
-            multiple independent verifiers cross-sign claims. Reduces
-            single-point-of-trust failure. Early networks like Knowledge
-            Graph Verifiers and Verifiable Provenance Networks are
-            emerging.
+            <strong>Independent evidence review</strong> remains necessary
+            even with public-key signatures: cryptography can authenticate
+            bytes, but it cannot prove that cited evidence supports a claim.
           </li>
         </ul>
 
@@ -335,7 +322,7 @@ def verify_chain(envelope: dict, shared_secret: str) -> dict:
             <a href="/docs/integrations/langchain/">LangChain integration</a> — chains in a LangChain pipeline
           </li>
           <li>
-            <a href="/security/">Security policy</a> — signing key rotation, disclosure, signing identity
+            <a href="/security/">Security policy</a> — disclosure and integrity-metadata limits
           </li>
           <li>
             <a href="/claims/">Browse the catalog</a> — every claim ships with a full chain

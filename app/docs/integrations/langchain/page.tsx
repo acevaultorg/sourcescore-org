@@ -12,16 +12,16 @@ import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
-  title: "LangChain + SourceScore VERITAS — ground LLM responses with signed claims",
+  title: "LangChain + SourceScore VERITAS — candidate retrieval and evidence review",
   description:
-    "Wire SourceScore VERITAS into a LangChain chain to verify model-generated claims against signed, sourced facts. Drop-in retriever + verification step. Python + JavaScript examples.",
+    "Wire SourceScore VERITAS into a LangChain chain for curated candidate retrieval, citations, and explicit evidence review. Python + JavaScript examples.",
   alternates: {
     canonical: "https://sourcescore.org/docs/integrations/langchain/",
   },
   openGraph: {
     title: "LangChain + SourceScore VERITAS",
     description:
-      "Ground LangChain LLM responses with signed, sourced claims from the VERITAS catalog. Python + JS quickstarts.",
+      "Add curated claim-record retrieval and evidence-review links to LangChain. Python + JS quickstarts.",
     url: "https://sourcescore.org/docs/integrations/langchain/",
     type: "article",
   },
@@ -36,9 +36,9 @@ export default function LangChainIntegration() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TechArticle",
-            headline: "LangChain + SourceScore VERITAS: ground LLM responses with signed claims",
+            headline: "LangChain + SourceScore VERITAS: candidate retrieval and evidence review",
             description:
-              "Step-by-step guide to wiring SourceScore VERITAS verified-claim retrieval and verification into a LangChain chain. Reduces LLM hallucination on AI/ML domain queries by grounding responses in signed, sourced facts.",
+              "Step-by-step guide to retrieving curated SourceScore records in a LangChain chain and reviewing their cited evidence before using them.",
             datePublished: "2026-05-16",
             dateModified: "2026-05-16",
             author: { "@type": "Organization", name: "SourceScore", url: "https://sourcescore.org" },
@@ -57,14 +57,14 @@ export default function LangChainIntegration() {
             "@type": "HowTo",
             name: "Integrate SourceScore VERITAS into a LangChain chain",
             description:
-              "Wire signed-claim verification into a LangChain RAG pipeline. Two patterns: retrieve-then-cite and generate-then-verify.",
+              "Wire curated claim-record retrieval into a LangChain RAG pipeline. Two patterns: retrieve-then-review and generate-then-find-candidates.",
             totalTime: "PT20M",
             tool: [
               { "@type": "HowToTool", name: "LangChain" },
               { "@type": "HowToTool", name: "Python or TypeScript" },
             ],
             supply: [
-              { "@type": "HowToSupply", name: "SourceScore VERITAS API (free tier: 1,000 calls/month)" },
+              { "@type": "HowToSupply", name: "SourceScore VERITAS public API (free, no signup)" },
             ],
             step: [
               {
@@ -76,20 +76,20 @@ export default function LangChainIntegration() {
               {
                 "@type": "HowToStep",
                 position: 2,
-                name: "Define the verify-claim tool",
-                text: "Wrap https://sourcescore.org/api/v1/verify as a LangChain Tool with claim (string) + min_confidence (number) parameters.",
+                name: "Define the candidate-lookup tool",
+                text: "Wrap the legacy /api/v1/verify route as a LangChain Tool with claim (string) + min_confidence (number) parameters; its result is a similarity candidate, not a verdict.",
               },
               {
                 "@type": "HowToStep",
                 position: 3,
                 name: "Register tool with the agent",
-                text: "Add the verify_claim tool to your AgentExecutor tools list. Update system prompt to instruct verification before factual assertions.",
+                text: "Add the candidate-lookup tool to your agent and require exact-statement plus cited-evidence review before factual assertions.",
               },
               {
                 "@type": "HowToStep",
                 position: 4,
                 name: "Test on AI/ML factual queries",
-                text: "Run queries like 'When was Llama 3.1 released?' or 'How many parameters does GPT-4 have?'. Confirm agent calls verify_claim and cites the signed envelope's detail URL.",
+                text: "Run AI/ML factual queries. Confirm the agent retrieves a candidate, compares its statement and evidence, and cites the detail URL only when support is established.",
               },
             ],
           }),
@@ -123,9 +123,9 @@ export default function LangChainIntegration() {
           LangChain + SourceScore VERITAS
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
-          Wire signed-claim retrieval into your LangChain pipeline. Verify
-          model-generated assertions against a catalog of facts that ship
-          with HMAC-SHA256 signatures and ≥2 primary sources each.
+          Wire curated record retrieval into your LangChain pipeline. Each
+          record links to cited evidence and a stable canonical page; your
+          application still decides whether that evidence supports its answer.
         </p>
       </header>
 
@@ -136,17 +136,15 @@ export default function LangChainIntegration() {
         </p>
         <ol className="space-y-3 text-sm text-zinc-700 dark:text-zinc-300 list-decimal pl-6">
           <li>
-            <strong>Retrieve-then-cite:</strong> fetch the most relevant
-            VERITAS claims for the user's query, render them as context,
-            and instruct the model to cite the claim id with every fact it
-            asserts.
+            <strong>Retrieve-then-review:</strong> fetch candidate VERITAS
+            records, compare their exact statements and cited evidence with the
+            question, and cite only records that actually support the answer.
           </li>
           <li>
-            <strong>Generate-then-verify:</strong> let the model answer
-            freely, then post-process the response: extract atomic claims,
-            send each to <code className="font-mono">/api/v1/verify</code>,
-            attach a confidence + citation badge to each, flag unmatched
-            assertions.
+            <strong>Generate-then-find-candidates:</strong> extract atomic
+            assertions, send each to the legacy{" "}
+            <code className="font-mono">/api/v1/verify</code> route, then send
+            returned candidates and their evidence to review.
           </li>
         </ol>
       </section>
@@ -190,11 +188,12 @@ def veritas_retrieve(query: str, k: int = 5) -> str:
         )
     return "\\n".join(lines)
 
-prompt = ChatPromptTemplate.from_template("""You are a precise assistant. Answer the user's question
-using ONLY the verified claims below. Cite every fact with [claim_id]. If the
-claims do not cover the question, say so explicitly — do not improvise.
+prompt = ChatPromptTemplate.from_template("""You are a precise assistant. The records below are
+candidates, not truth verdicts. Use one only when its exact statement supports
+the answer; cite it with [claim_id]. If the records do not cover the question,
+say so explicitly — do not improvise.
 
-Verified claims:
+Candidate records:
 {context}
 
 Question: {question}
@@ -214,25 +213,25 @@ chain = (
 print(chain.invoke({"question": "When was the Transformer architecture introduced?"}))
 `}</code></pre>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-3">
-          The model now MUST attach a claim_id to every assertion. Any
-          unattached statement is a hallucination signal — surface it as a
-          UI warning or auto-strip it from the output.
+          Treat a missing citation as a review signal, not proof of a
+          hallucination. Validate the final answer and cited evidence outside
+          the model before publishing it.
         </p>
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Pattern 2 — Generate-then-verify (JavaScript)</h2>
+        <h2 className="text-xl font-semibold mb-3">Pattern 2 — Generate-then-find-candidates (JavaScript)</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
-          Useful when you want the model's free-form output but need a
-          confidence layer. Each assertion gets a verification badge from
-          VERITAS before the user sees the final response.
+          Useful when you want free-form output followed by a bounded-catalog
+          check. Each assertion gets either a candidate link for evidence
+          review or a clear no-candidate state.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`import { ChatOpenAI } from "@langchain/openai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 
 const VERITAS = "https://sourcescore.org/api/v1";
 
-async function verifyClaim(text) {
+async function findClaimCandidate(text) {
   const r = await fetch(\`\${VERITAS}/verify\`, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -252,12 +251,12 @@ const answer = await prompt.pipe(llm).invoke({
   question: "When did OpenAI release GPT-4?",
 });
 
-// Step 2 — verify each line
+// Step 2 — retrieve a candidate for each line (then review its sources)
 const lines = answer.content.split("\\n").filter(Boolean);
-const verified = [];
+const candidates = [];
 for (const line of lines) {
-  const v = await verifyClaim(line);
-  verified.push({
+  const v = await findClaimCandidate(line);
+  candidates.push({
     statement: line,
     matched: !!v.bestMatch,
     confidence: v.bestMatch?.confidence ?? 0,
@@ -266,55 +265,37 @@ for (const line of lines) {
   });
 }
 
-// Step 3 — render with badges
-for (const r of verified) {
-  const badge = r.matched ? \`✅ [\${r.veritasId}]\` : "⚠️ unverified";
+// Step 3 — render candidate links; a match is not a truth verdict
+for (const r of candidates) {
+  const badge = r.matched ? \`🔎 candidate [\${r.veritasId}] — review sources\` : "⚠️ no catalog candidate";
   console.log(\`\${r.statement.trim()} \${badge}\`);
 }
 `}</code></pre>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-3">
-          UI suggestion: render verified lines in the normal answer style,
-          unverified lines with a yellow underline + tooltip linking to a
-          "submit verification request" page. Operationalizes
-          hallucination-discovery as user feedback.
+          UI suggestion: render a candidate link only as a prompt to inspect
+          its primary sources, never as a factual-verification badge. Mark
+          absent matches clearly and send disputed results to human review.
         </p>
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Pattern 3 — Verify the signature (defensive)</h2>
+        <h2 className="text-xl font-semibold mb-3">Pattern 3 — Refetch the canonical record (defensive)</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
-          High-stakes deployments should re-verify the HMAC-SHA256
-          signature locally before trusting a claim envelope. The signing
-          public-key-equivalent shipped with the response so you can
-          re-compute and compare.
+          High-stakes deployments should refetch the canonical HTTPS record and
+          compare the claim content and cited evidence before using it. The HMAC
+          tag is not publicly independently verifiable.
         </p>
-        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`import os, hmac, hashlib, json, requests
+        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`import requests
 
-SECRET = os.environ["SOURCESCORE_SIGNING_SECRET"]  # given on Enterprise tier
 VERITAS = "https://sourcescore.org/api/v1"
-
-def verify_envelope(envelope: dict) -> bool:
-    """Re-compute HMAC-SHA256 over canonical-JSON of the claim + signature
-    metadata, compare constant-time to envelope.signature.value."""
-    claim = envelope["claim"]
-    sig   = envelope["signature"]
-    # canonical: sorted keys, ASCII-safe, no extra whitespace
-    payload = json.dumps(
-        {**claim, "signedAt": sig["signedAt"], "signedBy": sig["signedBy"]},
-        sort_keys=True, separators=(",", ":"), ensure_ascii=False
-    ).encode()
-    expected = hmac.new(SECRET.encode(), payload, hashlib.sha256).hexdigest()
-    return hmac.compare_digest(expected, sig["value"])
-
 env = requests.get(f"{VERITAS}/claims/<claim_id>.json").json()
-assert verify_envelope(env), "VERITAS signature mismatch — do not trust"
-print("ok — claim is genuine + unmodified")
+canonical = requests.get(f"{VERITAS}/claims/{env['claim']['id']}.json").json()
+assert canonical["claim"] == env["claim"], "Canonical record changed — inspect cited evidence"
+print("canonical record matches; inspect cited evidence for your use case")
 `}</code></pre>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-3">
-          Free + Indie tiers can re-verify against the public catalog JSON
-          which has the same envelope shape. The shared secret is only
-          required when you need an additional signature your own systems
-          generate (Enterprise tier feature).
+          No public or enterprise shared secret is available. Refetching checks
+          the current canonical record, not a cryptographic proof of origin.
         </p>
       </section>
 
@@ -333,22 +314,22 @@ print("ok — claim is genuine + unmodified")
               <tr>
                 <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Educational Q&A bot</td>
                 <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Retrieve-then-cite</td>
-                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">~150ms search + LLM time</td>
+                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">One catalog request + LLM time; benchmark locally</td>
               </tr>
               <tr>
                 <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Search auto-complete</td>
                 <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Retrieve only (skip LLM)</td>
-                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">&lt;100ms</td>
+                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">One catalog request; benchmark locally</td>
               </tr>
               <tr>
                 <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Internal research assistant</td>
-                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Generate-then-verify</td>
-                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">LLM + N × ~80ms verify</td>
+                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Generate-then-find-candidates</td>
+                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">LLM + N catalog requests</td>
               </tr>
               <tr>
                 <td className="p-3">High-stakes citation badge</td>
-                <td className="p-3">Generate-then-verify + signature</td>
-                <td className="p-3">LLM + N × ~80ms verify + signature compute (~1ms)</td>
+                <td className="p-3">Candidate retrieval + independent evidence review</td>
+                <td className="p-3">LLM + N catalog requests + review</td>
               </tr>
             </tbody>
           </table>
@@ -358,18 +339,13 @@ print("ok — claim is genuine + unmodified")
       <section className="mb-10">
         <h2 className="text-xl font-semibold mb-3">Cost model</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
-          Each VERITAS call counts as one claim against your monthly
-          quota. Search responses with N matches still count as ONE call,
-          regardless of N. Verify counts as ONE call per request.
+          The public VERITAS API is free, requires no account or key, and has no
+          account-level meter. Search and verify are separate network requests;
+          cache stable claim records and measure traffic in your own stack.
         </p>
-        <ul className="text-sm text-zinc-700 dark:text-zinc-300 list-disc pl-6 space-y-1">
-          <li><strong>Free:</strong> 1,000 calls/month — sufficient for prototyping</li>
-          <li><strong>Indie €19/mo:</strong> 50,000 calls/month — solo apps + small teams</li>
-          <li><strong>Startup €99/mo:</strong> 500,000 calls/month — Series-A class</li>
-          <li><strong>Scale €499/mo:</strong> 5,000,000 calls/month — high-throughput</li>
-        </ul>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-3">
-          See <a href="/pricing/" className="underline">pricing</a> for full tier comparison.
+          Higher-volume prices on <a href="/pricing/" className="underline">the pricing page</a>{" "}
+          are proposals used to test demand, not plans available for purchase.
         </p>
       </section>
 
@@ -377,17 +353,16 @@ print("ok — claim is genuine + unmodified")
         <h2 className="text-lg font-semibold mb-3">What VERITAS is not</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           We are deliberately not a generic fact-checker. The Day 1
-          catalog (346 claims today) covers AI/ML research — model releases,
+          catalog (384 claims today) covers AI/ML research — model releases,
           foundational papers, organizations, datasets. If your chain
           asks about &quot;the capital of France&quot; we will return no
           matches and your code should fall through to whatever
           retrieval you'd use anyway.
         </p>
         <p className="text-sm text-zinc-700 dark:text-zinc-300">
-          Catalog expansion is gated by our verification methodology
-          (≥2 primary sources, verbatim excerpts, no performance-
-          comparison claims). New verticals (cybersecurity, data
-          engineering, scientific computing) ship Y2.
+          Catalog expansion is gated by the published methodology (cited
+          evidence, source counts, and no unstable performance-comparison
+          claims). No date is promised for additional verticals.
         </p>
       </section>
 
@@ -398,13 +373,13 @@ print("ok — claim is genuine + unmodified")
             • <a href="/docs/" className="underline">Full API reference</a> — every endpoint with curl + JS + Python examples
           </li>
           <li>
-            • <a href="/claims/" className="underline">Browse the catalog</a> — 346 verified AI/ML claims
+            • <a href="/claims/" className="underline">Browse the catalog</a> — 384 reviewed AI/ML claim records
           </li>
           <li>
             • <a href="/api/v1/openapi.json" className="underline">OpenAPI spec</a> — generate clients in any language
           </li>
           <li>
-            • <a href="/pricing/" className="underline">Pricing + signup</a> — get an API key
+            • <a href="/pricing/" className="underline">Pricing</a> — free API and proposed higher-volume tiers
           </li>
         </ul>
       </section>

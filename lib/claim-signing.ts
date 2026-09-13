@@ -97,7 +97,7 @@ export async function verifyClaim(
   if (signature.signedBy !== SIGNED_BY) return false;
   const expected = await signClaim(claim, secret, signature.signedAt);
   // Constant-time compare to avoid timing side-channels (mostly defensive; the
-  // public verify endpoint is rate-limited per tier anyway).
+  // callers should still apply their own bounded request limits).
   return timingSafeEqual(expected.signature, signature.signature);
 }
 

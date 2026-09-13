@@ -44,7 +44,7 @@ const concepts = [
     slug: "citation-chain",
     title: "Citation chains",
     summary:
-      "The auditable trail from an LLM's emitted claim back to primary sources. Three building blocks: stable identifier · cryptographic signature · re-fetchable canonical URL. Local-verification walkthrough + how chains fit into agentic responses.",
+      "The inspectable trail from an LLM's emitted claim back to cited evidence: stable identifier · SourceScore-issued integrity metadata · re-fetchable canonical URL. Includes a canonical-record comparison walkthrough and the limits of public HMAC verification.",
     status: "live",
   },
   {

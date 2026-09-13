@@ -11,9 +11,9 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 const PUBLISHED = "2026-05-16";
 const TITLE =
-  "Stop hallucinating: a developer API for grounding LLM responses with signed, sourced claims";
+  "A developer API for grounding review with curated, sourced AI/ML claims";
 const SUBTITLE =
-  "VERITAS is a free-tier-friendly API that returns hand-verified AI/ML claims with their primary sources, an HMAC-SHA256 signature, and a ready-to-paste citation.";
+  "VERITAS is a free public API for retrieving curated AI/ML claim records and their cited evidence. Candidate matching supports review; it is not an automated truth verdict.";
 const SLUG = "launching-veritas";
 const CANONICAL = `https://sourcescore.org/blog/${SLUG}/`;
 
@@ -108,10 +108,9 @@ export default function LaunchPost() {
       <section className="prose prose-zinc dark:prose-invert max-w-none leading-relaxed space-y-5">
         <blockquote>
           <strong>TL;DR</strong>: I just shipped{" "}
-          <a href="/claims/">SourceScore VERITAS</a> — a free-tier-friendly API
-          that returns hand-verified AI/ML claims with their primary sources,
-          an HMAC-SHA256 signature, and a ready-to-paste citation. 51 claims
-          at launch; expanding to 5,000+ this year.{" "}
+          <a href="/claims/">SourceScore VERITAS</a> — a free public API
+          that returns curated AI/ML claim records and their cited evidence.
+          It has 384 records today; use matches as candidates for review.{" "}
           <code>curl https://sourcescore.org/api/v1/claims.json</code> and
           you&rsquo;re in.
         </blockquote>
@@ -128,10 +127,9 @@ export default function LaunchPost() {
         </p>
 
         <p>
-          The grounding problem isn&rsquo;t going away. It&rsquo;s the{" "}
-          <strong>hardest unsolved problem in production AI today</strong>,
-          and the bigger your model gets, the more confidently it lies when
-          it lies.
+          The grounding problem isn&rsquo;t going away. Larger or newer models
+          can still produce unsupported assertions, so evidence retrieval and
+          review remain part of a responsible production workflow.
         </p>
 
         <h2>What it does (in one curl)</h2>
@@ -163,58 +161,59 @@ export default function LaunchPost() {
         <p>Three things make this useful for grounding LLMs:</p>
         <ol>
           <li>
-            <strong>Every claim has 2+ primary sources</strong> — the
+            <strong>Every claim cites primary evidence</strong> — 368 of 384
+            current claims have two or more sources; the
             official Meta AI blog, the model card on Hugging Face, the arXiv
             preprint, etc. Not &ldquo;according to an article on
             TechCrunch.&rdquo;
           </li>
           <li>
-            <strong>Every response is signed</strong> — HMAC-SHA256 with{" "}
-            <code>did:web:sourcescore.org</code>. Your client can prove the
-            answer came from SourceScore and wasn&rsquo;t tampered in transit.
+            <strong>Records carry SourceScore-issued integrity metadata</strong>{" "}
+            using HMAC-SHA256. The signing secret is not public, so consumers
+            should not describe the metadata as independently verifiable.
           </li>
           <li>
             <strong>Every claim has a stable id</strong> — paste it into your
             LLM context, link to it from a paper, embed it in a prompt
-            template. It won&rsquo;t move.
+            template. Re-fetch before use so corrections are not missed.
           </li>
         </ol>
 
         <h2>Why I built it this way</h2>
 
         <p>
-          There are great academic fact-checking datasets. There are great
-          benchmark leaderboards. There&rsquo;s Wikipedia. None of them are
-          an API you can call from your RAG pipeline at request time with a
-          30ms response.
+          Academic fact-checking datasets, benchmark leaderboards, and
+          Wikipedia solve different parts of the evidence problem. VERITAS
+          adds a small, structured AI/ML catalog with a public JSON interface.
         </p>
 
         <p>
           I picked a narrow vertical to start &mdash;{" "}
-          <strong>AI/ML research</strong>. 51 claims at launch covering:
+          <strong>AI/ML research</strong>. The catalog now contains 384 records
+          spanning:
         </p>
         <ul>
           <li>
-            <strong>12 foundational papers</strong> — Transformer, RLHF, RAG,
+            <strong>Foundational papers</strong> — Transformer, RLHF, RAG,
             LoRA, DPO, Chinchilla, PPO, Adam, AlexNet, BERT, Chain-of-Thought,
             FlashAttention, MoE, Switch Transformer, Mamba, T5, CLIP,
             Constitutional AI, InstructGPT, ResNet
           </li>
           <li>
-            <strong>22 model releases</strong> with dates, parameter counts,
+            <strong>Model releases</strong> with dates, parameter counts,
             context windows — GPT-2/3/4/4-Turbo/4o, Claude 3/3.5, Llama
             1/2/3/3.1, Mistral 7B, Mixtral 8x7B, Gemini Pro/1.5, Whisper,
             DALL-E 3, Stable Diffusion 1, Sora, ChatGPT, ChatGPT Plus
           </li>
           <li>
-            <strong>6 organizational facts</strong> — Anthropic, OpenAI,
+            <strong>Organizational facts</strong> — Anthropic, OpenAI,
             Mistral, HuggingFace, Stability AI, DeepMind
           </li>
         </ul>
 
         <p>
-          Every claim is hand-verified against the primary source. If a
-          claim is below 0.85 confidence, it&rsquo;s not published.
+          Records are curated against their listed sources. Retrieval
+          confidence describes query similarity, not whether an assertion is true.
           Performance-comparison claims are intentionally excluded for v0
           because benchmark numbers depend on version + prompt format — too
           much surface for &ldquo;actually that&rsquo;s not quite right&rdquo;
@@ -222,18 +221,18 @@ export default function LaunchPost() {
         </p>
 
         <p>
-          The plan is to grow the catalog to ~500 claims by Day 30 and ~5,000
-          by Year 1, all under the same methodology.
+          Catalog expansion is evidence-led: add records only when the source
+          quality and maintenance burden fit the published methodology.
         </p>
 
         <h2>Free tier, no signup</h2>
 
         <p>
-          The free tier is <strong>1,000 claims/month, no auth required</strong>.
+          The public API is <strong>free, with no auth or signup required</strong>.
           Just curl. Get familiar with the data shape, the signature format,
           the search behavior. If you outgrow it, paid tiers are{" "}
-          <a href="/pricing/">€19 / €99 / €499</a> per month — Stripe metered
-          billing.
+          <a href="/pricing/">proposed higher-volume tiers</a> — not currently
+          available for purchase.
         </p>
 
         <p>
@@ -269,8 +268,8 @@ export default function LaunchPost() {
         <p>
           <strong>Built with:</strong> Next.js 15 (static export) ·
           Cloudflare Pages + Pages Functions · TypeScript · Web Crypto API
-          for HMAC · Plausible Analytics. 100% serverless, ~100ms cold-start
-          globally. Source-rating product (the original SourceScore Index,
+          for HMAC. Serverless delivery; measure response
+          time from your own deployment region. Source-rating product (the original SourceScore Index,
           130 hand-scored sources) lives alongside at the same domain — both
           products under one methodology.
         </p>

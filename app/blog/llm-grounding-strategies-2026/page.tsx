@@ -7,10 +7,11 @@ import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 const PUBLISHED = "2026-05-17";
+const UPDATED = "2026-09-13";
 const TITLE =
-  "Six grounding strategies that actually reduce LLM hallucination (and the trade-offs)";
+  "Six LLM grounding strategies—and the trade-offs of each";
 const SUBTITLE =
-  "Prompt engineering buys 10-30%. Retrieval-augmented generation buys another 20-40%. Signed-claim verification closes the long tail. Six strategies, their measured impact, and when to combine.";
+  "Six complementary strategies for reducing unsupported LLM output—from prompting and retrieval to citation checks and constrained decoding—with the limits of each made explicit.";
 const SLUG = "llm-grounding-strategies-2026";
 const CANONICAL = `https://sourcescore.org/blog/${SLUG}/`;
 
@@ -34,7 +35,7 @@ const articleSchema = {
   headline: TITLE,
   description: SUBTITLE,
   datePublished: PUBLISHED,
-  dateModified: PUBLISHED,
+  dateModified: UPDATED,
   mainEntityOfPage: CANONICAL,
   author: {
     "@type": "Organization",
@@ -92,7 +93,7 @@ export default function GroundingStrategiesPost() {
 
       <header className="mb-10">
         <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2">
-          Blog · {PUBLISHED}
+          Blog · published {PUBLISHED} · updated {UPDATED}
         </p>
         <h1 className="text-3xl sm:text-4xl font-semibold leading-tight mb-3">
           {TITLE}
@@ -109,15 +110,13 @@ export default function GroundingStrategiesPost() {
           features you spent six months building become irrelevant.
         </p>
         <p>
-          Frontier models in 2026 hallucinate ~1-5% on well-trodden
-          questions, ~15-40% on long-tail technical queries. Reducing
-          that rate isn&apos;t a single fix; it&apos;s a stack of
-          mitigations layered on top of each other. Here are the six
-          strategies that actually work, in order from cheapest to
-          most-effective.
+          Hallucination rates vary sharply with the model, task, prompt,
+          evaluation method, and what counts as an error. There is no honest
+          universal percentage. Reducing unsupported output is therefore a
+          stack of mitigations, each aimed at a different failure mode.
         </p>
 
-        <h2>1. Temperature 0 + clear system prompt (10-15% reduction)</h2>
+        <h2>1. Temperature 0 + a clear system prompt</h2>
         <p>
           The cheapest win. Set <code>temperature=0</code> for any task
           that involves factual recall (not creative writing). Add a
@@ -127,25 +126,24 @@ export default function GroundingStrategiesPost() {
 Never invent dates, parameter counts, paper authors, or citations.
 If the user asks for a specific fact you're uncertain about, decline.`}</code></pre>
         <p>
-          Doesn&apos;t fix hallucinations — but reduces obvious ones
-          where the model would otherwise confabulate fluently. Free.
-          5 minutes to ship.
+          This does not make factual output trustworthy. It is a cheap baseline
+          that makes the intended refusal behavior explicit and can make repeated
+          runs more consistent.
         </p>
 
-        <h2>2. Few-shot examples (15-25% reduction on extraction tasks)</h2>
+        <h2>2. Few-shot examples for narrow extraction tasks</h2>
         <p>
           For structured-output tasks (extract dates, names, prices),
           show the model 3-5 examples of correct extraction before
-          asking it to do the real task. Few-shot prompting beats
-          zero-shot for narrow factual extraction by 15-25% in our
-          experience.
+          asking it to do the real task. Evaluate few-shot against zero-shot
+          on your own labeled examples; the result depends on the model and task.
         </p>
         <p>
           Best for: information extraction, classification, formatting.
           Not effective for: open-ended generation, citation, summary.
         </p>
 
-        <h2>3. Retrieval-augmented generation (20-40% reduction)</h2>
+        <h2>3. Retrieval-augmented generation</h2>
         <p>
           The dominant strategy. Embed your knowledge base, retrieve
           top-K relevant chunks at query time, splice into the prompt:
@@ -160,8 +158,9 @@ CONTEXT:
 
 USER: When did Llama 3.1 come out?`}</code></pre>
         <p>
-          Catches roughly 60% of fabricated-source hallucinations. The
-          remaining 30-40% gap is what we&apos;ll address next.
+          Retrieval can give the model relevant evidence, but it does not force
+          the model to use that evidence correctly. Measure retrieval recall and
+          answer support separately on a task-specific evaluation set.
         </p>
         <p>
           Frameworks: <a href="/docs/integrations/langchain/">LangChain</a>,{" "}
@@ -171,7 +170,7 @@ USER: When did Llama 3.1 come out?`}</code></pre>
           Weaviate, Qdrant, Chroma, pgvector</a>.
         </p>
 
-        <h2>4. Citation requirement + post-hoc check (closes ~50% of RAG&apos;s residual gap)</h2>
+        <h2>4. Citation requirement + post-hoc check</h2>
         <p>
           The classic RAG failure: retriever pulls the right document,
           model still emits wrong number on the page. The fix: force
@@ -188,9 +187,9 @@ context. If you cannot cite a claim, mark it [^unverified].`}</code></pre>
           user.
         </p>
         <p>
-          Costs: latency for the post-process pass + ~10% prompt
-          overhead from citation instructions. Catches: most of the
-          right-doc-wrong-number cases.
+          Costs include extra tokens, latency, and a verification pass. The
+          benefit is inspectability: unsupported statements can be blocked or
+          routed for review instead of silently reaching the user.
         </p>
 
         <h2>5. Signed-claim verification (catches the long tail)</h2>
@@ -214,10 +213,11 @@ context. If you cannot cite a claim, mark it [^unverified].`}</code></pre>
           The fix: query a separate verified-claim catalog post-
           generation. Extract atomic assertions from the response;
           look each up against a source-of-truth. We built{" "}
-          <a href="/claims/">SourceScore VERITAS</a> for this — 346
-          hand-verified AI/ML claims with primary sources + HMAC
-          signatures. Free tier, no signup. ~80ms per claim. Catches
-          ~30% of RAG&apos;s residual hallucination gap.
+          <a href="/claims/">SourceScore VERITAS</a> for this narrow AI/ML
+          use case: 384 hand-reviewed claims, each linked to primary evidence,
+          with stable IDs and SourceScore-issued HMAC integrity metadata. The
+          public API is free and requires no signup. It is a fixed catalog, not
+          a general truth oracle.
         </p>
         <p>
           For other verticals (non-AI/ML), Wikipedia + Wolfram Alpha +
@@ -252,14 +252,14 @@ context. If you cannot cite a claim, mark it [^unverified].`}</code></pre>
           <li>Few-shot examples for narrow tasks — free</li>
           <li>RAG over your knowledge base — moderate cost</li>
           <li>Citation requirement + post-process check — low cost</li>
-          <li>Signed-claim verification on residual claims — ~80ms per claim</li>
+          <li>Catalog lookup on residual claims — adds a network request</li>
           <li>Constrained decoding for schema-required outputs — moderate cost</li>
         </ol>
         <p>
-          Combined, you can drive hallucination on AI/ML factual
-          queries from ~30% (raw GPT-4o) down to ~3-5%. That&apos;s
-          still not zero — but it&apos;s the difference between a
-          chatbot users complain about and one they recommend.
+          Combining the layers can reduce different classes of failure, but the
+          result is only as good as your evaluation set. Report task-specific
+          supported-answer and abstention rates rather than a universal
+          “hallucination reduction” percentage.
         </p>
 
         <h2>What doesn&apos;t work</h2>
@@ -303,6 +303,23 @@ context. If you cannot cite a claim, mark it [^unverified].`}</code></pre>
         </p>
 
         <h2>Related</h2>
+        <div className="not-prose mb-7 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-5">
+          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
+            Try the catalog before you design around it
+          </h3>
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            The public API and playground are live. Higher-volume paid access is
+            only a demand test today—there is no checkout or paid SLA yet.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3 text-sm">
+            <a href="/playground/" data-event="veritas_try" data-event-source="grounding-guide" className="px-4 py-2 rounded border border-zinc-300 dark:border-zinc-700 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800">
+              Try the free playground
+            </a>
+            <a href="/api-access/" data-event="api_access_interest" data-event-source="grounding-guide" className="px-4 py-2 rounded border border-zinc-300 dark:border-zinc-700 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800">
+              Request paid-tier updates
+            </a>
+          </div>
+        </div>
         <ul>
           <li><a href="/concepts/llm-grounding/">LLM grounding — full concept pillar</a></li>
           <li><a href="/concepts/hallucination/">Hallucination categories + root causes</a></li>

@@ -4,7 +4,7 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 export const metadata: Metadata = {
   title: { absolute: "About SourceScore" },
   description:
-    "SourceScore is the reference index for AI-citation quality plus VERITAS, the signed-claim verification API for LLM developers. About the project, methodology, and editorial policy.",
+    "SourceScore is a reference index for citation quality plus VERITAS, a curated AI/ML claim catalog API. About the project, methodology, and editorial policy.",
   alternates: { canonical: "https://sourcescore.org/about/" },
 };
 
@@ -20,7 +20,7 @@ const orgSchema = {
   url: "https://sourcescore.org",
   logo: "https://sourcescore.org/logo.svg",
   description:
-    "Transparent reference index for AI-citation quality (source-rating product) and signed claim verification for LLM developers (VERITAS API product).",
+    "Transparent reference index for AI-citation quality plus a curated AI/ML claim catalog for developer evidence-review workflows.",
   email: "hello@caslonmedia.com",
   // Entity-coherence per Aleyda Solis #3 Recognizable + #7 Credible.
   // Public surfaces where SourceScore (the brand-entity) is verifiable.
@@ -60,7 +60,7 @@ const orgSchema = {
       name: "SourceScore VERITAS",
       url: "https://sourcescore.org/claims/",
       description:
-        "Signed claim verification API for LLM developers — 346 hand-verified AI/ML claims spanning 1997-2025 at v0.1, expanding to 5,000+ in Year 1.",
+        "Claim catalog API for LLM developers — 384 hand-verified AI/ML claims spanning 1997-2025 at v0.1.",
     },
   ],
   foundingDate: "2026-04",
@@ -138,8 +138,8 @@ export default function AboutPage() {
       <p className="text-body-lg text-muted leading-relaxed mb-8">
         SourceScore is two products on one domain: a transparent AI-citation
         quality index that scores 130+ reference sources, and{" "}
-        <strong>VERITAS</strong> &mdash; a signed, sourced claim verification
-        API for LLM developers building grounded retrieval. Both ship under
+        <strong>VERITAS</strong> &mdash; a curated, sourced claim catalog API
+        for LLM developers building evidence-review workflows. Both ship under
         one editorial methodology you can re-derive any time.
       </p>
 
@@ -151,8 +151,8 @@ export default function AboutPage() {
           no published ranking, no transparent rubric. SourceScore publishes
           a transparent rubric and ranks sources against it. Anyone can
           re-derive any score from the underlying signals. And on the API
-          side, every verified claim ships with its primary sources, an
-          HMAC-SHA256 signature, and a ready-to-paste citation &mdash; built
+          side, every verified claim ships with cited primary evidence and a
+          ready-to-paste citation &mdash; built
           for grounding LLM responses without re-doing source-quality work
           yourself.
         </p>
@@ -191,7 +191,9 @@ export default function AboutPage() {
           <a href="/methodology/" className="text-brand hover:underline">
             published methodology
           </a>
-          ; both are independently re-derivable.
+          . The public record and cited evidence can be rechecked; the current
+          HMAC integrity tag is SourceScore-issued metadata rather than a public
+          independently verifiable signature.
         </p>
 
         <h2 className="text-heading-2 font-bold pt-4">Get in touch</h2>

@@ -2,8 +2,7 @@
 //
 // Single-screen path from "I'm curious" to "I've made my first API call."
 // Aleyda Solis 10-char #10 Transactable + activation-stage UX. No signup
-// gate; free tier is 1k calls/month with no key required for read-only
-// catalog access. Keep this page short — every extra paragraph is a
+// gate; the public API needs no account or key. Keep this page short — every extra paragraph is a
 // drop-off opportunity.
 
 import type { Metadata } from "next";
@@ -12,7 +11,7 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 export const metadata: Metadata = {
   title: "Quickstart — SourceScore VERITAS",
   description:
-    "5-minute path from zero to your first verified-claim API call. curl + JavaScript + Python in three blocks. No signup required for the free tier.",
+    "5-minute path from zero to your first verified-claim API call. curl + JavaScript + Python in three blocks. No account, key, or signup required.",
   alternates: { canonical: "https://sourcescore.org/quickstart/" },
   openGraph: {
     title: "VERITAS Quickstart — first API call in 5 min",
@@ -49,9 +48,9 @@ export default function QuickstartPage() {
             step: [
               {
                 "@type": "HowToStep",
-                name: "Verify a free-form claim",
+                name: "Match a free-form claim to the catalog",
                 text:
-                  "POST your claim to /api/v1/verify and read the bestMatch field. Returns confidence + claim id + canonical citation URL.",
+                  "POST your claim to /api/v1/verify and inspect bestMatch. It is a candidate record with a canonical citation URL, not a truth verdict.",
                 url: "https://sourcescore.org/quickstart/#step-1",
               },
               {
@@ -65,7 +64,7 @@ export default function QuickstartPage() {
                 "@type": "HowToStep",
                 name: "Fetch a signed envelope",
                 text:
-                  "GET /api/v1/claims/<id>.json for the full HMAC-signed envelope with verbatim source excerpts.",
+                  "GET /api/v1/claims/<id>.json for the full record with cited evidence and canonical URL.",
                 url: "https://sourcescore.org/quickstart/#step-3",
               },
             ],
@@ -84,22 +83,23 @@ export default function QuickstartPage() {
           5 minutes · no signup required
         </p>
         <h1 className="text-3xl sm:text-4xl font-semibold leading-tight mb-3">
-          Verify your first claim
+          Find your first catalog match
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
-          Three calls. Pick the language you're already in. Free tier is
-          1,000 verifications per month — no key required for read-only
-          catalog access.
+          Three calls. Pick the language you're already in. The public API is
+          free and needs no account or key. Standard network abuse controls
+          may apply.
         </p>
       </header>
 
       <section id="step-1" className="mb-10">
         <h2 className="text-xl font-semibold mb-3">
-          Step 1 — Verify a claim
+          Step 1 — Find a candidate record
         </h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
-          Send a free-form statement; get back the best matching signed
-          claim with confidence + canonical citation URL.
+          Send a free-form statement; get back candidate catalog records with
+          similarity metadata and canonical citation URLs. Compare the returned
+          statement and cited evidence with your input.
         </p>
 
         <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2 mt-4">
@@ -120,7 +120,7 @@ export default function QuickstartPage() {
   }),
 });
 const { bestMatch } = await r.json();
-console.log(bestMatch?.statement, bestMatch?.confidence);
+console.log("Candidate record:", bestMatch?.statement);
 // → "Transformer architecture introduced_in_paper: Attention Is All You Need (Vaswani et al., 2017)." 1.0`}</code></pre>
 
         <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2 mt-4">
@@ -133,13 +133,13 @@ r = requests.post(
 )
 best = r.json().get("bestMatch")
 if best:
-    print(best["statement"], best["confidence"])
+    print("Candidate record:", best["statement"])
     print(f"Citation: https://sourcescore.org/claims/{best['id']}/")`}</code></pre>
 
         <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
-          <strong>What you get:</strong> a typed bestMatch object with the
-          full statement, confidence (0-1), claim id, and a canonical URL
-          you can render as a citation badge in your UI.
+          <strong>What you get:</strong> a typed candidate record with its
+          statement, legacy editorial-confidence metadata, claim ID, and a
+          canonical URL. A match is retrieval—not proof that your input is true.
         </p>
       </section>
 
@@ -161,39 +161,36 @@ curl https://sourcescore.org/api/v1/claims.json | jq '.claims | length'
 
       <section id="step-3" className="mb-10">
         <h2 className="text-xl font-semibold mb-3">
-          Step 3 — Fetch a signed envelope
+          Step 3 — Fetch the full record
         </h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           When you need the full provenance (verbatim source excerpts,
-          HMAC-SHA256 signature, methodology version) for a specific
+          SourceScore-issued HMAC integrity metadata, methodology version) for a specific
           claim, fetch the envelope.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`curl https://sourcescore.org/api/v1/claims/<claim_id>.json`}</code></pre>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-3">
           Replace <code className="font-mono">&lt;claim_id&gt;</code> with
           the id returned from step 1 or step 2. The envelope ships with{" "}
-          <code className="font-mono">signature</code> = HMAC-SHA256 over
-          canonical-JSON of the claim fields + signing metadata. See{" "}
-          <a href="/docs/integrations/langchain/#pattern-3" className="underline">
-            signature verification
-          </a>{" "}
-          for the local re-compute pattern.
+          <code className="font-mono">signature</code> HMAC metadata is not
+          publicly independently verifiable because the shared secret is not
+          published. Refetch this canonical URL and inspect the cited evidence.
         </p>
       </section>
 
       <section className="mb-10 bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-900 rounded-lg p-5">
         <h2 className="text-lg font-semibold mb-2">That's it.</h2>
         <p className="text-sm leading-relaxed">
-          You just made a verified-claim API call. Wire this into your
+          You just made a catalog-matching API call. Wire this into your
           LangChain, LlamaIndex, or tool-call chain via the{" "}
           <a href="/docs/integrations/" className="underline font-semibold">
             integration guides
           </a>
           . Or pin a specific high-confidence claim into your prompt as
-          context. The free tier covers 1,000 calls per month — when you
-          outgrow it,{" "}
+          context. If you need higher volume, private claim sets, or a service
+          commitment,{" "}
           <a href="/pricing/" className="underline font-semibold">
-            tier up
+            request higher-volume access
           </a>
           .
         </p>
@@ -209,16 +206,16 @@ curl https://sourcescore.org/api/v1/claims.json | jq '.claims | length'
             • <a href="/docs/integrations/" className="underline">Framework integrations</a> — LangChain, LlamaIndex, OpenAI tool-calls
           </li>
           <li>
-            • <a href="/claims/" className="underline">Browse the catalog</a> — 346 verified AI/ML claims
+            • <a href="/claims/" className="underline">Browse the catalog</a> — 384 verified AI/ML claims
           </li>
           <li>
-            • <a href="/methodology/" className="underline">How we verify</a> — ≥2 primary sources, verbatim excerpts, no performance comparisons
+            • <a href="/methodology/" className="underline">How we verify</a> — cited primary evidence, source counts, and exclusions
           </li>
           <li>
             • <a href="/api/v1/openapi.json" className="underline">OpenAPI spec</a> — generate clients in any language
           </li>
           <li>
-            • <a href="/pricing/" className="underline">Pricing</a> — Free / Indie €19 / Startup €99 / Scale €499
+            • <a href="/pricing/" className="underline">Pricing</a> — free API and proposed higher-volume tiers
           </li>
         </ul>
       </section>

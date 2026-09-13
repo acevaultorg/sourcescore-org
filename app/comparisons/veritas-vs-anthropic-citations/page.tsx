@@ -120,7 +120,7 @@ export default function VeritasVsAnthropicCitationsPage() {
               <tr>
                 <td>Cite-format</td>
                 <td>Sentence-level character-range citations into your docs</td>
-                <td>Stable claim ID + HMAC signature + canonical /claims/[id]/ URL</td>
+                <td>Stable claim ID + canonical /claims/[id]/ URL + cited evidence</td>
               </tr>
               <tr>
                 <td>Locked to provider</td>
@@ -130,7 +130,7 @@ export default function VeritasVsAnthropicCitationsPage() {
               <tr>
                 <td>Verifiability outside the model</td>
                 <td>Not signed — trust Anthropic</td>
-                <td>HMAC-SHA256 — recompute locally with shared secret</td>
+                <td>Refetch canonical HTTPS record and inspect cited evidence</td>
               </tr>
               <tr>
                 <td>External citability</td>
@@ -140,12 +140,12 @@ export default function VeritasVsAnthropicCitationsPage() {
               <tr>
                 <td>Pricing</td>
                 <td>Same as Claude API tokens (input + output)</td>
-                <td>1,000/mo free; €19-499/mo paid tiers</td>
+                <td>Free public API; higher-volume paid access is only a proposal</td>
               </tr>
               <tr>
                 <td>Latency</td>
                 <td>Within Claude API call (single round-trip)</td>
-                <td>~80ms separate API call</td>
+                <td>One separate API call; measure from your deployment region</td>
               </tr>
               <tr>
                 <td>Scope</td>
@@ -184,7 +184,8 @@ export default function VeritasVsAnthropicCitationsPage() {
         <h2>What SourceScore VERITAS does</h2>
         <p>
           You query a curated catalog of pre-verified claims. Each
-          claim has ≥2 primary sources, HMAC-SHA256 signature, stable
+          claim cites primary evidence (368 of 384 have two or more sources),
+          SourceScore-issued integrity metadata, and a stable
           16-hex ID, and a public canonical URL.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`{
@@ -225,7 +226,7 @@ export default function VeritasVsAnthropicCitationsPage() {
             Single-vendor stack is OK
           </li>
           <li>
-            Latency-critical (single round-trip beats two)
+            You want to avoid an additional external catalog request
           </li>
         </ul>
 
@@ -353,7 +354,7 @@ export default function VeritasVsAnthropicCitationsPage() {
           Already on Claude API? Pair Anthropic Citations API for
           user-supplied doc RAG + VERITAS for AI/ML reference facts.
           Browse the{" "}
-          <a href="/claims/" className="underline">346 verified claims</a>
+          <a href="/claims/" className="underline">384 verified claims</a>
           {" "}or run the{" "}
           <a href="/quickstart/" className="underline">5-min quickstart</a>.
         </p>

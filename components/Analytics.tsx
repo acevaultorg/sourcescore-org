@@ -23,6 +23,7 @@ const EVENT_DELEGATE = `
     try{
       var el = e.target && e.target.closest && e.target.closest('[data-event]');
       if(!el) return;
+      if(el.tagName === 'FORM' && e.type !== 'submit') return;
       var name = el.getAttribute('data-event');
       if(!name) return;
       var props = {}, d = el.dataset, k, pk;
@@ -42,6 +43,8 @@ const EVENT_DELEGATE = `
   document.addEventListener('click', fire, true);
   // middle-click opens in a new tab without firing 'click' in some browsers
   document.addEventListener('auxclick', function(e){ if(e.button === 1) fire(e); }, true);
+  // Track keyboard and button form submissions once, at the form boundary.
+  document.addEventListener('submit', fire, true);
 })();
 `;
 

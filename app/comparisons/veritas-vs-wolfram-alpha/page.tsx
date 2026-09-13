@@ -79,7 +79,8 @@ export default function VeritasVsWolframAlphaPage() {
         <p>
           <strong>VERITAS verifies.</strong> Give it &quot;Llama 3.1
           was released in July 2024&quot; and it returns a verification
-          envelope: yes/no, with primary sources, with a signature.
+          envelope with the closest catalog match, primary sources, and
+          SourceScore-issued HMAC metadata. The match is not a truth verdict.
           The answer is retrieved from a hand-curated catalog, not
           computed.
         </p>
@@ -100,9 +101,9 @@ export default function VeritasVsWolframAlphaPage() {
           <tbody>
             <tr><td>Core operation</td><td>Compute</td><td>Verify</td></tr>
             <tr><td>Input</td><td>Math / science / data query</td><td>Natural-language claim</td></tr>
-            <tr><td>Output shape</td><td>Computed value + derivation</td><td>Verified envelope + sources + signature</td></tr>
+            <tr><td>Output shape</td><td>Computed value + derivation</td><td>Catalog match + cited sources + integrity metadata</td></tr>
             <tr><td>Coverage</td><td>Math, science, geography, finance, more</td><td>AI/ML research (v0)</td></tr>
-            <tr><td>Cost</td><td>$5+/month, usage-based</td><td>Free 1k/mo, then €19+</td></tr>
+            <tr><td>Cost</td><td>Check Wolfram&apos;s current API terms</td><td>Public v0 endpoints are free; paid tiers are not live</td></tr>
             <tr><td>Best for</td><td>Math, calculations, structured-data lookup</td><td>Citation, fact verification, audit trails</td></tr>
           </tbody>
         </table>
@@ -120,7 +121,7 @@ export default function VeritasVsWolframAlphaPage() {
         <h3>Use VERITAS when:</h3>
         <ul>
           <li>You need to verify factual assertions about AI/ML topics</li>
-          <li>You need cryptographic signatures on every response</li>
+          <li>You need structured claim records with cited primary evidence</li>
           <li>You need atomic claim shape (subject + predicate + object) rather than computed value</li>
           <li>You&apos;re building a generate-then-verify pipeline for AI-research applications</li>
         </ul>
@@ -150,7 +151,7 @@ export default function VeritasVsWolframAlphaPage() {
             <strong>VERITAS:</strong> POST /api/v1/verify returns the
             verified claim &quot;Llama 3.1 has 128k context window&quot;
             with primary sources (Meta AI blog + Hugging Face model
-            card) + signature.
+            card) + SourceScore-issued HMAC metadata.
           </li>
         </ul>
         <p>
@@ -176,7 +177,7 @@ export default function VeritasVsWolframAlphaPage() {
         <h2>What we&apos;re not</h2>
         <p>
           VERITAS doesn&apos;t do math. We don&apos;t do general
-          knowledge. We&apos;re narrow + signed + atomic. Wolfram&apos;s
+          knowledge. We&apos;re narrow, sourced, and atomic. Wolfram&apos;s
           50-year curated database + computational engine is a
           different value proposition that we don&apos;t and won&apos;t
           compete with.

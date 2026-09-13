@@ -11,7 +11,7 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 const TITLE = "Developer copilot grounding — stop AI coding tools from hallucinating libraries";
 const SUBTITLE =
-  "AI coding assistants (Cursor, Windsurf, Copilot, Continue, Bolt, Lovable, v0) frequently invent package names, hallucinate API signatures, and fabricate documentation citations. SourceScore VERITAS adds signed, sourced claim verification — verify framework/library facts the model emits before the code reaches the user.";
+  "AI coding assistants can invent package names, API signatures, and citations. SourceScore VERITAS can retrieve candidate records for a bounded set of AI/ML facts; package and API validation still needs authoritative registries and documentation.";
 const CANONICAL = "https://sourcescore.org/use-cases/developer-copilot/";
 const PUBLISHED = "2026-05-17";
 
@@ -203,8 +203,8 @@ export default function DeveloperCopilotPage() {
         <p>
           After the assistant emits code or explanation, extract
           factual assertions (model names + library versions + paper
-          citations + release dates), verify each, annotate the
-          unverified ones in the editor margin.
+          citations + release dates), retrieve candidate records, and annotate
+          items that still need evidence review in the editor margin.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`// TypeScript — Continue.dev / Cursor extension integration
 async function verifyAssistantOutput(text: string) {
@@ -220,17 +220,16 @@ async function verifyAssistantOutput(text: string) {
   );
   return results.map((r, i) => ({
     claim: assertions[i],
-    verified: !!r.bestMatch,
-    badge: r.bestMatch ? \`✓ Source: \${r.bestMatch.id}\` : "⚠ unverified",
+    candidateFound: !!r.bestMatch,
+    badge: r.bestMatch ? \`Candidate source: \${r.bestMatch.id}\` : "No catalog candidate",
   }));
 }`}</code></pre>
 
         <h3>Pattern 2 — Pre-suggestion sanity check (server-side gate)</h3>
         <p>
-          For cloud-hosted coding tools (Bolt.new, Lovable, v0,
-          Replit), run verification server-side after the model
-          generates its plan; reject or rewrite plans that depend
-          on hallucinated APIs before the code reaches the user.
+          For cloud-hosted coding tools, run candidate lookup server-side
+          after the model generates its plan. Send exact statement and source
+          comparisons to review before accepting or rewriting the plan.
         </p>
 
         <h3>Pattern 3 — Reference panel (sidebar widget)</h3>
@@ -238,10 +237,10 @@ async function verifyAssistantOutput(text: string) {
           When the user types &quot;What context window does Mistral
           Pixtral have?&quot;, the assistant calls{" "}
           <code>GET /api/v1/search?q=mistral+pixtral</code>, shows
-          the verified claim card in the reference sidebar with
+          a candidate claim-record card in the reference sidebar with
           link to the canonical{" "}
           <code>/claims/[id]/</code> page. User gets the answer
-          with citation + verification badge.
+          with a citation-review link, not a truth badge.
         </p>
 
         <h2>What this use-case catches</h2>
@@ -294,23 +293,14 @@ async function verifyAssistantOutput(text: string) {
         <h2>Economics for coding tools</h2>
         <ul>
           <li>
-            <strong>Free tier:</strong> 1,000 verifications/month —
-            fits a single dev evaluating + a few hundred users.
-          </li>
-          <li>
-            <strong>Startup (€99/mo):</strong> 100,000 — fits a
-            growing coding-tool startup with ~1k DAU.
-          </li>
-          <li>
-            <strong>Scale (€499/mo):</strong> 1M — fits 10k+ DAU
-            production coding tools.
+            <strong>Public API:</strong> free with no account or key; measure
+            request volume and latency in your own deployment.
           </li>
         </ul>
         <p>
-          See <a href="/pricing/" className="underline">pricing</a>.
-          {" "}For coding-tool integrations at &gt;1M verifications/mo,
-          email <a href="/contact/" className="underline">contact</a>
-          {" "}for custom enterprise terms.
+          The <a href="/pricing/" className="underline">higher-volume prices</a>{" "}
+          are a demand test, not purchasable plans. Teams can share expected
+          volume and reliability needs without creating an order or contract.
         </p>
 
         <h2>Getting started</h2>
@@ -321,7 +311,7 @@ async function verifyAssistantOutput(text: string) {
           </li>
           <li>
             Browse the{" "}
-            <a href="/claims/" className="underline">346 verified claims</a>
+            <a href="/claims/" className="underline">384 reviewed claim records</a>
             {" "}— if your coding-tool users frequently ask about
             AI/ML topics, the catalog already covers most common
             queries

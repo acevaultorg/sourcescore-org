@@ -155,40 +155,40 @@ export default function HallucinationConcept() {
           </li>
         </ol>
 
-        <h2 id="rates">Measured rates (2026 data)</h2>
+        <h2 id="rates">Why rates vary</h2>
         <p>
-          Hallucination rate depends heavily on domain, model, and
-          prompt. Published research on frontier models in 2026
-          generally shows:
+          Hallucination frequency depends heavily on domain, model, prompt,
+          retrieval setup, and how errors are measured. Compare results only
+          within a clearly defined evaluation:
         </p>
         <ul>
           <li>
-            <strong>~1-5% on well-trodden questions.</strong> Capitals of
+            <strong>Well-trodden questions.</strong> Capitals of
             countries, basic biology, common math. The training set
             covered these heavily; the model has redundant evidence.
           </li>
           <li>
-            <strong>~5-15% on moderately specialized queries.</strong>{" "}
+            <strong>Moderately specialized queries.</strong>{" "}
             History of a tech company, mid-list scientist&apos;s
             publications, named software features. The training set has
             some coverage; the model interpolates.
           </li>
           <li>
-            <strong>~15-40% on long-tail technical questions.</strong>{" "}
+            <strong>Long-tail technical questions.</strong>{" "}
             Specific library version features, niche academic results,
             recent events past the training cutoff. The training set is
             thin or absent; the model fabricates plausibly.
           </li>
           <li>
-            <strong>~30-60% on citation tasks.</strong> &quot;List 5
+            <strong>Citation tasks.</strong> &quot;List 5
             papers that introduced technique X.&quot; The model is
             statistically rewarded for producing 5 entries even when
             fewer real ones exist, leading to invented citations.
           </li>
         </ul>
         <p>
-          These rates have dropped roughly 2x year-over-year since 2022
-          but haven&apos;t reached zero. They likely won&apos;t — the
+          No single rate applies across systems. The training objective
+          and the factuality objective are different — the
           training objective (next-token plausibility) and the
           factuality objective (assertion correctness) aren&apos;t the
           same thing.
@@ -233,21 +233,21 @@ export default function HallucinationConcept() {
           </li>
         </ol>
 
-        <h2 id="mitigations">What reduces hallucination (ordered by impact)</h2>
+        <h2 id="mitigations">Ways to manage hallucination risk</h2>
         <ol>
           <li>
             <strong>Signed-claim verification</strong> (see{" "}
             <a href="/concepts/llm-grounding/">LLM grounding</a>).
             Post-process every assertion against a verified-claim
             catalog. Unverified assertions get flagged or stripped.
-            Reduces hallucination from ~15-40% to &lt;1% on covered
-            domains. Cost: per-call latency + catalog curation.
+            This can support review on covered domains, but it does not prove
+            final output is correct. Cost: added checks and catalog curation.
           </li>
           <li>
             <strong>Retrieval-augmented generation.</strong> Insert
-            retrieved context into the prompt. Cuts hallucination
-            roughly in half on covered domains. Cost: vector DB +
-            retrieval latency.
+            retrieved context into the prompt. It can improve evidence access,
+            but results depend on the corpus and retrieval setup. Cost: vector
+            DB + retrieval work.
           </li>
           <li>
             <strong>Confidence calibration.</strong> Train the model to
@@ -377,7 +377,7 @@ export default function HallucinationConcept() {
             5 minutes
           </li>
           <li>
-            <a href="/claims/">Browse the catalog</a> — 346 hand-verified
+            <a href="/claims/">Browse the catalog</a> — 384 hand-verified
             AI/ML claims
           </li>
         </ul>

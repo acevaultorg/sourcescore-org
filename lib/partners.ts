@@ -14,9 +14,10 @@
 // (SLOT1 / SLOT2) carry name + note env vars too, so a program we have not
 // anticipated still activates without touching code.
 //
-// LIVE AS OF 2026-08-11: Rankscale.ai (approved, Rewardful). Its URL is set in
-// .gitlab-ci.yml `variables:` — a public referral link, committed so the CI build
-// that actually renders the HTML can see it. Every other slot is still dormant.
+// LIVE AS OF 2026-09-13: Rankscale.ai, Mangools AI Search Watcher, SE Ranking,
+// and Morningscore. Public referral destinations have repository defaults so
+// local and CI builds render the same approved programs. Every other slot stays
+// dormant unless its explicit environment variable is set.
 
 export type Partner = {
   /** Stable analytics key — becomes the `partner` prop on the affiliate_click event. */

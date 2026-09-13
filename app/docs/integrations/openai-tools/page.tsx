@@ -4,13 +4,13 @@ import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 import { openaiToolsHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
-  title: "OpenAI tool calls + SourceScore VERITAS — auto-grounding via function calling",
+  title: "OpenAI tool calls + SourceScore VERITAS — evidence retrieval via function calling",
   description:
-    "Expose SourceScore VERITAS as native function-calls in the OpenAI Chat Completions API. The model auto-invokes verify_claim() / search_claims() when it needs grounded facts. Python + JS examples.",
+    "Expose SourceScore VERITAS as native OpenAI function calls for catalog search and candidate evidence retrieval. Matches require comparison before use. Python + JS examples.",
   alternates: { canonical: "https://sourcescore.org/docs/integrations/openai-tools/" },
   openGraph: {
     title: "OpenAI tool calls + SourceScore VERITAS",
-    description: "Native function-calling for signed-claim grounding.",
+    description: "Native function-calling for catalog retrieval and evidence review.",
     url: "https://sourcescore.org/docs/integrations/openai-tools/",
     type: "article",
   },
@@ -25,9 +25,9 @@ export default function OpenAIToolsIntegration() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TechArticle",
-            headline: "OpenAI tool-calls + SourceScore VERITAS: auto-grounding via function calling",
+            headline: "OpenAI tool-calls + SourceScore VERITAS: evidence retrieval via function calling",
             description:
-              "Define VERITAS as two tool-call functions (search_claims, verify_claim) and let the model decide when to invoke them. Native function-calling means zero retrieval prompt-engineering.",
+              "Define VERITAS as two retrieval tools (search_claims and find_claim_candidate), then require statement and evidence comparison before citing a record.",
             datePublished: "2026-05-16",
             dateModified: "2026-05-16",
             author: { "@type": "Organization", name: "SourceScore", url: "https://sourcescore.org" },
@@ -71,9 +71,9 @@ export default function OpenAIToolsIntegration() {
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
           Define VERITAS as two function-call tools and let the model
-          decide when to ground itself. Zero retrieval prompt-engineering;
+          decide when to request catalog evidence;
           the model invokes <code className="font-mono">search_claims</code>
-          or <code className="font-mono">verify_claim</code> automatically
+          or <code className="font-mono">find_claim_candidate</code> automatically
           when uncertain.
         </p>
       </header>
@@ -104,11 +104,10 @@ export default function OpenAIToolsIntegration() {
     {
         "type": "function",
         "function": {
-            "name": "verify_claim",
+            "name": "find_claim_candidate",
             "description": (
-                "Verify a specific assertion against the VERITAS catalog. "
-                "Returns a confidence score and the matching claim id if found. "
-                "Use this when you have a specific statement to check before asserting it."
+                "Retrieve a similar record from the bounded VERITAS catalog. "
+                "A match is a candidate for evidence comparison, not proof that the input is true."
             ),
             "parameters": {
                 "type": "object",
@@ -136,7 +135,7 @@ def call_tool(name: str, args: dict) -> dict:
     if name == "search_claims":
         r = requests.get(f"{VERITAS}/search", params={"q": args["query"], "limit": args.get("limit", 5)})
         return r.json()
-    if name == "verify_claim":
+    if name == "find_claim_candidate":
         r = requests.post(
             f"{VERITAS}/verify",
             json={"claim": args["statement"], "minConfidence": args.get("min_confidence", 0.85)},
@@ -146,9 +145,9 @@ def call_tool(name: str, args: dict) -> dict:
 
 messages = [
     {"role": "system", "content": (
-        "Use search_claims or verify_claim to ground any AI/ML factual claim "
-        "before asserting it. Cite the returned claim_id with every grounded "
-        "fact in the final answer."
+        "Use search_claims or find_claim_candidate to retrieve possible AI/ML evidence. "
+        "A match score is similarity, not truth confidence. Compare the candidate statement "
+        "and cited evidence with the assertion; cite it only when it supports the exact fact."
     )},
     {"role": "user", "content": "When was the Transformer architecture introduced and by whom?"},
 ]
@@ -189,7 +188,7 @@ async function callTool(name, args) {
     const q = new URLSearchParams({ q: args.query, limit: args.limit ?? 5 });
     return (await fetch(\`\${VERITAS}/search?\${q}\`)).json();
   }
-  if (name === "verify_claim") {
+  if (name === "find_claim_candidate") {
     return (await fetch(\`\${VERITAS}/verify\`, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -200,7 +199,7 @@ async function callTool(name, args) {
 }
 
 const messages = [
-  { role: "system", content: "Use search_claims or verify_claim to ground any AI/ML factual claim. Cite claim_id." },
+  { role: "system", content: "Use search_claims or find_claim_candidate to retrieve possible evidence. Compare the exact candidate statement and cited sources before citing it; similarity is not truth confidence." },
   { role: "user", content: "When was the Transformer architecture introduced?" },
 ];
 
@@ -227,9 +226,9 @@ while (true) {
         <h2 className="text-xl font-semibold mb-3">Why this pattern</h2>
         <ul className="text-sm text-zinc-700 dark:text-zinc-300 list-disc pl-6 space-y-2">
           <li>
-            <strong>Zero prompt engineering</strong> — the model invokes
-            tools by signature alone. No "you must always search before
-            answering" boilerplate.
+            <strong>Structured retrieval</strong> — the model invokes
+            tools with typed arguments. Your system prompt still defines when
+            evidence review is required.
           </li>
           <li>
             <strong>Conditional retrieval</strong> — the model skips the
@@ -254,7 +253,7 @@ while (true) {
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`tools_anthropic = [
     {
         "name": "search_claims",
-        "description": "Search the SourceScore VERITAS catalog of verified AI/ML claims.",
+        "description": "Search the SourceScore VERITAS catalog for candidate AI/ML records.",
         "input_schema": {
             "type": "object",
             "properties": {
@@ -264,7 +263,7 @@ while (true) {
             "required": ["query"],
         },
     },
-    # ... same for verify_claim
+    # ... same for find_claim_candidate; compare evidence before use
 ]`}</code></pre>
       </section>
 

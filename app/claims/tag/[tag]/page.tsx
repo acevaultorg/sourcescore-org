@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!entry) return { title: "Tag not found" };
 
   const title = `Claims tagged "${entry.label}" — SourceScore VERITAS`;
-  const description = `${entry.claims.length} verified AI/ML claim${entry.claims.length === 1 ? "" : "s"} tagged "${entry.label}". Each has 2+ primary sources, HMAC-SHA256 signature, ready-to-paste citation.`;
+  const description = `${entry.claims.length} verified AI/ML claim${entry.claims.length === 1 ? "" : "s"} tagged "${entry.label}". Each cites primary evidence; some records have one source and others have two or more.`;
   return {
     // Content-value audit (2026-05-29): tag archive pages are navigational
     // aggregations. Thin ones (<6 claims, ~under 250w of links) are noindexed
@@ -130,7 +130,8 @@ export default async function TagPage({ params }: PageProps) {
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg">
           {entry.claims.length} verified claim{entry.claims.length === 1 ? "" : "s"} carrying
-          this tag. Each has 2+ primary sources and an HMAC-SHA256 signature.
+          this tag. Each cites primary evidence; the source count is shown on
+          every record.
         </p>
       </header>
 

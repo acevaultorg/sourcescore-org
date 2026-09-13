@@ -17,7 +17,7 @@ interface HowToSchema {
 }
 
 const COMMON_SUPPLY = [
-  { "@type": "HowToSupply" as const, name: "SourceScore VERITAS API (free tier: 1,000 calls/month)" },
+  { "@type": "HowToSupply" as const, name: "SourceScore VERITAS public API (free, no signup)" },
 ];
 
 export const llamaindexHowTo: HowToSchema = {
@@ -36,7 +36,7 @@ export const llamaindexHowTo: HowToSchema = {
     { "@type": "HowToStep", position: 1, name: "Install dependencies", text: "pip install llama-index httpx" },
     { "@type": "HowToStep", position: 2, name: "Define VeritasRetriever", text: "Subclass BaseRetriever; in _retrieve, POST claim to /api/v1/verify and return matching node(s) with claim metadata." },
     { "@type": "HowToStep", position: 3, name: "Wire into QueryEngine", text: "Pass VeritasRetriever as retriever in RetrieverQueryEngine.from_args(); add VeritasNodePostprocessor for confidence-stamped citations." },
-    { "@type": "HowToStep", position: 4, name: "Test on AI/ML factual queries", text: "Query 'When was Llama 3.1 released?'. Confirm response includes signed claim envelope + detailUrl citation." },
+    { "@type": "HowToStep", position: 4, name: "Test on AI/ML factual queries", text: "Query 'When was Llama 3.1 released?'. Inspect the candidate record and detailUrl, then compare its statement and cited evidence with the input." },
   ],
 };
 
@@ -45,7 +45,7 @@ export const haystackHowTo: HowToSchema = {
   "@type": "HowTo",
   name: "Integrate SourceScore VERITAS with Haystack",
   description:
-    "Wire VERITAS into a Haystack 2.x pipeline as a custom retriever component plus a verify component that drops unverified documents.",
+    "Wire VERITAS into a Haystack 2.x pipeline as a custom candidate-record retriever plus an explicit evidence-review stage.",
   totalTime: "PT20M",
   tool: [
     { "@type": "HowToTool", name: "Haystack" },
@@ -55,7 +55,7 @@ export const haystackHowTo: HowToSchema = {
   step: [
     { "@type": "HowToStep", position: 1, name: "Install dependencies", text: "pip install haystack-ai requests" },
     { "@type": "HowToStep", position: 2, name: "Build a VeritasRetriever component", text: "Decorate a class with @component; in run(query), GET /api/v1/search and return Haystack Documents carrying claim_id, confidence, and detailUrl in meta." },
-    { "@type": "HowToStep", position: 3, name: "Add a VeritasVerifier component", text: "A @component that POSTs each Document to /api/v1/verify and keeps only those with a bestMatch at or above minConfidence." },
+    { "@type": "HowToStep", position: 3, name: "Add a review component", text: "POST each Document to /api/v1/verify, then compare the candidate statement and cited evidence. Do not treat bestMatch as a truth verdict." },
     { "@type": "HowToStep", position: 4, name: "Wire the pipeline", text: "Pipeline.add_component for retriever, PromptBuilder, and OpenAIGenerator; connect retriever.documents to prompt.documents to llm.prompt, then run." },
   ],
 };
@@ -65,7 +65,7 @@ export const langgraphHowTo: HowToSchema = {
   "@type": "HowTo",
   name: "Integrate SourceScore VERITAS into LangGraph",
   description:
-    "Wire VERITAS into a LangGraph StateGraph: a retrieve node that pulls signed claims, plus a verify node that confirms the generated answer is backed by a signed claim.",
+    "Wire VERITAS into a LangGraph StateGraph: a retrieve node that pulls candidate claim records, plus a review node that compares generated assertions with cited evidence.",
   totalTime: "PT20M",
   tool: [
     { "@type": "HowToTool", name: "LangGraph" },
@@ -74,8 +74,8 @@ export const langgraphHowTo: HowToSchema = {
   supply: COMMON_SUPPLY,
   step: [
     { "@type": "HowToStep", position: 1, name: "Install dependencies", text: "pip install langgraph langchain-openai requests" },
-    { "@type": "HowToStep", position: 2, name: "Add a veritas_retrieve node", text: "GET /api/v1/search and put the returned results[] (signed claims) into graph state." },
-    { "@type": "HowToStep", position: 3, name: "Add a veritas_verify node", text: "POST the generated answer to /api/v1/verify; mark the run grounded when a bestMatch is returned." },
+    { "@type": "HowToStep", position: 2, name: "Add a veritas_retrieve node", text: "GET /api/v1/search and put the returned candidate records into graph state." },
+    { "@type": "HowToStep", position: 3, name: "Add an evidence-review node", text: "POST the generated answer to /api/v1/verify, then compare any bestMatch statement and sources before assigning a grounded status." },
     { "@type": "HowToStep", position: 4, name: "Wire the StateGraph", text: "set_entry_point(retrieve); conditional edge to generate when claims exist; generate to verify to END; compile + invoke." },
   ],
 };
@@ -85,7 +85,7 @@ export const openaiToolsHowTo: HowToSchema = {
   "@type": "HowTo",
   name: "Expose SourceScore VERITAS as an OpenAI tool",
   description:
-    "Declare verify_claim as a function in OpenAI Chat Completions tools. The model auto-invokes when uncertain about a factual claim.",
+    "Declare find_claim_candidate as an OpenAI tool, then compare any returned record and cited evidence before use.",
   totalTime: "PT15M",
   tool: [
     { "@type": "HowToTool", name: "OpenAI SDK" },
@@ -94,9 +94,9 @@ export const openaiToolsHowTo: HowToSchema = {
   supply: COMMON_SUPPLY,
   step: [
     { "@type": "HowToStep", position: 1, name: "Install dependencies", text: "pip install openai httpx OR npm install openai" },
-    { "@type": "HowToStep", position: 2, name: "Define tool schema", text: "Declare verify_claim function with claim (string) + min_confidence (number, default 0.85) parameters in chat.completions.create tools array." },
+    { "@type": "HowToStep", position: 2, name: "Define tool schema", text: "Declare find_claim_candidate with claim and min_confidence parameters; describe it as retrieval rather than factual verification." },
     { "@type": "HowToStep", position: 3, name: "Implement agent loop", text: "On stop_reason='tool_calls', POST to /api/v1/verify; append tool result message; re-invoke chat.completions until final text." },
-    { "@type": "HowToStep", position: 4, name: "Update system prompt", text: "Instruct the model to verify any factual AI/ML assertion before emitting it." },
+    { "@type": "HowToStep", position: 4, name: "Update system prompt", text: "Instruct the model to retrieve candidate records and cite only evidence the application has compared with the intended assertion." },
   ],
 };
 
@@ -115,9 +115,9 @@ export const vercelAiSdkHowTo: HowToSchema = {
   supply: COMMON_SUPPLY,
   step: [
     { "@type": "HowToStep", position: 1, name: "Install dependencies", text: "npm install ai @ai-sdk/openai" },
-    { "@type": "HowToStep", position: 2, name: "Define verify_claim tool", text: "Use tool() helper with zod schema for claim + min_confidence; fetch /api/v1/verify in execute." },
-    { "@type": "HowToStep", position: 3, name: "Add to streamText", text: "Pass tool in streamText({ tools: { verify_claim: ... } }) in your /api/chat route." },
-    { "@type": "HowToStep", position: 4, name: "Render in UI", text: "Use useChat hook; tool invocations stream client-side and render verified-claim citations inline." },
+    { "@type": "HowToStep", position: 2, name: "Define candidate lookup tool", text: "Use tool() with a Zod schema for claim and min_confidence; fetch /api/v1/verify in execute and label the result as a candidate." },
+    { "@type": "HowToStep", position: 3, name: "Add to streamText", text: "Pass the candidate lookup tool to streamText in your /api/chat route." },
+    { "@type": "HowToStep", position: 4, name: "Render in UI", text: "Use useChat; show candidate-record citations separately from assertions that passed your own evidence-review policy." },
   ],
 };
 
@@ -126,7 +126,7 @@ export const dspyHowTo: HowToSchema = {
   "@type": "HowTo",
   name: "Integrate SourceScore VERITAS into DSPy",
   description:
-    "Wire VERITAS into a DSPy program as a custom Retrieve module + verify post-processor. Compatible with DSPy optimizers.",
+    "Wire VERITAS into a DSPy program as a custom Retrieve module plus a candidate-review post-processor.",
   totalTime: "PT25M",
   tool: [
     { "@type": "HowToTool", name: "DSPy" },
@@ -136,8 +136,8 @@ export const dspyHowTo: HowToSchema = {
   step: [
     { "@type": "HowToStep", position: 1, name: "Install dependencies", text: "pip install dspy-ai httpx" },
     { "@type": "HowToStep", position: 2, name: "Define VeritasRetrieve", text: "Subclass dspy.Retrieve; in forward, POST query to /api/v1/search and return dspy.Examples with claim_id, confidence, canonical URL metadata." },
-    { "@type": "HowToStep", position: 3, name: "Define VeritasVerify post-processor", text: "Subclass dspy.Module; after answer generation, extract assertions and verify each via /api/v1/verify; return verified/unverified split + verification_rate metric." },
-    { "@type": "HowToStep", position: 4, name: "Compose ProgramOfThought", text: "Chain retrieve → reason → verify in a multi-hop DSPy program. Use verification_rate as the optimizer metric for prompt tuning." },
+    { "@type": "HowToStep", position: 3, name: "Define a candidate-match post-processor", text: "After generation, extract assertions and retrieve candidates via /api/v1/verify. A bestMatch is similarity, not entailment." },
+    { "@type": "HowToStep", position: 4, name: "Compose ProgramOfThought", text: "Chain retrieve → reason → evidence review in a multi-hop DSPy program. Optimize against a human-labeled support metric, not bestMatch rate." },
   ],
 };
 
@@ -146,7 +146,7 @@ export const pydanticAiHowTo: HowToSchema = {
   "@type": "HowTo",
   name: "Integrate SourceScore VERITAS as a Pydantic AI tool",
   description:
-    "Type-safe verify_claim tool with VerifyClaimInput → VerificationResult Pydantic models. Validators catch confidence drift; downstream code is type-safe.",
+    "Type-safe find_claim_candidate tool with Pydantic request and response models. Schema validation catches shape errors; evidence support still needs a separate check.",
   totalTime: "PT15M",
   tool: [
     { "@type": "HowToTool", name: "Pydantic AI" },
@@ -155,9 +155,9 @@ export const pydanticAiHowTo: HowToSchema = {
   supply: COMMON_SUPPLY,
   step: [
     { "@type": "HowToStep", position: 1, name: "Install dependencies", text: "pip install pydantic-ai httpx" },
-    { "@type": "HowToStep", position: 2, name: "Define Pydantic models", text: "Create VerifyClaimInput (claim + min_confidence) and VerificationResult (best_match + sources + signature) Pydantic models." },
-    { "@type": "HowToStep", position: 3, name: "Register tool with agent", text: "Decorate verify_claim function with @agent.tool; agent emits structured tool calls; runtime validates against schemas before execution." },
-    { "@type": "HowToStep", position: 4, name: "Use structured agent output", text: "Set result_type=AnsweredQuestion with verification_status + primary_sources fields; model populates structured object instead of free text." },
+    { "@type": "HowToStep", position: 2, name: "Define Pydantic models", text: "Model the actual /verify shape: query, method, note, matches, optional bestMatch, and optional signature." },
+    { "@type": "HowToStep", position: 3, name: "Register tool with agent", text: "Decorate find_claim_candidate with @agent.tool; runtime validates tool input and response shape before the application reviews evidence." },
+    { "@type": "HowToStep", position: 4, name: "Use structured agent output", text: "Return candidate and reviewed-support fields separately so type safety is not mistaken for factual validation." },
   ],
 };
 
@@ -166,7 +166,7 @@ export const anthropicSdkHowTo: HowToSchema = {
   "@type": "HowTo",
   name: "Expose SourceScore VERITAS as a Claude tool via Anthropic SDK",
   description:
-    "Wire verify_claim into Claude's tool-use protocol: tool_use → execute → tool_result loop. Python + TypeScript examples.",
+    "Wire find_claim_candidate into Claude's tool-use protocol, then require statement and evidence comparison. Python + TypeScript examples.",
   totalTime: "PT15M",
   tool: [
     { "@type": "HowToTool", name: "Anthropic SDK" },
@@ -175,9 +175,9 @@ export const anthropicSdkHowTo: HowToSchema = {
   supply: COMMON_SUPPLY,
   step: [
     { "@type": "HowToStep", position: 1, name: "Install Anthropic SDK", text: "pip install anthropic httpx OR npm install @anthropic-ai/sdk" },
-    { "@type": "HowToStep", position: 2, name: "Define tool with input_schema", text: "Declare verify_claim tool with claim (string) + min_confidence (number) input schema; description tells Claude when to invoke." },
+    { "@type": "HowToStep", position: 2, name: "Define tool with input_schema", text: "Declare find_claim_candidate with claim and min_confidence input; its description must say a result is not a truth verdict." },
     { "@type": "HowToStep", position: 3, name: "Implement agent loop", text: "On stop_reason='tool_use', execute tool function (POST /api/v1/verify), append tool_result message, continue loop until final text response." },
-    { "@type": "HowToStep", position: 4, name: "Add self-verify system prompt", text: "Instruct Claude to call verify_claim before asserting any AI/ML factual claim. Claude self-grounds without downstream extraction." },
+    { "@type": "HowToStep", position: 4, name: "Add a retrieval system prompt", text: "Instruct Claude to retrieve candidates and require downstream statement/evidence comparison before asserting support." },
   ],
 };
 
@@ -186,7 +186,7 @@ export const instructorHowTo: HowToSchema = {
   "@type": "HowTo",
   name: "Integrate SourceScore VERITAS with Instructor",
   description:
-    "Type-safe structured outputs with parse-time VERITAS verification. Failed verification triggers Instructor's auto-retry.",
+    "Type-safe structured outputs with parse-time candidate retrieval. Schema failures can trigger Instructor retries; factual support still needs evidence review.",
   totalTime: "PT15M",
   tool: [
     { "@type": "HowToTool", name: "Instructor" },
@@ -196,7 +196,7 @@ export const instructorHowTo: HowToSchema = {
   step: [
     { "@type": "HowToStep", position: 1, name: "Install dependencies", text: "pip install instructor httpx pydantic" },
     { "@type": "HowToStep", position: 2, name: "Define ClaimAnswer model", text: "Pydantic model with claim + answer + source_url + confidence fields; @model_validator hook calls /api/v1/verify at parse-time." },
-    { "@type": "HowToStep", position: 3, name: "Set max_retries on completion", text: "client.chat.completions.create(response_model=ClaimAnswer, max_retries=3). Failed verification raises ValueError; Instructor retries with updated prompt." },
-    { "@type": "HowToStep", position: 4, name: "Compose multi-claim research summary", text: "Define ResearchSummary with key_claims: List[VerifiedClaim]; every list entry verified individually at parse-time before downstream code receives the typed object." },
+    { "@type": "HowToStep", position: 3, name: "Set max_retries on completion", text: "Use Instructor retries for schema or missing-candidate failures, not as proof that a rephrased assertion became true." },
+    { "@type": "HowToStep", position: 4, name: "Compose multi-claim research summary", text: "Keep candidate records separate from claims that passed a human or dedicated entailment review." },
   ],
 };

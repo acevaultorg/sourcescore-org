@@ -86,25 +86,11 @@ if (existsSync(claimsCatalogPath)) {
 }
 
 // ── Affiliate-link integrity ──────────────────────────────────────────────
-// Same failure shape as the dev-fallback-signature check above, and it nearly
-// shipped on 2026-08-11: the NEXT_PUBLIC_AFF_* values live ONLY in
-// .gitlab-ci.yml, so a local `npm run deploy` (clean → build → wrangler) builds
-// them as empty strings. lib/partners.ts then filters those slots out silently,
-// the build succeeds, and every affiliate link on 131 pages disappears. Nothing
-// is broken-looking; the site just stops earning.
-//
-// It was already half-realised when this guard was written — out/ carried 131
-// RankScale links and 0 Mangools, because the tree predated the Mangools slot.
-//
-// So: out/ must contain EVERY live program, each with its full tracking ID.
-//
-// Note the first draft of this guard only failed on a PARTIAL set and waved
-// through zero-across-the-board as "a legitimately unmonetized build". That is
-// precisely backwards: a local build produces ZERO, not a partial set, so the
-// lenient branch would have permitted the exact deploy this guard exists to
-// stop. This site has live programs — zero is never legitimate here. If a
-// program is ever genuinely retired, delete its row below in the same commit
-// that removes its .gitlab-ci.yml var.
+// The buyer guide must contain every approved live program with its complete
+// tracking destination. Public repository defaults keep local and CI builds in
+// parity, while this guard catches accidental removal or an incomplete URL.
+// If a program is genuinely retired, update this list and lib/partners.ts in
+// the same commit.
 {
   const PROGRAMS = [
     { name: "RankScale", needle: "https://rankscale.ai?via=paulo" },
@@ -112,30 +98,54 @@ if (existsSync(claimsCatalogPath)) {
     // comment, which is exactly how citationdesk shipped this link stripped on
     // 2026-08-11 — so assert on the ID, never on the bare domain.
     { name: "Mangools", needle: "a6a7b136b6aee0841ae53d49e" },
+    { name: "SE Ranking", needle: "https://seranking.com/?ga=5248316&source=link" },
+    { name: "Morningscore", needle: "https://morningscore.io?fpr=paulo-de-vries-6a8fac" },
   ];
 
-  // /sources/ is the affiliate hub — the one page guaranteed to carry every
-  // active program. Cheaper and more reliable than walking all 131 pages.
-  const hub = resolve(root, "out/sources/index.html");
-  if (existsSync(hub)) {
-    const html = readFileSync(hub, "utf8");
-    const absent = PROGRAMS.filter((p) => !html.includes(p.needle));
-
-    if (absent.length > 0) {
-      console.error("❌ predeploy-guard: deploy blocked — affiliate links MISSING from out/.");
-      console.error(`   missing: ${absent.map((p) => p.name).join(", ")}`);
-      console.error(`   present: ${PROGRAMS.filter((p) => html.includes(p.needle)).map((p) => p.name).join(", ") || "(none)"}`);
-      console.error("");
-      console.error("   This is the silent-$0 build: the NEXT_PUBLIC_AFF_* vars were empty at build time, so");
-      console.error("   lib/partners.ts dropped those slots. The pages render perfectly and earn nothing.");
-      console.error("   Those vars live in .gitlab-ci.yml and CANNOT reach a local build.");
-      console.error("");
-      console.error("   Deploy via `git push origin main` → GitLab CI. Do NOT `npm run deploy` locally.");
-      console.error("   Shipping this out/ would zero the affiliate links on all 131 live pages.");
-      process.exit(1);
-    }
-    console.log(`✓ predeploy-guard: all ${PROGRAMS.length} affiliate programs intact in out/ (${PROGRAMS.map((p) => p.name).join(", ")}).`);
+  // The focused buyer-intent guide is the only page guaranteed to carry every
+  // active program. Informational source pages intentionally do not.
+  const hub = resolve(root, "out/ai-visibility-tools/index.html");
+  if (!existsSync(hub)) {
+    console.error("❌ predeploy-guard: deploy blocked — buyer guide is missing from out/.");
+    process.exit(1);
   }
+
+  const html = readFileSync(hub, "utf8");
+  // Next's HTML and RSC serializers encode '&' differently. Normalize both
+  // representations before checking complete tracking destinations.
+  const normalizedHtml = html
+    .replaceAll("&amp;", "&")
+    .replaceAll("\\u0026", "&");
+  const absent = PROGRAMS.filter((p) => !normalizedHtml.includes(p.needle));
+
+  if (absent.length > 0) {
+    console.error("❌ predeploy-guard: deploy blocked — affiliate links MISSING from out/.");
+    console.error(`   missing: ${absent.map((p) => p.name).join(", ")}`);
+    console.error(`   present: ${PROGRAMS.filter((p) => normalizedHtml.includes(p.needle)).map((p) => p.name).join(", ") || "(none)"}`);
+    console.error("");
+    console.error("   The focused buyer guide must preserve every approved partner destination.");
+    console.error("");
+    console.error("   Deploy via `git push origin main` → GitLab CI. Do NOT `npm run deploy` locally.");
+    console.error("   Shipping this out/ would break a measured commercial path.");
+    process.exit(1);
+  }
+
+  const affiliateEvents = html.match(/data-event="affiliate_click"/g)?.length ?? 0;
+  const compliantRels = html.match(/rel="sponsored nofollow noopener"/g)?.length ?? 0;
+  const paidLabels = html.match(/Paid link/g)?.length ?? 0;
+  if (
+    affiliateEvents < PROGRAMS.length ||
+    compliantRels < PROGRAMS.length ||
+    paidLabels < PROGRAMS.length
+  ) {
+    console.error("❌ predeploy-guard: deploy blocked — buyer-guide attribution or disclosure is incomplete.");
+    console.error(`   affiliate events: ${affiliateEvents}/${PROGRAMS.length}`);
+    console.error(`   compliant rel values: ${compliantRels}/${PROGRAMS.length}`);
+    console.error(`   paid-link labels: ${paidLabels}/${PROGRAMS.length}`);
+    process.exit(1);
+  }
+
+  console.log(`✓ predeploy-guard: all ${PROGRAMS.length} affiliate programs, events, and disclosures intact (${PROGRAMS.map((p) => p.name).join(", ")}).`);
 }
 
 // ── Analytics-tag guard (2026-09-10, fleet port of askedwell ab43f30) ─────────

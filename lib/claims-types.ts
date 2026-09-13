@@ -1,9 +1,8 @@
 // VERITAS-Reborn — claim-verification API type definitions.
 //
-// Schema v0 (2026-05-16). HMAC-SHA256 signing layer; W3C VC migration deferred
-// to v1 (Y2, enterprise customers). Built additive to existing source-scoring
-// types in lib/types.ts — these two type sets share no fields; they live on
-// the same domain as sister products.
+// Schema v0 (2026-05-16). HMAC-SHA256 integrity-metadata layer. Built additive
+// to existing source-scoring types in lib/types.ts — these two type sets share
+// no fields; they live on the same domain as sister products.
 //
 // Public on-disk surface (static export):
 //   /api/v1/claims/{id}.json       — per-claim signed envelope
@@ -15,13 +14,9 @@
 //   POST /api/v1/verify            — submit a natural-language claim, match against catalog
 //   GET  /api/v1/search?q=...      — keyword search
 //
-// Auth + billing (Day 8+, Postgres-backed):
-//   POST /api/v1/auth/signup       — Stripe Customer + API key issuance
-//   POST /api/v1/auth/key/rotate
-//   POST /api/v1/stripe/webhook
-//   GET  /api/v1/usage/{api_key}/current
+// The public API has no account, key, billing, or usage-metering system.
 
-/** Verticals served by VERITAS-Reborn (v0 = ai-ml only; expansion per quarter). */
+/** Verticals served by VERITAS-Reborn (v0 = ai-ml only). */
 export type ClaimVertical = "ai-ml";
 
 /** Source type — what kind of document/page provides evidence. */
@@ -101,13 +96,13 @@ export interface Claim {
   tags: string[];
 }
 
-/** Detached signature over a claim — HMAC-SHA256 in v0; W3C VC in v1. */
+/** SourceScore-issued HMAC metadata. Public users cannot recompute it without the secret. */
 export interface ClaimSignature {
   /** Algorithm — fixed at "HMAC-SHA256" in v0. */
   algorithm: "HMAC-SHA256";
   /**
    * Signing identity. v0 = "did:web:sourcescore.org" (placeholder DID).
-   * v1 = W3C VC issuer DID with cryptographic key resolution.
+   * A future schema may use a publicly verifiable issuer, but none is promised.
    */
   signedBy: string;
   /** ISO datetime when the signature was minted. */
@@ -170,7 +165,7 @@ export interface VerifyRequest {
   claim: string;
   /** Optional vertical filter. */
   vertical?: ClaimVertical;
-  /** Minimum confidence threshold for "verified" judgment. Default 0.85. */
+  /** Minimum legacy editorial record-confidence required for bestMatch. Default 0.85. */
   minConfidence?: number;
 }
 
@@ -179,7 +174,7 @@ export interface VerifyResponse {
   apiVersion: "v1";
   methodology: string;
   query: string;
-  /** Confidence threshold applied for the verdict (default 0.85). */
+  /** Legacy editorial record-confidence threshold applied to bestMatch. */
   minConfidence?: number;
   /**
    * Ranking method that produced `matches`: "semantic" = Workers AI bge-m3
@@ -194,11 +189,17 @@ export interface VerifyResponse {
     /** Plain-English explanation of why this matched. */
     rationale: string;
   }>;
-  /** Highest-scoring match if matchScore ≥ minConfidence; else undefined. */
+  /**
+   * Top candidate when it clears the method-specific retrieval floor and its
+   * record confidence clears minConfidence. This is not an entailment or truth verdict.
+   */
   bestMatch?: ClaimSummary;
-  /** True if no match cleared the threshold. */
+  /** Legacy field name: true when no candidate cleared both gates; not a falsehood verdict. */
   notVerified?: boolean;
-  signature: ClaimSignature;
+  /** Human-readable warning about similarity semantics. */
+  note: string;
+  /** Present only when the runtime has a signing secret. Not publicly recomputable. */
+  signature?: ClaimSignature;
 }
 
 /** Search response — GET /api/v1/search?q=... */
@@ -210,56 +211,41 @@ export interface SearchResponse {
   results: ClaimSummary[];
 }
 
-/** Subscription tier definitions — referenced from pricing page + Stripe metadata. */
+/** Offer concepts used on the pricing demand-test page. Only `free` is live. */
 export interface Tier {
   name: "free" | "indie" | "startup" | "scale";
   monthlyEur: number;
-  includedClaims: number;
-  overageEurPerClaim: number;
-  maxApiKeys: number | "unlimited";
-  /** Email-support SLA in hours. */
-  supportSlaHours: number;
-  /** Public uptime SLA percent. */
-  uptimeSla: number;
+  /** Proposed monthly volume. Null for the live, unmetered public API. */
+  includedClaims: number | null;
+  /** Whether this is usable now or shown only to test demand. */
+  availability: "live_free" | "proposal_only";
 }
 
-/** Canonical tier table — single source of truth for pricing-page + Stripe sync. */
+/** Pricing-page source of truth. Paid entries are proposals, not saleable plans. */
 export const TIERS: Tier[] = [
   {
     name: "free",
     monthlyEur: 0,
-    includedClaims: 1000,
-    overageEurPerClaim: 0,
-    maxApiKeys: 1,
-    supportSlaHours: 72,
-    uptimeSla: 99.0,
+    includedClaims: null,
+    availability: "live_free",
   },
   {
     name: "indie",
     monthlyEur: 19,
     includedClaims: 50_000,
-    overageEurPerClaim: 0.001,
-    maxApiKeys: 3,
-    supportSlaHours: 48,
-    uptimeSla: 99.5,
+    availability: "proposal_only",
   },
   {
     name: "startup",
     monthlyEur: 99,
     includedClaims: 500_000,
-    overageEurPerClaim: 0.0005,
-    maxApiKeys: 10,
-    supportSlaHours: 24,
-    uptimeSla: 99.5,
+    availability: "proposal_only",
   },
   {
     name: "scale",
     monthlyEur: 499,
     includedClaims: 5_000_000,
-    overageEurPerClaim: 0.0002,
-    maxApiKeys: "unlimited",
-    supportSlaHours: 4,
-    uptimeSla: 99.9,
+    availability: "proposal_only",
   },
 ];
 

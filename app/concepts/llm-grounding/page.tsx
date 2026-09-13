@@ -135,10 +135,9 @@ export default function LlmGroundingConcept() {
           Modern LLMs hallucinate confidently. They generate fluent,
           plausible, structurally-correct text that is sometimes
           factually wrong. The error rate depends heavily on domain:
-          frontier models in 2026 score &lt;5% hallucination on
-          well-trodden questions (capitals, recent news the training set
-          covered) and 15-40% on long-tail technical questions (which
-          version of a library shipped which feature in what month).
+          model behavior varies by task, model, prompting, retrieval, and
+          evaluation method. Treat any numeric rate as specific to its study,
+          rather than a universal property of a model or use case.
         </p>
         <p>
           Grounding doesn&apos;t fix hallucination — it makes hallucination{" "}
@@ -197,8 +196,8 @@ ASSISTANT: The Transformer was introduced in 2017 by Vaswani et al. [1]`}</code>
           or unverified. Embeddings retrieve <em>semantically similar</em>
           content, not <em>factually-correct</em> content. The model
           still drifts off the chunks because chunks aren&apos;t typed
-          contracts — they&apos;re prose. Hallucination rate drops from
-          ~30% to ~10% in typical RAG deployments, not to ~0%.
+          contracts — they&apos;re prose. RAG can improve evidence access, but it
+          does not guarantee factual output.
         </p>
 
         <h3 id="pattern-signed-claims">3. Signed-claim verification</h3>
@@ -209,17 +208,16 @@ ASSISTANT: The Transformer was introduced in 2017 by Vaswani et al. [1]`}</code>
           sources and a confidence score.
         </p>
         <p>
-          The model can&apos;t drift off a typed claim the way it drifts
-          off prose. And because every claim ships with a signature, the
-          chain can re-verify integrity locally — useful for high-stakes
-          deployments where you need to prove a claim wasn&apos;t modified
-          mid-flight.
+          Structured claims can make application-side checking easier, but they
+          do not mechanically prevent unsupported model output. SourceScore HMAC
+          tags are not publicly independently verifiable; refetch canonical
+          records and inspect cited evidence.
         </p>
         <p>
           This is the pattern SourceScore VERITAS implements. The catalog
           ships as a JSON twin (
           <a href="/api/v1/claims.json"><code>/api/v1/claims.json</code></a>
-          ) plus per-claim envelopes signed with HMAC-SHA256.
+          ) plus per-claim records with SourceScore-issued HMAC integrity metadata.
         </p>
         <p>
           <strong>When to use:</strong> high-precision domains where
@@ -255,14 +253,14 @@ ASSISTANT: The Transformer was introduced in 2017 by Vaswani et al. [1]`}</code>
               <tr>
                 <td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Per-query latency</td>
                 <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Low (no retrieval step)</td>
-                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">~50-200ms retrieval</td>
-                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">~50-150ms verification</td>
+                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Varies by retrieval stack</td>
+                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Varies by API and checks</td>
               </tr>
               <tr>
                 <td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Hallucination rate</td>
-                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">~5% (within scope)</td>
-                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">~10-15%</td>
-                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">&lt;1% on verified claims</td>
+                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Depends on evaluation</td>
+                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Depends on corpus and retrieval</td>
+                <td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Depends on coverage and final-output checks</td>
               </tr>
               <tr>
                 <td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Auditability</td>
@@ -352,10 +350,10 @@ ASSISTANT: The Transformer was introduced in 2017 by Vaswani et al. [1]`}</code>
             context window. Days to weeks.
           </li>
           <li>
-            Layer <strong>signed claims</strong> on top for the high-
-            precision sub-domain. Free tier available via{" "}
-            <a href="/quickstart/">VERITAS quickstart</a>; 5-minute
-            integration.
+            Layer a <strong>curated claim catalog</strong> on top for the
+            bounded domain. Public access is free via the{" "}
+            <a href="/quickstart/">VERITAS quickstart</a>. Treat matches as
+            candidate evidence and measure integration time in your own stack.
           </li>
         </ol>
         <p>
@@ -388,7 +386,7 @@ ASSISTANT: The Transformer was introduced in 2017 by Vaswani et al. [1]`}</code>
             for what makes it into the verified-claim catalog
           </li>
           <li>
-            <a href="/claims/">Browse the catalog</a> — 346 verified AI/ML
+            <a href="/claims/">Browse the catalog</a> — 384 verified AI/ML
             claims, each with primary sources and signatures
           </li>
         </ul>

@@ -5,13 +5,13 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 import { llamaindexHowTo } from "@/lib/howto-schemas";
 
 export const metadata: Metadata = {
-  title: "LlamaIndex + SourceScore VERITAS — ground LLM responses with signed claims",
+  title: "LlamaIndex + SourceScore VERITAS — retrieve candidate claim records",
   description:
-    "Wire SourceScore VERITAS into LlamaIndex as a custom retriever + node post-processor. Verified-claim grounding for QueryEngine and ChatEngine. Python examples.",
+    "Wire SourceScore VERITAS into LlamaIndex as a custom catalog retriever and candidate-annotation post-processor. Matches require evidence review. Python examples.",
   alternates: { canonical: "https://sourcescore.org/docs/integrations/llamaindex/" },
   openGraph: {
     title: "LlamaIndex + SourceScore VERITAS",
-    description: "Custom retriever + node verification for grounded LlamaIndex pipelines.",
+    description: "Custom retriever plus candidate annotation for evidence-review pipelines.",
     url: "https://sourcescore.org/docs/integrations/llamaindex/",
     type: "article",
   },
@@ -26,9 +26,9 @@ export default function LlamaIndexIntegration() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TechArticle",
-            headline: "LlamaIndex + SourceScore VERITAS: signed-claim retrieval + verification",
+            headline: "LlamaIndex + SourceScore VERITAS: candidate-record retrieval and review",
             description:
-              "Custom Retriever wrapping the VERITAS /search endpoint, plus a node post-processor for confidence-stamped citations. Works with QueryEngine and ChatEngine.",
+              "Custom Retriever wrapping the VERITAS /search endpoint, plus a node post-processor that labels possible catalog records for later evidence comparison.",
             datePublished: "2026-05-16",
             dateModified: "2026-05-16",
             author: { "@type": "Organization", name: "SourceScore", url: "https://sourcescore.org" },
@@ -71,9 +71,9 @@ export default function LlamaIndexIntegration() {
           LlamaIndex + SourceScore VERITAS
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
-          Custom retriever for signed claims + a node post-processor that
-          attaches verification badges. Drop-in for any QueryEngine or
-          ChatEngine.
+          Custom retriever for curated claim records plus a node post-processor
+          that attaches candidates for review. Similarity does not create a
+          verification badge.
         </p>
       </header>
 
@@ -89,7 +89,7 @@ export default function LlamaIndexIntegration() {
           translate VERITAS search hits into LlamaIndex nodes. Each node
           carries the claim id, confidence, and a back-link to the
           canonical page in <code className="font-mono">metadata</code> so
-          downstream prompts can render badges.
+          downstream prompts can render review links.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`import requests
 from typing import List
@@ -134,15 +134,15 @@ from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.response_synthesizers import get_response_synthesizer
 from llama_index.llms.openai import OpenAI
 
-qa_template = PromptTemplate("""You are a precise assistant. Answer using ONLY the verified
-claims below. Cite every fact with [claim_id]. If the claims do not cover
-the question, say so — do not improvise.
+qa_template = PromptTemplate("""You are a precise assistant. The records below are retrieval
+candidates, not truth verdicts. Use a record only when its exact statement supports
+your assertion; otherwise say the supplied evidence does not cover the question.
 
-Verified claims:
+Candidate records:
 {context_str}
 
 Question: {query_str}
-Answer (every fact ends with [claim_id]):""")
+Answer (cite [claim_id] only after exact-statement comparison):""")
 
 retriever = VeritasRetriever(top_k=5)
 synthesizer = get_response_synthesizer(
@@ -159,19 +159,19 @@ for n in resp.source_nodes:
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Post-process verification (NodePostProcessor)</h2>
+        <h2 className="text-xl font-semibold mb-3">Candidate annotation (NodePostProcessor)</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           For chains that already have a different primary retriever, you
-          can layer VERITAS as a post-processor that verifies each retrieved
-          node and drops anything that doesn't match a high-confidence
-          claim.
+          can layer VERITAS in as a post-processor that annotates each node
+          with a possible catalog record. It must not approve or drop content
+          from similarity alone; a downstream entailment or human review decides.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`import requests
 from typing import List, Optional
 from llama_index.core.postprocessor.types import BaseNodePostprocessor
 from llama_index.core.schema import NodeWithScore, QueryBundle
 
-class VeritasVerifyPostprocessor(BaseNodePostprocessor):
+class VeritasCandidatePostprocessor(BaseNodePostprocessor):
     min_confidence: float = 0.85
 
     def _postprocess_nodes(
@@ -188,9 +188,10 @@ class VeritasVerifyPostprocessor(BaseNodePostprocessor):
             ).json()
             best = r.get("bestMatch")
             if best:
-                n.node.metadata["veritas_claim_id"] = best["id"]
-                n.node.metadata["veritas_confidence"] = best["confidence"]
-                out.append(n)
+                n.node.metadata["veritas_candidate_id"] = best["id"]
+                n.node.metadata["veritas_candidate_url"] = best["detailUrl"]
+                n.node.metadata["veritas_requires_review"] = True
+            out.append(n)  # similarity alone never approves or rejects the node
         return out
 `}</code></pre>
       </section>

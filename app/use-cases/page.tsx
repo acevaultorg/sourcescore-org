@@ -25,49 +25,49 @@ const USE_CASES = [
     slug: "ai-agent-grounding",
     title: "AI agent grounding",
     summary:
-      "Stop agents from hallucinating release dates, parameter counts, and architectural facts in multi-step tool-using chains. Drop verify_claim into the agent's tool catalog.",
+      "Retrieve candidate catalog evidence for AI/ML assertions in tool-using chains, then compare the statement and sources before use.",
     audience: "Agent developers using LangChain/LlamaIndex/OpenAI tools",
   },
   {
     slug: "rag-pipeline-verification",
     title: "RAG pipeline verification",
     summary:
-      "Add a verification layer to existing RAG. Retrieval pulls the right doc but the model still emits wrong numbers; verify-then-respond catches the gap.",
+      "Add a candidate-record lookup to existing RAG, followed by an explicit evidence or entailment check before responding.",
     audience: "Teams running production RAG with hallucination tickets",
   },
   {
     slug: "research-citation",
     title: "Research citation tooling",
     summary:
-      "Programmatic citations for academic + research AI tools. Stable claim IDs, primary sources with verbatim excerpts, HMAC signatures for reproducibility.",
+      "Programmatic citation candidates for research AI tools, with stable claim IDs, cited evidence, and explicit review before formal citation.",
     audience: "Research labs, academic AI projects, citation-required builds",
   },
   {
     slug: "customer-support-bot",
     title: "Customer-support chatbot grounding",
     summary:
-      "Stop bots from hallucinating product pricing, integrations, rate limits, AI/ML facts. Two-catalog pattern (your own product facts + SourceScore VERITAS) with route-to-human on unverified claims.",
+      "Use your own authoritative product-facts catalog plus SourceScore candidates for bounded AI/ML facts, routing unsupported assertions to a human.",
     audience: "SaaS support teams, product chatbot builders",
   },
   {
     slug: "content-moderation",
     title: "Content moderation — fact-check LLM outputs",
     summary:
-      "Pre-publish verification gate for newsletter generators, blog assistants, report drafters. Extract atomic claims, verify each, flag or strip unverified before publish.",
+      "Pre-publish evidence-review queue for generated drafts. Extract assertions, retrieve possible records, and require entailment or human review.",
     audience: "Editorial AI tools, content-generation platforms, marketing automation",
   },
   {
     slug: "news-fact-checking",
-    title: "News fact-checking — AI-assisted newsroom verification",
+    title: "News fact-checking — AI-assisted evidence review",
     summary:
-      "Verification API for newsroom AI tools: explainer-bot drafts, archive search, breaking-news context, fact-check workflow. ClaimReview-aware envelopes + verbatim-quote primary sources reduce retraction risk in AI-generated newsroom output.",
+      "A bounded AI/ML catalog can supply candidate evidence for editorial review; it is not a live-news source or automatic publish gate.",
     audience: "Newsroom tech teams, journalism AI tooling, fact-check organizations",
   },
   {
     slug: "developer-copilot",
     title: "Developer copilot grounding — stop coding assistants hallucinating libraries",
     summary:
-      "AI coding tools (Cursor, Windsurf, Continue, Bolt, Lovable, v0, Copilot) frequently invent package names, hallucinate API signatures, misattribute paper citations. Verify the AI/ML factual layer the model emits — model release dates, framework version specs, paper authorship — before code reaches the user.",
+      "Pair authoritative package and documentation checks with SourceScore candidates for the bounded AI/ML facts a coding assistant emits.",
     audience: "AI coding-tool teams, IDE extension builders, AI-pair-programmer products",
   },
 ];
@@ -116,9 +116,9 @@ export default function UseCasesIndex() {
           Use cases
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
-          Concrete deployment patterns for grounding LLM applications with
-          signed, sourced claims. Each use case bundles problem statement,
-          integration pattern, code snippet, and expected outcomes.
+          Concrete deployment patterns for adding bounded catalog retrieval and
+          evidence review to LLM applications. Each use case includes limits as
+          well as an implementation sketch.
         </p>
       </header>
 

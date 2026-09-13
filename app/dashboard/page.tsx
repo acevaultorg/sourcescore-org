@@ -1,25 +1,13 @@
-// VERITAS-Reborn dashboard (Day 1 placeholder).
-//
-// Until operator-action #2 (Neon/Supabase Postgres provisioning) + the Day
-// 8+ auth flow lands, the dashboard surfaces a placeholder explaining the
-// roadmap state. Free-tier users link out to /docs/; paid early-access
-// users link out to /signup/ to invoice the operator.
-//
-// Day 8+ refactor:
-//   - Server component: read API key from cookie/Authorization header
-//   - Postgres lookup: SELECT user_id, plan_tier, ... FROM api_keys JOIN users
-//   - Render: live MTD usage chart (Plausible/CF Analytics → JSON),
-//     API key rotation UX, Stripe customer portal embed, billing history
-//     (from stripe_events partition).
+// VERITAS dashboard placeholder. The public API has no accounts or dashboard;
+// no paid plan, billing portal, or provisioning workflow is live.
 
 import type { Metadata } from "next";
-import { TIERS } from "@/lib/claims-types";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 export const metadata: Metadata = {
   title: "Dashboard — SourceScore VERITAS API",
   description:
-    "Manage API keys, view usage, and configure your subscription. The self-serve dashboard is not live yet — keys are issued manually in the meantime.",
+    "The SourceScore VERITAS dashboard is not available. The public API requires no account; proposed higher-volume access can be requested.",
   alternates: { canonical: "https://sourcescore.org/dashboard/" },
   robots: {
     // Placeholder page until real dashboard ships; no indexing value.
@@ -56,31 +44,25 @@ export default function DashboardPage() {
           Dashboard
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg">
-          The self-serve dashboard is not live yet. Until it is, API keys are
-          issued manually — here is exactly how that works today.
+          There is no dashboard, account system, paid API-key provisioning, or
+          billing service today.
         </p>
       </header>
 
       <section className="mb-8 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
-        <h2 className="text-lg font-semibold mb-2">What this page will do</h2>
-        <ul className="text-sm space-y-1 list-disc pl-5 text-zinc-600 dark:text-zinc-400">
-          <li>Live month-to-date usage chart (claims served per day, per API key)</li>
-          <li>API key management (create, rotate, label, revoke)</li>
-          <li>Stripe customer portal embed (update payment method, cancel, invoices)</li>
-          <li>Plan tier + remaining quota + projected overage</li>
-          <li>Webhook configuration (Startup + Scale tiers)</li>
-        </ul>
+        <h2 className="text-lg font-semibold mb-2">Use the public API</h2>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">The public API is free and needs no signup, account, or key. Current endpoints and usage guidance are in the documentation.</p>
       </section>
 
       <section className="mb-8 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
         <h2 className="text-lg font-semibold mb-2">Until then</h2>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-          The free tier ({TIERS[0]!.includedClaims.toLocaleString()} claims/mo)
-          is fully usable today — no signup required. For paid tiers, email{" "}
+          For higher-volume needs, email{" "}
           <a href="mailto:hello@caslonmedia.com" className="underline">
             hello@caslonmedia.com
           </a>{" "}
-          and we&rsquo;ll send an invoice + issue a key manually in &lt;24h.
+          with your use case and expected volume. This is a demand request, not
+          an order, account, invoice, or access promise.
         </p>
         <div className="flex flex-wrap gap-3 text-sm">
           <a
@@ -96,21 +78,21 @@ export default function DashboardPage() {
             Pricing
           </a>
           <a
-            href="/signup/"
+            href="/api-access/"
             className="px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900"
           >
-            Sign up
+            Request access
           </a>
         </div>
       </section>
 
       <section className="text-sm text-zinc-600 dark:text-zinc-400">
         <p>
-          Want a specific dashboard feature on day 1?{" "}
+          Want to share an API use case?{" "}
           <a href="mailto:hello@caslonmedia.com" className="underline">
             Tell us
           </a>{" "}
-          — we prioritize the dev portal by what paid customers ask for first.
+          — it helps assess whether a higher-volume offering should be built.
         </p>
       </section>
     </main>

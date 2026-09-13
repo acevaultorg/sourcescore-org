@@ -104,10 +104,10 @@ export default async function ClaimPage({ params }: PageProps) {
     mainEntity: [
       {
         "@type": "Question",
-        name: `Is the claim "${claim.statement}" verified?`,
+        name: `How has SourceScore reviewed the claim "${claim.statement}"?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Yes — SourceScore verified this claim with ${confidencePct}% confidence as of ${claim.lastVerified}. The verification uses ${claim.sources?.length || "multiple"} primary sources cross-referenced against the SourceScore methodology (version ${claim.methodologyVersion}). Full source list + signed JSON envelope linked below.`,
+          text: `SourceScore records this assertion with ${confidencePct}% legacy editorial confidence as of ${claim.lastVerified}, under methodology ${claim.methodologyVersion}. That metadata is not a truth guarantee. Inspect the ${claim.sources?.length || "listed"} cited source record(s), excerpts, and live evidence below.`,
         },
       },
       {
@@ -115,15 +115,15 @@ export default async function ClaimPage({ params }: PageProps) {
         name: `What is the evidence for "${claim.statement}"?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Evidence comes from ${claim.sources?.length || "multiple"} primary sources${claim.sources && claim.sources.length > 0 ? `: ${claim.sources.slice(0, 3).map(s => s.publisher).join(", ")}${claim.sources.length > 3 ? `, +${claim.sources.length - 3} more` : ""}` : ""}. Each source is listed below with verbatim excerpts and URLs. The signed JSON envelope at ${apiUrl} includes an HMAC-SHA256 signature for audit verification.`,
+          text: `The record lists ${claim.sources?.length || "multiple"} cited source(s)${claim.sources && claim.sources.length > 0 ? `: ${claim.sources.slice(0, 3).map(s => s.publisher).join(", ")}${claim.sources.length > 3 ? `, +${claim.sources.length - 3} more` : ""}` : ""}. Each is shown below with a short excerpt and URL. The JSON record at ${apiUrl} includes SourceScore-issued HMAC integrity metadata, not a public verification proof.`,
         },
       },
       {
         "@type": "Question",
-        name: `When was this claim last verified by SourceScore?`,
+        name: `When was this claim record last reviewed by SourceScore?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Last verified ${claim.lastVerified} under methodology version ${claim.methodologyVersion}. The signed JSON envelope is dated and cryptographically signed for audit trail. Re-verification cadence depends on the claim type and source freshness.`,
+          text: `Last reviewed ${claim.lastVerified} under methodology version ${claim.methodologyVersion}. The dated JSON record includes SourceScore-issued HMAC metadata, which is not publicly recomputable. Refetch the record and inspect current evidence before relying on it.`,
         },
       },
       {
@@ -131,7 +131,7 @@ export default async function ClaimPage({ params }: PageProps) {
         name: `How can I cite this SourceScore claim in my code or article?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Fetch the signed JSON envelope from ${apiUrl} which includes the verbatim claim, primary sources, confidence, methodology version, last-verified date, and HMAC-SHA256 signature for audit. The CC-BY-4.0 license permits commercial use with attribution to SourceScore.`,
+          text: `Fetch the JSON record from ${apiUrl}, including the verbatim claim, cited evidence, confidence, methodology version, and last-verified date. Refetch the canonical HTTPS record and inspect cited evidence; the HMAC tag is not publicly independently verifiable. The CC-BY-4.0 license permits commercial use with attribution to SourceScore.`,
         },
       },
     ],
@@ -188,10 +188,8 @@ export default async function ClaimPage({ params }: PageProps) {
         }}
       />
 
-      {/* ClaimReview — Google's structured-data type for fact-checking.
-          Unlocks fact-check rich snippets in Google SERPs + signals to
-          LLM crawlers that this is an authoritatively-reviewed claim
-          (Aleyda 10-char #4 Extractable + #6 Corroborated + #7 Credible). */}
+      {/* ClaimReview is machine-readable review metadata. Search and AI
+          platforms decide independently whether and how to use it. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -243,7 +241,7 @@ export default async function ClaimPage({ params }: PageProps) {
             "@context": "https://schema.org",
             "@type": "Dataset",
             name: `SourceScore Claim ${claim.id}`,
-            description: `Signed JSON envelope for: ${claim.statement} Includes verifying sources, confidence, HMAC-SHA256 signature.`,
+            description: `JSON claim record for: ${claim.statement} Includes cited evidence, confidence, and SourceScore-issued integrity metadata.`,
             url: apiUrl,
             license: "https://creativecommons.org/licenses/by/4.0/",
             creator: {
@@ -358,7 +356,7 @@ export default async function ClaimPage({ params }: PageProps) {
             href={`mailto:?subject=${encodeURIComponent(
               `Verified: ${claim.statement}`,
             )}&body=${encodeURIComponent(
-              `${claim.statement}\n\nVerified at: https://sourcescore.org/claims/${claim.id}/\n\nWith ${claim.sources.length} primary sources and an HMAC signature.`,
+              `${claim.statement}\n\nSourceScore record: https://sourcescore.org/claims/${claim.id}/\n\nWith ${claim.sources.length} cited source${claim.sources.length === 1 ? "" : "s"}.`,
             )}`}
             className="px-2.5 py-1 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800" data-event="share_email"
           >
@@ -518,7 +516,7 @@ export default async function ClaimPage({ params }: PageProps) {
         <h2 className="text-lg font-semibold mb-3">Embed this claim</h2>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
           Drop this iframe into any blog post, docs page, or knowledge base.
-          The widget renders the signed claim + primary source + click-through
+          The widget renders the claim record + top cited source + click-through
           to this canonical page. CC-BY 4.0; attribution included.
         </p>
         <code className="block text-xs sm:text-sm bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded p-3 overflow-x-auto font-mono whitespace-pre-wrap break-all">
@@ -559,9 +557,10 @@ export default async function ClaimPage({ params }: PageProps) {
       <section className="mb-10">
         <h2 className="text-xl font-semibold mb-4">Use this claim in your code</h2>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-          Fetch this signed envelope from your application. The response
-          includes the verbatim excerpt, primary source URLs, and an
-          HMAC-SHA256 signature you can verify locally for audit trails.
+          Fetch this record from your application. The response includes
+          verbatim excerpts, primary-source URLs, and SourceScore-issued HMAC
+          integrity metadata. Refetch the canonical HTTPS record and inspect
+          cited evidence; public users cannot independently verify the HMAC tag.
         </p>
 
         <div className="space-y-4">

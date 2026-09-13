@@ -7,15 +7,14 @@
 // /claims-index.json (emitted by scripts/generate-claims-json.ts). We fetch
 // it via env.ASSETS — Pages caches it after first load.
 //
-// Day 30+ migration: replace keyword scoring with sentence-transformer
-// embeddings + vector store (Vectorize on CF). For 26 claims at v0, keyword
-// is plenty.
+// A future version may replace keyword scoring with embeddings + a vector
+// store. The current 384-claim catalog intentionally uses the simpler path.
 //
 // CORS: permissive (Access-Control-Allow-Origin: *) — public-read endpoint,
 // no credentials. Developers call from browsers + servers + LLM agents alike.
 //
-// Rate limit: relies on CF network-level DDoS + future per-API-key tier
-// limits (Day 8+ when Postgres lands).
+// Network abuse protection is provider-managed; there is no account-level
+// meter or per-key tier in v0.
 
 const MAX_RESULTS = 50;
 const MIN_QUERY_LEN = 2;

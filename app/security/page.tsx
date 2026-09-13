@@ -10,11 +10,11 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 export const metadata: Metadata = {
   title: "Security — SourceScore VERITAS",
   description:
-    "Security policy, responsible-disclosure process, signing-key rotation schedule, and incident-response timelines for SourceScore VERITAS.",
+    "Security policy and responsible-disclosure process for SourceScore VERITAS, including the limits of its current integrity metadata.",
   alternates: { canonical: "https://sourcescore.org/security/" },
   openGraph: {
     title: "Security — SourceScore VERITAS",
-    description: "Responsible disclosure, signing-key rotation, incident response.",
+    description: "Responsible disclosure and current integrity-metadata limits.",
     url: "https://sourcescore.org/security/",
     type: "website",
   },
@@ -46,8 +46,8 @@ export default function SecurityPage() {
           Security
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
-          How we sign claims, rotate keys, handle disclosed vulnerabilities,
-          and respond to incidents. Honest about scope — read the limits
+          How we publish claim-integrity metadata, handle disclosed vulnerabilities,
+          and describe the limits of the current service. Read the limits
           section so you know exactly what we do and don't guarantee at this
           stage.
         </p>
@@ -91,64 +91,17 @@ export default function SecurityPage() {
       <section className="mb-10">
         <h2 className="text-xl font-semibold mb-3">Signing &amp; verification</h2>
         <p className="text-sm leading-relaxed mb-3">
-          Every claim envelope is signed with HMAC-SHA256 over a canonical
-          JSON serialization (sorted keys, ASCII-safe, no whitespace) of:
-          claim fields + <code className="font-mono">signedAt</code> +
-          <code className="font-mono">signedBy</code>. Re-compute locally
-          to verify integrity — see{" "}
-          <a href="/docs/integrations/langchain/#pattern-3" className="underline">
-            the signature-verification example
-          </a>{" "}
-          in the integration guide.
+          Claim records include an HMAC-SHA256 tag over a canonical JSON
+          serialization. This is SourceScore-issued integrity metadata, not a
+          public cryptographic proof: the shared secret is not published, so a
+          visitor cannot independently recompute the tag.
         </p>
         <p className="text-sm leading-relaxed mb-3">
-          <strong>Signer identity:</strong>{" "}
-          <code className="font-mono">did:web:sourcescore.org</code>. This
-          identifier is preserved across all key rotations; the underlying
-          key material changes, the public identity does not.
+          To check a public record, use HTTPS and refetch it from its canonical
+          SourceScore URL, then inspect its cited evidence. Do not treat the
+          HMAC tag as independently verifiable authentication or as proof of a
+          third party&rsquo;s endorsement.
         </p>
-        <p className="text-sm leading-relaxed">
-          <strong>Migration path:</strong> v0 uses HMAC-SHA256 (shared
-          secret) for the catalog distribution layer. Y2 migrates to W3C
-          Verifiable Credentials with Ed25519 public-key signing. Existing
-          envelope shape is forward-compatible — same fields, additional{" "}
-          <code className="font-mono">proof</code> block. Old HMAC envelopes
-          remain verifiable for ≥24 months post-migration.
-        </p>
-      </section>
-
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Key rotation</h2>
-        <p className="text-sm leading-relaxed mb-3">
-          The catalog signing secret rotates quarterly on a published
-          schedule. Old envelopes remain valid forever (signatures are
-          checked against the key in effect at their{" "}
-          <code className="font-mono">signedAt</code> timestamp). New
-          envelopes after the rotation date are signed with the new key.
-        </p>
-        <ul className="text-sm space-y-1 list-disc pl-6">
-          <li>Quarter 1: signing key #1 active</li>
-          <li>Quarter 2: signing key #2 active; key #1 used for legacy verification only</li>
-          <li>… etc. Rotation events are logged to this page + /changelog/.</li>
-        </ul>
-      </section>
-
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">API-key hygiene</h2>
-        <p className="text-sm leading-relaxed mb-3">
-          Paid-tier API keys are hashed (SHA-256) at rest; we never store
-          plaintext. The key prefix (first 8 chars) is kept for ops
-          identification but cannot reconstruct the full key. If you
-          believe a key is compromised:
-        </p>
-        <ol className="text-sm space-y-1 list-decimal pl-6">
-          <li>Revoke it immediately in your dashboard.</li>
-          <li>Generate a replacement.</li>
-          <li>Email{" "}
-            <a href="mailto:hello@caslonmedia.com" className="underline">
-              hello@caslonmedia.com
-            </a>{" "}with the prefix so we can fingerprint the abuse pattern fleet-wide.</li>
-        </ol>
       </section>
 
       <section className="mb-10">
@@ -156,8 +109,8 @@ export default function SecurityPage() {
         <ul className="text-sm space-y-2 list-disc pl-6">
           <li>
             <strong>HTTPS everywhere.</strong> All endpoints
-            (<code className="font-mono">/api/v1/*</code>, dashboard,
-            docs) serve over TLS 1.2+. Cloudflare edge handles termination.
+            (<code className="font-mono">/api/v1/*</code> and docs) serve
+            over TLS. Cloudflare edge handles termination.
             HSTS preload submission is still pending.
           </li>
           <li>
@@ -166,15 +119,8 @@ export default function SecurityPage() {
             request bodies, response bodies, or API-key plaintext.
           </li>
           <li>
-            <strong>No user-data sales.</strong> Cloud provider terms (CF,
-            Stripe, Resend) apply; we do not have an additional data-share
-            relationship.
-          </li>
-          <li>
-            <strong>Static signing surface.</strong> The catalog JSON twin
-            served from the edge is content-addressable by claim id +
-            timestamp. Mutation requires re-signing — there is no path for
-            in-place edits.
+            <strong>No user-data sales.</strong> We do not operate a paid-account
+            or billing system for this API today.
           </li>
         </ul>
       </section>
@@ -186,28 +132,20 @@ export default function SecurityPage() {
         </p>
         <ul className="text-sm space-y-2 list-disc pl-6">
           <li>
-            <strong>Catalog claim correctness.</strong> Every claim has ≥2
-            primary sources hand-verified at publish time. Sources can go
-            stale; we mark claims with <code className="font-mono">lastVerified</code> dates
-            and re-verify on a documented cadence, but we do not guarantee
-            that every claim is true at every future moment.
+            <strong>Catalog claim correctness.</strong> Every claim cites primary
+            evidence; 368 of the 384 current claims include two or more sources.
+            Sources can go stale, and the catalog does not guarantee that every
+            claim remains true at every future moment.
           </li>
           <li>
-            <strong>SOC 2 / ISO 27001.</strong> Not yet certified. On
-            roadmap for Y2 once we cross 100 paying customers (per the
-            self-serve growth thesis).
+            <strong>SOC 2 / ISO 27001.</strong> Not certified.
           </li>
           <li>
-            <strong>Bug bounty program.</strong> Not yet running formally;
-            disclosures are credited publicly + we'll send a thank-you
-            payment for high-severity reports at our discretion until a
-            formal program launches.
+            <strong>Bug bounty program.</strong> Not running formally.
           </li>
           <li>
-            <strong>Public-key signing (Ed25519).</strong> v0 is shared-
-            secret HMAC. Y2 migration is on the roadmap; until then,
-            envelope integrity verification requires either trusting the
-            catalog JSON twin OR holding the shared secret (Enterprise tier).
+            <strong>Public-key verification.</strong> Not available today. The
+            current HMAC tag has no public shared secret or public-key proof.
           </li>
         </ul>
       </section>
@@ -215,11 +153,9 @@ export default function SecurityPage() {
       <section className="mb-10">
         <h2 className="text-xl font-semibold mb-3">Incident response</h2>
         <p className="text-sm leading-relaxed mb-3">
-          Active incidents are surfaced on this page + at{" "}
-          <a href="/changelog/" className="underline">/changelog/</a>{" "}
-          (severity: breaking) within 4 hours of detection. Post-mortems
-          for incidents impacting paying customers are published within
-          14 days. Subscribe to /feed.xml for incident notifications.
+          If we identify a material issue affecting public claim records, we
+          will update the relevant record or changelog. We do not publish a
+          guaranteed incident-response timeline.
         </p>
       </section>
 

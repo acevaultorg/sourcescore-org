@@ -81,12 +81,12 @@ export default function VeritasVsWikipediaPage() {
           <tbody>
             <tr><td>Content shape</td><td>Free-text articles</td><td>Atomic claims (subject + predicate + object)</td></tr>
             <tr><td>Coverage</td><td>Vast (any topic)</td><td>Narrow (AI/ML v0)</td></tr>
-            <tr><td>Verification</td><td>Community-edited; revision history</td><td>Hand-verified ≥2 primary sources</td></tr>
-            <tr><td>Signatures</td><td>None</td><td>HMAC-SHA256 on every envelope</td></tr>
+            <tr><td>Verification</td><td>Community-edited; revision history</td><td>Editorial review with cited primary evidence; source count per record</td></tr>
+            <tr><td>Integrity metadata</td><td>None</td><td>SourceScore-issued HMAC tag, not publicly verifiable</td></tr>
             <tr><td>Atomic-claim lookup</td><td>Requires parsing prose</td><td>Direct (verify endpoint)</td></tr>
-            <tr><td>Cost</td><td>Free, rate-limited</td><td>Free 1k/mo, then €19+</td></tr>
-            <tr><td>Latency</td><td>~200-500ms</td><td>~80ms</td></tr>
-            <tr><td>Update frequency</td><td>Continuous (community)</td><td>Weekly + on-event</td></tr>
+            <tr><td>Cost</td><td>Free, rate-limited</td><td>Public v0 endpoints are free; paid tiers are not live</td></tr>
+            <tr><td>Latency</td><td>Provider and request dependent</td><td>Provider and request dependent</td></tr>
+            <tr><td>Update frequency</td><td>Community-maintained</td><td>Catalog updates as reviewed</td></tr>
             <tr><td>Best for</td><td>Reference lookup, summary</td><td>Verify-then-respond, agent grounding</td></tr>
           </tbody>
         </table>
@@ -97,8 +97,8 @@ export default function VeritasVsWikipediaPage() {
         <ul>
           <li>You need broad knowledge coverage — geography, history, biography, general science</li>
           <li>Free-text content (summaries, narrative) fits your application</li>
-          <li>Latency tolerance is &gt;200ms</li>
-          <li>You don&apos;t need cryptographic signatures</li>
+          <li>You can benchmark and accept the provider latency in your own stack</li>
+          <li>You do not need SourceScore&apos;s structured integrity metadata</li>
           <li>Your application is non-commercial OR comfortable parsing prose</li>
         </ul>
 
@@ -106,8 +106,7 @@ export default function VeritasVsWikipediaPage() {
         <ul>
           <li>You need atomic verified claims for AI/ML facts (model releases, paper dates, parameter counts)</li>
           <li>You&apos;re building a generate-then-verify pipeline</li>
-          <li>You need HMAC signatures for audit trails</li>
-          <li>You need sub-100ms response time</li>
+          <li>You need structured claim records and cited evidence</li>
           <li>You need structured JSON outputs (not prose to parse)</li>
         </ul>
 
@@ -116,7 +115,7 @@ export default function VeritasVsWikipediaPage() {
           Most production grounding pipelines do both. Wikipedia
           handles general-knowledge queries (&quot;capital of France&quot;,
           &quot;founder of Apple&quot;); VERITAS handles AI/ML specifics
-          where signature + atomic-claim shape matter. Cascade: try
+          where cited evidence + atomic-claim shape matter. Cascade: try
           VERITAS first for AI/ML topics, fall through to Wikipedia
           for broader queries.
         </p>
@@ -130,8 +129,8 @@ export default function VeritasVsWikipediaPage() {
           <li>
             <strong>Wikipedia:</strong> Article on &quot;Attention is
             all you need&quot; — narrative paragraphs naming Vaswani
-            et al. Your application parses the article. ~200-500ms.
-            No signature.
+            et al. Your application parses the article. Response time depends on
+            the request and provider. No signature.
           </li>
           <li>
             <strong>VERITAS:</strong>{" "}
@@ -140,20 +139,20 @@ export default function VeritasVsWikipediaPage() {
             <code>{`{bestMatch: {subject: "Transformer architecture",
             predicate: "introduced_in_paper", object: "Attention Is All
             You Need (Vaswani et al., 2017)"}, signature: {...HMAC-SHA256...}}`}</code>.
-            ~80ms. Signed.
+            The HMAC field is SourceScore-issued integrity metadata, not a public signature.
           </li>
         </ul>
         <p>
           For a chatbot, Wikipedia&apos;s prose may be richer. For a
           production agent loop that needs to cite the fact in an
-          audit trail, VERITAS&apos;s typed signed envelope is cleaner.
+          audit trail, VERITAS&apos;s typed record with cited evidence is cleaner.
         </p>
 
         <h2>What we&apos;re not</h2>
         <p>
           VERITAS doesn&apos;t replace Wikipedia. Wikipedia covers
-          everything; we cover AI/ML. Our methodology (≥2 primary
-          sources + signature + hand verification) doesn&apos;t scale
+          everything; we cover AI/ML. Our methodology (cited primary
+          evidence, source counts, and editorial review) doesn&apos;t scale
           to all human knowledge. Wikipedia&apos;s open community model
           does. The right move for most production systems is to use
           both.

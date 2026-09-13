@@ -11,7 +11,7 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 export const metadata: Metadata = {
   title: "Verified AI/ML Claims — SourceScore VERITAS",
   description:
-    "Signed, sourced, citable claims about AI/ML research and model releases. Each claim has 2+ primary sources, an HMAC-SHA256 signature, and a stable JSON API endpoint for LLM developers building grounded retrieval systems.",
+    "Signed, sourced, citable claims about AI/ML research and model releases. Every claim cites primary evidence; 368 of 384 include two or more sources. Stable JSON API endpoint for grounded retrieval systems.",
   alternates: {
     canonical: "https://sourcescore.org/claims/",
     types: {
@@ -57,7 +57,7 @@ export default async function ClaimsIndexPage() {
             "@context": "https://schema.org",
             "@type": "Dataset",
             name: "SourceScore VERITAS — AI/ML Claims Catalog",
-            description: `Signed, sourced, citable claims about AI/ML research and model releases. v0.1 catalog (${claims.length} hand-verified claims spanning 1997-2025). Each claim has ≥2 primary sources and an HMAC-SHA256 signature. Suited for grounded LLM retrieval and citation.`,
+            description: `Signed, sourced, citable claims about AI/ML research and model releases. v0.1 catalog (${claims.length} hand-verified claims spanning 1997-2025). Every claim cites primary evidence; 368 of 384 include two or more sources. SourceScore-issued HMAC tags are integrity metadata, not public proofs.`,
             url: "https://sourcescore.org/claims/",
             license: "https://creativecommons.org/licenses/by/4.0/",
             creator: {
@@ -111,8 +111,9 @@ export default async function ClaimsIndexPage() {
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
           {claims.length} signed, sourced claims for grounded LLM retrieval.
-          Each claim has 2+ primary sources, an HMAC-SHA256 signature, and a
-          stable JSON API endpoint.
+          Every claim cites primary evidence; 368 of 384 include two or more
+          sources. Records include a SourceScore-issued HMAC integrity tag and
+          a stable JSON API endpoint.
         </p>
         <div className="mt-6 flex flex-wrap gap-3 text-sm">
           <a

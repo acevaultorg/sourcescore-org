@@ -8,9 +8,9 @@ import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 const PUBLISHED = "2026-05-16";
-const TITLE = "Verifying AI-generated facts in 5 lines of Python";
+const TITLE = "Match AI-generated facts to a cited catalog in 5 lines of Python";
 const SUBTITLE =
-  "Drop SourceScore VERITAS into your LLM pipeline as a post-generation check. Every claim the model emits gets a confidence score + canonical citation before the user sees it.";
+  "Use SourceScore VERITAS as a post-generation screening step. It returns nearby catalog records and canonical citations to compare—not a truth verdict.";
 const SLUG = "verify-ai-facts-five-lines-python";
 const CANONICAL = `https://sourcescore.org/blog/${SLUG}/`;
 
@@ -111,32 +111,32 @@ export default function VerifyFiveLinesPost() {
           this time. You won&apos;t catch it the next thousand times.
         </p>
         <p>
-          The standard fix is RAG — retrieve relevant context, stuff it
-          into the prompt, hope the model uses it. That works ~70% of the
-          time. The remaining 30% is exactly the boundary where the model
-          still drifts off the retrieved chunks because chunks are noisy
-          + unverified.
+          A common mitigation is RAG: retrieve relevant context and provide it
+          to the model. That improves grounding, but it does not guarantee that
+          every generated assertion is supported by the retrieved text.
         </p>
 
-        <h2>The 5-line fix</h2>
+        <h2>The 5-line catalog check</h2>
         <p>
           A different approach: let the model answer freely, then{" "}
-          <em>verify each assertion</em> against a catalog of signed,
-          sourced claims. Anything the catalog confirms gets a citation
-          badge. Anything it doesn&apos;t gets flagged.
+          <em>match each assertion</em> against a catalog of sourced claims.
+          A result is a candidate record to compare with the model output—not
+          proof that the model&apos;s wording is true.
         </p>
 
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`import requests
 
-def verify(claim: str, threshold: float = 0.85):
+def find_catalog_match(claim: str, threshold: float = 0.85):
     r = requests.post("https://sourcescore.org/api/v1/verify",
         json={"claim": claim, "minConfidence": threshold}, timeout=8)
-    return r.json().get("bestMatch")  # None if no high-confidence match`}</code></pre>
+    r.raise_for_status()
+    return r.json().get("bestMatch")  # candidate record, not a truth verdict`}</code></pre>
 
         <p>
           That&apos;s the whole client. Five lines including the import.
-          Drop it in front of every fact your LLM emits and you have a
-          working hallucination filter for the AI/ML domain.
+          Use it to find reviewable AI/ML catalog records before publishing.
+          Your application still needs to compare the returned statement and
+          cited evidence with the assertion it intends to show.
         </p>
 
         <h2>Wire it into a chain</h2>
@@ -157,50 +157,47 @@ def answer_with_citations(question: str) -> str:
         temperature=0,
     ).choices[0].message.content
 
-    # Step 2 — verify each line, render with badges
+    # Step 2 — find a candidate record for each line
     out = []
     for line in raw.strip().split("\\n"):
         if not line.strip(): continue
-        best = verify(line)
+        best = find_catalog_match(line)
         if best:
-            badge = f"✅ [{best['id']}] (confidence {best['confidence']:.2f})"
             url   = f"https://sourcescore.org/claims/{best['id']}/"
-            out.append(f"{line.strip()} {badge}\\n  → {url}")
+            out.append(f"Input: {line.strip()}\\nCandidate: {best['statement']}\\nReview: {url}")
         else:
-            out.append(f"{line.strip()} ⚠️ unverified")
+            out.append(f"Input: {line.strip()}\\nNo catalog candidate found")
     return "\\n".join(out)
 
 print(answer_with_citations("When was the Transformer architecture introduced and by whom?"))`}</code></pre>
 
         <p>Sample output:</p>
 
-        <pre className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`The Transformer architecture was introduced in 2017. ✅ [abc123...] (confidence 1.00)
-  → https://sourcescore.org/claims/abc123.../
-It was introduced by Vaswani et al. in "Attention Is All You Need". ✅ [abc123...] (confidence 1.00)
-  → https://sourcescore.org/claims/abc123.../`}</code></pre>
+        <pre className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`Input: The Transformer architecture was introduced in 2017.
+Candidate: Transformer architecture introduced in paper: Attention Is All You Need (Vaswani et al., 2017).
+Review: https://sourcescore.org/claims/ad17e76a8baad7a1/`}</code></pre>
 
         <h2>What you get</h2>
         <ul>
           <li>
-            <strong>Hallucination filter.</strong> Anything unverified is
-            visually flagged before the user sees it. UI can strip
-            unverified lines entirely if your domain demands strictness.
+            <strong>Screening aid.</strong> Assertions with no nearby catalog
+            record can be routed to another retrieval or human-review path.
           </li>
           <li>
-            <strong>Free citation badges.</strong> Every verified fact
-            ships with a canonical URL the user can click for full
-            provenance — primary sources, signing, last-verified date.
+            <strong>Reviewable citations.</strong> Candidate records ship with
+            a canonical URL where users can inspect cited sources, integrity
+            metadata, and the last-reviewed date.
           </li>
           <li>
-            <strong>Cost transparency.</strong> One call per assertion,
-            ~80ms p95. The free tier covers 1,000 calls/month. You know
-            exactly what verification costs you.
+            <strong>Visible request cost.</strong> Each assertion you submit is
+            one additional network request. The public v0 endpoints need no
+            key; measure latency and traffic in your own stack.
           </li>
         </ul>
 
         <h2>Scope honesty</h2>
         <p>
-          VERITAS today is bounded to AI/ML research — 346 hand-verified
+          VERITAS today is bounded to AI/ML research — 384 hand-verified
           claims across foundational papers, model releases, organizations,
           and datasets. If your chain asks about &quot;the capital of
           France&quot; we return no match and your code falls through to
@@ -208,11 +205,10 @@ It was introduced by Vaswani et al. in "Attention Is All You Need". ✅ [abc123.
         </p>
         <p>
           Catalog expansion is gated by our methodology: every claim must
-          have ≥2 primary sources, verbatim excerpts, and not be a
-          performance-comparison (benchmark numbers vary by prompt format
-          / version / shot count — too much surface for &quot;actually
-          that&apos;s not quite right&quot; pushback). New verticals ship
-          Y2.
+          cite primary evidence, show source counts, and not be a
+          performance comparison (benchmark numbers vary by prompt format,
+          version, shot count, and evaluation setup). No date is promised for
+          new verticals.
         </p>
 
         <h2>Going deeper</h2>
@@ -230,13 +226,13 @@ It was introduced by Vaswani et al. in "Attention Is All You Need". ✅ [abc123.
             <a href="/docs/integrations/openai-tools/">OpenAI tool-calls</a> — native function-calling pattern
           </li>
           <li>
-            <a href="/claims/">Browse the catalog</a> — 346 verified AI/ML claims
+            <a href="/claims/">Browse the catalog</a> — 384 verified AI/ML claims
           </li>
         </ul>
 
         <h2>One question I get a lot</h2>
         <p>
-          <em>&quot;Why not just put all 346 claims in the prompt as
+          <em>&quot;Why not just put all 384 claims in the prompt as
           context?&quot;</em>
         </p>
         <p>
@@ -245,24 +241,23 @@ It was introduced by Vaswani et al. in "Attention Is All You Need". ✅ [abc123.
         </p>
         <ol>
           <li>
-            The catalog grows past what fits in a prompt context window
-            within a quarter.
+            An API lets you avoid inserting the entire catalog into every prompt.
           </li>
           <li>
             Retrieval ranks claims by relevance to the actual question —
-            you&apos;re not paying tokens for the 95 irrelevant claims.
+            you can send only candidate records relevant to the question.
           </li>
           <li>
-            The signed envelope path lets you re-verify integrity locally,
-            which is meaningful for high-stakes deployments where you need
-            to prove the claim wasn&apos;t modified.
+            Refetching the canonical API record lets you compare your copy with
+            SourceScore&apos;s current copy. The HMAC tag is not independently
+            verifiable by public users because the shared secret is unpublished.
           </li>
         </ol>
 
         <p>
-          Start with the prompt-stuff pattern. Move to API when you outgrow
-          it (typically week 2-3). The migration is &lt;30 minutes; the
-          5-line client above is the whole client.
+          Start with the simplest pattern that fits. Move to API retrieval when
+          measured context size, latency, or maintenance cost justifies it; the
+          small client above shows the request shape.
         </p>
       </section>
 
@@ -270,7 +265,7 @@ It was introduced by Vaswani et al. in "Attention Is All You Need". ✅ [abc123.
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           Found this useful? Browse the{" "}
           <a href="/claims/" className="underline">verified claim catalog</a>{" "}
-          (100 entries today) or run the{" "}
+          (384 entries today) or run the{" "}
           <a href="/quickstart/" className="underline">quickstart</a> for
           the JavaScript + curl equivalents.
         </p>

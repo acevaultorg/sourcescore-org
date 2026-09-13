@@ -5,7 +5,7 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 const TITLE = "Research citation — programmatic citations for AI/ML research tools";
 const SUBTITLE =
-  "Stable claim IDs, primary sources with verbatim excerpts, HMAC signatures for reproducibility. The verification layer for academic AI assistants, literature-review agents, and citation-required tooling.";
+  "Stable claim IDs, cited evidence with short excerpts, and SourceScore-issued HMAC metadata. Candidate retrieval for academic AI assistants and literature-review tools, with evidence review before citation.";
 const CANONICAL = "https://sourcescore.org/use-cases/research-citation/";
 
 export const metadata: Metadata = {
@@ -104,19 +104,19 @@ export default function ResearchCitationPage() {
         <ol>
           <li>
             <strong>Stable claim IDs.</strong> Every claim has a 16-hex
-            identifier (e.g., <code>a1b2c3d4...</code>) derived from
-            SHA-256 of canonical fields. Cite the ID in a paper and
-            it resolves to the same envelope in 3 years.
+            identifier derived from canonical fields. Use the canonical URL to
+            refetch the current record; SourceScore does not promise permanent
+            hosting or byte-identical content for a fixed number of years.
           </li>
           <li>
-            <strong>Verbatim excerpts.</strong> Every source includes
-            a quoted excerpt from the primary source, captured at
-            verification time. Even if the source URL rots, you have
-            the original text.
+            <strong>Cited evidence.</strong> Every record lists at least one
+            source; many, but not all, source entries include an excerpt. Always
+            inspect and cite the original source for academic work.
           </li>
           <li>
-            <strong>HMAC signatures.</strong> Every envelope is signed
-            with HMAC-SHA256. Tampering detectable. Audit-trail-friendly.
+            <strong>HMAC metadata.</strong> Every envelope carries a
+            SourceScore-issued HMAC tag. Public users cannot independently
+            recompute it because the shared secret is not published.
           </li>
         </ol>
 
@@ -125,7 +125,7 @@ export default function ResearchCitationPage() {
 
 # User asks: "What pretraining methods preceded BERT?"
 # Your assistant retrieves relevant papers from arXiv.
-# Before responding, verify each factual assertion.
+# Before responding, retrieve a candidate record for each assertion.
 
 assertions_to_check = [
     "BERT was introduced in 2019 by Devlin et al.",
@@ -133,7 +133,7 @@ assertions_to_check = [
     "RoBERTa was introduced by Liu et al. at Facebook AI in 2019",
 ]
 
-verified_citations = []
+citations_to_review = []
 for claim in assertions_to_check:
     r = httpx.post(
         "https://sourcescore.org/api/v1/verify",
@@ -141,22 +141,25 @@ for claim in assertions_to_check:
     )
     result = r.json()
     if result.get("bestMatch"):
-        verified_citations.append({
+        candidate = result["bestMatch"]
+        envelope = httpx.get(candidate["detailUrl"]).json()
+        citations_to_review.append({
             "claim": claim,
-            "id": result["bestMatch"]["id"],
-            "source_urls": [s["url"] for s in result["bestMatch"]["sources"]],
-            "excerpts": [s.get("excerpt") for s in result["bestMatch"]["sources"]],
-            "confidence": result["bestMatch"]["confidence"],
-            "signature": result["signature"],
+            "candidate_statement": candidate["statement"],
+            "id": candidate["id"],
+            "source_urls": [s["url"] for s in envelope["claim"]["sources"]],
+            "excerpts": [s.get("excerpt") for s in envelope["claim"]["sources"]],
         })
 
-# Now your assistant cites:
+# A reviewer or entailment step must compare each assertion, candidate
+# statement, and original source before your assistant cites it.
+# After that review, your assistant may cite:
 #   "BERT (Devlin et al., 2019) [^1]"
 # Where [^1] resolves to a citation block with:
 #   - Stable ID: a1b2c3d4...
 #   - Primary source: https://arxiv.org/abs/1810.04805
 #   - Verbatim excerpt from the abstract
-#   - HMAC signature verifiable against did:web:sourcescore.org`}</code></pre>
+#   - SourceScore-issued HMAC metadata (not publicly independently verifiable)`}</code></pre>
 
         <h2>Citation export format</h2>
         <p>
@@ -164,16 +167,16 @@ for claim in assertions_to_check:
         </p>
         <pre><code>{`# BibTeX-style export for a VERITAS claim
 @misc{sourcescore_a1b2c3d4,
-  title = {SourceScore VERITAS verified claim a1b2c3d4},
+  title = {SourceScore VERITAS reviewed claim record a1b2c3d4},
   publisher = {SourceScore},
   year = {2026},
   url = {https://sourcescore.org/claims/a1b2c3d4/},
-  note = {Verified against primary sources: [URL1, URL2]. HMAC-SHA256 signature.},
+  note = {SourceScore record with cited evidence: [URL1, URL2]. Public HMAC verification is not available.},
 }`}</code></pre>
 
         <h2>What the catalog covers</h2>
         <p>
-          v0.1 catalog (~346 claims spanning 1997-2025) covers AI/ML
+          v0.1 catalog (384 claims spanning 1997-2025) covers AI/ML
           research:
         </p>
         <ul>
@@ -185,37 +188,37 @@ for claim in assertions_to_check:
         </ul>
         <p>
           Out of scope for v0: papers in scientific computing,
-          cybersecurity, biology (Y2). Performance comparisons (see{" "}
+          cybersecurity, and biology. No expansion date is promised.
+          Performance comparisons (see{" "}
           <a href="/blog/why-no-performance-claims/">why we don&apos;t
           ship those</a>).
         </p>
 
         <h2>License</h2>
         <p>
-          Verified-claim data is CC-BY 4.0. Cite as:{" "}
+          The published methodology and claim data are CC-BY 4.0. Cite as:{" "}
           <code>SourceScore Claim &lt;id&gt;, sourcescore.org</code>.
           You can redistribute, re-publish, derive — under the
-          attribution condition. The methodology is proprietary; the
-          claim data is open.
+          attribution condition.
         </p>
 
         <h2>For academic submissions</h2>
         <p>
-          When citing VERITAS-verified claims in formal papers, the
-          recommended citation is:
+          For formal papers, cite the original primary source. If you also need
+          to document the SourceScore record used during review, use:
         </p>
         <blockquote>
           <p>
             <em>
-              SourceScore VERITAS (2026). Verified claim &lt;id&gt;.
+              SourceScore VERITAS (2026). Reviewed claim record &lt;id&gt;.
               https://sourcescore.org/claims/&lt;id&gt;/
             </em>
           </p>
         </blockquote>
         <p>
-          The stable URL + verbatim excerpt + HMAC signature mean a
-          reviewer in 2030 can re-verify the claim against the same
-          primary sources you cited.
+          Refetch the record at review time and preserve the primary-source
+          citation in your own research materials. SourceScore does not promise
+          perpetual hosting, and its HMAC tag is not public proof.
         </p>
 
         <h2>Integration guides</h2>
@@ -230,7 +233,7 @@ for claim in assertions_to_check:
         <ul>
           <li><a href="/concepts/citation-chain/">Citation chains — provenance graphs</a></li>
           <li><a href="/methodology/">Verification methodology v0.1</a></li>
-          <li><a href="/security/">Security + signing-key rotation policy</a></li>
+          <li><a href="/security/">Security + integrity-metadata limits</a></li>
           <li><a href="/playground/">Try the API in browser</a></li>
         </ul>
       </section>

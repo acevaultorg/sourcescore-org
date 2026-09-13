@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!claim) return { title: "Claim embed not found" };
   return {
     title: `${claim.statement} — SourceScore VERITAS embed`,
-    description: `Embeddable signed-claim widget: ${claim.statement} Verified ${claim.lastVerified}, ${claim.sources.length} primary sources, HMAC-SHA256 signed.`,
+    description: `Embeddable claim widget: ${claim.statement} Reviewed ${claim.lastVerified}, ${claim.sources.length} cited sources, with SourceScore-issued HMAC metadata.`,
     alternates: { canonical: `https://sourcescore.org/claims/${claim.id}/` },
     robots: { index: false, follow: true },
   };

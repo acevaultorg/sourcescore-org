@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { sources, categorySlug } from "@/data/sources";
 import { ScoreBadge } from "@/components/ScoreBadge";
-import { PartnerTools } from "@/components/PartnerTools";
 import { allGrades, gradeSlug, gradeRange, gradeColorClass } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -48,9 +47,6 @@ export default function SourcesIndexPage() {
         </a>
         .
       </p>
-
-      {/* Secondary activation slot (hub). Dormant → renders nothing. */}
-      <PartnerTools variant="strip" source="sources-hub" className="mb-10" />
 
       {/* Browse by grade — quick filter chips */}
       <section className="mb-10">

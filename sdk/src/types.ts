@@ -29,7 +29,7 @@ export interface ClaimSource {
   excerpt?: string;
 }
 
-/** Detached signature over a claim — HMAC-SHA256 in v0; W3C VC in v1. */
+/** SourceScore-issued HMAC metadata. Public users cannot recompute it without the secret. */
 export interface ClaimSignature {
   algorithm: "HMAC-SHA256";
   signedBy: string;
@@ -89,6 +89,7 @@ export interface ClaimsCatalog {
 export interface VerifyRequest {
   claim: string;
   vertical?: ClaimVertical;
+  /** Minimum legacy editorial record-confidence required for bestMatch. */
   minConfidence?: number;
 }
 
@@ -97,13 +98,18 @@ export interface VerifyResponse {
   apiVersion: "v1";
   methodology: string;
   query: string;
+  minConfidence?: number;
+  method?: "semantic" | "keyword";
   matches: Array<{
     claim: ClaimSummary;
     matchScore: number;
     rationale: string;
   }>;
+  /** Similarity-ranked catalog candidate, not a truth verdict. */
   bestMatch?: ClaimSummary;
+  /** Legacy name: means no candidate cleared the retrieval and record-confidence gates. */
   notVerified?: boolean;
+  note: string;
   signature?: ClaimSignature;
 }
 
@@ -120,11 +126,8 @@ export interface SearchResponse {
 export interface Tier {
   name: "free" | "indie" | "startup" | "scale";
   monthlyEur: number;
-  includedClaims: number;
-  overageEurPerClaim: number;
-  maxApiKeys: number | "unlimited";
-  supportSlaHours: number;
-  uptimeSla: number;
+  includedClaims: number | null;
+  availability: "live_free" | "proposal_only";
 }
 
 /** Methodology response — GET /api/v1/methodology.json */
@@ -143,6 +146,11 @@ export interface Methodology {
   citation: {
     license: string;
     citationFormat: string;
+  };
+  commercialAvailability: {
+    freeApi: "live_no_signup";
+    paidAccess: "proposal_only_not_purchasable";
+    details: string;
   };
   tiers: Tier[];
   count: number;

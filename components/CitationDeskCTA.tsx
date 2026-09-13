@@ -36,32 +36,59 @@
 
 const CITATIONDESK_TOOL = "https://citationdesk.com/tools/citation-readiness/";
 
+function citationDeskHref(source: string, targetUrl?: string): string {
+  const url = new URL(CITATIONDESK_TOOL);
+  url.searchParams.set("utm_source", "sourcescore");
+  url.searchParams.set("utm_medium", "referral");
+  url.searchParams.set("utm_campaign", "owned-ai-visibility");
+  url.searchParams.set("utm_content", source);
+  if (targetUrl) {
+    url.searchParams.set("url", targetUrl);
+    url.searchParams.set("autorun", "1");
+  }
+  return url.toString();
+}
+
 type Props = {
   /** "panel" = full card (home, methodology). "strip" = slim inline (claim footer, verify result). */
   variant?: "panel" | "strip";
   /** Funnel-source label for analytics (e.g. "home", "claim", "playground", "methodology"). */
   source?: string;
+  /** Optional URL to prefill and run in CitationDesk's checker. */
+  targetUrl?: string;
+  /** Intent label used to separate generic cross-sells from own-site checks. */
+  intent?: string;
 };
 
-export function CitationDeskCTA({ variant = "panel", source = "generic" }: Props) {
+export function CitationDeskCTA({
+  variant = "panel",
+  source = "generic",
+  targetUrl,
+  intent = "ai-visibility",
+}: Props) {
+  const href = citationDeskHref(source, targetUrl);
 
   if (variant === "strip") {
     return (
       <a
-        href={CITATIONDESK_TOOL}
+        href={href}
         target="_blank"
         rel="nofollow noopener"
         data-clarity-upgrade={`citationdesk-cta-${source}`}
-        className={`group block rounded-card border border-brand/30 bg-surface-brand hover:bg-brand/10 hover:border-brand/50 transition-colors p-4`} data-event="citationdesk_cta" data-event-source={source}
+        className={`group block rounded-card border border-brand/30 bg-surface-brand hover:bg-brand/10 hover:border-brand/50 transition-colors p-4`}
+        data-event="citationdesk_cta"
+        data-event-source={source}
+        data-event-intent={intent}
+        data-event-prefilled={targetUrl ? "yes" : "no"}
       >
         <div className="flex items-start gap-3">
           <span className="mt-0.5 px-2 py-0.5 rounded-pill bg-brand/15 text-brand text-caption font-mono uppercase tracking-wide whitespace-nowrap shrink-0">
             Sister tool
           </span>
           <span className="text-body-sm leading-snug">
-            <strong className="text-text">Is your own site getting cited by AI?</strong>{" "}
+            <strong className="text-text">Is your own site ready to be cited by AI?</strong>{" "}
             <span className="text-muted">
-              CitationDesk shows how visible you are to ChatGPT, Claude, Perplexity &amp; Gemini —{" "}
+              CitationDesk audits the page signals that help ChatGPT, Claude, Perplexity &amp; Gemini cite you —{" "}
             </span>
             <span className="text-brand font-semibold whitespace-nowrap group-hover:underline">
               get your free AI Visibility Score &rarr;
@@ -75,21 +102,25 @@ export function CitationDeskCTA({ variant = "panel", source = "generic" }: Props
   // panel (default)
   return (
     <a
-      href={CITATIONDESK_TOOL}
+      href={href}
       target="_blank"
       rel="nofollow noopener"
       data-clarity-upgrade={`citationdesk-cta-${source}`}
-      className={`group block rounded-card-lg border border-brand/30 bg-surface-brand hover:bg-brand/10 hover:border-brand/50 transition-colors p-6 sm:p-7`} data-event="citationdesk_cta" data-event-source={source}
+      className={`group block rounded-card-lg border border-brand/30 bg-surface-brand hover:bg-brand/10 hover:border-brand/50 transition-colors p-6 sm:p-7`}
+      data-event="citationdesk_cta"
+      data-event-source={source}
+      data-event-intent={intent}
+      data-event-prefilled={targetUrl ? "yes" : "no"}
     >
       <div className="text-eyebrow text-brand mb-2">Sister tool &middot; CitationDesk</div>
       <h2 className="text-heading-2 font-bold tracking-tight text-text mb-2">
-        How citable is <span className="text-brand">your own</span> site to AI?
+        Is <span className="text-brand">your own</span> site ready for AI citations?
       </h2>
       <p className="text-body text-muted leading-relaxed max-w-2xl mb-5">
-        You just checked how citable sources are. CitationDesk does it for{" "}
-        <strong className="text-text">your</strong> site or brand &mdash; it tracks
-        whether ChatGPT, Claude, Perplexity &amp; Gemini actually cite you, and
-        shows the fixes to get cited. From the same team behind SourceScore.
+        You just checked how citable sources are. CitationDesk audits the page
+        signals on <strong className="text-text">your</strong> site that help AI
+        engines retrieve and cite it, then shows the highest-leverage fix. It is
+        a readiness audit, not a claim that an AI engine already cites you.
       </p>
       <span className="inline-flex items-center gap-2 px-4 py-2 rounded-btn border border-brand/50 bg-brand/15 text-brand font-semibold group-hover:bg-brand/25 transition-colors text-body-sm">
         Get your free AI Visibility Score &rarr;

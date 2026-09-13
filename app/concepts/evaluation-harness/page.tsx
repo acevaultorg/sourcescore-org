@@ -263,8 +263,9 @@ export default function EvaluationHarnessConcept() {
           ). A claim like &quot;Llama 3 70B beats GPT-3.5 on HumanEval&quot;
           requires specifying the harness, prompt format, decoding,
           version, and decontamination just to be meaningful. We&apos;d
-          rather ship 116 claims that are right for the next decade
-          than 1,000 that are right under one harness on Thursday.
+          rather maintain a bounded catalog of inspectable records than
+          publish large numbers of context-sensitive scores without the
+          harness metadata needed to interpret them.
         </p>
 
         <h2 id="related-tools">Related tools + further reading</h2>

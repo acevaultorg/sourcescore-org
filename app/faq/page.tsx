@@ -54,48 +54,48 @@ const faqs = [
   },
   {
     q: "Is SourceScore affiliated with any AI engine or publisher?",
-    a: "No. SourceScore is independent. We do not accept funding from AI engines, publishers, SEO platforms, or PR firms. Methodology decisions are made by the editorial team; revenue (where it exists) comes from non-affecting sources — display ads outside the source pages and embedded badge usage. Affiliate disclosures, where they apply, are shown on the affected page.",
+    a: "No. SourceScore is independent of the AI engines and publishers it evaluates. Methodology decisions are made by the editorial team. SourceScore does use clearly labeled affiliate links to selected software tools, but those relationships never affect scores, rankings, claims, or editorial coverage; current partners are listed in the affiliate disclosure.",
   },
   // ─── VERITAS API questions ─────────────────────────────────────────
   {
     q: "What is SourceScore VERITAS?",
-    a: "VERITAS is the developer-facing API surface of SourceScore. Where the source-rating product scores publishers, VERITAS publishes individual fact-shaped claims that have been hand-verified against ≥2 primary sources and signed with HMAC-SHA256. Developers building LLM applications use VERITAS to ground model responses in signed, sourced statements — reducing hallucination on AI/ML domain queries. The catalog ships with a stable JSON twin, a TypeScript SDK, and integration guides for LangChain, LlamaIndex, and OpenAI tool-calls.",
+    a: "VERITAS is the developer-facing claim catalog API of SourceScore. Where the source-rating product scores publishers, VERITAS publishes individual fact-shaped claims that cite primary evidence. Of the current 384 claims, 368 include two or more sources and 16 have one primary source. Records include SourceScore-issued HMAC integrity metadata, which is not publicly independently verifiable because no shared secret is published. The catalog has stable JSON records and developer documentation.",
   },
   {
     q: "How is VERITAS different from RAG?",
-    a: "RAG (retrieval-augmented generation) retrieves chunks of documents and concatenates them into a prompt. VERITAS retrieves discrete, atomic, structured claims with verified sources and confidence scores. The shape difference matters in practice: chunks are noisy + variable + unverified, so models still hallucinate on the boundary. Claims are subject + predicate + object + sources, so the model has a typed contract to cite from. Use VERITAS in addition to your existing RAG, not as a replacement — it's the high-precision layer over your retrieval graph.",
+    a: "RAG (retrieval-augmented generation) commonly retrieves document chunks for use in a prompt. VERITAS searches a bounded catalog of structured claim records with cited evidence. Its /verify confidence is query-to-record similarity, not truth confidence, so compare the returned statement and sources with the assertion. Use it as one evidence source alongside your existing retrieval and review process, not as a replacement.",
   },
   {
     q: "Is there a free tier?",
-    a: "Yes. 1,000 verified-claim calls per month, no credit card, no signup required for read-only catalog access. Paid tiers (Indie €19/mo / Startup €99/mo / Scale €499/mo) raise the quota and add features like signed-response HMAC and per-team API keys. See the pricing page for the full comparison.",
+    a: "Yes. The public API is free and requires no credit card, account, key, or signup. There is no account-level meter; standard network abuse protection may apply. Higher-volume tiers are proposed prices used to collect demand, not purchasable plans. There is currently no checkout, billing, account provisioning, dashboard, or service commitment.",
   },
   {
     q: "How is a claim signed?",
-    a: "Every claim envelope ships with an HMAC-SHA256 signature over a canonical JSON serialization (sorted keys, ASCII-safe, no whitespace) of the claim fields plus signedAt + signedBy metadata. The signer identity is did:web:sourcescore.org — preserved across all future key rotations. Y2 we migrate to W3C Verifiable Credentials with Ed25519 public-key signing; the envelope shape is forward-compatible.",
+    a: "Claim records include a SourceScore-issued HMAC-SHA256 tag over a canonical JSON serialization. Because the shared secret is not public, visitors cannot independently recompute that tag or use it as a public signature. To check a record, refetch its canonical HTTPS URL and inspect the cited evidence.",
   },
   {
     q: "What's in the catalog today?",
-    a: "346 hand-verified AI/ML claims spanning 1997-2025: foundational papers (Transformer, RLHF, Chain-of-Thought, ReAct, LoRA, QLoRA, DPO, FlashAttention, RoPE, CLIP, RAG, LSTM, BART, GloVe), reinforcement-learning milestones (AlphaGo, AlphaZero), model releases (GPT family, Claude family, Llama family, Gemini Ultra, DeepSeek-R1, Phi-4, DALL·E, Whisper, Stable Diffusion 1-3, GitHub Copilot), open-source inference (vLLM, llama.cpp, Ollama, GPTQ), evaluation (Chatbot Arena), datasets (C4, The Pile, RedPajama), organizations (OpenAI, Anthropic, DeepMind, Microsoft Research, Stability AI, EleutherAI, Mistral, AI21, Hugging Face, Together AI, xAI, Cohere, Allen AI). Expansion path: ~150 claims by Q3, new verticals (cybersecurity, data engineering, scientific computing) deferred to Y2.",
+    a: "384 hand-verified AI/ML claims spanning 1997-2025: foundational papers, reinforcement-learning milestones, model releases, open-source inference, evaluation, datasets, and organizations. Every claim cites primary evidence; 368 include two or more sources and 16 currently have one primary source. Browse the live catalog for the current scope rather than relying on planned expansion counts.",
   },
   {
     q: "How confident are the confidence scores?",
-    a: "The confidence value (0.0-1.0) reflects two things: (1) source convergence — how many independent primary sources agree on the fact, and (2) precision of the underlying assertion. Release dates and architectural facts have confidence 0.95-1.00. Founding dates with verbatim corroboration are 0.95. Methodology introductions with multiple peer-reviewed citations are 1.00. We deliberately do NOT publish performance-comparison claims, because benchmark numbers vary by prompt format / version / shot count — too much surface for 'actually that's not quite right' pushback.",
+    a: "There are two different values to distinguish. A catalog record's confidence is editorial metadata under the published methodology; the /verify endpoint's match confidence ranks query similarity. Neither value independently proves that a user's assertion is true. Inspect the candidate statement, source count, excerpts, and live primary evidence before using it.",
   },
   {
     q: "What happens if a primary source goes 404?",
-    a: "Each claim envelope carries the source URL plus a verbatim excerpt at the time we verified it. If the source goes 404, the excerpt survives in the envelope — the claim is still defensible because the textual evidence is preserved alongside it. On the next re-verification cycle we surface broken-link claims in the changelog (severity: breaking) and either find a new primary source or downgrade the confidence to reflect single-source dependency.",
+    a: "Each claim envelope carries the source URL plus a short excerpt recorded during review. An excerpt helps identify what was reviewed, but it is not a substitute for accessible evidence. If a source disappears, treat that dependency as degraded and look for an authoritative replacement or archived copy before relying on the record.",
   },
   {
     q: "How do I integrate VERITAS into LangChain / LlamaIndex / OpenAI tool-calls?",
-    a: "Three drop-in guides at /docs/integrations/ cover the canonical patterns: retrieve-then-cite (LangChain), custom Retriever + NodePostprocessor (LlamaIndex), and native function-calling with search_claims + verify_claim (OpenAI / Anthropic tool-use). Each guide is copy-paste runnable in Python or JavaScript. The TypeScript SDK at @sourcescore/veritas (Y2 npm release) abstracts the HTTP calls if you don't want to roll your own client.",
+    a: "The integration guides cover retrieve-then-review patterns for LangChain, LlamaIndex, and native tool calling. Treat the samples as starting points: pin your framework version, add error handling, and require evidence comparison before presenting a candidate as supported. The public HTTP and OpenAPI interfaces are available today; no npm package release is promised.",
   },
   {
     q: "Can I submit a claim for inclusion in the catalog?",
-    a: "Yes — email hello@caslonmedia.com with the proposed claim (subject + predicate + object), ≥2 primary sources you'd cite (preferred: arxiv preprint + official-blog or model-card; avoid Wikipedia-as-sole-source), and an exact verbatim excerpt from each. We aim to review within 7 days. Approved submissions appear in the next catalog rebuild and the contributor is credited (opt-in) on the contributors page.",
+    a: "Yes — email hello@caslonmedia.com with the proposed claim (subject + predicate + object), the strongest primary sources you would cite, and a short supporting excerpt from each. Submission does not guarantee review, inclusion, a publication date, or contributor credit.",
   },
   {
     q: "What does VERITAS not do?",
-    a: "VERITAS is not a generic fact-checker. The catalog is bounded to AI/ML research today. If your chain asks about 'the capital of France' we return zero matches and your code falls through to whatever retrieval you'd use anyway. We do not score performance-comparison claims (too volatile). We do not aggregate from low-quality secondary sources without a primary anchor. We do not sign claims we have not personally verified — even at 99% obviousness, two-source confirmation is the floor.",
+    a: "VERITAS is not a generic fact-checker. The catalog is bounded to AI/ML research today. If your chain asks about 'the capital of France' it returns zero matches and your code falls through to your other retrieval. We do not score volatile performance-comparison claims. Every published claim cites primary evidence, but the current catalog includes 16 one-source claims, so consumers should inspect each record's source count and evidence.",
   },
 ];
 

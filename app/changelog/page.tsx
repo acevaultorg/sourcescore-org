@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Changelog — SourceScore VERITAS",
-    description: "Public ship log for the SourceScore VERITAS claim verification API.",
+    description: "Public ship log for the SourceScore VERITAS claim catalog and retrieval API.",
     url: "https://sourcescore.org/changelog/",
     type: "website",
   },
@@ -94,7 +94,7 @@ const entries: Entry[] = [
     kind: "feat",
     title: "/blog/multi-llm-grounding-2026/ — 6th blog post (provider-portable architecture)",
     body:
-      "6th blog post — multi-LLM grounding architecture pattern. Covers why single-provider lock-in is fragile in 2026 (pricing variance 5-10×, capability gaps shift quarterly, outages routine, regulatory zones, open-weight quality crossed the line), the 3-layer pattern (Router → Adapter → Grounding), Python skeleton code routing across OpenAI + Anthropic + Gemini with provider-agnostic VERITAS grounding, adapter library landscape (Vercel AI SDK, DSPy, LangChain, Instructor, LiteLLM, OpenRouter), 5 production routing rules (task type → model, user tier → cost, latency SLA → streaming, outage → failover, regulatory → compliant provider), why grounding-layer portability matters (provider-locked grounding disappears on failover), when to combine provider-native + portable (user-doc RAG via Citations API + shared facts via VERITAS). BlogPosting + BreadcrumbList schema with editor @id chain. Cross-links to /comparisons/veritas-vs-anthropic-citations + /blog/llm-grounding-strategies-2026 + /blog/llm-framework-comparison-2026 + /concepts/llm-grounding + /topics/llm-releases-2024-2025. RSS feed regenerated (4 posts). Targets queries: 'multi-LLM grounding', 'switch LLMs production', 'LLM provider portability', 'OpenAI Anthropic Gemini router'. Blog count: 5 → 6.",
+      "Multi-LLM architecture guide covering a router, provider adapter, and portable evidence layer. It now emphasizes workload-specific evaluation, measured cost and latency, approved data-handling configurations, tested failover, and explicit review of candidate evidence rather than fixed model rankings or compliance assumptions.",
   },
   {
     date: "2026-05-17",
@@ -318,14 +318,14 @@ const entries: Entry[] = [
     kind: "feat",
     title: "/docs/integrations/pydantic-ai/ + /docs/integrations/anthropic-sdk/ — 6th + 7th framework guides",
     body:
-      "Two new drop-in integration guides. Pydantic AI: type-safe verification via VerifyClaimInput → VerificationResult Pydantic models; agents emit structured tool calls; downstream code is type-safe with field validators catching confidence drift. Covers 3 patterns (verify-claim tool · structured agent output with required verification · multi-claim parallel verification). Anthropic SDK: Claude tool-use protocol with the tool_use → execute → tool_result loop, in both Python and TypeScript. Includes a system-prompt pattern that makes Claude self-verify before asserting facts. TechArticle + BreadcrumbList schema on both. Integrations index now lists 7 frameworks total (LangChain · LlamaIndex · OpenAI tools · Vercel AI SDK · DSPy · Pydantic AI · Anthropic SDK).",
+      "Two integration guides. Pydantic AI models the actual candidate-retrieval response and keeps schema validity separate from factual support. The Anthropic SDK guide demonstrates the tool_use → execute → tool_result loop in Python and TypeScript, with explicit statement and evidence review before a citation is used.",
   },
   {
     date: "2026-05-16",
     kind: "feat",
     title: "/docs/integrations/dspy/ — 5th framework integration guide",
     body:
-      "DSPy (Stanford) is the fastest-growing compound-AI-system framework in 2026. Drop-in guide covers two patterns: (1) custom dspy.Retrieve backed by the VERITAS catalog — returns verified claims as DSPy Examples with claim_id, confidence, and canonical URL metadata; (2) VeritasVerify post-processor module — runs after answer generation, returns verified/unverified split + verification_rate (which doubles as a DSPy-optimizer metric for tuning the program toward more verifiable assertions). Includes a multi-hop ProgramOfThought composition example. TechArticle + BreadcrumbList schema. Compounds with the existing 4 guides (LangChain · LlamaIndex · OpenAI tool-calls · Vercel AI SDK).",
+      "DSPy guide covers a custom retriever backed by the VERITAS catalog and a candidate-lookup post-processor. Candidate coverage is a retrieval diagnostic, not an accuracy metric; evidence support must be evaluated against a separately labeled set.",
   },
   {
     date: "2026-05-16",
@@ -421,30 +421,30 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "feat",
-    title: "/playground/ — interactive in-browser verification demo",
+    title: "/playground/ — interactive in-browser catalog-matching demo",
     body:
-      "Type a free-form claim, see VERITAS verify it live against the signed catalog. Pure client-side JavaScript calling /api/v1/verify — same endpoint your code will use, with the request shape and response shown side-by-side. Six sample claims pre-staged for one-click trying. No signup, no key, no quota for read-only access. Activation-stage UX so devs understand the product without writing code first.",
+      "Type a free-form claim and retrieve similar VERITAS catalog records in the browser. The legacy /api/v1/verify route returns candidates, not a truth verdict; compare exact statements and cited evidence. Six sample queries are pre-staged. No signup or key is required.",
   },
   {
     date: "2026-05-16",
     kind: "feat",
     title: "/concepts/ pillar pages — LLM grounding, hallucination, RAG vs VERITAS",
     body:
-      "Three standalone explainers (Wikipedia-rival depth) on high-intent search queries: definition of LLM grounding + 3 production patterns (prompt-stuffing / RAG / signed claims); five categories of hallucination + six root causes + mitigation ladder; RAG vs signed-claim verification comparison + hybrid pattern. TechArticle + DefinedTerm schema so LLMs can extract definitions cleanly.",
+      "Three standalone explainers on LLM grounding, hallucination, and the distinction between broad RAG retrieval and a bounded catalog of reviewed atomic claim records. Includes hybrid patterns plus TechArticle and DefinedTerm structured data.",
   },
   {
     date: "2026-05-16",
     kind: "feat",
     title: "/docs/integrations/ — 4 drop-in framework guides",
     body:
-      "LangChain (retrieve-then-cite + generate-then-verify + signature-verify patterns); LlamaIndex (custom Retriever + NodePostprocessor); OpenAI tool-calls + Anthropic Claude tool-use; Vercel AI SDK (streamText + tool() function-calling). Each guide is copy-paste runnable in Python or JavaScript.",
+      "LangChain, LlamaIndex, OpenAI tool-calls, Anthropic tool-use, and Vercel AI SDK examples for retrieving candidate records and carrying evidence into review. Similarity results are explicitly separated from entailment and truth decisions.",
   },
   {
     date: "2026-05-16",
     kind: "feat",
     title: "/quickstart/ — 5-minute self-serve onboarding",
     body:
-      "Three sequential code blocks (curl + JS + Python) cover verify → search → fetch-envelope. HowTo + BreadcrumbList schema. No signup gate; free tier covers first 1,000 calls per month for read-only catalog access.",
+      "Three sequential code blocks (curl + JS + Python) cover candidate lookup → search → fetch-envelope. HowTo + BreadcrumbList schema. No signup or API key is required; no account-level monthly quota is advertised.",
   },
   {
     date: "2026-05-16",
@@ -484,9 +484,9 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "feat",
-    title: "POST /api/v1/verify — match a free-form claim against the catalog",
+    title: "POST /api/v1/verify — retrieve candidates for a free-form claim",
     body:
-      "Single-claim verification endpoint. Returns top-5 ranked matches with normalized matchScore + rationale; bestMatch surfaces iff matchScore ≥0.20 AND confidence ≥minConfidence (default 0.85). Optionally signs the response with HMAC-SHA256 if SOURCESCORE_SIGNING_SECRET is set on the worker.",
+      "Legacy-named candidate endpoint. It returns up to five similarity-ranked matches with rationale; bestMatch requires the active semantic (0.50) or keyword (0.30) floor plus the requested legacy record-confidence threshold. A match is not entailment. SourceScore-issued HMAC metadata is added when the signing secret is available.",
   },
   {
     date: "2026-05-16",
@@ -498,9 +498,9 @@ const entries: Entry[] = [
   {
     date: "2026-05-16",
     kind: "feat",
-    title: "Day 1 launch — VERITAS-Reborn",
+    title: "Day 1 launch — VERITAS-Reborn claim catalog",
     body:
-      "Public launch of the signed-claim verification API. 26 seed claims with 16-hex stable IDs derived from canonical fields, ≥2 primary sources each, HMAC-SHA256 signed envelopes. Endpoints: catalog (/api/v1/claims.json), per-claim envelope (/api/v1/claims/{id}.json), methodology (/api/v1/methodology.json). TypeScript SDK + OpenAPI 3.1.0 spec.",
+      "Public launch of the curated claim catalog. The initial 26 records used stable 16-hex IDs, cited sources, SourceScore-issued HMAC metadata, a TypeScript SDK, and an OpenAPI 3.1 specification.",
   },
 ];
 
@@ -548,6 +548,13 @@ export default function ChangelogPage() {
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
           Every shipped feature, catalog expansion, and methodology
           update on the SourceScore VERITAS API. Reverse-chronological.
+        </p>
+        <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl">
+          Entries record changes and wording from their release date. For the
+          current contract, limitations, and offer, use the{" "}
+          <a href="/docs/" className="underline">API docs</a>,{" "}
+          <a href="/methodology/" className="underline">methodology</a>, and{" "}
+          <a href="/pricing/" className="underline">pricing page</a>.
         </p>
       </header>
 

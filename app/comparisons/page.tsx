@@ -39,7 +39,7 @@ const COMPARISONS = [
     slug: "veritas-vs-anthropic-citations",
     title: "VERITAS vs Anthropic Citations API",
     summary:
-      "Anthropic Citations API grounds in user-supplied docs (Claude only, in-context citations). VERITAS grounds in a signed externally-citable claim catalog (any LLM, public URLs, HMAC-verifiable). Complementary patterns — when to use each + when to use both.",
+      "Anthropic Citations API grounds in user-supplied docs (Claude only, in-context citations). VERITAS grounds in an externally citable claim catalog (any LLM, public URLs, SourceScore-issued HMAC metadata). Complementary patterns — when to use each + when to use both.",
   },
 ];
 

@@ -111,8 +111,8 @@ export default function ContentModerationPage() {
         </p>
         <ol>
           <li><strong>Extract atomic claims.</strong> Parse the draft into discrete assertions (dates, names, numbers, attributions).</li>
-          <li><strong>Verify each claim.</strong> Against domain catalogs + cross-reference checks. AI/ML claims via SourceScore VERITAS; other domains via Wikipedia + Wolfram + custom catalogs.</li>
-          <li><strong>Flag or strip unverified claims.</strong> Either route the draft to human review with unverified claims highlighted, or auto-strip and let the LLM regenerate without those claims.</li>
+          <li><strong>Retrieve candidate evidence.</strong> Use domain catalogs and primary sources. VERITAS can return nearby AI/ML records, but similarity is not a truth verdict.</li>
+          <li><strong>Review support before publishing.</strong> Route candidate and unmatched assertions to a human or a separate entailment check; never auto-publish from <code>bestMatch</code> alone.</li>
         </ol>
 
         <h2>Implementation</h2>
@@ -123,7 +123,7 @@ from typing import Literal
 
 class ClaimCheck:
     text: str
-    status: Literal["verified", "unverified", "refuted"]
+    status: Literal["candidate", "no_match"]
     source_url: str | None = None
     confidence: float | None = None
 
@@ -147,11 +147,11 @@ def verify_aiml(claim: str) -> ClaimCheck:
     if match and match["confidence"] >= 0.85:
         return ClaimCheck(
             text=claim,
-            status="verified",
+            status="candidate",
             source_url=match["detailUrl"],
             confidence=match["confidence"],
         )
-    return ClaimCheck(text=claim, status="unverified")
+    return ClaimCheck(text=claim, status="no_match")
 
 def moderate(draft: str) -> dict:
     claims = extract_factual_claims(draft)
@@ -160,24 +160,21 @@ def moderate(draft: str) -> dict:
     return {
         "draft": draft,
         "claims_checked": len(checks),
-        "verified_count": sum(1 for c in checks if c.status == "verified"),
-        "unverified_count": sum(1 for c in checks if c.status != "verified"),
-        "unverified_claims": [c.text for c in checks if c.status != "verified"],
-        "can_auto_publish": all(c.status == "verified" for c in checks),
+        "candidate_count": sum(1 for c in checks if c.status == "candidate"),
+        "no_match_count": sum(1 for c in checks if c.status == "no_match"),
+        "checks": checks,
+        "review_required": True,
     }
 
 # In your editorial workflow:
 result = moderate(llm_draft)
-if result["can_auto_publish"]:
-    publish(result["draft"])
-else:
-    route_to_human_review(result["draft"], result["unverified_claims"])`}</code></pre>
+route_to_human_review(result["draft"], result["checks"])`}</code></pre>
 
         <h2>Use across editorial workflows</h2>
         <ul>
           <li><strong>Newsletter platforms.</strong> Pre-flight every AI-generated section. Show editors a list of unverified claims with one-click strike-through.</li>
-          <li><strong>Auto-summary tools.</strong> Strip claims with confidence &lt; 0.85; let the LLM rewrite around the strikes.</li>
-          <li><strong>SEO-content platforms.</strong> Block publish on any unverified factual assertion. Force the writer to either find a source or rephrase.</li>
+          <li><strong>Auto-summary tools.</strong> Attach candidate records for review; do not treat record confidence as query entailment.</li>
+          <li><strong>SEO-content platforms.</strong> Block publish until each factual assertion is supported by evidence a reviewer or dedicated entailment step has checked.</li>
           <li><strong>Internal company comms.</strong> Verify before sending all-hands or external comms drafted by AI.</li>
         </ul>
 
@@ -203,11 +200,11 @@ else:
 
         <h2>Free-tier viability</h2>
         <p>
-          SourceScore VERITAS free tier covers up to 1,000 claim
-          verifications per month. For a newsletter publishing 4 issues
-          per week × 5 verifiable claims per issue = ~80 verifies/month
-          — well within free tier. Higher volume scales to paid tiers
-          (€19-€499/month).
+          The SourceScore VERITAS public API is free with no account, key, or
+          signup. A newsletter publishing 4 issues per week with 5 verifiable
+          claims per issue would make roughly 80 candidate-lookups per month.
+          Higher-volume paid access is a demand test only; no paid plan or
+          service commitment is live.
         </p>
 
         <h2>Related</h2>

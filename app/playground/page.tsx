@@ -1,7 +1,7 @@
 // /playground/ — interactive VERITAS demo (client-side JS, no signup).
 //
-// Activation-stage UX: dev arrives via search → types a claim → sees it
-// verified in <1s → understands the product without writing code.
+// Activation-stage UX: dev arrives via search → types an assertion → sees
+// candidate records → understands the product without writing code.
 // Highest-leverage activation lever per AAERA / Aleyda 10-char #10
 // Transactable.
 //
@@ -16,11 +16,11 @@ import { Playground } from "./playground-client";
 export const metadata: Metadata = {
   title: "Playground — SourceScore VERITAS",
   description:
-    "Interactive demo: type a claim, see VERITAS verify it against the signed catalog in real time. No signup, no key, runs in your browser.",
+    "Interactive demo: type an assertion and retrieve nearby SourceScore catalog records to review. No signup or key; runs in your browser.",
   alternates: { canonical: "https://sourcescore.org/playground/" },
   openGraph: {
     title: "VERITAS Playground — interactive demo",
-    description: "Type a claim, see it verified. No signup, no key.",
+    description: "Type an assertion and inspect candidate catalog records. No signup or key.",
     url: "https://sourcescore.org/playground/",
     type: "website",
   },
@@ -36,7 +36,7 @@ const webAppSchema = {
   name: "SourceScore VERITAS Playground",
   url: "https://sourcescore.org/playground/",
   description:
-    "Interactive in-browser claim-verification playground. Type a claim, see VERITAS verify it against the signed catalog. No signup, no auth, free tier.",
+    "Interactive in-browser catalog-retrieval playground. Type an assertion, inspect candidate records, and review cited evidence. No signup or auth.",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Any (browser-based)",
   offers: {
@@ -53,8 +53,8 @@ const webAppSchema = {
   },
   featureList: [
     "Type a natural-language claim",
-    "Verify against the SourceScore VERITAS catalog",
-    "View signed JSON envelope with HMAC-SHA256",
+    "Retrieve candidates from the SourceScore VERITAS catalog",
+    "View JSON records with SourceScore-issued HMAC metadata",
     "See verbatim excerpts from primary sources",
     "Copy ready-to-paste citation",
   ],
@@ -93,8 +93,8 @@ export default function PlaygroundPage() {
           VERITAS Playground
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
-          Type a claim. See VERITAS verify it against the signed catalog
-          in your browser. The API call you&apos;d make from your code —
+          Type an assertion. See which catalog records VERITAS retrieves in
+          your browser. A match is a candidate, not a truth verdict. The API call you&apos;d make from your code —
           live, with the request shape and the response shown side by
           side.
         </p>

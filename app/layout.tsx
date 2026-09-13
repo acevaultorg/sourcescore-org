@@ -280,6 +280,12 @@ function SiteHeader() {
             Check a source
           </a>
           <a
+            href="/ai-visibility-tools/"
+            className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors hidden xl:inline-block"
+          >
+            AI tools
+          </a>
+          <a
             href="/discipline/"
             className="px-3 py-1.5 rounded-btn hover:bg-surface-hover text-muted hover:text-text transition-colors"
           >
@@ -337,20 +343,24 @@ function SiteFooter() {
         <div>
           <div className="text-text font-semibold mb-2">SourceScore</div>
           <p className="text-muted leading-relaxed">
-            Source-rating reference + VERITAS signed-claim API. Two
-            surfaces, one trust layer for AI-era citation.
+            Source-rating reference + VERITAS curated-claim API. Two
+            surfaces for inspectable AI-era citation research.
           </p>
           <p className="mt-3 text-muted leading-relaxed">
             <a
-              href="https://citationdesk.com/tools/citation-readiness/"
+              href="https://citationdesk.com/tools/citation-readiness/?utm_source=sourcescore&utm_medium=referral&utm_campaign=owned-ai-visibility&utm_content=footer"
               target="_blank"
               rel="nofollow noopener"
               data-clarity-upgrade="citationdesk-cta-footer"
-              className="hover:text-text" data-event="citationdesk_cta" data-event-source="footer"
+              className="hover:text-text"
+              data-event="citationdesk_cta"
+              data-event-source="footer"
+              data-event-intent="own-site-check"
+              data-event-prefilled="no"
             >
               Sister product:{" "}
               <span className="text-brand">CitationDesk</span> — is your own site
-              cited by AI? ↗
+              ready for AI citations? ↗
             </a>
           </p>
           <p className="mt-2 text-muted leading-relaxed">
@@ -378,6 +388,7 @@ function SiteFooter() {
             <li><a href="/docs/integrations/" className="hover:text-text">Integrations</a></li>
             <li><a href="/pricing/" className="hover:text-text">Pricing</a></li>
             <li><a href="/api-access/" className="hover:text-text">Request API access</a></li>
+            <li><a href="/ai-visibility-tools/" className="hover:text-text">AI visibility tools</a></li>
             <li><a href="/blog/" className="hover:text-text">Blog</a></li>
             <li><a href="/changelog/" className="hover:text-text">Changelog</a></li>
           </ul>

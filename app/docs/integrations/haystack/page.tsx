@@ -5,13 +5,13 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 import { haystackHowTo } from "@/lib/howto-schemas";
 
 export const metadata: Metadata = {
-  title: "Haystack + SourceScore VERITAS — ground LLM pipelines with signed claims",
+  title: "Haystack + SourceScore VERITAS — retrieve candidate claim records",
   description:
-    "Wire SourceScore VERITAS into a Haystack 2.x pipeline as a custom retriever component + a verify component that drops unverified documents. Python examples.",
+    "Wire SourceScore VERITAS into Haystack 2.x as a catalog retriever plus a candidate-annotation component. Evidence review remains explicit. Python examples.",
   alternates: { canonical: "https://sourcescore.org/docs/integrations/haystack/" },
   openGraph: {
     title: "Haystack + SourceScore VERITAS",
-    description: "Custom component retriever + document verification for grounded Haystack pipelines.",
+    description: "Custom catalog retriever plus candidate annotation for Haystack evidence-review pipelines.",
     url: "https://sourcescore.org/docs/integrations/haystack/",
     type: "article",
   },
@@ -26,9 +26,9 @@ export default function HaystackIntegration() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TechArticle",
-            headline: "Haystack + SourceScore VERITAS: signed-claim retrieval + verification",
+            headline: "Haystack + SourceScore VERITAS: candidate-record retrieval and review",
             description:
-              "A custom Haystack 2.x component wrapping the VERITAS /search endpoint, plus a verifier component that keeps only documents matching a high-confidence signed claim. Pipeline example with PromptBuilder + OpenAIGenerator.",
+              "A custom Haystack 2.x component wrapping VERITAS search, plus a component that annotates possible catalog matches without treating similarity as proof.",
             datePublished: "2026-05-29",
             dateModified: "2026-05-29",
             author: { "@type": "Organization", name: "SourceScore", url: "https://sourcescore.org" },
@@ -71,9 +71,9 @@ export default function HaystackIntegration() {
           Haystack + SourceScore VERITAS
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
-          Two Haystack 2.x components: a retriever that pulls signed VERITAS
-          claims, and a verifier that drops any document not backed by a
-          high-confidence claim. Connect them in a normal Pipeline.
+          Two Haystack 2.x components: a retriever for curated VERITAS
+          records and an annotator for possible matches. A separate evidence
+          or entailment review decides whether an assertion is supported.
         </p>
       </header>
 
@@ -131,26 +131,24 @@ class VeritasRetriever:
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">A verify component (for any existing retriever)</h2>
+        <h2 className="text-xl font-semibold mb-3">A candidate annotator (for any existing retriever)</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           If your pipeline already has a primary retriever (a vector store, say),
-          drop this verifier in after it. It POSTs each document to{" "}
-          <code className="font-mono">/verify</code> and keeps only those that
-          match a signed claim at or above <code className="font-mono">min_confidence</code>,
-          stamping the claim id + confidence onto the document.
+          add this annotator after it. It POSTs each document to{" "}
+          <code className="font-mono">/verify</code> and attaches any returned
+          candidate. It never keeps or drops a document based on similarity alone.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`import requests
 from typing import List
 from haystack import component, Document
 
 @component
-class VeritasVerifier:
+class VeritasCandidateAnnotator:
     def __init__(self, min_confidence: float = 0.85):
         self.min_confidence = min_confidence
 
-    @component.output_types(documents=List[Document], dropped=List[Document])
+    @component.output_types(documents=List[Document])
     def run(self, documents: List[Document]):
-        kept, dropped = [], []
         for d in documents:
             r = requests.post(
                 f"{VERITAS}/verify",
@@ -159,13 +157,11 @@ class VeritasVerifier:
             ).json()
             best = r.get("bestMatch")
             if best:
-                d.meta["veritas_claim_id"] = best["id"]
-                d.meta["veritas_confidence"] = best["confidence"]
-                d.meta["veritas_url"] = best.get("detailUrl")
-                kept.append(d)
-            else:
-                dropped.append(d)
-        return {"documents": kept, "dropped": dropped}
+                d.meta["veritas_candidate_id"] = best["id"]
+                d.meta["veritas_record_confidence"] = best["confidence"]
+                d.meta["veritas_candidate_url"] = best.get("detailUrl")
+                d.meta["requires_evidence_review"] = True
+        return {"documents": documents}
 `}</code></pre>
       </section>
 
@@ -174,21 +170,23 @@ class VeritasVerifier:
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           Connect the retriever to a <code className="font-mono">PromptBuilder</code>{" "}
           and an <code className="font-mono">OpenAIGenerator</code>. The prompt
-          forces citation of every fact by <code className="font-mono">claim_id</code>.
+          instructs the model to use a candidate only when its exact statement
+          supports the answer.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`from haystack import Pipeline
 from haystack.components.builders import PromptBuilder
 from haystack.components.generators import OpenAIGenerator
 
-template = """Answer using ONLY the verified claims below. Cite every fact with [claim_id].
-If the claims do not cover the question, say so — do not improvise.
+template = """The records below are retrieval candidates, not truth verdicts.
+Use a record only when its exact statement supports the answer; otherwise say
+the supplied evidence does not cover the question.
 
 {% for doc in documents %}
 [{{ doc.meta.claim_id }}] {{ doc.content }} (confidence {{ doc.meta.confidence }})
 {% endfor %}
 
 Question: {{ query }}
-Answer (every fact ends with [claim_id]):"""
+Answer (cite [claim_id] only after exact-statement comparison):"""
 
 pipe = Pipeline()
 pipe.add_component("retriever", VeritasRetriever(top_k=5))
@@ -208,14 +206,14 @@ print(result["llm"]["replies"][0])
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Why a verify step</h2>
+        <h2 className="text-xl font-semibold mb-3">Why an evidence-review step</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
           A retriever returns the closest documents; it does not confirm a
-          generated answer is consistent with them. The verifier closes that
-          gap — every kept document is backed by a signed claim with ≥2 primary
-          sources, so the citations the model produces are checkable, not
-          asserted. Free tier is 1,000 calls/month, no signup; the API is the
-          same one the rest of these guides use.
+          generated answer is consistent with them. This component only selects
+          similar catalog candidates; it does not close that gap. Compare each
+          linked primary source before asserting a fact. The public API is free
+          with no account, key, or signup; it
+          is the same API the rest of these guides use.
         </p>
       </section>
 

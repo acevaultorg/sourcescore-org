@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { CitationDeskCTA } from "@/components/CitationDeskCTA";
 import type { GradeLetter } from "@/lib/types";
 
 // The free "AI Source-Trust Checker" front door (blueprint 2026-07-10, strategy
@@ -54,24 +55,19 @@ function findMatch(rows: CheckerRow[], raw: string): CheckerRow | null {
 }
 
 function verdict(i: number): string {
-  if (i >= 90) return "Top-tier — AI engines treat this as a primary, highly citable source.";
-  if (i >= 80) return "Strong — a reliable, AI-citable source with solid citation discipline.";
-  if (i >= 70) return "Good — citable, with some gaps in discipline or modern-reference fitness.";
-  if (i >= 55) return "Mixed — use with corroboration; AI engines cite it selectively.";
-  return "Weak — low AI-citation fitness; corroborate before relying on it.";
+  if (i >= 90) return "Top-tier under the SourceScore v0.1 rubric — highly citable, with strong reference signals.";
+  if (i >= 80) return "Strong under the SourceScore rubric, with solid citation discipline.";
+  if (i >= 70) return "Good, with some gaps in discipline or modern-reference fitness.";
+  if (i >= 55) return "Mixed — review the weakest dimension and corroborate before relying on it.";
+  return "Weak under this rubric — corroborate before relying on it.";
 }
 
-// `partnerSlot` is rendered, not imported. PartnerTools is a SERVER component and
-// this file is "use client" — importing it here would pull it into the client
-// bundle. The server page passes the already-rendered element down instead.
 export function SourceTrustChecker({
   rows,
   total,
-  partnerSlot,
 }: {
   rows: CheckerRow[];
   total: number;
-  partnerSlot?: React.ReactNode;
 }) {
   const [raw, setRaw] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -90,6 +86,12 @@ export function SourceTrustChecker({
 
   const match = useMemo(() => (submitted || raw.length >= 3 ? findMatch(rows, raw) : null), [rows, raw, submitted]);
   const showResult = submitted || raw.trim().length >= 2;
+  const normalizedDomain = normDomain(raw);
+  const inputType = raw.includes("://") || normalizedDomain.includes(".") ? "url-or-domain" : "source-name";
+  const targetUrl = inputType === "url-or-domain" && normalizedDomain ? `https://${normalizedDomain}` : undefined;
+  const reviewSubject = "SourceScore index review request";
+  const reviewBody = `Please review this source for inclusion in SourceScore:\n\n${normalizedDomain || raw.trim()}\n\nEvidence or context:`;
+  const reviewHref = `mailto:hello@caslonmedia.com?subject=${encodeURIComponent(reviewSubject)}&body=${encodeURIComponent(reviewBody)}`;
   const embed = match
     ? `<iframe src="https://sourcescore.org/embed/${match.slug}/" width="100%" height="380" loading="lazy" style="border:0;max-width:480px;" title="SourceScore: ${match.name}"></iframe>`
     : "";
@@ -107,6 +109,10 @@ export function SourceTrustChecker({
   return (
     <div className="max-w-2xl">
       <form
+        data-event="source_check_submit"
+        data-event-result={match ? "known" : "unknown"}
+        data-event-input-type={inputType}
+        data-event-source-slug={match?.slug ?? "unscored"}
         onSubmit={(e) => {
           e.preventDefault();
           setSubmitted(true);
@@ -174,6 +180,8 @@ export function SourceTrustChecker({
           <div className="flex flex-wrap gap-2 mb-6">
             <a
               href={`/source/${match.slug}/`}
+              data-event="source_check_detail_click"
+              data-event-source-slug={match.slug}
               className="px-4 py-2 rounded-btn border border-brand/40 bg-surface-brand text-brand text-body-sm font-semibold hover:bg-brand/15 transition-colors"
             >
               Full breakdown + signals →
@@ -186,13 +194,15 @@ export function SourceTrustChecker({
             </a>
           </div>
 
-          {/* Embeddable "AI-cited" trust badge — the compounding backlink unit. */}
+          {/* Embeddable SourceScore badge — the compounding backlink unit. */}
           <div className="pt-5 border-t border-border">
             <div className="flex items-center justify-between gap-3 mb-2">
-              <div className="text-eyebrow text-brand">Put the AI-Trust badge on your site</div>
+              <div className="text-eyebrow text-brand">Put the SourceScore badge on your site</div>
               <button
                 type="button"
                 onClick={copyEmbed}
+                data-event="trust_badge_copy"
+                data-event-source-slug={match.slug}
                 className="text-caption text-brand hover:underline whitespace-nowrap"
               >
                 {copied ? "Copied ✓" : "Copy code"}
@@ -202,10 +212,29 @@ export function SourceTrustChecker({
               {embed}
             </pre>
             <p className="mt-2 text-caption text-dim">
-              A live, always-current grade badge linking back to your SourceScore page.
+              A published grade badge linking to the dated evidence and methodology behind it.
             </p>
           </div>
-          {partnerSlot}
+          <div className="mt-5">
+            <CitationDeskCTA
+              variant="strip"
+              source="check-known"
+              intent="own-site-check"
+              targetUrl={`https://${match.domain}`}
+            />
+          </div>
+          <p className="mt-3 text-caption text-dim">
+            Need ongoing monitoring instead?{" "}
+            <a
+              href="/ai-visibility-tools/"
+              className="text-brand hover:underline"
+              data-event="ai_visibility_guide_click"
+              data-event-source="check-known"
+            >
+              Compare AI-visibility tools
+            </a>
+            .
+          </p>
         </div>
       )}
 
@@ -216,15 +245,23 @@ export function SourceTrustChecker({
             <span className="font-mono text-brand">{normDomain(raw) || raw.trim()}</span> isn&rsquo;t in the index yet.
           </p>
           <p className="text-body-sm text-muted mb-5 max-w-md">
-            We score {total} sources so far and never show a grade we haven&rsquo;t verified. Request it, or see how
-            scoring works.
+            We score {total} sources so far and never show a grade we haven&rsquo;t verified. If this is your site,
+            run a free page-level audit now; requesting an index review is separate.
           </p>
-          <div className="flex flex-wrap gap-2">
+          <CitationDeskCTA
+            variant="strip"
+            source="check-unknown"
+            intent="unscored-own-domain"
+            targetUrl={targetUrl}
+          />
+          <div className="flex flex-wrap gap-2 mt-4">
             <a
-              href="/api-access/"
-              className="px-4 py-2 rounded-btn border border-brand/40 bg-surface-brand text-brand text-body-sm font-semibold hover:bg-brand/15 transition-colors"
+              href={reviewHref}
+              className="px-4 py-2 rounded-btn border border-border bg-panel hover:bg-panel-hi text-muted hover:text-text text-body-sm transition-colors"
+              data-event="source_inclusion_request"
+              data-event-source="check-unknown"
             >
-              Request this source →
+              Request index review
             </a>
             <a
               href="/methodology/"
@@ -233,13 +270,14 @@ export function SourceTrustChecker({
               How scoring works
             </a>
             <a
-              href="/sources/"
+              href="/ai-visibility-tools/"
               className="px-4 py-2 rounded-btn border border-border bg-panel hover:bg-panel-hi text-muted hover:text-text text-body-sm transition-colors"
+              data-event="ai_visibility_guide_click"
+              data-event-source="check-unknown"
             >
-              Browse all sources
+              Compare monitoring tools
             </a>
           </div>
-          {partnerSlot}
         </div>
       )}
     </div>

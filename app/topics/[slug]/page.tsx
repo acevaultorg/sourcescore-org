@@ -12,7 +12,6 @@ import { notFound } from "next/navigation";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 import { TOPICS, findTopic } from "@/lib/topics";
 import { loadFullClaims } from "@/lib/claims-build";
-import { PartnerTools } from "@/components/PartnerTools";
 
 interface PageParams {
   params: Promise<{ slug: string }>;
@@ -203,15 +202,6 @@ export default async function TopicPage({ params }: PageParams) {
           </div>
         ))}
       </section>
-
-      {/* HIGHEST-INTENT SLOT — the live activation layer (renders nothing while
-          every partner slot is dormant; see lib/partners.ts). Topic hubs are the
-          densest AI-citation surface on the site, and their readers arrive on
-          grounding/citation-tooling queries — the same buyer the parent
-          /source/<slug>/ slot already serves. Placed after the topic explainer
-          (the AEO-extractable payload) and before the reference blocks, so it
-          never displaces the extractable answer. */}
-      <PartnerTools variant="strip" source="topic-hub" className="mb-12" />
 
       <section className="mb-12">
         <h2 className="text-xl font-semibold mb-4">

@@ -66,7 +66,12 @@ export default function SearchPage() {
           >
             <span className="text-caption text-dim font-mono w-6 text-right">#{i + 1}</span>
             <div className="flex-1 min-w-0">
-              <a href={`/source/${s.slug}/`} className="font-semibold text-text hover:text-brand">
+              <a
+                href={`/source/${s.slug}/`}
+                data-event="source_search_result_click"
+                data-event-source-slug={s.slug}
+                className="font-semibold text-text hover:text-brand"
+              >
                 {s.name}
               </a>
               <div className="text-caption text-dim font-mono">
@@ -110,17 +115,35 @@ export default function SearchPage() {
         </p>
         <p className="text-body-sm text-muted mb-5 max-w-md mx-auto">
           SourceScore covers {sources.length} hand-scored sources today. We don&apos;t show a grade
-          we haven&apos;t verified — here&apos;s how to assess it or get it added.
+          we haven&apos;t verified. If this is your site, run a free page-level readiness audit now;
+          requesting an index review is separate.
         </p>
         <div className="flex flex-wrap gap-2 justify-center">
-          <a href="/methodology/" className="px-4 py-2 rounded-pill border border-brand/40 bg-surface-brand text-body-sm text-brand hover:underline">
-            How scoring works →
+          <a
+            id="ss-citationdesk"
+            href="https://citationdesk.com/tools/citation-readiness/?utm_source=sourcescore&utm_medium=referral&utm_campaign=owned-ai-visibility&utm_content=search-unknown"
+            target="_blank"
+            rel="nofollow noopener"
+            data-event="citationdesk_cta"
+            data-event-source="search-unknown"
+            data-event-intent="unscored-own-domain"
+            data-event-prefilled="no"
+            data-clarity-upgrade="citationdesk-cta-search-unknown"
+            className="px-4 py-2 rounded-pill border border-brand/40 bg-surface-brand text-body-sm font-semibold text-brand hover:underline"
+          >
+            Audit my site free →
           </a>
-          <a href="/contact/" className="px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm text-muted hover:text-text">
-            Request this source
+          <a
+            id="ss-source-request"
+            href="mailto:hello@caslonmedia.com?subject=SourceScore%20index%20review%20request"
+            data-event="source_inclusion_request"
+            data-event-source="search-unknown"
+            className="px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm text-muted hover:text-text"
+          >
+            Request index review
           </a>
-          <a href="/sources/" className="px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm text-muted hover:text-text">
-            Browse all sources
+          <a href="/ai-visibility-tools/" data-event="ai_visibility_guide_click" data-event-source="search-unknown" className="px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm text-muted hover:text-text">
+            Compare monitoring tools
           </a>
         </div>
       </div>

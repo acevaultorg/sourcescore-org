@@ -107,21 +107,21 @@ export default function RagVerificationPage() {
           context. The inconsistency is invisible.
         </p>
 
-        <h2>The pattern: verify-then-respond</h2>
+        <h2>The pattern: match, review, then respond</h2>
         <p>
           Add a third stage to your RAG pipeline:
         </p>
         <ol>
           <li><strong>Retrieve.</strong> Pull top-K from your vector DB. Unchanged.</li>
           <li><strong>Generate.</strong> Model produces a response. Unchanged.</li>
-          <li><strong>Verify.</strong> Extract atomic assertions from the response. Look each up via VERITAS. Annotate verified / unverified / refuted in the user-facing output.</li>
+          <li><strong>Match and review.</strong> Extract atomic assertions, retrieve candidate VERITAS records, then compare statements and cited evidence before labeling support.</li>
         </ol>
 
         <h2>Code (Python, ~30 lines)</h2>
         <pre><code>{`import re
 import httpx
 
-def verify_assertions(llm_response: str) -> dict:
+def retrieve_candidates(llm_response: str) -> dict:
     # Naive extraction: sentences with "is" / "has" / "released" verbs
     sentences = re.split(r'(?<=[.!?])\\s+', llm_response)
     candidates = [
@@ -129,8 +129,8 @@ def verify_assertions(llm_response: str) -> dict:
         if re.search(r'\\b(is|has|released|introduced)\\b', s, re.IGNORECASE)
     ]
 
-    verified = []
-    unverified = []
+    candidate_records = []
+    no_match = []
     for claim in candidates:
         r = httpx.post(
             'https://sourcescore.org/api/v1/verify',
@@ -138,50 +138,50 @@ def verify_assertions(llm_response: str) -> dict:
             timeout=2.0,
         )
         result = r.json()
-        if result.get('bestMatch') and result['bestMatch']['confidence'] >= 0.85:
-            verified.append({
+        if result.get('bestMatch'):
+            candidate_records.append({
                 'claim': claim,
+                'candidate_statement': result['bestMatch']['statement'],
                 'source_url': result['bestMatch']['detailUrl'],
-                'signature': result['signature'],
             })
         else:
-            unverified.append(claim)
+            no_match.append(claim)
 
-    return {'verified': verified, 'unverified': unverified}
+    return {'candidate_records': candidate_records, 'no_match': no_match}
 
 # In your RAG flow:
 response = rag_chain.invoke(query)
-verification = verify_assertions(response)
+screen = retrieve_candidates(response)
 
-if verification['unverified']:
-    response += f"\\n\\n*Note: {len(verification['unverified'])} claim(s) could not be independently verified.*"
-for v in verification['verified']:
-    response += f"\\n\\n[Source]({v['source_url']})"`}</code></pre>
+if screen['no_match']:
+    response += f"\\n\\n*Note: {len(screen['no_match'])} claim(s) have no catalog candidate.*"
 
-        <h2>What this catches</h2>
+# Do not attach a verified badge here. Compare each candidate_statement and
+# its cited evidence with the submitted claim in a separate review step.`}</code></pre>
+
+        <h2>What this can surface</h2>
         <p>
-          In production deployments running this pattern alongside
-          standard RAG, the verification layer catches roughly:
+          Candidate retrieval can expose a dated catalog record, a different
+          number, or a source worth reviewing. It can also return a topically
+          similar record that does not entail the submitted assertion.
         </p>
         <ul>
-          <li>~30% of fabricated-source hallucinations the retriever missed</li>
-          <li>~50% of right-document-wrong-number cases</li>
-          <li>~95% of date-attribution errors (model says &quot;released July 2024&quot; when source says &quot;released July 2023&quot;)</li>
+          <li>Missing catalog coverage that should route to another retrieval path</li>
+          <li>Candidate evidence for dates, attributions, and specifications</li>
+          <li>Potential disagreement between generated text and a reviewed record</li>
         </ul>
         <p>
-          The remaining gap is genuinely ambiguous claims (no consensus
-          across sources) and out-of-catalog assertions. For ambiguous
-          claims we recommend human review; for out-of-catalog
-          assertions we recommend stricter system-prompt constraints
-          rather than relaxing verification.
+          Measure precision and recall on your own labeled evaluation set before
+          using this in production. Ambiguous, high-stakes, or out-of-catalog
+          assertions should route to primary-source or human review.
         </p>
 
         <h2>Performance</h2>
         <ul>
-          <li>~80ms p95 per verify call</li>
-          <li>Free tier: 1,000 verifies/month, no signup, no auth</li>
+          <li>One network request per verify call; benchmark from your own region</li>
+          <li>Public API: free, no signup, no auth, and no account-level meter</li>
           <li>Cached responses (claim → envelope) for repeated assertions</li>
-          <li>Parallel verification of all extracted assertions in a single async batch</li>
+          <li>Batching or parallelization is your implementation choice; respect network abuse controls</li>
         </ul>
 
         <h2>Integration guides per framework</h2>

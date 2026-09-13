@@ -1,6 +1,6 @@
 # @sourcescore/api
 
-TypeScript SDK for the [SourceScore VERITAS API](https://sourcescore.org/docs/) — signed, sourced, citable claim verification for LLM developers building grounded retrieval systems.
+TypeScript SDK for the [SourceScore VERITAS API](https://sourcescore.org/docs/) — curated AI/ML claim records, candidate retrieval, and citable evidence links.
 
 ```bash
 npm install @sourcescore/api
@@ -25,30 +25,32 @@ for (const c of results.results) {
   console.log(c.statement);
 }
 
-// Verify a natural-language claim
+// Find a candidate catalog record for a natural-language claim
 const verification = await ss.claims.verify("Llama 3.1 was released in July 2024");
 if (verification.bestMatch) {
-  console.log("Verified:", verification.bestMatch.statement);
+  console.log("Candidate record:", verification.bestMatch.statement);
 } else {
-  console.log("Not verified by SourceScore.");
+  console.log("No candidate record cleared the retrieval gates.");
 }
 ```
 
 ## Authentication
 
-Free tier (1,000 claims/mo) needs no API key:
+The free public API has no account-level meter and needs no API key:
 
 ```typescript
 const ss = new SourceScoreClient();
 ```
 
-Paid tier — pass your key:
+There is no public paid tier, checkout, or key provisioning today. The optional
+`apiKey` client setting is reserved for future or privately provisioned access:
 
 ```typescript
 const ss = new SourceScoreClient({ apiKey: process.env.SOURCESCORE_API_KEY });
 ```
 
-See [pricing](https://sourcescore.org/pricing/) for tiers.
+See [pricing](https://sourcescore.org/pricing/) for the live free offer and the
+clearly labeled higher-volume demand test.
 
 ## API surface
 
@@ -70,7 +72,7 @@ Keyword search across subject / object / statement / predicate / tags. Default `
 
 ### `ss.claims.verify(claim: string, options?: { minConfidence?: number; vertical?: string })`
 
-Submit a natural-language claim; receive the top 5 ranked catalog matches with normalized match scores + rationale. `bestMatch` is populated only when the top match clears `minConfidence` (default `0.85`). Response is HMAC-signed when the server has access to its signing secret.
+Submit a natural-language claim; receive up to five candidate catalog matches with similarity scores and rationale. `bestMatch` is populated only when the similarity score clears the active method floor and the record's legacy editorial-confidence value clears `minConfidence` (default `0.85`). This is retrieval, not entailment or a truth verdict. The response carries SourceScore-issued HMAC metadata when the server has its signing secret; public users cannot independently recompute that tag.
 
 ### `ss.methodology()`
 
@@ -96,11 +98,9 @@ try {
 }
 ```
 
-## Verifying signatures locally
+## Checking a canonical record
 
-Every `ClaimEnvelope` carries an HMAC-SHA256 signature signed by `did:web:sourcescore.org`. v0 verification model: fetch the same claim from the API; the server re-signs at request-time, so signatures match for unmodified claims. Tampered envelopes are detected by signature mismatch.
-
-v1 (Y2 roadmap): W3C Verifiable Credentials with Ed25519 keys for offline verification. Migration preserves the `signedBy` identity (`did:web:sourcescore.org`); only the algorithm changes.
+Every `ClaimEnvelope` carries SourceScore-issued HMAC-SHA256 integrity metadata. The shared secret is not public, so SDK users cannot independently verify it and should not treat it as a public signature or identity proof. Refetch the canonical HTTPS claim URL and compare the claim content and cited evidence your application uses.
 
 ## Migration from raw fetch
 
@@ -117,7 +117,7 @@ The SDK handles base URL, headers, retry on 5xx, parse error → typed error, an
 
 ```typescript
 const ss = new SourceScoreClient({
-  apiKey: "sk_live_...",            // optional — only required above free tier
+  apiKey: process.env.SOURCESCORE_API_KEY, // optional; public endpoints need none
   baseUrl: "https://sourcescore.org", // override for staging/local
   timeoutMs: 10_000,                // default 10s
   retries: 2,                       // default 2 retries on 5xx + network errors

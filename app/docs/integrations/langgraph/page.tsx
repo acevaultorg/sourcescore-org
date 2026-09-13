@@ -5,13 +5,13 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 import { langgraphHowTo } from "@/lib/howto-schemas";
 
 export const metadata: Metadata = {
-  title: "LangGraph + SourceScore VERITAS — ground agentic graphs with signed claims",
+  title: "LangGraph + SourceScore VERITAS — candidate retrieval and evidence review",
   description:
-    "Wire SourceScore VERITAS into a LangGraph StateGraph: a retrieve node that pulls signed claims, a generate node, and a verify node that confirms the answer is backed by a signed claim. Python examples.",
+    "Wire SourceScore VERITAS into a LangGraph StateGraph with catalog retrieval, generation, and explicit evidence-review states. Python examples.",
   alternates: { canonical: "https://sourcescore.org/docs/integrations/langgraph/" },
   openGraph: {
     title: "LangGraph + SourceScore VERITAS",
-    description: "Signed-claim retrieve + answer-verify nodes for grounded LangGraph agents.",
+    description: "Candidate-record retrieval and evidence-review nodes for LangGraph agents.",
     url: "https://sourcescore.org/docs/integrations/langgraph/",
     type: "article",
   },
@@ -26,9 +26,9 @@ export default function LangGraphIntegration() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TechArticle",
-            headline: "LangGraph + SourceScore VERITAS: signed-claim retrieval + answer verification",
+            headline: "LangGraph + SourceScore VERITAS: candidate retrieval and evidence review",
             description:
-              "A LangGraph StateGraph that retrieves signed VERITAS claims, generates a cited answer, then verifies the answer is backed by a signed claim before returning it.",
+              "A LangGraph StateGraph that retrieves curated records, generates a draft, then exposes a candidate for an explicit evidence or entailment decision.",
             datePublished: "2026-05-30",
             dateModified: "2026-05-30",
             author: { "@type": "Organization", name: "SourceScore", url: "https://sourcescore.org" },
@@ -72,8 +72,8 @@ export default function LangGraphIntegration() {
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
           A LangGraph <code className="font-mono">StateGraph</code> with two
-          VERITAS nodes: one retrieves signed claims, the other verifies the
-          generated answer is actually backed by one before you return it.
+          VERITAS nodes: one retrieves curated records and another finds a
+          candidate for review. Similarity alone never marks the answer grounded.
         </p>
       </header>
 
@@ -86,8 +86,8 @@ export default function LangGraphIntegration() {
         <h2 className="text-xl font-semibold mb-3">Graph state + the retrieve node</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           LangGraph nodes are plain functions that take the state and return a
-          partial update. The retrieve node turns a question into signed VERITAS
-          claims via <code className="font-mono">/search</code>, which returns a{" "}
+          partial update. The retrieve node turns a question into curated VERITAS
+          records via <code className="font-mono">/search</code>, which returns a{" "}
           <code className="font-mono">results</code> array of claim summaries.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`import requests
@@ -101,7 +101,7 @@ class State(TypedDict):
     question: str
     claims: List[dict]
     answer: str
-    grounded: bool
+    candidate_found: bool
 
 def veritas_retrieve(state: State) -> dict:
     r = requests.get(
@@ -110,7 +110,7 @@ def veritas_retrieve(state: State) -> dict:
         timeout=8,
     )
     r.raise_for_status()
-    # /search returns {"results": [...]} — each item is a signed claim summary.
+    # /search returns {"results": [...]} — each item is a catalog summary.
     return {"claims": r.json().get("results", [])}
 `}</code></pre>
       </section>
@@ -118,8 +118,8 @@ def veritas_retrieve(state: State) -> dict:
       <section className="mb-10">
         <h2 className="text-xl font-semibold mb-3">The generate node</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
-          Build the prompt from the retrieved claims and force a citation by{" "}
-          <code className="font-mono">claim_id</code> on every fact.
+          Build the prompt from retrieved records and tell the model to cite one
+          only after its exact statement supports the answer.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`def generate(state: State) -> dict:
     context = "\\n".join(
@@ -127,9 +127,10 @@ def veritas_retrieve(state: State) -> dict:
         for c in state["claims"]
     )
     prompt = (
-        "Answer using ONLY the verified claims below. Cite every fact with "
-        "[claim_id]. If the claims do not cover the question, say so.\\n\\n"
-        f"Claims:\\n{context}\\n\\nQuestion: {state['question']}\\nAnswer:"
+        "The records below are candidates, not truth verdicts. Use a record only "
+        "when its exact statement supports the answer; otherwise say the supplied "
+        "evidence does not cover the question.\\n\\n"
+        f"Candidate records:\\n{context}\\n\\nQuestion: {state['question']}\\nAnswer:"
     )
     answer = ChatOpenAI(model="gpt-4o-mini").invoke(prompt).content
     return {"answer": answer}
@@ -137,22 +138,23 @@ def veritas_retrieve(state: State) -> dict:
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">The verify node</h2>
+        <h2 className="text-xl font-semibold mb-3">The candidate-lookup node</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           A retriever returns the closest claims; it does not confirm the
-          generated answer is consistent with them. The verify node POSTs the
+          generated answer is consistent with them. This node POSTs the
           answer to <code className="font-mono">/verify</code>, which returns a{" "}
-          <code className="font-mono">bestMatch</code> only when a signed claim
-          backs it at or above <code className="font-mono">minConfidence</code>.
+          <code className="font-mono">bestMatch</code> when it finds a similar
+          catalog record after method-specific retrieval and legacy record-confidence
+          gates. That is still not an entailment or truth verdict.
         </p>
-        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`def veritas_verify(state: State) -> dict:
+        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`def find_answer_candidate(state: State) -> dict:
     r = requests.post(
         f"{VERITAS}/verify",
         json={"claim": state["answer"], "minConfidence": 0.85},
         timeout=8,
     ).json()
     # /verify returns {"matches": [...], "bestMatch": {...} | absent}.
-    return {"grounded": r.get("bestMatch") is not None}
+    return {"candidate_found": r.get("bestMatch") is not None}
 `}</code></pre>
       </section>
 
@@ -161,7 +163,8 @@ def veritas_retrieve(state: State) -> dict:
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           Retrieve first. If no claims match, short-circuit to{" "}
           <code className="font-mono">END</code> (don&apos;t let the model
-          improvise). Otherwise generate, then verify.
+          improvise). Otherwise generate, then expose the nearest catalog
+          candidate for an explicit evidence-review step.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`def has_claims(state: State) -> str:
     return "generate" if state["claims"] else "no_claims"
@@ -169,31 +172,33 @@ def veritas_retrieve(state: State) -> dict:
 g = StateGraph(State)
 g.add_node("retrieve", veritas_retrieve)
 g.add_node("generate", generate)
-g.add_node("verify", veritas_verify)
+g.add_node("candidate_lookup", find_answer_candidate)
 
 g.set_entry_point("retrieve")
 g.add_conditional_edges("retrieve", has_claims, {"generate": "generate", "no_claims": END})
-g.add_edge("generate", "verify")
-g.add_edge("verify", END)
+g.add_edge("generate", "candidate_lookup")
+g.add_edge("candidate_lookup", END)
 
 app = g.compile()
 
 out = app.invoke({"question": "Who introduced the Transformer architecture?"})
 print(out["answer"])
-print("grounded:", out["grounded"])
+print("candidate found:", out["candidate_found"])
 `}</code></pre>
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Why a verify node</h2>
+        <h2 className="text-xl font-semibold mb-3">Why expose a candidate state</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
           The two failure modes a retriever can&apos;t catch — out-of-corpus
-          assertions and fabricated citations — both surface here: if the
-          answer isn&apos;t backed by a signed claim with ≥2 primary sources,{" "}
+          assertions and fabricated citations — both can be investigated here:
+          if no similar catalog candidate is returned,{" "}
           <code className="font-mono">bestMatch</code> is absent and{" "}
-          <code className="font-mono">grounded</code> is false. Route on that to
-          retry, hand off to a human, or label the answer unverified. Free tier
-          is 1,000 calls/month, no signup; same API the other guides use.
+          <code className="font-mono">candidate_found</code> is false. When a
+          candidate exists, compare its primary sources before asserting truth;
+          otherwise retry, hand off to a human, or label the answer as lacking a
+          catalog match. The public
+          API is free with no account, key, or signup.
         </p>
       </section>
 

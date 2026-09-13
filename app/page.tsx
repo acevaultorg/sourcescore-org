@@ -77,7 +77,7 @@ export default function HomePage() {
     "@type": "SoftwareApplication",
     name: "SourceScore VERITAS",
     description:
-      "Signed-claim verification API for LLM developers. Returns hand-verified AI/ML claims with primary sources, HMAC-SHA256 signatures, and stable JSON envelopes for grounding LLM responses. 346 claims spanning 1997-2025.",
+      "Claim catalog API for LLM developers. Returns hand-verified AI/ML claims with cited primary evidence, SourceScore-issued HMAC integrity metadata, and stable JSON envelopes. 384 claims spanning 1997-2025.",
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Any",
     url: "https://sourcescore.org/claims/",
@@ -93,18 +93,17 @@ export default function HomePage() {
       name: "Free tier",
       price: "0",
       priceCurrency: "EUR",
-      availability: "https://schema.org/InStock",
       url: "https://sourcescore.org/pricing/",
-      description: "1,000 verified claims per month, no auth, no signup required",
+      description: "Free public access with no auth, signup, or account-level meter",
     },
     featureList: [
-      "346 hand-verified AI/ML claims",
-      "HMAC-SHA256 signed JSON envelopes",
-      "≥2 primary sources per claim",
-      "Free tier: 1,000 claims/month, no signup",
+      "384 hand-verified AI/ML claims",
+      "SourceScore-issued HMAC integrity metadata",
+      "Every claim cites primary evidence; 368 of 384 include two or more sources",
+      "Free public API with no signup",
       "OpenAPI 3.1 specification",
       "Drop-in integrations for LangChain, LlamaIndex, OpenAI tools, Vercel AI SDK, DSPy, Pydantic AI, Anthropic SDK",
-      "~80ms p95 latency globally",
+      "Public read and semantic-match endpoints",
     ],
   };
 
@@ -134,8 +133,8 @@ export default function HomePage() {
             New · v0.1
           </span>
           <span className="text-text flex-grow">
-            <strong>VERITAS Claim Verification API</strong> — signed, sourced
-            AI/ML claims for grounded LLM retrieval. Free tier · no auth.
+            <strong>VERITAS claim catalog API</strong> — curated, sourced
+            AI/ML records for evidence retrieval. Free public access · no auth.
           </span>
           <span className="text-brand whitespace-nowrap hidden sm:inline">
             Browse claims →
@@ -148,7 +147,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-10 sm:pt-20 sm:pb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill border border-brand/30 bg-surface-brand text-brand text-caption font-mono mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" aria-hidden="true" />
-            <span>Methodology v0.1 · {sources.length} sources scored · 10k+ index in development</span>
+            <span>Methodology v0.1 · {sources.length} sources scored · 384 claim records</span>
           </div>
 
           <h1 className="text-display-1 sm:text-[3.5rem] sm:leading-[1.05] font-bold tracking-tight max-w-4xl">
@@ -156,9 +155,10 @@ export default function HomePage() {
           </h1>
 
           <p className="mt-5 text-body-lg text-muted max-w-2xl leading-relaxed">
-            SourceScore grades every URL you paste on three things AI engines actually weigh:
-            how rigorously the source cites others, how fit it is as a modern citation, and how often
-            tier-1 publications cite it. One paste, four numbers, one grade.
+            SourceScore checks any URL against an index built from three published
+            citation-quality signals: how rigorously the source cites others, how
+            fit it is as a modern citation, and how often tier-1 publications cite
+            it. Indexed sources return a grade; unknown sources are labeled honestly.
           </p>
 
           {/* Hero lookup — completes the "paste a URL" promise end-to-end.
@@ -166,7 +166,7 @@ export default function HomePage() {
               URL to its domain). Zero JS, works without hydration; known sources
               resolve to their score, unknown domains get an honest "not scored
               yet" panel. */}
-          <form action="/check" method="get" className="mt-8 max-w-2xl">
+          <form action="/check" method="get" className="mt-8 max-w-2xl" data-event="source_check_start" data-event-source="home">
             <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="search"
@@ -360,12 +360,12 @@ export default function HomePage() {
             Verified claims for grounded LLM retrieval
           </h2>
           <p className="text-body-lg text-muted max-w-3xl leading-relaxed mb-8">
-            <strong className="text-text">VERITAS</strong> ships signed,
-            sourced claims about AI/ML research as a developer API. Each
-            claim has 2+ primary sources, an HMAC-SHA256 signature, and a
-            stable JSON envelope &mdash; ready to ground LLM responses,
-            fact-check generated content, and reduce hallucinations in
-            production AI applications.
+            <strong className="text-text">VERITAS</strong> publishes curated,
+            sourced claim records about AI/ML research through a developer API. Every
+            claim cites primary evidence; 368 of the current 384 claims have
+            two or more sources. Records include SourceScore-issued HMAC
+            integrity metadata and a stable JSON envelope. Use a returned match
+            as a candidate for evidence review—not as an automated truth verdict.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
@@ -386,7 +386,7 @@ export default function HomePage() {
               },
               {
                 label: "Pricing",
-                desc: "Free 1k claims/mo · Indie €19 · Startup €99 · Scale €499.",
+                desc: "Free public API · proposed higher-volume offers are a demand test.",
                 href: "/pricing/",
                 badge: "Pricing",
                 event: "pricing",
@@ -421,11 +421,11 @@ export default function HomePage() {
                 step.
               </p>
               <p>
-                Claim records have a stable id (16-hex-char hash over
-                canonical fields), HMAC-SHA256 signature, and CC-BY 4.0
-                license. Migration to W3C Verifiable Credentials (Ed25519,
-                offline-verifiable) is on the v1 roadmap for Y2 enterprise
-                consumers.
+                Claim records have a stable id (16-hex-char hash over canonical
+                fields), SourceScore-issued HMAC integrity metadata, and a CC-BY
+                4.0 license. The HMAC tag is not a publicly independently
+                verifiable signature; use HTTPS and the canonical record when
+                checking a published claim.
               </p>
             </div>
           </details>

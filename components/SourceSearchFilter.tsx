@@ -27,6 +27,8 @@ export function SourceSearchFilter({ total }: { total: number }) {
     const empty = document.getElementById("ss-empty");
     const emptyUrl = document.getElementById("ss-empty-url");
     const emptyDomain = document.getElementById("ss-empty-domain");
+    const citationDesk = document.getElementById("ss-citationdesk") as HTMLAnchorElement | null;
+    const sourceRequest = document.getElementById("ss-source-request") as HTMLAnchorElement | null;
     if (!input || !rows.length) return;
 
     function normDomain(s: string) {
@@ -84,6 +86,24 @@ export function SourceSearchFilter({ total }: { total: number }) {
       if (empty) empty.style.display = noResults && !urlish ? "block" : "none";
       if (emptyUrl) emptyUrl.style.display = noResults && urlish ? "block" : "none";
       if (noResults && urlish && emptyDomain) emptyDomain.textContent = dom || raw;
+      if (noResults && urlish && citationDesk && dom) {
+        const target = new URL("https://citationdesk.com/tools/citation-readiness/");
+        target.searchParams.set("utm_source", "sourcescore");
+        target.searchParams.set("utm_medium", "referral");
+        target.searchParams.set("utm_campaign", "owned-ai-visibility");
+        target.searchParams.set("utm_content", "search-unknown");
+        target.searchParams.set("url", `https://${dom}`);
+        target.searchParams.set("autorun", "1");
+        citationDesk.href = target.toString();
+        citationDesk.dataset.eventPrefilled = "yes";
+      }
+      if (noResults && urlish && sourceRequest && dom) {
+        const subject = encodeURIComponent("SourceScore index review request");
+        const body = encodeURIComponent(
+          `Please review this source for inclusion in SourceScore:\n\n${dom}\n\nEvidence or context:`,
+        );
+        sourceRequest.href = `mailto:hello@caslonmedia.com?subject=${subject}&body=${body}`;
+      }
     }
 
     input.addEventListener("input", filter);

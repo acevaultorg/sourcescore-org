@@ -173,24 +173,34 @@ export default function MethodologyPage() {
           The companion product on this domain,{" "}
           <a href="/claims/" className="text-brand hover:underline">VERITAS</a>, applies the same
           trust-signal thinking to atomic claims rather than whole sources. A claim is published
-          only when:
+          only after an editorial evidence review. In the current 384-claim
+          catalog, every claim cites primary evidence; 368 claims include two
+          or more sources and 16 currently have one primary source:
         </p>
         <ul className="list-disc pl-5 space-y-2 text-muted">
           <li>
-            <span className="text-text font-semibold">Source convergence &ge; 2 primary documents.</span>{" "}
-            One of those must be primary (preprint authored by the work&rsquo;s authors,
-            official-blog from the entity making the claim, model-card on Hugging Face, or
-            github-release tag). Aggregator sites alone are insufficient.
+            <span className="text-text font-semibold">Primary evidence.</span>{" "}
+            Each published claim cites at least one primary document (for
+            example, a preprint by the authors, an official release, a model
+            card, or a release tag). Two or more sources are preferred and are
+            present on 368 of 384 current claims; aggregator sites alone are
+            insufficient.
           </li>
           <li>
             <span className="text-text font-semibold">Confidence &ge; 0.70</span>, calibrated as:
             <ul className="list-disc pl-5 space-y-1 mt-2">
-              <li><code>1.00</code> &mdash; primary-source confirmation + independent verification</li>
-              <li><code>0.95</code> &mdash; primary-source single attestation</li>
-              <li><code>0.85</code> &mdash; strong secondary-source convergence (&ge;3 independent sources agree)</li>
-              <li><code>0.70</code> &mdash; single secondary source, no contradictions found</li>
+              <li><code>1.00</code> &mdash; legacy editorial label for direct primary-source support</li>
+              <li><code>0.95</code> &mdash; legacy editorial label for strong primary-source support</li>
+              <li><code>0.85</code> &mdash; legacy editorial label for converging published evidence</li>
+              <li><code>0.70</code> &mdash; minimum legacy editorial label accepted in v0</li>
               <li><code>&lt; 0.70</code> &mdash; not published in v0</li>
             </ul>
+          </li>
+          <li>
+            <span className="text-text font-semibold">Confidence is not a calibrated probability.</span>{" "}
+            The v0 values predate a formal calibration study. Read the cited evidence and
+            <code className="ml-1">lastVerified</code> date rather than treating a value like
+            <code className="ml-1">0.95</code> as a 95% truth probability.
           </li>
           <li>
             <span className="text-text font-semibold">Performance comparisons excluded</span> from
@@ -201,9 +211,10 @@ export default function MethodologyPage() {
             into the envelope.
           </li>
           <li>
-            <span className="text-text font-semibold">Signed with HMAC-SHA256</span> by{" "}
-            <code>did:web:sourcescore.org</code>. Migration to W3C Verifiable Credentials with
-            Ed25519 keys is on the Y2 roadmap for enterprise customers wanting offline verification.
+            <span className="text-text font-semibold">SourceScore-issued HMAC-SHA256 integrity metadata.</span>{" "}
+            The HMAC tag is not independently verifiable by public users because
+            the shared secret is not published. Public authenticity relies on
+            HTTPS and refetching the canonical record and cited evidence.
           </li>
         </ul>
         <p className="text-muted">

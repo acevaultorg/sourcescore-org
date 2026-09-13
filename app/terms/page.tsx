@@ -83,10 +83,10 @@ export default function TermsPage() {
 
         <h2 className="text-heading-2 font-bold pt-4">6. Advertising</h2>
         <p className="text-muted">
-          SourceScore may display advertisements via Google AdSense. Ads are clearly labeled. Clicking
-          an ad takes you to a third-party site whose practices are outside our control. See our{" "}
-          <a href="/privacy" className="text-brand hover:underline">Privacy Policy</a> for details
-          on advertising cookies and how to opt out.
+          SourceScore does not currently run Google AdSense or another display-ad
+          network. If that changes, this section and our{" "}
+          <a href="/privacy" className="text-brand hover:underline">Privacy Policy</a>{" "}
+          will be updated before advertising cookies or tags are introduced.
         </p>
 
         <h2 className="text-heading-2 font-bold pt-4">7. Third-party content and links</h2>

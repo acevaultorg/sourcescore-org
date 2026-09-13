@@ -22,7 +22,7 @@ const DEFAULT_RETRIES = 2;
 const DEFAULT_USER_AGENT = "@sourcescore/api/0.1.0";
 
 export interface ClientOptions {
-  /** API key for paid tiers (sk_live_... or sk_test_...). Free tier needs none. */
+  /** Reserved for future or privately provisioned access. Public endpoints need no key. */
   apiKey?: string;
   /** Override base URL — useful for staging or local development. */
   baseUrl?: string;
@@ -233,7 +233,7 @@ class ClaimsResource {
     });
   }
 
-  /** Submit a natural-language claim for verification. */
+  /** Retrieve the nearest catalog candidates for a natural-language assertion. */
   public async verify(
     claim: string,
     options: { minConfidence?: number; vertical?: VerifyRequest["vertical"] } = {},

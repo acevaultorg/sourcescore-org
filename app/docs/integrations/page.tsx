@@ -10,11 +10,11 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 export const metadata: Metadata = {
   title: "Integrations — SourceScore VERITAS",
   description:
-    "Drop-in guides for wiring SourceScore VERITAS claim verification into LangChain, LlamaIndex, OpenAI tool-calls, and other LLM frameworks. Python + JavaScript examples.",
+    "Guides for adding SourceScore catalog retrieval and explicit evidence review to LangChain, LlamaIndex, OpenAI tool calls, and other LLM frameworks.",
   alternates: { canonical: "https://sourcescore.org/docs/integrations/" },
   openGraph: {
     title: "Integrations — SourceScore VERITAS",
-    description: "LangChain · LlamaIndex · OpenAI tool-calls — drop-in claim verification.",
+    description: "LangChain · LlamaIndex · OpenAI tool calls — candidate retrieval and evidence review.",
     url: "https://sourcescore.org/docs/integrations/",
     type: "website",
   },
@@ -26,70 +26,70 @@ const guides = [
     name: "LangChain",
     status: "ready",
     summary:
-      "Retrieve-then-cite + generate-then-verify patterns. Drop-in Python + JS examples for grounding LangChain chain responses in signed VERITAS claims.",
+      "Retrieve-then-cite + generate-then-review patterns. Python + JS examples for retrieving VERITAS candidate records and comparing cited evidence.",
   },
   {
     slug: "llamaindex",
     name: "LlamaIndex",
     status: "ready",
     summary:
-      "Custom retriever wrapping the VERITAS /search endpoint + post-process node verification. Compatible with QueryEngine + ChatEngine.",
+      "Custom retriever wrapping VERITAS search plus candidate annotation. Compatible with QueryEngine and ChatEngine; evidence review remains separate.",
   },
   {
     slug: "haystack",
     name: "Haystack",
     status: "ready",
     summary:
-      "Two Haystack 2.x components: a retriever that pulls signed VERITAS claims, and a verifier that drops any document not backed by a high-confidence claim. Wire them into a normal Pipeline with PromptBuilder + OpenAIGenerator.",
+      "Two Haystack 2.x components: a candidate-record retriever and an evidence-review stage. A bestMatch is similarity, not a truth verdict.",
   },
   {
     slug: "langgraph",
     name: "LangGraph",
     status: "ready",
     summary:
-      "A StateGraph with two VERITAS nodes: a retrieve node that pulls signed claims, and a verify node that confirms the generated answer is backed by a signed claim before you return it. Conditional edge short-circuits when no claim matches.",
+      "A StateGraph with candidate retrieval and evidence-review nodes. Compare generated assertions with returned statements and sources before assigning support.",
   },
   {
     slug: "openai-tools",
     name: "OpenAI Tool Calls",
     status: "ready",
     summary:
-      "Expose VERITAS as native function-calls in the OpenAI Chat Completions API. The model auto-invokes verify_claim() when uncertain.",
+      "Expose catalog search and candidate retrieval as native OpenAI function calls, with exact-statement and evidence comparison before citation.",
   },
   {
     slug: "vercel-ai-sdk",
     name: "Vercel AI SDK",
     status: "ready",
     summary:
-      "Wire VERITAS into Next.js + AI SDK chains. Two patterns: tool() function-calling via streamText, and post-stream verification for free-form completions. TypeScript-first.",
+      "Wire VERITAS into Next.js + AI SDK chains for tool-based candidate retrieval and post-stream review. TypeScript-first.",
   },
   {
     slug: "dspy",
     name: "DSPy",
     status: "ready",
     summary:
-      "Stanford's compound-AI-system framework. Custom dspy.Retrieve backed by the VERITAS catalog + verify-and-flag post-processor module. Compatible with DSPy optimizers — they tune prompts around the retriever, not the catalog.",
+      "Custom dspy.Retrieve backed by the VERITAS catalog plus a candidate-review module. Optimize against labeled support, not candidate rate.",
   },
   {
     slug: "pydantic-ai",
     name: "Pydantic AI",
     status: "ready",
     summary:
-      "Type-safe claim verification as a Pydantic AI tool. The model calls verify_claim() with a structured input, gets back a typed VerificationResult envelope. Validators catch errors early; downstream code is type-safe.",
+      "Type-safe candidate retrieval as a Pydantic AI tool. Schema validation catches shape errors; factual support remains a separate decision.",
   },
   {
     slug: "anthropic-sdk",
     name: "Anthropic SDK",
     status: "ready",
     summary:
-      "Expose VERITAS as a Claude tool via the Anthropic SDK. tool_use → execute → tool_result loop. Python + TypeScript examples. Pairs with a system prompt that instructs Claude to self-verify before asserting.",
+      "Expose candidate retrieval as a Claude tool via the Anthropic SDK. Python and TypeScript loops plus an evidence-review prompt and application guardrail.",
   },
   {
     slug: "instructor",
     name: "Instructor",
     status: "ready",
     summary:
-      "Jason Liu's structured-output library. Pydantic models with model_validator hooks that look up claims via VERITAS at parse-time; failed verification triggers Instructor's automatic retry. Type-safe verified-claim outputs end-to-end.",
+      "Jason Liu's structured-output library. Pydantic models retrieve VERITAS candidates at parse time; schema retries remain separate from factual evidence review.",
   },
 ];
 
@@ -122,9 +122,10 @@ export default function IntegrationsIndex() {
           Integrations
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
-          Drop-in guides for grounding LLM responses with signed, sourced
-          claims. Each guide is copy-paste runnable and covers retrieve-then-
-          cite + generate-then-verify patterns.
+          Integration guides for retrieving curated, sourced claim records and
+          reviewing their evidence before an LLM assertion is used.
+          Treat framework samples as starting points: pin current dependency
+          versions and test the review boundary in your own application.
         </p>
       </header>
 

@@ -7,10 +7,9 @@
 // NO paid tier here; the no-Stripe directive stays until validated demand
 // exists (then it's the operator's call to reverse it).
 //
-// Capture mechanism = mailto:hello@caslonmedia.com — the EXISTING fleet
-// pattern (functions/api/v1/auth/signup.js's "early-access invoice" path uses
-// the same mailto; no DB/KV/email infra is wired, and the task explicitly
-// sanctions the mailto fallback). Zero new infra. The signal = requests landing
+// Capture mechanism = mailto:hello@caslonmedia.com. No DB/KV/email capture is
+// wired; the message is composed in the visitor's own email client. The signal
+// is messages that actually land
 // in the operator's inbox + a Clarity click event (data-clarity-upgrade).
 // Honest framing, no dark patterns (SourceScore is a trust brand).
 
@@ -20,12 +19,12 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 export const metadata: Metadata = {
   title: "Request VERITAS API access — paid-tier interest",
   description:
-    "The VERITAS verified-claims API is free today (1,000 claims/mo, no auth). Request access to a higher-volume paid tier and we'll email you when pricing goes live — no card, no commitment.",
+    "The VERITAS verified-claims API is free today with no auth or signup. Share higher-volume needs and we'll email you if a paid offer launches — no card, no commitment.",
   alternates: { canonical: "https://sourcescore.org/api-access/" },
   openGraph: {
     title: "Request VERITAS API access",
     description:
-      "Free today (1,000 claims/mo, no auth). Request a higher-volume paid tier — we'll notify you on pricing. No card, no commitment.",
+      "Free today with no auth or signup. Share higher-volume needs — we'll notify you if pricing launches. No card, no commitment.",
     url: "https://sourcescore.org/api-access/",
     type: "website",
   },
@@ -39,7 +38,7 @@ I'd like access to a higher-volume tier of the VERITAS verified-claims API.
 
 Use case:
 Expected volume (claims / month):
-What matters most (higher volume / uptime SLA / private or custom claim sets / other):
+What matters most (higher volume / private or custom claim sets / other):
 Stack (LangChain / LlamaIndex / direct REST / other):
 
 Thanks!`;
@@ -75,12 +74,12 @@ export default function ApiAccessPage() {
       </h1>
       <p className="text-body-lg text-muted leading-relaxed mb-8 max-w-2xl">
         The VERITAS verified-claims API is{" "}
-        <strong className="text-text">free today</strong> &mdash; 1,000 claims/month,
-        no auth, no signup. This page is for teams who need{" "}
-        <strong className="text-text">more</strong>: higher volume, an uptime SLA,
-        or private/custom claim sets. We&rsquo;re gauging real demand before
-        building paid billing &mdash; request access and we&rsquo;ll email you the
-        moment a paid tier goes live. No card, no commitment.
+        <strong className="text-text">free today</strong> &mdash; no auth, no
+        signup, and no account-level meter. This page is for teams who need{" "}
+        <strong className="text-text">more</strong>: higher volume or private/custom
+        claim sets. We&rsquo;re gauging real demand before building any paid offering
+        &mdash; request access and we&rsquo;ll email you if one launches. No card,
+        no commitment, and no service is being sold on this page.
       </p>
 
       {/* Primary capture — mailto (the established fleet pattern; zero infra). */}
@@ -117,27 +116,30 @@ export default function ApiAccessPage() {
           <li className="flex items-start gap-3">
             <span className="text-brand mt-0.5" aria-hidden="true">▹</span>
             <span>
-              <strong className="text-text">Signed, sourced claims.</strong>{" "}
-              Hand-verified AI/ML facts with ≥2 primary sources and an
-              HMAC-SHA256 signature on a stable JSON envelope &mdash; built to
-              ground LLM responses and cut hallucinations in production RAG and
-              agent pipelines.
+              <strong className="text-text">Curated, sourced claim records.</strong>{" "}
+              Hand-verified AI/ML facts. Every claim cites primary evidence;
+              368 of the current 384 claims include two or more sources. Each
+              record includes a SourceScore-issued HMAC-SHA256 integrity tag on
+              a stable JSON envelope for evidence-review workflows.
             </span>
           </li>
           <li className="flex items-start gap-3">
             <span className="text-brand mt-0.5" aria-hidden="true">▹</span>
             <span>
-              <strong className="text-text">Semantic /verify.</strong>{" "}
-              POST a claim, get the nearest verified claim + similarity score for
-              retrieval grounding &mdash; not a black-box truth oracle.
+              <strong className="text-text">Candidate retrieval.</strong>{" "}
+              POST an assertion and get ranked catalog candidates. The endpoint
+              uses semantic ranking when its AI/Vectorize bindings are available
+              and a keyword fallback otherwise; neither method is a truth oracle.
             </span>
           </li>
           <li className="flex items-start gap-3">
             <span className="text-brand mt-0.5" aria-hidden="true">▹</span>
             <span>
               <strong className="text-text">Honest by design.</strong>{" "}
-              Every claim links to its primary sources and the methodology version
-              it was verified under. No fabricated data, ever.
+              Every claim links to its cited evidence and the methodology version
+              it was verified under. The public verification path is HTTPS and
+              refetching the canonical record; HMAC tags are not independently
+              verifiable without a shared secret.
             </span>
           </li>
         </ul>
@@ -168,9 +170,9 @@ export default function ApiAccessPage() {
               Do I need this to use the API?
             </p>
             <p>
-              No. The free tier (1,000 claims/month, no auth) needs no signup &mdash;
-              just call the endpoints. This page is only for teams who&rsquo;ll
-              outgrow the free tier and want a paid plan.
+              No. The public API needs no auth or signup &mdash; just call the
+              endpoints. This page is only for teams with higher-volume or
+              private-data needs who want to help shape a possible paid plan.
             </p>
           </div>
           <div>
@@ -188,8 +190,8 @@ export default function ApiAccessPage() {
               What happens after I email?
             </p>
             <p>
-              We reply, and you&rsquo;re first in line when a paid tier ships. If
-              enough teams ask, that&rsquo;s the signal that builds it.
+              We may reply to understand your use case. A request does not
+              reserve access, create an account, or promise a future paid tier.
             </p>
           </div>
         </div>

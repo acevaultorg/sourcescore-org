@@ -323,7 +323,7 @@ export default function FrameworkComparisonPost() {
           SourceScore VERITAS is the verification layer. Any of these
           frameworks can call our <code>/api/v1/verify</code> endpoint to
           check whether the LLM&apos;s output asserts a fact we&apos;ve
-          hand-verified. Free tier is 1,000 verifies/month, no signup.
+          hand-verified. The public API is free with no account, key, or signup.
         </p>
         <p>
           Each of the seven integration guides above shows the canonical

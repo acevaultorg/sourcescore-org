@@ -1,6 +1,11 @@
--- VERITAS-Reborn — initial Postgres schema (Day 8+).
+-- DORMANT DESIGN ARTIFACT — not a live SourceScore migration.
 --
--- Run once on a fresh Neon/Supabase/Railway Postgres instance:
+-- SourceScore currently has no accounts, API keys, paid plans, Stripe billing,
+-- or database-backed usage meter. Do not run this file against production. It
+-- may inform a future implementation only after paid demand is validated and a
+-- complete billing/provisioning design is reviewed and shipped atomically.
+--
+-- Historical prototype command (do not run):
 --   psql "$DATABASE_URL" -f scripts/migrations/001_init.sql
 --
 -- All tables are append-only (no DELETE) except `api_keys` which uses

@@ -1,18 +1,17 @@
 // VERITAS-Reborn — DSPy (Stanford) integration guide.
-// 5th framework guide. DSPy is the fastest-growing compound-AI-system
-// framework in 2026; programs-not-prompts pattern.
+// Framework guide for DSPy's programs-not-prompts pattern.
 
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 import { dspyHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
-  title: "DSPy + SourceScore VERITAS — programmatic claim verification in compound AI systems",
+  title: "DSPy + SourceScore VERITAS — candidate retrieval and evidence review",
   description:
-    "Wire SourceScore VERITAS into a DSPy program as a Retrieve module and a Verify post-processor. Compound-AI-system grounding without per-prompt brittleness. Python examples.",
+    "Wire SourceScore VERITAS into a DSPy program as a retrieval module and candidate post-processor, with evidence review kept explicit. Python examples.",
   alternates: { canonical: "https://sourcescore.org/docs/integrations/dspy/" },
   openGraph: {
     title: "DSPy + SourceScore VERITAS",
-    description: "Signed-claim retrieval + verification as DSPy modules.",
+    description: "Curated record retrieval + candidate review as DSPy modules.",
     url: "https://sourcescore.org/docs/integrations/dspy/",
     type: "article",
   },
@@ -27,9 +26,9 @@ export default function DSPyIntegration() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TechArticle",
-            headline: "DSPy + SourceScore VERITAS: programmatic claim verification in compound AI systems",
+            headline: "DSPy + SourceScore VERITAS: candidate retrieval in compound AI systems",
             description:
-              "Wire SourceScore VERITAS into a DSPy program as a Retrieve module and a Verify post-processor. Programs-not-prompts pattern with signed-claim grounding.",
+              "Wire SourceScore VERITAS into a DSPy program as a Retrieve module and candidate post-processor without treating similarity as truth.",
             datePublished: "2026-05-16",
             dateModified: "2026-05-16",
             author: { "@type": "Organization", name: "SourceScore", url: "https://sourcescore.org" },
@@ -75,7 +74,7 @@ export default function DSPyIntegration() {
           DSPy is Stanford&apos;s compound-AI-system framework — programs
           instead of prompts. This guide shows two integration patterns:
           a custom <code className="font-mono">dspy.Retrieve</code>{" "}
-          backed by the VERITAS catalog, and a verify-and-flag
+          backed by the VERITAS catalog, and a candidate-and-review
           post-processor module.
         </p>
       </header>
@@ -92,7 +91,7 @@ export default function DSPyIntegration() {
         </p>
         <p className="text-sm text-zinc-700 dark:text-zinc-300">
           The compound system gains a typed retrieval path that DSPy&apos;s
-          optimizers can reason about — verified-claim retrieval becomes
+          optimizers can reason about — curated-record retrieval becomes
           a tunable step, not a brittle prompt-stuffing decision.
         </p>
       </section>
@@ -157,9 +156,9 @@ dspy.settings.configure(lm=lm, rm=rm)
 
 # Define the signature
 class CitedAnswer(dspy.Signature):
-    """Answer the question using only the verified claims. Cite [claim_id] inline."""
+    """Use only candidate records whose exact statements support the answer."""
     question: str = dspy.InputField()
-    context: list[str] = dspy.InputField(desc="Verified claims with [claim_id] tags")
+    context: list[str] = dspy.InputField(desc="Candidate records with [claim_id] tags")
     answer: str = dspy.OutputField(desc="Answer with [claim_id] citations after every fact")
 
 # Build the program
@@ -185,20 +184,21 @@ print(result.answer)
           The signature forces a <code className="font-mono">[claim_id]</code>{" "}
           citation after every assertion. DSPy&apos;s optimizer can later
           tune the exact prompt around this signature without changing
-          the contract — VERITAS continues to feed verified passages
+          the contract — VERITAS continues to feed reviewed catalog records
           regardless of which prompt-template the optimizer settles on.
         </p>
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Pattern 2 — Verify post-processor module</h2>
+        <h2 className="text-xl font-semibold mb-3">Pattern 2 — Candidate-retrieval post-processor</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
-          When you want free-form generation but a verification layer
+          When you want free-form generation but candidate retrieval
           afterwards, wrap <code className="font-mono">/api/v1/verify</code>{" "}
-          in a DSPy module that runs after the answer generation.
+          in a DSPy module that runs after the answer generation. Review the
+          returned primary sources before treating any assertion as factual.
         </p>
-        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`class VeritasVerify(dspy.Module):
-    """Post-process an answer — verify each assertion against the catalog."""
+        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`class VeritasCandidateLookup(dspy.Module):
+    """Retrieve a candidate catalog record for each assertion."""
 
     def __init__(self, min_confidence: float = 0.85):
         super().__init__()
@@ -206,7 +206,7 @@ print(result.answer)
 
     def forward(self, answer: str) -> dict:
         lines = [l.strip() for l in answer.split("\\n") if l.strip()]
-        verified, unverified = [], []
+        candidates, no_candidates = [], []
         for line in lines:
             r = requests.post(
                 f"{VERITAS}/verify",
@@ -214,35 +214,35 @@ print(result.answer)
                 timeout=8,
             ).json()
             if r.get("bestMatch"):
-                verified.append({
+                candidates.append({
                     "text": line,
                     "claim_id": r["bestMatch"]["id"],
                     "confidence": r["bestMatch"]["confidence"],
                     "url": f"https://sourcescore.org/claims/{r['bestMatch']['id']}/",
                 })
             else:
-                unverified.append(line)
+                no_candidates.append(line)
         return dspy.Prediction(
-            verified=verified,
-            unverified=unverified,
-            verification_rate=len(verified) / max(1, len(lines)),
+            candidates=candidates,
+            no_candidates=no_candidates,
+            candidate_rate=len(candidates) / max(1, len(lines)),  # similarity coverage, not truth rate
         )
 
 # Composing it into a larger program
-class AnswerAndVerify(dspy.Module):
+class AnswerAndCandidateReview(dspy.Module):
     def __init__(self):
         super().__init__()
         self.generate = dspy.ChainOfThought("question -> answer")
-        self.verify = VeritasVerify(min_confidence=0.85)
+        self.retrieve_candidates = VeritasCandidateLookup(min_confidence=0.85)
 
     def forward(self, question: str):
         a = self.generate(question=question)
-        v = self.verify(a.answer)
+        v = self.retrieve_candidates(a.answer)
         return dspy.Prediction(
             answer=a.answer,
-            verified_claims=v.verified,
-            unverified_claims=v.unverified,
-            verification_rate=v.verification_rate,
+            candidate_records=v.candidates,
+            no_catalog_candidates=v.no_candidates,
+            candidate_rate=v.candidate_rate,
         )
 `}</code></pre>
       </section>
@@ -258,11 +258,11 @@ class AnswerAndVerify(dspy.Module):
           improves how the model uses it.
         </p>
         <p className="text-sm text-zinc-700 dark:text-zinc-300">
-          A good metric for optimization: <code className="font-mono">
-            verification_rate
-          </code>{" "}from <code className="font-mono">AnswerAndVerify</code>.
-          Maximizing it tunes the program toward producing more verifiable
-          assertions — the catalog acts as the ground-truth signal.
+          One diagnostic is <code className="font-mono">candidate_rate</code>{" "}
+          from the example above: the share of assertions for which the bounded
+          catalog returned a candidate. Do not optimize this as an accuracy
+          target; it measures catalog overlap, not truth. Evaluate support
+          against a separately labeled evidence set.
         </p>
       </section>
 
@@ -271,22 +271,22 @@ class AnswerAndVerify(dspy.Module):
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
           The VERITAS retriever composes with any DSPy pattern: ReAct,
           MultiHopProgram, ProgramOfThought. A multi-hop pattern with
-          verification:
+          candidate review:
         </p>
-        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`class MultiHopVerified(dspy.Module):
+        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`class MultiHopCandidateReview(dspy.Module):
     def __init__(self):
         super().__init__()
         self.retrieve = VeritasRetriever(k=3)
         self.hop1 = dspy.ChainOfThought("question -> sub_question")
         self.hop2 = dspy.ChainOfThought("question, sub_answer -> final_answer")
-        self.verify = VeritasVerify()
+        self.find_candidates = VeritasCandidateLookup()
 
     def forward(self, question: str):
         sub_q = self.hop1(question=question).sub_question
         passages = self.retrieve(sub_q).passages
         sub_a = "\\n".join(p.long_text for p in passages)
         final = self.hop2(question=question, sub_answer=sub_a).final_answer
-        return self.verify(final)
+        return self.find_candidates(final)
 `}</code></pre>
       </section>
 
@@ -298,8 +298,8 @@ class AnswerAndVerify(dspy.Module):
           <li>• <a href="/docs/integrations/llamaindex/" className="underline">LlamaIndex guide</a> — Retriever + NodePostprocessor</li>
           <li>• <a href="/docs/integrations/openai-tools/" className="underline">OpenAI tool-calls</a> — native function-calling</li>
           <li>• <a href="/docs/integrations/vercel-ai-sdk/" className="underline">Vercel AI SDK</a> — TypeScript/Next.js</li>
-          <li>• <a href="/concepts/citation-chain/" className="underline">Citation chains</a> — local verification of signed envelopes</li>
-          <li>• <a href="/claims/" className="underline">Browse the catalog</a> — 346 verified AI/ML claims</li>
+          <li>• <a href="/concepts/citation-chain/" className="underline">Citation chains</a> — canonical refetch and evidence review</li>
+          <li>• <a href="/claims/" className="underline">Browse the catalog</a> — 384 reviewed AI/ML claim records</li>
         </ul>
       </section>
     </article>

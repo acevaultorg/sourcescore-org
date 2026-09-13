@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { sources } from "@/data/sources";
 import { SourceTrustChecker, type CheckerRow } from "@/components/SourceTrustChecker";
-import { PartnerTools } from "@/components/PartnerTools";
 
 export const metadata: Metadata = {
   title: { absolute: "AI Source-Trust Checker — is any source citable by AI? | SourceScore" },
@@ -65,21 +64,13 @@ export default function CheckPage() {
           Is your source <span className="text-brand">citable by AI?</span>
         </h1>
         <p className="text-body-lg text-muted leading-relaxed mb-8 max-w-2xl">
-          Paste any URL or source name. See how ChatGPT, Claude, and Perplexity weigh it — citation discipline,
-          modern-reference fitness, and citation velocity — as one 0&ndash;100 SourceScore Index grade. Then grab
-          an embeddable trust badge for your own site.
+          Paste any URL or source name. See its hand-scored citation discipline,
+          modern-reference fitness, and estimated citation velocity as one
+          0&ndash;100 SourceScore Index grade. Then inspect every signal behind
+          the result or grab an embeddable badge for your own site.
         </p>
 
-        <SourceTrustChecker
-          rows={rows}
-          total={sources.length}
-          /* Peak intent: this fires only after a reader has typed a domain — usually
-             their OWN — and seen the verdict. A reader who just learned their site is
-             not in the index is precisely the buyer for AI-visibility monitoring.
-             Rendered here (server) and passed down, because PartnerTools is a server
-             component and SourceTrustChecker is "use client". */
-          partnerSlot={<PartnerTools variant="strip" source="check-result" />}
-        />
+        <SourceTrustChecker rows={rows} total={sources.length} />
 
         {/* Below-fold trust + explainer (AEO-extractable). */}
         <div className="mt-14 pt-10 border-t border-border prose prose-invert max-w-none text-body text-muted leading-relaxed space-y-4">
@@ -87,13 +78,13 @@ export default function CheckPage() {
             What the AI-Trust grade measures
           </h2>
           <p>
-            AI engines pull answers from a small subset of sources they consider trustworthy. Three factors decide
-            whether a source makes that subset:{" "}
+            SourceScore evaluates three observable signals associated with a useful modern reference:{" "}
             <strong className="text-text">citation discipline</strong> (does it rigorously cite its own evidence?),{" "}
             <strong className="text-text">modern-reference fitness</strong> (is it structured for machine retrieval —
             schema, freshness, machine-readable archives?), and{" "}
-            <strong className="text-text">citation velocity</strong> (how often tier-1 sources cite it). Together they
-            compose the <strong className="text-text">SourceScore Index</strong>, a single 0&ndash;100 grade.
+            <strong className="text-text">citation velocity</strong> (an estimated measure of how often tier-1 sources
+            cite it). Together they compose the <strong className="text-text">SourceScore Index</strong>, a single
+            0&ndash;100 rubric grade. It is not a measurement of any AI engine&rsquo;s private ranking system.
           </p>
           <p>
             The check runs entirely in your browser against {sources.length} hand-scored sources — we never show a

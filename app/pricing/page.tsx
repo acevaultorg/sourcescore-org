@@ -1,12 +1,5 @@
-// VERITAS-Reborn pricing page (Day 1).
-//
-// 3 paid tiers + Free, all self-serve. NO enterprise tier — operator has
-// committed to no-sales motion. Stripe Payment Links wired Day 8+ (operator
-// needs to set up Stripe live mode + Products/Prices first). Day 1 ships the
-// public-facing page with copy + tier comparison + "Coming soon: signup"
-// CTA. Pricing values come from the canonical TIERS table in
-// lib/claims-types.ts — single source of truth between this page, the
-// Stripe Products metadata (Day 8+), and /api/v1/methodology.json output.
+// The free API is live. Paid-tier names and prices below are a demand test,
+// not purchasable plans: there is no checkout, billing, provisioning, or SLA.
 
 import type { Metadata } from "next";
 import { TIERS } from "@/lib/claims-types";
@@ -15,51 +8,38 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 export const metadata: Metadata = {
   title: "Pricing — SourceScore VERITAS API",
   description:
-    "Free 1,000 claims/mo, no auth. Paid plans start at €19/mo (Indie). Self-serve, no demos, no contracts. Stripe metered billing.",
+    "The VERITAS public API is free with no signup or account-level meter. Proposed paid tiers are collecting demand only; no checkout or billing is live.",
   alternates: { canonical: "https://sourcescore.org/pricing/" },
   openGraph: {
     title: "Pricing — SourceScore VERITAS API",
     description:
-      "Free tier 1,000 claims/mo. Indie €19. Startup €99. Scale €499. Self-serve only.",
+      "Free public API with no signup. Proposed higher-volume tiers are available to request, not purchase.",
     url: "https://sourcescore.org/pricing/",
     type: "website",
   },
 };
 
-const features: Record<(typeof TIERS)[number]["name"], string[]> = {
+const proposedFeatures: Record<(typeof TIERS)[number]["name"], string[]> = {
   free: [
-    "1,000 claims/month",
-    "1 API key",
+    "No account-level meter",
+    "No API key required",
     "All API endpoints",
-    "Community support (GitHub Issues)",
-    "99.0% uptime",
+    "Public documentation",
   ],
   indie: [
     "50,000 claims/month",
-    "3 API keys",
-    "All API endpoints",
-    "Email support (48h response)",
-    "99.5% uptime SLA",
-    "Usage alerts via webhook",
+    "Proposed higher-volume access",
+    "Details to be set if launched",
   ],
   startup: [
     "500,000 claims/month",
-    "10 API keys",
-    "All API endpoints",
-    "Email support (24h response)",
-    "99.5% uptime SLA",
-    "Webhook for usage alerts",
-    "Per-key usage analytics",
+    "Proposed higher-volume access",
+    "Details to be set if launched",
   ],
   scale: [
     "5,000,000 claims/month",
-    "Unlimited API keys",
-    "All API endpoints",
-    "Priority email support (4h response)",
-    "99.9% uptime SLA",
-    "Dedicated webhooks",
-    "Per-key usage analytics",
-    "Custom rate-limit windows",
+    "Proposed higher-volume access",
+    "Details to be set if launched",
   ],
 };
 
@@ -76,7 +56,7 @@ export default function PricingPage() {
     "@type": "SoftwareApplication",
     name: "SourceScore VERITAS",
     description:
-      "Signed-claim verification API for LLM developers. Returns hand-verified AI/ML claims with primary sources, HMAC-SHA256 signatures, and stable JSON envelopes for grounding LLM responses.",
+      "Public catalog API for LLM developers. Returns curated AI/ML claim records with cited evidence, SourceScore-issued HMAC metadata, and stable JSON envelopes for evidence-review workflows.",
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Any",
     url: "https://sourcescore.org/",
@@ -87,49 +67,20 @@ export default function PricingPage() {
       url: "https://sourcescore.org/",
     },
     offers: {
-      "@type": "AggregateOffer",
-      lowPrice: "0",
-      highPrice: "499",
+      "@type": "Offer",
+      name: "Free API access",
+      price: "0",
       priceCurrency: "EUR",
-      offerCount: TIERS.length,
-      offers: TIERS.map((tier) => ({
-        "@type": "Offer",
-        name:
-          tier.name === "free"
-            ? "Free"
-            : tier.name.charAt(0).toUpperCase() + tier.name.slice(1),
-        price: tier.monthlyEur.toString(),
-        priceCurrency: "EUR",
-        priceSpecification: {
-          "@type": "UnitPriceSpecification",
-          price: tier.monthlyEur,
-          priceCurrency: "EUR",
-          unitText: "MONTH",
-          billingIncrement: 1,
-          referenceQuantity: {
-            "@type": "QuantitativeValue",
-            value: tier.includedClaims,
-            unitText: "verified-claim API calls",
-          },
-        },
-        category: tagline[tier.name],
-        availability: "https://schema.org/InStock",
-        url: "https://sourcescore.org/pricing/",
-        seller: {
-          "@type": "Organization",
-          name: "SourceScore",
-          url: "https://sourcescore.org/",
-        },
-      })),
+      url: "https://sourcescore.org/docs/",
     },
     featureList: [
-      "1,000 free API claims per month (no signup)",
-      "HMAC-SHA256 signed response envelopes",
-      "≥2 primary sources per claim",
+      "Free public API with no signup or account-level meter",
+      "SourceScore-issued HMAC-SHA256 integrity metadata",
+      "Every claim cites primary evidence; 368 of 384 include two or more sources",
       "OpenAPI 3.1 spec",
-      "346 hand-verified AI/ML claims (1997-2025)",
+      "384 hand-verified AI/ML claims (1997-2025)",
       "Stable JSON-LD claim envelopes",
-      "Self-serve Stripe metered billing",
+      "Proposed higher-volume tiers available to request",
     ],
   };
 
@@ -166,8 +117,9 @@ export default function PricingPage() {
           Pricing
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg">
-          Self-serve. No demos. No contracts. Free tier has no card requirement.
-          Paid tiers via Stripe metered billing — cancel anytime, prorated.
+          The free API is live with no signup, card, or account-level meter. The
+          higher-volume tiers below are proposed prices we are using to learn
+          what teams need; they cannot be purchased today.
         </p>
       </header>
 
@@ -178,9 +130,9 @@ export default function PricingPage() {
       <div className="mb-12 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-5 text-sm">
         <p className="text-zinc-700 dark:text-zinc-300">
           <strong className="text-zinc-900 dark:text-zinc-100">
-            Paid tiers are in early access.
+            Paid tiers are a demand test, not a sale.
           </strong>{" "}
-          The free tier is live now — 1,000 claims/mo, no card. For a
+          The public API is live now — free, no signup or card. For a
           higher-volume plan,{" "}
           <a
             href="/api-access/"
@@ -189,8 +141,8 @@ export default function PricingPage() {
           >
             request access
           </a>{" "}
-          and we&rsquo;ll email you the moment pricing goes live — no card, no
-          commitment.
+          so we can assess demand. There is no checkout, billing, API-key
+          provisioning, SLA, or commitment yet.
         </p>
       </div>
 
@@ -223,14 +175,13 @@ export default function PricingPage() {
                 </p>
                 {!isFree && (
                   <p className="mt-1 text-xs text-zinc-500">
-                    + €{tier.overageEurPerClaim.toFixed(4)} per claim over{" "}
-                    {tier.includedClaims.toLocaleString()}/mo
+                    Proposed monthly price; final scope and terms are not set.
                   </p>
                 )}
               </div>
 
               <ul className="space-y-2 text-sm flex-grow mb-6">
-                {features[tier.name].map((f) => (
+                {proposedFeatures[tier.name].map((f) => (
                   <li key={f} className="flex items-start gap-2">
                     <span className="text-zinc-400 mt-0.5">✓</span>
                     <span>{f}</span>
@@ -262,53 +213,34 @@ export default function PricingPage() {
 
       <section className="max-w-3xl space-y-8">
         <div>
-          <h2 className="text-xl font-semibold mb-3">How metered billing works</h2>
+          <h2 className="text-xl font-semibold mb-3">What is live now</h2>
           <p className="text-zinc-600 dark:text-zinc-400">
-            Each tier includes a monthly claim quota. API calls past the quota
-            are billed at the overage rate. Usage is metered server-side per
-            API key; the dashboard shows live month-to-date counts. Quotas
-            reset on your billing-cycle anniversary, not the calendar month.
+            The public catalog API is free without signup, keys, or account-level
+            metering. Standard network abuse controls may apply. See the
+            documentation for current endpoints and usage guidance.
           </p>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-3">What counts as a claim</h2>
+          <h2 className="text-xl font-semibold mb-3">How proposed paid access works</h2>
           <p className="text-zinc-600 dark:text-zinc-400">
-            One claim = one billable read of a specific verified claim record.
-            <code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded mx-1">
-              GET /api/v1/claims/&lt;id&gt;.json
-            </code>
-            counts as one. A
-            <code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded mx-1">
-              POST /api/v1/verify
-            </code>
-            call counts as one regardless of how many candidates were scored
-            (you pay for the bestMatch you get, not the entire catalog scan).
-            Catalog/methodology/search index endpoints are free for all tiers.
+            Requesting access sends us your use case and expected volume. It is
+            not an order and does not create an account, API key, invoice, or
+            contract. If a paid offering is launched, we will contact requesters
+            with the actual terms before any purchase is possible.
           </p>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-3">No enterprise tier</h2>
+          <h2 className="text-xl font-semibold mb-3">Why show proposed prices?</h2>
           <p className="text-zinc-600 dark:text-zinc-400">
-            By design. SourceScore is solo-founder operated; we don&rsquo;t do
-            demos, custom contracts, or procurement cycles. The Scale tier
-            covers 5M claims/month with a 4h-response SLA; if your workload
-            exceeds that, email{" "}
+            They make the demand test concrete without pretending the service
+            is available. Tell us what volume and reliability requirements you
+            need by emailing{" "}
             <a href="mailto:hello@caslonmedia.com" className="underline">
               hello@caslonmedia.com
             </a>{" "}
-            and we&rsquo;ll work out overage pricing on the same Stripe
-            subscription.
-          </p>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-3">Cancellation + refunds</h2>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Cancel anytime from the dashboard. Subscriptions prorate to the day.
-            Refunds within 14 days, no questions, no friction. Stripe handles
-            payment + invoicing; we never see card numbers.
+            or use the request-access page.
           </p>
         </div>
       </section>

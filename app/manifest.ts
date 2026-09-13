@@ -11,10 +11,10 @@ export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "SourceScore — AI-Citation Quality Index + VERITAS Claim Verification",
+    name: "SourceScore — AI-Citation Quality Index + VERITAS Evidence Catalog",
     short_name: "SourceScore",
     description:
-      "Score any source on Discipline, Modern Reference, and Citation Velocity. Plus VERITAS — signed claim verification API for LLM developers.",
+      "Score sources on Discipline, Modern Reference, and Citation Velocity. VERITAS adds curated AI/ML claim records and candidate evidence retrieval.",
     start_url: "/",
     display: "standalone",
     background_color: "#0a0a0a",

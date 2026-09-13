@@ -4,13 +4,13 @@ import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 import { vercelAiSdkHowTo } from "@/lib/howto-schemas";
 export const metadata: Metadata = {
-  title: "Vercel AI SDK + SourceScore VERITAS — verified-claim grounding in Next.js",
+  title: "Vercel AI SDK + SourceScore VERITAS — candidate retrieval in Next.js",
   description:
-    "Add SourceScore VERITAS to a Vercel AI SDK chain in Next.js. streamText + tool function-call pattern, plus a post-stream verification step. TypeScript examples.",
+    "Add SourceScore VERITAS to a Vercel AI SDK chain in Next.js for candidate-record lookup and explicit evidence review. TypeScript examples.",
   alternates: { canonical: "https://sourcescore.org/docs/integrations/vercel-ai-sdk/" },
   openGraph: {
     title: "Vercel AI SDK + SourceScore VERITAS",
-    description: "Verified-claim grounding for Vercel AI SDK + Next.js apps.",
+    description: "Candidate-record retrieval for Vercel AI SDK + Next.js apps.",
     url: "https://sourcescore.org/docs/integrations/vercel-ai-sdk/",
     type: "article",
   },
@@ -25,9 +25,9 @@ export default function VercelAISDKIntegration() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TechArticle",
-            headline: "Vercel AI SDK + SourceScore VERITAS: verified-claim grounding in Next.js",
+            headline: "Vercel AI SDK + SourceScore VERITAS: candidate retrieval in Next.js",
             description:
-              "Drop SourceScore VERITAS into a Vercel AI SDK chain via the tool() helper. The model auto-invokes verify_claim / search_claims when it needs grounded facts. Plus a post-stream verification pattern for free-form completions.",
+              "Use SourceScore VERITAS tools to retrieve possible catalog evidence, then review exact statements and cited sources before using them.",
             datePublished: "2026-05-16",
             dateModified: "2026-05-16",
             author: { "@type": "Organization", name: "SourceScore", url: "https://sourcescore.org" },
@@ -70,10 +70,9 @@ export default function VercelAISDKIntegration() {
           Vercel AI SDK + VERITAS
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
-          Add signed-claim verification to a Next.js + AI SDK chat or
-          completion. Two patterns: tool function-calling for model-
-          initiated lookup, and post-stream verification for free-form
-          completions.
+          Add candidate-record retrieval to a Next.js + AI SDK chat or
+          completion. Two patterns: model-initiated lookup and post-stream
+          candidate retrieval, each followed by evidence review.
         </p>
       </header>
 
@@ -101,12 +100,12 @@ export async function POST(req: Request) {
   const result = streamText({
     model: openai("gpt-4o-mini"),
     system:
-      "Use search_claims or verify_claim to ground every AI/ML factual " +
-      "assertion before answering. Cite [claim_id] inline with every grounded fact.",
+      "Use search_claims or verify_claim to retrieve relevant catalog records. " +
+      "A bestMatch is similarity, not proof: compare primary sources before asserting a fact and cite [claim_id].",
     messages,
     tools: {
       search_claims: tool({
-        description: "Search the SourceScore VERITAS catalog of verified AI/ML claims.",
+        description: "Search the SourceScore VERITAS catalog of reviewed AI/ML claim records.",
         parameters: z.object({
           query: z.string(),
           limit: z.number().int().min(1).max(20).default(5),
@@ -116,8 +115,8 @@ export async function POST(req: Request) {
           return await r.json();
         },
       }),
-      verify_claim: tool({
-        description: "Verify a specific assertion against the VERITAS catalog. Returns confidence + canonical citation if matched.",
+      find_claim_candidate: tool({
+        description: "Retrieve a similar catalog record. Returns confidence + a citation to review, not a truth verdict.",
         parameters: z.object({
           statement: z.string(),
           min_confidence: z.number().min(0).max(1).default(0.85),
@@ -147,11 +146,11 @@ export async function POST(req: Request) {
       </section>
 
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Pattern 2 — Post-stream verification</h2>
+        <h2 className="text-xl font-semibold mb-3">Pattern 2 — Post-stream candidate retrieval</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
-          When you want free-form generation but a confidence layer, run
-          verification AFTER the stream completes. Renders unverified
-          assertions with a warning chip in your UI.
+          When you want free-form generation, retrieve candidate records
+          after the stream completes. A match should link to evidence for
+          review, not be rendered as verification.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`// lib/verify.ts
 export async function verifyLines(text: string) {
@@ -167,7 +166,7 @@ export async function verifyLines(text: string) {
     const { bestMatch } = await r.json();
     return {
       statement: line,
-      verified: !!bestMatch,
+      candidateFound: !!bestMatch,
       confidence: bestMatch?.confidence ?? 0,
       claimId: bestMatch?.id ?? null,
       url: bestMatch ? \`https://sourcescore.org/claims/\${bestMatch.id}/\` : null,
@@ -200,9 +199,9 @@ export default function Page() {
         {out.map((r, i) => (
           <li key={i}>
             {r.statement}{" "}
-            {r.verified
-              ? <a href={r.url!}>✅ [{r.claimId}] ({r.confidence.toFixed(2)})</a>
-              : <span className="text-amber-600">⚠️ unverified</span>}
+            {r.candidateFound
+              ? <a href={r.url!}>🔎 candidate [{r.claimId}] ({r.confidence.toFixed(2)}) — review sources</a>
+              : <span className="text-amber-600">⚠️ no catalog candidate</span>}
           </li>
         ))}
       </ul>
@@ -220,7 +219,7 @@ export default function Page() {
         </p>
         <ul className="text-sm text-zinc-700 dark:text-zinc-300 list-disc pl-6 space-y-1">
           <li>Set <code className="font-mono">export const runtime = &quot;edge&quot;</code> in your route.</li>
-          <li>VERITAS p95 latency ~80ms — comfortable within Edge function timeouts.</li>
+          <li>Measure VERITAS latency from your own deployment region and set an explicit timeout.</li>
           <li>No SDK import needed — VERITAS is plain HTTP.</li>
         </ul>
       </section>
@@ -228,20 +227,19 @@ export default function Page() {
       <section className="mb-10">
         <h2 className="text-xl font-semibold mb-3">UI patterns</h2>
         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">
-          Render verified claims with a clickable badge that opens the
-          canonical SourceScore page in a new tab. Render unverified
-          claims with an amber chip and a tooltip explaining the catalog
-          scope. Two CSS patterns shipped in your design system:
+          Render candidate records with a clickable link to their evidence.
+          Render absent matches with an amber chip. Neither state establishes
+          factual correctness; compare independent primary evidence first.
         </p>
-        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`<span className="verified-badge">
-  ✓ [{claimId}] {confidence.toFixed(2)}
+        <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`<span className="candidate-badge">
+  🔎 [{claimId}] {confidence.toFixed(2)} — review sources
 </span>
 
-<span className="unverified-chip" title="Outside VERITAS catalog scope">
-  ⚠ unverified
+<span className="no-candidate-chip" title="No similar catalog record returned">
+  ⚠ no catalog candidate
 </span>`}</code></pre>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-3">
-          The verified badge should be a link to{" "}
+          The candidate badge should be a link to{" "}
           <code className="font-mono">https://sourcescore.org/claims/&lt;id&gt;/</code>{" "}
           for full provenance.
         </p>

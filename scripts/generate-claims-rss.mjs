@@ -52,7 +52,7 @@ const items = claims
     const lastVerified = full.lastVerified ?? new Date().toISOString().slice(0, 10);
     const pubDate = new Date(`${lastVerified}T00:00:00Z`).toUTCString();
     const url = `${SITE}/claims/${c.id}/`;
-    const description = `${c.statement} Verified ${lastVerified}. Confidence ${Math.round(c.confidence * 100)}%. ${(full.sources ?? []).length} primary source${(full.sources ?? []).length === 1 ? "" : "s"}. HMAC-SHA256 signed envelope at ${SITE}/api/v1/claims/${c.id}.json.`;
+    const description = `${c.statement} Verified ${lastVerified}. Confidence ${Math.round(c.confidence * 100)}%. ${(full.sources ?? []).length} cited primary source${(full.sources ?? []).length === 1 ? "" : "s"}. Canonical record at ${SITE}/api/v1/claims/${c.id}.json.`;
     const categories = (full.tags ?? []).map(xmlEscape).join(", ");
     return `    <item>
       <title>${xmlEscape(c.statement)}</title>
@@ -71,7 +71,7 @@ const rss = `<?xml version="1.0" encoding="UTF-8"?>
     <title>SourceScore VERITAS — verified AI/ML claims</title>
     <link>${SITE}/claims/</link>
     <atom:link href="${SITE}/claims/feed.xml" rel="self" type="application/rss+xml"/>
-    <description>Signed, sourced, citable AI/ML claims. Each item has 2+ primary sources and an HMAC-SHA256 signature. New claims are added regularly; subscribe to follow.</description>
+    <description>Sourced, citable AI/ML claims. Every item cites primary evidence; source counts appear per record. New claims are added as reviewed; subscribe to follow.</description>
     <language>en-US</language>
     <lastBuildDate>${NOW}</lastBuildDate>
     <generator>scripts/generate-claims-rss.mjs</generator>

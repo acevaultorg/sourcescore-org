@@ -41,24 +41,30 @@ export default function PartnersPage() {
           <div className="text-eyebrow text-dim mb-3">Audience</div>
           <ul className="space-y-3 text-body text-muted leading-relaxed">
             <li>
-              <strong className="text-text">Traffic:</strong> 6,099 users in
-              the last 30 days (GA4, 30-day window ending 11 August 2026).
+              <strong className="text-text">Measured reach:</strong> GA4
+              recorded 3,946 sessions and 3,925 users in the 30-day window
+              ending 11 September 2026.
             </li>
             <li>
               <strong className="text-text">
                 What that number is, and what it is not:
               </strong>{" "}
-              those visits are predominantly direct and referral. Organic
-              search is still a small share — Search Console records 2 clicks
-              from 1,483 impressions at an average position of 43.9 over the
-              same window, because the index is young and still gaining
-              rankings. Sessions average about one page (6,128 pageviews across
-              6,099 users) and we record no conversion events yet. Read it as
-              early-stage reach, not as 6,000 engaged professional readers.
+              this is not a human-audience claim. Direct traffic was 97.1%,
+              sessions averaged 1.01 pageviews, and Clarity classified 65.5%
+              of its recent sample as bots. Modern crawlers execute analytics
+              scripts, so GA4 is a ceiling on reach, not a count of engaged readers.
             </li>
             <li>
-              <strong className="text-text">Geography:</strong> predominantly
-              US audience.
+              <strong className="text-text">Search discovery:</strong> Bing
+              recorded 49 clicks from 2,134 impressions over 29 days. Google
+              Search Console recorded 0 clicks from 1,033 impressions over its
+              30-day window. We do not blend crawler traffic into those figures.
+            </li>
+            <li>
+              <strong className="text-text">Commercial proof:</strong> no
+              booked affiliate or advertising revenue is being claimed. We
+              provide a fresh, human-segmented export before any partnership
+              that depends on audience scale.
             </li>
             <li>
               <strong className="text-text">Reader persona:</strong> SEO/GEO
@@ -172,7 +178,8 @@ export default function PartnersPage() {
         <section className="p-6 rounded-card-lg border border-brand/30 bg-surface-brand">
           <div className="text-eyebrow text-dim mb-2">Partnership status</div>
           <p className="text-body text-text leading-relaxed">
-            Partnerships are launching now.{" "}
+            We consider tightly relevant, clearly disclosed partnerships. Paid
+            relationships never change scores or verified-claim data.{" "}
             <a href="/contact/" className="text-brand hover:underline">
               Contact us
             </a>{" "}

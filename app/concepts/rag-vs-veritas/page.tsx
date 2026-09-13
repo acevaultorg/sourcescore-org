@@ -8,9 +8,9 @@ import { breadcrumbListSchema } from "@/lib/methodology-version";
 
 const PUBLISHED = "2026-05-16";
 const TITLE =
-  "RAG vs signed-claim verification (VERITAS) — when to use each";
+  "RAG vs curated claim retrieval (VERITAS) — when to use each";
 const SUBTITLE =
-  "RAG retrieves prose chunks. VERITAS retrieves typed atomic claims with signatures. They're different shapes, different use cases, different cost models. Most production systems use both.";
+  "RAG retrieves prose chunks. VERITAS retrieves typed records from a bounded curated catalog. They are different shapes with complementary uses; neither retrieval method proves an answer true.";
 const SLUG = "rag-vs-veritas";
 const CANONICAL = `https://sourcescore.org/concepts/${SLUG}/`;
 
@@ -106,12 +106,10 @@ export default function RagVsVeritas() {
           unstructured input.
         </p>
         <p>
-          <strong>VERITAS</strong> (or any signed-claim system) is the
-          right tool when you need <em>atomic facts with verification</em>{" "}
+          <strong>VERITAS</strong> is useful when you need <em>atomic claim records</em>{" "}
           — specific assertions like &quot;GPT-4 was released on
-          2023-03-14&quot; with sources you can cite and signatures you
-          can re-verify. Bounded coverage; high precision on what it
-          covers.
+          2023-03-14&quot; with sources you can inspect. Coverage is bounded,
+          and candidate retrieval still needs statement/evidence comparison.
         </p>
         <p>
           They&apos;re complementary. RAG covers breadth; VERITAS covers
@@ -131,13 +129,13 @@ export default function RagVsVeritas() {
             </thead>
             <tbody>
               <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Retrieves</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Prose chunks (200-2000 tokens)</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Atomic claims (subject + predicate + object)</td></tr>
-              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Returns</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Semantically similar text</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Verified facts with confidence + signature</td></tr>
-              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Trust model</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Trust the corpus you indexed</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Trust the curation methodology + HMAC signature</td></tr>
-              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Scale</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Millions of chunks easy</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Limited by curation effort (today: 91, target Q3: ~150)</td></tr>
-              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Hallucination on covered domain</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">~10-15%</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">&lt;1%</td></tr>
-              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Coverage</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Whatever you index</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Whatever the catalog covers (AI/ML today; new verticals Y2)</td></tr>
+              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Returns</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Retrieved prose chunks</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Candidate claim records with cited evidence</td></tr>
+              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Trust model</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Inspect the indexed corpus and answer support</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Inspect the curation method, record, and cited evidence</td></tr>
+              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Scale</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Depends on corpus and infrastructure</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Limited by curation effort (384 records today)</td></tr>
+              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Accuracy</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Measure on your task and corpus</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Measure candidate entailment on your assertions</td></tr>
+              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Coverage</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Whatever you index</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">AI/ML catalog only today</td></tr>
               <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Citation precision</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Chunk-level (paragraph at best)</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Fact-level (single assertion)</td></tr>
-              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Auditability</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Manual</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Programmatic (signature)</td></tr>
+              <tr><td className="p-3 border-b border-zinc-100 dark:border-zinc-900 font-medium">Auditability</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Depends on stored chunks and citations</td><td className="p-3 border-b border-zinc-100 dark:border-zinc-900">Stable record URLs + cited evidence; HMAC is source-issued only</td></tr>
               <tr><td className="p-3 font-medium">Infra requirement</td><td className="p-3">Vector DB + embedding model</td><td className="p-3">HTTP fetch (zero infra)</td></tr>
             </tbody>
           </table>
@@ -231,7 +229,7 @@ async def answer(question):
     # Layer 3 — model prompt with both, ordered by trust
     context = ""
     if veritas_claims:
-        context += "Verified atomic facts (cite [claim_id]):\\n"
+        context += "Candidate atomic records (cite only after evidence review):\\n"
         context += "\\n".join(f"- {c.statement} [{c.id}]" for c in veritas_claims)
 
     if rag_chunks:
@@ -239,40 +237,24 @@ async def answer(question):
         context += "\\n".join(f"- {c.text} [{c.id}]" for c in rag_chunks)
 
     return await llm.generate(
-        f"Use the verified facts first. Cite every assertion.\\n\\n{context}\\n\\nQ: {question}"
+        f"Use a record only when its exact statement and evidence support the answer. "
+        f"Cite every supported assertion.\\n\\n{context}\\n\\nQ: {question}"
     )`}</code></pre>
         <p>
-          The model is instructed to prefer verified facts over RAG
-          chunks when both cover the same assertion. Verification badges
-          in the UI distinguish the two — clicking [claim_id] opens
+          The model is instructed to use a candidate only when its exact
+          statement supports the answer. Candidate-record links in the UI
+          distinguish the two evidence paths — clicking [claim_id] opens
           the canonical SourceScore page; clicking [chunk_id] opens
           your indexed source.
         </p>
 
         <h2 id="cost-comparison">Cost comparison</h2>
-        <p>For a typical production query (~1,000 queries/day):</p>
-        <ul>
-          <li>
-            <strong>RAG:</strong> embedding model API ~$0.0001/query +
-            vector DB hosted ~$30/mo + storage. ~$0.001/query total.
-          </li>
-          <li>
-            <strong>VERITAS Free tier:</strong> 1,000 calls/mo free,
-            then ~€0.0004/call on the next tier (Indie €19 for 50,000
-            calls = ~€0.00038/call). Volume tiers (€99 / €499) drop
-            per-call cost further.
-          </li>
-          <li>
-            <strong>Hybrid:</strong> additive. ~$0.0018/query for both
-            layers.
-          </li>
-        </ul>
         <p>
-          The marginal cost of adding VERITAS to an existing RAG stack
-          is small relative to the value of reducing hallucination on
-          covered atoms. The ROI is dominated by your hallucination cost
-          — if it&apos;s zero, neither matters; if it&apos;s high, both
-          are cheap.
+          The public VERITAS API is currently free with no account-level meter.
+          RAG cost depends on your embedding model, vector store, retrieval
+          pattern, cache hit rate, and hosting. Measure both paths in your own
+          stack instead of relying on a universal per-query estimate. Proposed
+          higher-volume VERITAS prices are a demand test, not purchasable plans.
         </p>
 
         <h2 id="when-rag-only">When to use RAG only (skip VERITAS)</h2>
@@ -316,11 +298,10 @@ async def answer(question):
           .
         </p>
         <p>
-          If you don&apos;t have RAG yet: start with VERITAS for atomic
-          facts (covers ~40-60% of typical AI/ML domain queries). Add
-          RAG once your application has shipped and you&apos;ve seen
-          which queries fall outside the VERITAS catalog. The data tells
-          you which layer to invest in.
+          If you don&apos;t have RAG yet, test the VERITAS catalog against a
+          representative query set before designing around it. Add broader
+          retrieval when your observed questions fall outside the catalog;
+          do not assume a universal coverage percentage.
         </p>
 
         <h2 id="references">Further reading</h2>

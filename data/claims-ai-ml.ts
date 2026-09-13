@@ -15,7 +15,9 @@
 //   5. We DO publish foundational-paper / methodology-introduction claims
 //      because those are documented + dated + signed by their authors.
 //
-// Seed cohort (Day 1-20): 346 claims spanning 1997-2025 across model releases,
+// Catalog history: the initial seed cohort had 346 claims; the current catalog
+// has 384. Claim data below is preserved as published; current source-count
+// distribution is 368 claims with 2+ sources and 16 with one primary source.
 // foundational methods, datasets, and well-known organizations. Each has been
 // hand-verified against the cited sources on 2026-05-16.
 //
@@ -10602,7 +10604,7 @@ export const seedClaims: SeedClaim[] = [
   },
 
   // ─── Foundational methods + benchmarks (2026-05-31 gap-analysis batch) ──────
-  // Genuine catalog gaps (none of these subjects existed in the 346-claim seed).
+  // Genuine catalog gaps relative to the original 346-claim seed.
   // Each verified 2026-05-31 against its arXiv primary + an official repo/venue
   // + Hugging Face. Facts only (paper-introduction + dataset composition) — no
   // performance numbers, per calibration rule #4.

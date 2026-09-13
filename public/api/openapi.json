@@ -3,7 +3,7 @@
   "info": {
     "title": "SourceScore Public API",
     "summary": "AI-citation quality leaderboard — read-only JSON twins of every public page.",
-    "description": "Static-export JSON catalog of source-quality scores derived from the SourceScore Methodology v0.1 (Citation Discipline 35% + Modern Reference 30% + Citation Velocity 35%). All endpoints return JSON files served from Cloudflare Pages — no rate limit, no auth, no API key. Use freely for AI retrieval-augmented generation, source ranking, and citation analysis. Cite as: 'SourceScore Methodology v0.1, sourcescore.org'.",
+    "description": "Static-export JSON catalog of source-quality scores derived from the SourceScore Methodology v0.1 (Citation Discipline 35% + Modern Reference 30% + Citation Velocity 35%). Endpoints return JSON files served from Cloudflare Pages with no auth or API key; standard network abuse protection may apply. Use freely for AI retrieval-augmented generation, source ranking, and citation analysis. Cite as: 'SourceScore Methodology v0.1, sourcescore.org'.",
     "version": "0.1.0",
     "contact": {
       "name": "SourceScore",
@@ -36,7 +36,7 @@
       "get": {
         "tags": ["Catalogs"],
         "summary": "Full source catalog (light per-source summary)",
-        "description": "Returns the full SourceScore catalog — every scored source with its summary fields and links to per-source detail JSON. ~80KB at 133 sources (May 2026).",
+        "description": "Returns the full SourceScore catalog — every scored source with its summary fields and links to per-source detail JSON. The current catalog contains 130 sources.",
         "operationId": "getSourcesCatalog",
         "responses": {
           "200": {
@@ -167,7 +167,7 @@
           "apiVersion": { "type": "string", "example": "v0.1" },
           "methodology": { "type": "string", "format": "uri", "example": "https://sourcescore.org/methodology/" },
           "generated": { "type": "string", "format": "date-time" },
-          "count": { "type": "integer", "example": 133 },
+          "count": { "type": "integer", "example": 130 },
           "sources": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/SourceSummary" }

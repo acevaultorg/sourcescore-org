@@ -8,9 +8,9 @@
 import type { Metadata } from "next";
 import { breadcrumbListSchema } from "@/lib/methodology-version";
 
-const TITLE = "News fact-checking — AI-assisted newsroom verification API";
+const TITLE = "News fact-checking — AI-assisted evidence review for newsrooms";
 const SUBTITLE =
-  "Newsroom AI tools (explainer bots, archive search, breaking-news context, draft assistants) ship hallucinated facts at deadline pressure. SourceScore VERITAS adds signed, sourced, citable claim verification — ClaimReview-aware envelopes + verbatim-quote primary sources reduce retraction risk in AI-generated newsroom output.";
+  "Use SourceScore's bounded AI/ML catalog to find candidate evidence for newsroom review. It can support an editor; it cannot verify a draft or replace live-news research.";
 const CANONICAL = "https://sourcescore.org/use-cases/news-fact-checking/";
 const PUBLISHED = "2026-05-17";
 
@@ -122,46 +122,46 @@ export default function NewsFactCheckingPage() {
           verification doesn&apos;t scale.
         </p>
 
-        <h2>What verification adds to your workflow</h2>
+        <h2>What catalog retrieval adds to your workflow</h2>
         <p>
           SourceScore VERITAS provides an API where:
         </p>
         <ul>
           <li>
-            Each claim has <strong>≥2 primary sources</strong> — never
-            another blog or aggregator. Sources cited with publisher
+            Each claim cites <strong>primary evidence</strong>; 368 of 384
+            current claims have two or more sources. Sources are shown with publisher
             name, publication date, and verbatim excerpt ≤200 chars.
           </li>
           <li>
-            Every claim has an <strong>HMAC-SHA256 signature</strong>
-            tied to <code>did:web:sourcescore.org</code>. Verifiable
+            Records include <strong>SourceScore-issued HMAC integrity metadata</strong>.
+            It is not publicly independently verifiable; use the canonical URL
             locally; tamper-detection is mechanical.
           </li>
           <li>
-            Catalog includes <strong>ClaimReview schema.org markup</strong>
-            on every <code>/claims/[id]/</code> page — Google fact-check
-            rich-snippet eligible, indexable by Google Fact Check Tools.
+            Claim pages include <strong>ClaimReview schema.org markup</strong>
+            so consumers can inspect a machine-readable review record. Search
+            features and eligibility are controlled by search platforms.
           </li>
           <li>
             <strong>Stable claim IDs</strong> (16-hex SHA-256 of canonical
-            fields) — re-fetchable, citeable, immutable across catalog
-            edits.
+            fields) — re-fetchable and citeable. Always re-fetch before use
+            because catalog records and supporting evidence can be corrected.
           </li>
         </ul>
 
         <h2>Integration patterns for newsroom workflows</h2>
 
-        <h3>Pattern 1 — Pre-publish verification gate</h3>
+        <h3>Pattern 1 — Pre-publish evidence-review queue</h3>
         <p>
           After an editorial AI draft is generated, parse out atomic
-          factual claims, verify each, flag or strip unverified before
-          the draft reaches the editor&apos;s queue. Reduces
-          editor-time on factual-correction by ~40% in pilot deployments.
+          factual claims, retrieve possible catalog records, and send both
+          matches and misses to an editor or entailment check. Never approve a
+          draft solely because every assertion produced a similar record.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`# Python — pre-publish gate
 import requests
 
-def verify_fact(claim_text: str) -> dict | None:
+def find_candidate(claim_text: str) -> dict | None:
     r = requests.post(
         "https://sourcescore.org/api/v1/verify",
         json={"claim": claim_text, "minConfidence": 0.85},
@@ -170,20 +170,19 @@ def verify_fact(claim_text: str) -> dict | None:
     return r.json().get("bestMatch")
 
 def gate_draft(draft: str, atomic_claims: list[str]) -> dict:
-    verified, unverified = [], []
+    candidates, no_matches = [], []
     for c in atomic_claims:
-        match = verify_fact(c)
-        (verified if match else unverified).append({
+        match = find_candidate(c)
+        (candidates if match else no_matches).append({
             "claim": c,
             "match": match,
         })
     return {
         "draft": draft,
-        "verified_count": len(verified),
-        "unverified_count": len(unverified),
-        "unverified_claims": [u["claim"] for u in unverified],
-        "verified_claims": verified,
-        "publish_ready": len(unverified) == 0,
+        "candidate_count": len(candidates),
+        "no_match_count": len(no_matches),
+        "review_queue": candidates + no_matches,
+        "publish_ready": False,  # requires editorial/evidence review
     }`}</code></pre>
 
         <h3>Pattern 2 — In-line citation injection</h3>
@@ -194,25 +193,24 @@ def gate_draft(draft: str, atomic_claims: list[str]) -> dict:
           auditable trail; the publication gets E-E-A-T credibility lift.
         </p>
         <pre className="bg-zinc-900 text-zinc-100 rounded-lg p-4 text-sm overflow-x-auto"><code>{`# Inject [^1] footnotes
-def cite_verified(draft: str, verified: list[dict]) -> str:
+def cite_reviewed(draft: str, reviewed: list[dict]) -> str:
     cited = draft
-    for i, v in enumerate(verified, 1):
+    for i, v in enumerate(reviewed, 1):
         match = v["match"]
         footnote = (
             f'[^{i}]: SourceScore Claim '
             f'<{match["id"]}>, sourcescore.org/claims/{match["id"]}/, '
-            f'verified {match["lastVerified"]}.'
+            f'record reviewed {match["lastVerified"]}.'
         )
         cited += "\\n\\n" + footnote
     return cited`}</code></pre>
 
         <h3>Pattern 3 — Beat-reporter assistant grounding</h3>
         <p>
-          For an AI assistant covering a specific beat (AI/ML coverage,
-          tech regulation, finance markets), wire VERITAS as the
-          retrieval source. Filter by topic-vertical; assistant only
-          emits facts the catalog confirms with verbatim primary
-          sources.
+          For an AI assistant covering an AI/ML beat, wire VERITAS in as
+          one bounded retrieval source. Require
+          a separate evidence comparison before the assistant emits a factual
+          assertion.
         </p>
 
         <h2>What this use-case catches</h2>
@@ -235,7 +233,7 @@ def cite_verified(draft: str, verified: list[dict]) -> str:
           </li>
         </ul>
 
-        <h2>What this use-case does NOT catch (Y2 scope)</h2>
+        <h2>What this use case does not cover</h2>
         <ul>
           <li>
             Live breaking-news claims (catalog is curated, not real-time)
@@ -244,7 +242,7 @@ def cite_verified(draft: str, verified: list[dict]) -> str:
             Political claims (out of scope; v0 = AI/ML vertical only)
           </li>
           <li>
-            Health/medical claims (Y2+ vertical expansion)
+            Health or medical claims
           </li>
           <li>
             Hyperlocal / niche-publication claims (catalog is global tech)
@@ -260,11 +258,7 @@ def cite_verified(draft: str, verified: list[dict]) -> str:
         <p>
           Every <code>/claims/[id]/</code> page emits ClaimReview JSON-LD
           per <a href="https://schema.org/ClaimReview" target="_blank" rel="noopener noreferrer">schema.org/ClaimReview</a>.
-          Pages are indexed by{" "}
-          <a href="https://toolbox.google.com/factcheck/explorer" target="_blank" rel="noopener noreferrer">
-            Google Fact Check Tools Explorer
-          </a>{" "}
-          and eligible for Google Fact Check rich snippets in SERPs.
+          Search platforms decide whether to index or display that markup.
           For newsroom publications running their own ClaimReview,
           VERITAS envelopes can be embedded as primary-source citations
           in your own ClaimReview <code>itemReviewed</code> blocks.
@@ -273,25 +267,14 @@ def cite_verified(draft: str, verified: list[dict]) -> str:
         <h2>Economics for newsrooms</h2>
         <ul>
           <li>
-            <strong>Free tier:</strong> 1,000 verifications/month — fits
-            a single beat reporter or a small fact-check team for
-            evaluation.
-          </li>
-          <li>
-            <strong>Startup tier (€99/mo):</strong> 100,000 verifications
-            — fits a mid-size newsroom integrating verification across
-            multiple beats.
-          </li>
-          <li>
-            <strong>Scale tier (€499/mo):</strong> 1M verifications +
-            dedicated support — fits a national publication piping all
-            AI-generated drafts through verification.
+            <strong>Public API:</strong> free with no account or key; suitable
+            for evaluation subject to standard network abuse controls.
           </li>
         </ul>
         <p>
-          See <a href="/pricing/" className="underline">pricing</a> for
-          the full tier table. Newsroom customers receive on-request
-          custom enterprise terms with SLA + audit log.
+          See <a href="/pricing/" className="underline">pricing</a> for the
+          proposed higher-volume demand test. No paid access, dedicated
+          support, terms, or SLA is live.
         </p>
 
         <h2>Getting started</h2>
@@ -303,7 +286,7 @@ def cite_verified(draft: str, verified: list[dict]) -> str:
           </li>
           <li>
             Browse the{" "}
-            <a href="/claims/" className="underline">346 verified claims</a>
+            <a href="/claims/" className="underline">384 verified claims</a>
             {" "}— check whether your beat&apos;s common facts are
             covered before integrating.
           </li>
@@ -315,8 +298,8 @@ def cite_verified(draft: str, verified: list[dict]) -> str:
           <li>
             Email{" "}
             <a href="/contact/" className="underline">contact</a>
-            {" "}for newsroom enterprise terms when you&apos;re ready to
-            move past the free tier.
+            {" "}to join the higher-volume access demand test; no paid
+            newsroom tier is currently for sale.
           </li>
         </ol>
 
@@ -349,7 +332,7 @@ def cite_verified(draft: str, verified: list[dict]) -> str:
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           Newsroom integration questions? Email{" "}
           <a href="/contact/" className="underline">contact</a>
-          {" "}— we ship custom enterprise terms with SLA + audit-log access.
+          {" "}— share your needs; no paid enterprise terms or SLA are live.
         </p>
       </footer>
     </article>

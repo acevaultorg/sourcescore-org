@@ -108,16 +108,16 @@ export default function CustomerSupportBotPage() {
             API docs, pricing pages. Standard retrieval.
           </li>
           <li>
-            <strong>Verify atomic claims in the response.</strong>{" "}
+            <strong>Check atomic claims in the response.</strong>{" "}
             Extract assertions (prices, limits, dates, features) and
-            check each against a verified-claim catalog. For your
+            compare each with an authoritative product-facts catalog. For your
             product&apos;s claims, you maintain the catalog. For
-            AI/ML claims (if you&apos;re an AI-adjacent product), use
-            SourceScore VERITAS.
+            AI/ML claims, SourceScore VERITAS can retrieve candidate records,
+            but a separate comparison or human review must decide support.
           </li>
           <li>
-            <strong>Decline unverifiable claims.</strong> If the bot
-            would emit a claim and verification fails, the bot says
+            <strong>Decline unsupported claims.</strong> If the bot
+            would emit a claim and the support check fails, the bot says
             &quot;I&apos;m not sure — let me get a human.&quot; The cost
             of declining is much lower than the cost of being wrong.
           </li>
@@ -126,15 +126,16 @@ export default function CustomerSupportBotPage() {
         <h2>Implementation sketch</h2>
         <pre><code>{`# Two-catalog setup: your-own + SourceScore VERITAS
 
-# 1. Build your own verified-claim catalog of product facts.
+# 1. Build your own reviewed catalog of product facts.
 #    (Pricing, rate limits, feature support, etc.)
 #    Update it whenever pricing/features change.
 #    JSON file or simple key-value DB.
 PRODUCT_FACTS = {
-    "pro_tier_monthly_calls": "50,000 API calls per month",
-    "scale_tier_monthly_calls": "500,000 API calls per month",
-    "stripe_billing_supported": True,
-    "free_tier_signup_required": False,
+    # Hypothetical placeholders: replace from your current source of truth.
+    "pro_tier_monthly_calls": "<current documented limit>",
+    "scale_tier_monthly_calls": "<current documented limit>",
+    "billing_supported": "<current documented value>",
+    "free_tier_signup_required": "<current documented value>",
     # ...
 }
 
@@ -142,7 +143,7 @@ PRODUCT_FACTS = {
 #    etc.), use SourceScore VERITAS.
 import httpx
 
-def verify_aiml_claim(claim_text: str) -> dict | None:
+def find_aiml_candidate(claim_text: str) -> dict | None:
     r = httpx.post(
         "https://sourcescore.org/api/v1/verify",
         json={"claim": claim_text, "minConfidence": 0.85},
@@ -160,29 +161,32 @@ async def respond(user_question: str):
     # Extract atomic claims from draft
     claims = extract_atomic_claims(draft)
 
-    verified = []
-    unverified = []
+    supported = []
+    needs_review = []
     for c in claims:
         if c.matches_product_pattern():
             ok = verify_against_product_facts(c, PRODUCT_FACTS)
         else:
-            ok = verify_aiml_claim(c.text) is not None
-        (verified if ok else unverified).append(c)
+            candidate = find_aiml_candidate(c.text)
+            # Implement entailment or human review here. Similarity alone is
+            # not proof that candidate.statement supports c.text.
+            ok = candidate is not None and supports_assertion(c.text, candidate)
+        (supported if ok else needs_review).append(c)
 
-    if unverified:
-        # Don't ship the response with unverified claims
+    if needs_review:
+        # Don't ship the response with claims that still need review
         return (
             "I'm not 100% certain about one or more facts in my "
             "answer. Let me transfer you to a human teammate."
         )
 
-    return draft  # All claims verified`}</code></pre>
+    return draft  # Every claim passed the application's support check`}</code></pre>
 
         <h2>What this catches</h2>
         <ul>
           <li><strong>Wrong pricing.</strong> Bot says &quot;€199/month&quot; when the actual price is &quot;€499/month&quot; — product-facts catalog catches it.</li>
           <li><strong>Hallucinated integrations.</strong> Bot says &quot;Yes, we integrate with Zapier&quot; when you don&apos;t — catalog catches it.</li>
-          <li><strong>Wrong AI/ML facts.</strong> Bot says &quot;Llama 3.1 has 70B parameters&quot; when the user asked about the 405B variant — VERITAS catches it.</li>
+          <li><strong>Potentially wrong AI/ML facts.</strong> VERITAS can surface a nearby cited record for comparison; your support check must decide whether it contradicts or supports the bot.</li>
           <li><strong>Stale info.</strong> Bot uses 2-year-old training data for current pricing — catalog (which you update on pricing changes) catches it.</li>
         </ul>
 
@@ -190,18 +194,17 @@ async def respond(user_question: str):
         <p>
           The bot doesn&apos;t need to answer everything. Routing to
           a human for unverifiable claims is a feature, not a bug.
-          Production support chatbots that resolve 60-80% of queries
-          with high accuracy beat ones that resolve 95% with 10%
-          incorrect answers — because the 10% generates more support
-          load + trust damage than the 30% routed to humans would have.
+          Optimize for supported answers and safe handoffs, not the highest
+          automation percentage. Measure incorrect-answer cost, handoff rate,
+          and time to resolution on your own labeled support conversations.
         </p>
 
         <h2>Free-tier economics</h2>
         <ul>
-          <li>SourceScore VERITAS free tier: 1,000 verifies/month, no signup. Probably enough for low-volume product support.</li>
-          <li>~80ms per VERITAS call. Adds &lt;100ms to bot response time.</li>
+          <li>SourceScore VERITAS public API: free with no account, key, or signup.</li>
+          <li>One network request per VERITAS call. Set a timeout and measure in your own stack.</li>
           <li>Your product-facts catalog: cost = engineering time to maintain (small).</li>
-          <li>Paid tiers start at €19/month if your bot does &gt;1k/mo AI/ML claim verifications.</li>
+          <li>Higher-volume paid access is a demand test only; no paid plan or SLA is live.</li>
         </ul>
 
         <h2>Related</h2>
