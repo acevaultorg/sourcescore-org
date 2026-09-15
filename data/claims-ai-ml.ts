@@ -6223,16 +6223,6 @@ export const seedClaims: SeedClaim[] = [
     confidence: 1.0,
     sources: [
       {
-        url: "https://huggingface.co/blog/hub",
-        title: "Introducing the Hugging Face Hub",
-        publisher: "Hugging Face",
-        publishedDate: "2020-09-23",
-        accessedDate: TODAY,
-        type: "official-blog",
-        excerpt:
-          "Today we are excited to announce a new component within Hugging Face Transformers, the Hub. The Hub is a central place where anyone can share, explore, discover, and experiment with open-source Machine Learning. It allows you to host pre-trained models, ML demos, datasets and metrics.",
-      },
-      {
         url: "https://huggingface.co/docs/hub/index",
         title: "Hugging Face Hub — documentation",
         publisher: "Hugging Face",
