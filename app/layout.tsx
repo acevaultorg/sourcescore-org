@@ -33,12 +33,14 @@ export const metadata: Metadata = {
     title: "SourceScore — the AI-Citation Quality Index",
     description:
       "Score any source on Discipline, Modern Reference fitness, and Citation Velocity.",
+    images: [{ url: "/og.svg", width: 1200, height: 630, alt: "SourceScore — the AI-Citation Quality Index" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "SourceScore — the AI-Citation Quality Index",
     description:
       "Score any source on Discipline, Modern Reference fitness, and Citation Velocity.",
+    images: ["/og.svg"],
   },
   robots: {
     index: true,
