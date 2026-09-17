@@ -10,6 +10,12 @@ import {
 import { ScoreBadge } from "@/components/ScoreBadge";
 import type { DimensionScore, Source } from "@/lib/types";
 import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
+import {
+  EditorialByline,
+  ComparisonSources,
+  editorialEditorNode,
+  verifiedFloor,
+} from "@/components/EditorialByline";
 
 // Layer 5 archetype: comparison_vs_competitor_page × +60 (per
 // concept-finder-methodology v2.1.1 + bot-harvest.md). Each pair
@@ -145,8 +151,12 @@ export default async function CompareDetailPage({ params }: PageProps) {
             headline: `${a.name} vs ${b.name} — SourceScore comparison`,
             description: comp.summary,
             datePublished: a.verified,
-            dateModified: a.verified,
+            // The pair is only as current as its least-recently-verified side.
+            dateModified: verifiedFloor(a, b),
             author: { "@type": "Organization", name: "SourceScore" },
+            // Same @id chain as /blog/*, /use-cases/* and /comparisons/* — one
+            // entity graph, not fragmented mentions.
+            editor: editorialEditorNode,
             publisher: {
               "@type": "Organization",
               name: "SourceScore",
@@ -228,7 +238,8 @@ export default async function CompareDetailPage({ params }: PageProps) {
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         {a.name} <span className="text-dim font-normal">vs</span> {b.name}
       </h1>
-      <p className="ss-compare-summary text-body-lg text-muted leading-relaxed max-w-3xl mb-10">{comp.summary}</p>
+      <p className="ss-compare-summary text-body-lg text-muted leading-relaxed max-w-3xl mb-4">{comp.summary}</p>
+      <EditorialByline a={a} b={b} className="mb-10" />
 
       {/* SUMMARY ROW ──────────────────────────────────────────── */}
       <section className="mb-8 grid sm:grid-cols-2 gap-3">
@@ -353,6 +364,9 @@ export default async function CompareDetailPage({ params }: PageProps) {
           ))}
         </div>
       </section>
+
+      {/* SOURCES & REFERENCES — what the scores were read from ── */}
+      <ComparisonSources a={a} b={b} apiPath={`/api/compare/${slug}.json`} />
 
       {/* OTHER COMPARISONS ──────────────────────────────────── */}
       <section className="border-t border-border pt-8">

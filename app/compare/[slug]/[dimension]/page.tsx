@@ -10,6 +10,12 @@ import {
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { gradeColorClass, type Source } from "@/lib/types";
 import { breadcrumbListSchema, datasetSchema } from "@/lib/methodology-version";
+import {
+  EditorialByline,
+  ComparisonSources,
+  editorialEditorNode,
+  verifiedFloor,
+} from "@/components/EditorialByline";
 
 // Day 18 — Sub-score-faceted comparators.
 // Layer 5 archetype stack:
@@ -197,8 +203,11 @@ export default async function CompareDimensionPage({ params }: PageProps) {
     headline,
     description: claim,
     datePublished: a.verified,
-    dateModified: a.verified,
+    // The pair is only as current as its least-recently-verified side.
+    dateModified: verifiedFloor(a, b),
     author: { "@type": "Organization", name: "SourceScore" },
+    // Same @id chain as /blog/*, /use-cases/* and /comparisons/*.
+    editor: editorialEditorNode,
     publisher: {
       "@type": "Organization",
       name: "SourceScore",
@@ -284,9 +293,10 @@ export default async function CompareDimensionPage({ params }: PageProps) {
         {a.name} <span className="text-dim font-normal">vs</span> {b.name}{" "}
         <span className="text-dim font-normal">—</span> {dim.short}
       </h1>
-      <p className="text-body-lg text-muted leading-relaxed max-w-3xl mb-8">
+      <p className="text-body-lg text-muted leading-relaxed max-w-3xl mb-4">
         {dim.description}
       </p>
+      <EditorialByline a={a} b={b} className="mb-8" />
 
       {/* WINNER CALLOUT — quote-ready ────────────────────── */}
       <section className="mb-10 p-6 rounded-card-lg border border-brand/40 bg-surface-brand">
@@ -490,6 +500,13 @@ export default async function CompareDimensionPage({ params }: PageProps) {
             })}
         </div>
       </section>
+
+      {/* SOURCES & REFERENCES — what the scores were read from ── */}
+      <ComparisonSources
+        a={a}
+        b={b}
+        apiPath={`/api/compare/${slug}/${dimension}.json`}
+      />
 
       {/* Bottom nav */}
       <nav className="flex flex-wrap gap-3 border-t border-border pt-6 text-body-sm">
