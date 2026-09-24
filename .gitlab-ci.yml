@@ -71,6 +71,12 @@ build:
 
 deploy:
   stage: deploy
+  # FAIL-CLOSED (2026-09-24): manual. rg-freeze-guard and its register exist only on the Macs, so CI
+  # cannot check freezes itself. Start this job ONLY via `ci-guarded-deploy sourcescore.org 81957978`
+  # (VAULT-Fleet scripts/fleet-mode/ci-guarded-deploy), which runs the guard first and refuses on a
+  # freeze or a missing guard. The signed build is CI-only, so validate-only was not an option here.
+  when: manual
+  allow_failure: false
   image: node:24-bookworm-slim
   needs:
     - build
