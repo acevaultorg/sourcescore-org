@@ -23,6 +23,26 @@ Then: python3 scripts/cf-pages-chunked-deploy.py   (after `npm run build` + RSC 
 Run-from-clean wrapper: scripts/deploy-cf-chunked.sh (build + prune + this).
 """
 import base64, hashlib, json, mimetypes, os, pathlib, sys, time, uuid, urllib.request, urllib.error
+
+# Asset key (2026-09-24, ported from readstacks a72126a8). wrangler keys assets as
+# blake3(base64(content) + extension)[:32], and Cloudflare's check-missing only ever reports
+# THOSE keys as already uploaded. The sha256 key this script used was reported "missing" for
+# files uploaded hours earlier, so every deploy re-uploaded every file (readstacks: 1,022 s ->
+# 552 s after the fix). Uses blake3 when the module is installed (`pip install blake3`);
+# otherwise falls back to the old sha256 key, which still deploys correctly, just uncached.
+try:
+    from blake3 import blake3 as _blake3
+except ImportError:
+    _blake3 = None
+
+class _AssetKey:
+    def __init__(self, content, ext):
+        if _blake3 is not None:
+            self._h = _blake3(base64.b64encode(content) + ext.encode())
+        else:
+            self._h = hashlib.sha256(); self._h.update(content); self._h.update(ext.encode())
+    def hexdigest(self):
+        return self._h.hexdigest()
 import re
 
 # Fleet task mtk9rrqrubziml (2026-09-02): this script is also invoked DIRECTLY, bypassing the npm predeploy hook.
@@ -142,7 +162,7 @@ def walk(root):
         if not p.is_file(): continue
         rel = "/" + str(p.relative_to(root)).replace(os.sep, "/")
         c = p.read_bytes(); ext = p.suffix.lstrip(".")
-        h = hashlib.sha256(); h.update(c); h.update(ext.encode())
+        h = _AssetKey(c, ext)
         out.append((rel, c, h.hexdigest()[:32]))
     return out
 
@@ -155,6 +175,22 @@ def check_missing(jwt, hashes):
         if not r.get("success"): raise RuntimeError(f"check-missing failed: {r}")
         miss.extend(r.get("result", []))
     return miss
+
+def upsert_hashes(jwt, hashes):
+    # Register every asset key with Pages after upload, as wrangler does. Without this,
+    # check-missing keeps reporting already-uploaded files as missing, so every deploy
+    # re-uploads everything (measured 2026-09-24 on fermentcalc: 3,448 of 3,468 "need
+    # upload" on two back-to-back runs of the same build). Best-effort: a failure here only
+    # costs cache hits on the NEXT deploy, never this one, so it warns instead of aborting.
+    try:
+        for i in range(0, len(hashes), 5000):
+            r = http("https://api.cloudflare.com/client/v4/pages/assets/upsert-hashes", method="POST",
+                     headers={"Authorization": f"Bearer {jwt}", "Content-Type": "application/json"},
+                     data=json.dumps({"hashes": hashes[i:i+5000]}).encode(), timeout=60)
+            if not r.get("success"): raise RuntimeError(str(r)[:200])
+        print(f"[+] registered {len(hashes)} asset keys (upsert-hashes)")
+    except Exception as e:
+        sys.stderr.write(f"  ⚠ upsert-hashes failed (next deploy re-uploads): {str(e)[:160]}\n")
 
 def upload(jwt, batch, attempts=40):
     body = json.dumps(batch).encode(); last = None
@@ -309,6 +345,7 @@ def main():
             if time.time() - jwt_at > 1500: jwt = get_jwt()
             upload(jwt, batch); nb += 1; up += len(batch)
         print(f"[+] uploaded {up} files in {nb} batches · {int(time.time()-t0)}s")
+    upsert_hashes(jwt, uniq)
     print("[+] creating deployment…")
     r = create_deployment(manifest, specials)
     if not r.get("success"):
