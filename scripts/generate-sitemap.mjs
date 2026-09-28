@@ -10,7 +10,16 @@ import { join, relative } from "node:path";
 
 const OUT_DIR = "out";
 const SITE = "https://sourcescore.org";
-const TODAY = new Date().toISOString().slice(0, 10);
+// lastmod = the date of the last commit that changed anything the site is built from, not
+// the build date: stamping the build date made all ~1,178 URLs claim a change on every deploy
+// (2026-09-28). No git / no date → lastmod is omitted (valid sitemap), never faked.
+import { execSync } from "node:child_process";
+let TODAY = "";
+try {
+  TODAY = execSync("git log -1 --format=%cs -- . ':(exclude).gitlab-ci.yml' ':(exclude)*.md' ':(exclude).claude'", { encoding: "utf8" }).trim();
+} catch {}
+if (!/^\d{4}-\d{2}-\d{2}$/.test(TODAY)) TODAY = "";
+const LASTMOD = TODAY ? `<lastmod>${TODAY}</lastmod>` : "";
 
 function walk(dir, files = []) {
   for (const entry of readdirSync(dir)) {
@@ -86,7 +95,7 @@ const xml = [
       : u.includes("/source/") || isVeritas
         ? "0.9"
         : "0.8";
-    return `  <url><loc>${u}</loc><lastmod>${TODAY}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
+    return `  <url><loc>${u}</loc>${LASTMOD}<changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
   }),
   "</urlset>",
 ].join("\n");
@@ -312,7 +321,7 @@ const aiXml = [
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
   ...aiHumanUrls.map(
     (u) =>
-      `  <url><loc>${u}</loc><lastmod>${TODAY}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`
+      `  <url><loc>${u}</loc>${LASTMOD}<changefreq>weekly</changefreq><priority>1.0</priority></url>`
   ),
   "</urlset>",
 ].join("\n");
