@@ -10,7 +10,7 @@ export default function PrivacyPage() {
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Privacy Policy</h1>
-      <p className="text-body text-dim mb-8">Last updated: 2026-08-11</p>
+      <p className="text-body text-dim mb-8">Last updated: 2026-09-28</p>
 
       <section className="prose prose-invert max-w-none text-body text-text leading-relaxed space-y-5">
         <p className="text-muted">
@@ -30,7 +30,8 @@ export default function PrivacyPage() {
             device and browser type, approximate location, with IP anonymisation enabled) and{" "}
             <strong className="text-text">Microsoft Clarity</strong> (anonymised interaction
             data — clicks, scroll depth, and session replays — so we can see where pages confuse
-            people). We do not use either to identify you personally, and we do not sell data.
+            people). Clarity does not load at all when your device&rsquo;s time zone is in the EU,
+            EEA, UK or Switzerland. We do not use either to identify you personally, and we do not sell data.
           </li>
           <li>
             <strong className="text-text">Email contact:</strong> if you email us, we retain the

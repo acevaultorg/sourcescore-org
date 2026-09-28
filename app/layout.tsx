@@ -85,7 +85,8 @@ export default function RootLayout({
             on initial page load; benefit: ~100-300ms faster first-contentful
             paint when the script/image actually fires. Borrowed from
             readstacks fleet pattern (rules/cross-project-learning.md L4). */}
-        <link rel="dns-prefetch" href="https://www.clarity.ms" />
+        {/* No clarity.ms hint: Clarity is skipped for EU/EEA/UK/CH time zones (2026-09-28), and a
+            prefetch would still look up Microsoft's host for those visitors. */}
         {/* Organization JSON-LD — applies site-wide for LLM-citation fitness */}
         <script
           type="application/ld+json"
