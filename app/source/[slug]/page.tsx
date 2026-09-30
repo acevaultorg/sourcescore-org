@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSource, allSlugs, sources } from "@/data/sources";
 import { comparisonsForSource } from "@/data/comparisons";
+import { bestLists } from "@/data/best-lists";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { CitationDeskCTA } from "@/components/CitationDeskCTA";
 import type { DimensionScore } from "@/lib/types";
@@ -73,6 +74,23 @@ export default async function SourceDetailPage({ params }: PageProps) {
         (getSource(x.partner)?.scores.index.value ?? 0),
     )
     .slice(0, 6);
+
+  // Growth sweep (2026-09-30): link each source page to the "best sources"
+  // lists it actually ranks in, with its real position. Those lists answer
+  // the common "best X sources" question, and until now they only had links
+  // from the /best/ index.
+  const listPlacements = bestLists
+    .map((list) => {
+      const ranked = list.select();
+      return {
+        slug: list.slug,
+        title: list.title,
+        rank: ranked.findIndex((x) => x.slug === source.slug) + 1,
+        size: ranked.length,
+      };
+    })
+    .filter((p) => p.rank > 0)
+    .sort((a, b) => a.rank / a.size - b.rank / b.size);
 
   // Score context (2026-05-28): a bare "93" is meaningless to a first-time
   // visitor. Showing global rank + percentile gives the number meaning,
@@ -476,6 +494,37 @@ export default async function SourceDetailPage({ params }: PageProps) {
           score={scores.velocity}
         />
       </section>
+
+      {/* Best-of list placements — internal links into /best/<slug>/ */}
+      {listPlacements.length > 0 && (
+        <section className="mb-12">
+          <h2 className="text-heading-3 font-bold mb-2">
+            Where {source.name} ranks in our best-of lists
+          </h2>
+          <p className="text-body-sm text-muted mb-4">
+            {source.name} is on{" "}
+            {listPlacements.length === 1
+              ? "1 of our lists"
+              : `${listPlacements.length} of our ${bestLists.length} lists`}{" "}
+            of the best sources to cite.
+          </p>
+          <ul className="grid sm:grid-cols-2 gap-2">
+            {listPlacements.map((p) => (
+              <li key={p.slug}>
+                <a
+                  href={`/best/${p.slug}/`}
+                  className="flex items-center justify-between gap-3 min-h-[44px] px-4 py-2 rounded-card border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 transition-colors"
+                >
+                  <span className="text-body-sm text-text">{p.title}</span>
+                  <span className="text-caption text-dim whitespace-nowrap tabular-nums">
+                    #{p.rank} of {p.size}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* SIGNALS BLOCK — quotable for AI ──────────────────────────── */}
       <section className="mb-12">
