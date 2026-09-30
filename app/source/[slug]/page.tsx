@@ -502,10 +502,7 @@ export default async function SourceDetailPage({ params }: PageProps) {
             Where {source.name} ranks in our best-of lists
           </h2>
           <p className="text-body-sm text-muted mb-4">
-            {source.name} is on{" "}
-            {listPlacements.length === 1
-              ? "1 of our lists"
-              : `${listPlacements.length} of our ${bestLists.length} lists`}{" "}
+            It is on {listPlacements.length} of our {bestLists.length} lists
             of the best sources to cite.
           </p>
           <ul className="grid sm:grid-cols-2 gap-2">
