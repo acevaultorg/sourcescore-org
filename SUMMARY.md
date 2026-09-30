@@ -16,7 +16,9 @@ or none if fewer than 3 fitting books were available.
   `node_modules` and `.git`) for `amazon`, `amzn`, `asin`, `tag=`, `amili`,
   `creators`, `/go/` and `book` finds no ASINs, product titles, cover images,
   prices or Amazon associate tags. The only "Amazon" hits are the `Amazonbot`
-  line in `robots.txt`/`llms.txt` and citation data about Amazon Bedrock.
+  line in `public/robots.txt` and citation data about Amazon Bedrock. The only
+  "amili" hits are two mentions of the amili fleet site's traffic in
+  `methodology/bot-harvest.md`, not a product integration.
 - **No Amili kit or Creators API integration.** No module, script, env var or
   data file for it. `.env.example` has no such key, and the session environment
   has no Amazon or Creators API credentials.
