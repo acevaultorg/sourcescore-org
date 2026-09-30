@@ -60,7 +60,7 @@ export async function generateMetadata({
   const ogImage = `https://sourcescore.org/og/category/${slug}.svg`;
 
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: {
       canonical: `https://sourcescore.org/category/${slug}/top-10/`,

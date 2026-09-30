@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const ogImage = `https://sourcescore.org/og/best/${slug}.svg`;
   return {
-    title: `${list.title} — SourceScore`,
+    title: `${list.title}`,
     description: list.description,
     alternates: { canonical: `https://sourcescore.org/best/${slug}/` },
     openGraph: {

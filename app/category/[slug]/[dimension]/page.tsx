@@ -109,7 +109,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     : `${list.length} ${category.toLowerCase()} sources ranked by ${dim.label}.`;
 
   return {
-    title: `${category} sources ranked by ${dim.label} — SourceScore`,
+    title: `${category} sources ranked by ${dim.label}`,
     description: description.slice(0, 200),
     alternates: {
       canonical: `https://sourcescore.org/category/${slug}/${dimension}/`,

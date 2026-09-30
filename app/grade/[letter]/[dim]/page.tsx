@@ -89,7 +89,7 @@ export async function generateMetadata({
   const ogImage = `https://sourcescore.org/og/grade/${letter}.svg`;
 
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: {
       canonical: `https://sourcescore.org/grade/${letter}/${dimSegment}/`,

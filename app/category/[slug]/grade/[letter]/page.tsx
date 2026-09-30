@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description = `${list.length} ${grade}-grade ${category.toLowerCase()} source${list.length === 1 ? "" : "s"} on the SourceScore Index — ${gradeLabel(grade)} citation quality across Discipline, Modern Reference, and Velocity. Score range ${gradeRange(grade)}.`;
 
   return {
-    title: `${grade}-grade ${category} sources — SourceScore`,
+    title: `${grade}-grade ${category} sources`,
     description,
     alternates: {
       canonical: `https://sourcescore.org/category/${slug}/grade/${letter}/`,

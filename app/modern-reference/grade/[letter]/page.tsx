@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ? `${list.length} sources earn ${grade} on Modern Reference (range ${gradeRange(grade)}). Top: ${top.name} (${top.scores.modernReference.value}).`
     : `${list.length} sources earn ${grade} on Modern Reference.`;
   return {
-    title: `${grade} on Modern Reference — ${list.length} sources — SourceScore`,
+    title: `${grade} on Modern Reference — ${list.length} sources`,
     description: description.slice(0, 200),
     alternates: {
       canonical: `https://sourcescore.org/modern-reference/grade/${letter}/`,

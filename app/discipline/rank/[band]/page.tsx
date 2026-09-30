@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ? `${list.length} highest-scoring sources on Citation Discipline. ${leader.name} leads at ${leader.scores.discipline.value}.`
       : `${list.length} lowest-scoring sources on Citation Discipline (caution-list). ${leader.name} sits at ${leader.scores.discipline.value}.`;
   return {
-    title: `${bm.label} sources on Citation Discipline — SourceScore`,
+    title: `${bm.label} sources on Citation Discipline`,
     description: description.slice(0, 200),
     alternates: {
       canonical: `https://sourcescore.org/discipline/rank/${band}/`,

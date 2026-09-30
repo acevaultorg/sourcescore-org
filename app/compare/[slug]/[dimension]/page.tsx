@@ -134,7 +134,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     // volume, ~0 clicks per GSC. noindex,follow so authority + crawl budget
     // flow to the main comparison. Reversible: delete this line to re-index.
     robots: { index: false, follow: true },
-    title,
+    title: { absolute: title },
     description: description.slice(0, 200),
     alternates: {
       canonical: `https://sourcescore.org/compare/${slug}/${dimension}/`,

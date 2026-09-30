@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ? `${list.length} highest-scoring sources on Modern Reference. ${leader.name} leads at ${leader.scores.modernReference.value}.`
       : `${list.length} lowest-scoring sources on Modern Reference (caution-list). ${leader.name} sits at ${leader.scores.modernReference.value}.`;
   return {
-    title: `${bm.label} sources on Modern Reference — SourceScore`,
+    title: `${bm.label} sources on Modern Reference`,
     description: description.slice(0, 200),
     alternates: {
       canonical: `https://sourcescore.org/modern-reference/rank/${band}/`,

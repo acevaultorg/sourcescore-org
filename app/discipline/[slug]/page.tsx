@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     // near-zero query volume, ~0 clicks per GSC. noindex,follow so authority +
     // crawl budget flow to the source page. Reversible: delete this line.
     robots: { index: false, follow: true },
-    title: `${s.name} — Citation Discipline ${score.grade} (${score.value}) — SourceScore`,
+    title: `${s.name} — Citation Discipline ${score.grade} (${score.value})`,
     description: description.slice(0, 200),
     alternates: { canonical: `https://sourcescore.org/discipline/${slug}/` },
     openGraph: {
