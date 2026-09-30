@@ -82,14 +82,15 @@ export async function generateMetadata({
   const dimMeta = DIMENSION_META[dim];
   const leader = items[0];
 
-  const title = `${grade} sources by ${dimMeta.label} — SourceScore`;
+  const pageTitle = `${grade} sources by ${dimMeta.label}`;
+  const title = `${pageTitle} — SourceScore`;
   const description = `${items.length} sources hold composite SourceScore grade ${grade}. Re-ranked by ${dimMeta.label} only, ${leader.name} leads at ${leader.scores[dim].grade} (${leader.scores[dim].value}/100). Different leader than the composite ranking.`;
 
   // Re-use the composite-grade page's existing OG image
   const ogImage = `https://sourcescore.org/og/grade/${letter}.svg`;
 
   return {
-    title: { absolute: title },
+    title: pageTitle,
     description,
     alternates: {
       canonical: `https://sourcescore.org/grade/${letter}/${dimSegment}/`,

@@ -122,7 +122,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const loser = winner ? (winner.slug === a.slug ? b : a) : null;
   const delta = Math.abs(aScore.value - bScore.value);
 
-  const title = `${a.name} vs ${b.name} — ${dim.label} compared — SourceScore`;
+  const pageTitle = `${a.name} vs ${b.name} — ${dim.label} compared`;
+  const title = `${pageTitle} — SourceScore`;
   const description = winner
     ? `${winner.name} (${winner.scores[dim.key].grade} ${winner.scores[dim.key].value}) outscores ${loser!.name} (${loser!.scores[dim.key].grade} ${loser!.scores[dim.key].value}) on ${dim.label} by ${delta} points.`
     : `${a.name} and ${b.name} tie on ${dim.label} (both ${aScore.grade} ${aScore.value}).`;
@@ -134,7 +135,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     // volume, ~0 clicks per GSC. noindex,follow so authority + crawl budget
     // flow to the main comparison. Reversible: delete this line to re-index.
     robots: { index: false, follow: true },
-    title: { absolute: title },
+    title: pageTitle,
     description: description.slice(0, 200),
     alternates: {
       canonical: `https://sourcescore.org/compare/${slug}/${dimension}/`,

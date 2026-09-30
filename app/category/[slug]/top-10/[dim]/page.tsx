@@ -74,13 +74,14 @@ export async function generateMetadata({
   const dimMeta = DIMENSION_META[dim];
   const leader = items[0];
 
-  const title = `Top 10 ${category.toLowerCase()} sources by ${dimMeta.label} — SourceScore`;
+  const pageTitle = `Top 10 ${category.toLowerCase()} sources by ${dimMeta.label}`;
+  const title = `${pageTitle} — SourceScore`;
   const description = `The top-10 ${category.toLowerCase()} sources by composite Index, re-ranked by ${dimMeta.label} only. ${leader.name} leads at ${leader.scores[dim].grade} (${leader.scores[dim].value}/100) — different leader than the composite ranking.`;
 
   const ogImage = `https://sourcescore.org/og/category/${slug}.svg`;
 
   return {
-    title: { absolute: title },
+    title: pageTitle,
     description,
     alternates: {
       canonical: `https://sourcescore.org/category/${slug}/top-10/${dimSegment}/`,

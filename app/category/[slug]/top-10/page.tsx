@@ -53,14 +53,15 @@ export async function generateMetadata({
   const leader = top[0];
   const tenth = top[TOP_N - 1];
 
-  const title = `Top 10 ${category.toLowerCase()} sources — SourceScore`;
+  const pageTitle = `Top 10 ${category.toLowerCase()} sources`;
+  const title = `${pageTitle} — SourceScore`;
   const description = `The 10 highest-scoring ${category.toLowerCase()} sources by composite SourceScore Index. ${leader.name} leads at ${leader.scores.index.grade} (${leader.scores.index.value}/100); ${tenth.name} closes the list at ${tenth.scores.index.grade} (${tenth.scores.index.value}).`;
 
   // Re-use the parent-category OG image
   const ogImage = `https://sourcescore.org/og/category/${slug}.svg`;
 
   return {
-    title: { absolute: title },
+    title: pageTitle,
     description,
     alternates: {
       canonical: `https://sourcescore.org/category/${slug}/top-10/`,
