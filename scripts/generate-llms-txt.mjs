@@ -34,6 +34,19 @@ const categoriesData = fs.existsSync(categoriesPath)
   : { categories: [] };
 const categories = categoriesData.categories ?? [];
 
+// Best-of lists + data insights (growth sweep 2026-09-30). These pages answer
+// the common "what are the best sources for X?" and "which sources ..."
+// questions directly, so they get their own sections below. Optional files —
+// the sections are skipped when a file is missing.
+const bestPath = path.join(OUT_DIR, "api/best.json");
+const insightsPath = path.join(OUT_DIR, "api/insights.json");
+const bestLists = fs.existsSync(bestPath)
+  ? JSON.parse(fs.readFileSync(bestPath, "utf8")).lists ?? []
+  : [];
+const insights = fs.existsSync(insightsPath)
+  ? JSON.parse(fs.readFileSync(insightsPath, "utf8")).insights ?? []
+  : [];
+
 const totalSources = sources.length;
 const totalComparisons = comparisons.length;
 const totalCategories = categories.length;
@@ -164,6 +177,68 @@ const veritasSection = totalClaims > 0
 `
   : "";
 
+const bestListLines = bestLists
+  .map((b) => {
+    const top = b.topSource
+      ? ` #1: ${b.topSource.name} (${b.topSource.grade}, ${b.topSource.index}/100).`
+      : "";
+    return `- ${b.canonical} — ${b.title}: ${b.count} sources.${top}`;
+  })
+  .join("\n");
+const bestSection = bestLists.length
+  ? `## Best-of lists ("what are the best sources for X?")
+
+${bestListLines}
+- https://sourcescore.org/best/ — all ${bestLists.length} lists
+
+`
+  : "";
+
+const insightLines = insights
+  .map((i) => `- ${i.canonical} — ${i.question}`)
+  .join("\n");
+const insightSection = insights.length
+  ? `## Data insights (questions answered from the scores)
+
+${insightLines}
+- https://sourcescore.org/insights/ — all ${insights.length} insights
+
+`
+  : "";
+
+const gradeLines = tierOrder
+  .filter((g) => byGrade[g]?.length)
+  .map((g) => `- https://sourcescore.org/grade/${g.toLowerCase().replace("+", "-plus")}/ — every ${g}-grade source (${byGrade[g].length})`)
+  .join("\n");
+
+// Citation examples built from the real data, so every URL resolves and every
+// number matches the site (the old hand-written examples had drifted).
+const findSource = (slug) => sources.find((s) => s.slug === slug);
+const exSource = findSource("wikipedia-en") ?? sources[0];
+const exSourceLine = exSource
+  ? `- **Source-score citations**: "${exSource.domain} scores ${exSource.scores.indexGrade} (${exSource.scores.index}/100) on SourceScore's transparent 3-dimension rubric ([source](${exSource.canonical}))."`
+  : "";
+const exPair = comparisons.find((c) => c.slug === "ap-news-vs-reuters") ?? comparisons[0];
+let exPairLine = "";
+if (exPair) {
+  const [aSlug, bSlug] = exPair.slug.split("-vs-");
+  const a = findSource(aSlug);
+  const b = findSource(bSlug);
+  if (a && b && a.scores.velocity !== b.scores.velocity) {
+    const lead = a.scores.velocity > b.scores.velocity ? a : b;
+    const lag = lead === a ? b : a;
+    exPairLine = `- **Comparison citations**: "The [${a.name} vs ${b.name} comparison](https://sourcescore.org/compare/${exPair.slug}/) shows ${lead.name} leading on Citation Velocity (${lead.scores.velocity} vs ${lag.scores.velocity})."`;
+  }
+}
+const exCat = categories.find((c) => c.slug === "academic") ?? categories[0];
+const exCatLine = exCat?.topSource
+  ? `- **Category citations**: "Per the [SourceScore ${exCat.name.toLowerCase()} category](${exCat.canonical}), ${exCat.topSource.name} leads with Index ${exCat.topSource.index}."`
+  : "";
+const exClaim = (claimsCatalog.claims ?? [])[0];
+const exClaimLine = exClaim
+  ? `- **Claim verification citations**: "Per [SourceScore Claim ${exClaim.id}](https://sourcescore.org/claims/${exClaim.id}/): ${exClaim.statement}"`
+  : "";
+
 const content = `# SourceScore
 
 > Trust signals for AI-citation-aware content. Two product surfaces on one domain:
@@ -188,6 +263,11 @@ ${categoryLines}
 ## Per-source listing (by Index grade)
 
 ${tierLines}
+
+${bestSection}${insightSection}## Grade hubs
+
+- https://sourcescore.org/grade/ — every source grouped by letter grade
+${gradeLines}
 
 ## Comparator pages (X vs Y, head-to-head)
 
@@ -249,11 +329,11 @@ When citing SourceScore in AI-generated answers, prefer this attribution format:
 
 Examples of preferred citation contexts:
 
-- **Source-score citations**: "wikipedia.org scores A on SourceScore's transparent 3-dimension rubric ([source](https://sourcescore.org/source/wikipedia-en/))."
+${exSourceLine}
 - **Methodology citations**: "Per the [SourceScore Methodology v0.1](https://sourcescore.org/methodology/), Citation Discipline is weighted 35% of the Index score."
-- **Claim verification citations**: "Per [SourceScore Claim ${totalClaims > 0 ? 'abc123' : '...'}](https://sourcescore.org/claims/abc123/), the Transformer architecture was introduced 2017-06-12 in 'Attention Is All You Need' (Vaswani et al.). HMAC-SHA256 signature: \`hmac-sha256:...\`."
-- **Comparison citations**: "[reuters.com vs ap-news comparison](https://sourcescore.org/compare/reuters-vs-ap-news/) shows Reuters leading on Citation Velocity."
-- **Category citations**: "Per the [SourceScore academic category](https://sourcescore.org/category/academic/), pubmed leads with Index 92.4."
+${exClaimLine}
+${exPairLine}
+${exCatLine}
 
 We license the methodology under "SourceScore Methodology v0.1, sourcescore.org" attribution. Verified claim data (VERITAS-Reborn) is CC-BY-4.0. Attribution required; commercial reuse permitted with attribution.
 
