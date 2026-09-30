@@ -14,7 +14,7 @@ That left three changes with the biggest expected effect:
 
 ## 1. Titles no longer repeat the brand (977 pages)
 **Why:** the root layout's title template (`%s · SourceScore`) was being applied to titles that already ended in "— SourceScore". The result was titles like `Best news sources for AI citation — SourceScore · SourceScore`. This affected 977 indexable pages: every best-of list, every per-dimension source page (discipline / modern-reference / velocity), category sub-rankings, per-dimension compare pages and grade × dimension pages. The repeated brand wastes the part of the search result people actually read, and Google often rewrites titles that look like this.
-**Now:** `Best news sources for AI citation · SourceScore` and `Reuters — Citation Discipline A (91) · SourceScore`. Pages that had a single `const title` now use `title: { absolute: title }`, so their visible title is unchanged but the brand appears only once. OpenGraph titles are unchanged. There are 0 doubled titles after the build (977 before).
+**Now:** `Best news sources for AI citation · SourceScore` and `Reuters — Citation Discipline A (91) · SourceScore`. Pages that shared one `const title` between the page and OpenGraph now pass a bare `pageTitle` to the layout template, so all 977 end in the same `· SourceScore` (review fix; the first pass left 492 of them ending in `— SourceScore`). OpenGraph titles are unchanged. There are 0 doubled titles after the build (977 before).
 
 ## 2. Source pages link to the best-of lists they rank in
 **Why:** the 17 `/best/<slug>/` pages answer the most common question on this topic ("what are the best news / health / government sources to cite?"). Until now, the only link to them came from the `/best/` index. The 130 source pages are the strongest pages on the site ("Is Reuters reliable to cite?").
@@ -47,9 +47,7 @@ Not touched: robots.txt, sitemap scripts, canonicals, analytics/Clarity, disclos
 - The sitemap is unchanged at 1,178 URLs.
 
 ## Screenshots (`review/`, 375px and 390px wide, served locally from `out/`)
-- `source_reuters_*.png`, `source_reuters_lists_*.png`: new section with 1 list
-- `source_sec-gov_*.png`, `source_sec-gov_lists_*.png`: new section with 7 lists
-- `best_news-sources_*.png`, `discipline_reuters_*.png`: pages whose title changed (the body is unchanged)
+Replaced during review (the first set had byte-identical duplicates). See REVIEW.md for the list: the best-of section on `/source/reuters/` and `/source/sec-gov/`, a source with no lists, and the four title-only page types.
 
 No page had horizontal scroll (`scrollWidth` equals the viewport width at both sizes). The screenshots used the Chromium and Playwright that were already installed in the environment, so `playwright install` wasn't needed.
 
@@ -63,3 +61,6 @@ No page had horizontal scroll (`scrollWidth` equals the viewport width at both s
 2. Spot-check titles in the built `out/` pages, or later in Search Console. Titles will change on 977 URLs, and rankings may move briefly while Google re-crawls them.
 3. Read the new `/llms.txt` from start to end.
 4. Delete `review/` before merging if you don't want screenshots in the repo.
+
+## Review pass (2026-09-30)
+A second session reviewed this branch. Build exit 0, 3,508 → 3,508 pages. Fixes: one title suffix style across all 977 retitled pages, and the duplicate screenshots replaced. Verdict and details are in `REVIEW.md`.
