@@ -545,7 +545,7 @@ export default async function ClaimPage({ params }: PageProps) {
         <div className="space-y-3">
           {(faqLd.mainEntity as Array<{ name: string; acceptedAnswer: { text: string } }>).map((q, i) => (
             <details key={i} className="rounded border border-zinc-200 dark:border-zinc-800 p-4 open:border-zinc-400 dark:open:border-zinc-600">
-              <summary className="cursor-pointer font-semibold">{q.name}</summary>
+              <summary className="-m-4 p-4 cursor-pointer font-semibold">{q.name}</summary>
               <p className="ss-faq-answer mt-3 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 {q.acceptedAnswer.text}
               </p>

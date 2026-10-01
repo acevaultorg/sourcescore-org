@@ -59,3 +59,9 @@ body {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: #323250; }
+
+/* Breadcrumb links are small caption text. On phones they need a 44px tap
+   height, so each link gets that height without making the text bigger
+   (2026-10-01). */
+nav[aria-label="Breadcrumb"] { flex-wrap: wrap; align-items: center; column-gap: 0.5rem; row-gap: 0; margin-top: -0.75rem; }
+nav[aria-label="Breadcrumb"] a { display: inline-flex; align-items: center; min-height: 44px; }

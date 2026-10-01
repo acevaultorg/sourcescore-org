@@ -295,7 +295,7 @@ export default async function CategoryPage({ params }: PageProps) {
         <div className="space-y-3">
           {(faqLd.mainEntity as Array<{ name: string; acceptedAnswer: { text: string } }>).map((q, i) => (
             <details key={i} className="rounded-card border border-border bg-panel p-4 open:border-brand/40">
-              <summary className="cursor-pointer font-semibold text-text">{q.name}</summary>
+              <summary className="-m-4 p-4 cursor-pointer font-semibold text-text">{q.name}</summary>
               <p className="mt-3 text-body-sm text-muted leading-relaxed">{q.acceptedAnswer.text}</p>
             </details>
           ))}
