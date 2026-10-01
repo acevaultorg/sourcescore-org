@@ -195,7 +195,7 @@ export default async function BestListPage({ params }: PageProps) {
             key={s.slug}
             className="relative flex items-start gap-4 p-4 rounded-card-lg border border-border bg-panel hover:bg-panel-hi transition-colors"
           >
-            <div className="text-display-3 font-bold tracking-tight text-brand w-12 flex-shrink-0 leading-none pt-1">
+            <div className="text-display-3 font-bold tracking-tight text-brand w-8 sm:w-12 flex-shrink-0 leading-none pt-1">
               {i + 1}
             </div>
             <div className="flex-1 min-w-0">
@@ -216,28 +216,25 @@ export default async function BestListPage({ params }: PageProps) {
                 </a>
               </div>
               <p className="text-body-sm text-muted leading-snug mb-2">{s.summary}</p>
-              <div className="flex gap-3 text-caption flex-wrap">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-caption">
                 <span>
                   <span className="text-dim">SourceScore </span>
                   <strong className={gradeColorClass(s.scores.index.grade)}>
                     {s.scores.index.grade} · {s.scores.index.value}
                   </strong>
                 </span>
-                <span className="text-dim">·</span>
                 <span>
                   <span className="text-dim">Discipline </span>
                   <strong className={gradeColorClass(s.scores.discipline.grade)}>
                     {s.scores.discipline.value}
                   </strong>
                 </span>
-                <span className="text-dim">·</span>
                 <span>
                   <span className="text-dim">Modern Reference </span>
                   <strong className={gradeColorClass(s.scores.modernReference.grade)}>
                     {s.scores.modernReference.value}
                   </strong>
                 </span>
-                <span className="text-dim">·</span>
                 <span>
                   <span className="text-dim">Velocity </span>
                   <strong className={gradeColorClass(s.scores.velocity.grade)}>
