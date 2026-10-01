@@ -266,7 +266,7 @@ export default async function CompareDetailPage({ params }: PageProps) {
               <a
                 key={d.path}
                 href={`/compare/${slug}/${d.path}/`}
-                className="px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 transition-colors text-body-sm flex items-baseline gap-2"
+                className="min-h-[44px] px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 transition-colors text-body-sm flex items-center gap-2"
               >
                 <span className="font-semibold text-text">{d.short}</span>
                 <span className="text-dim">·</span>
@@ -383,7 +383,7 @@ export default async function CompareDetailPage({ params }: PageProps) {
                 <a
                   key={otherSlug}
                   href={`/compare/${otherSlug}/`}
-                  className="px-3 py-1.5 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm text-muted hover:text-text transition-colors"
+                  className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm text-muted hover:text-text transition-colors"
                 >
                   {sa.name} vs {sb.name}
                 </a>

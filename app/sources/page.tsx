@@ -56,7 +56,7 @@ export default function SourcesIndexPage() {
             <a
               key={g}
               href={`/grade/${gradeSlug(g)}/`}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm transition-colors"
+              className="inline-flex items-center gap-2 min-h-[44px] px-3 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi text-body-sm transition-colors"
             >
               <span className={`font-bold ${gradeColorClass(g)}`}>{g}</span>
               <span className="text-dim font-mono text-caption">{gradeRange(g)}</span>
@@ -65,7 +65,7 @@ export default function SourcesIndexPage() {
           ))}
           <a
             href="/grade/"
-            className="inline-flex items-center gap-2 px-3 py-2 rounded-pill border border-brand/40 bg-surface-brand hover:bg-brand/15 text-body-sm font-semibold text-brand transition-colors"
+            className="inline-flex items-center gap-2 min-h-[44px] px-3 py-2 rounded-pill border border-brand/40 bg-surface-brand hover:bg-brand/15 text-body-sm font-semibold text-brand transition-colors"
           >
             How grades work →
           </a>
@@ -77,29 +77,30 @@ export default function SourcesIndexPage() {
         return (
           <section key={cat} className="mb-10">
             <h2 className="text-heading-2 font-bold mb-4">
-              <a href={`/category/${categorySlug(cat)}/`} className="hover:text-brand transition-colors">
+              <a href={`/category/${categorySlug(cat)}/`} className="inline-flex items-center min-h-[44px] hover:text-brand transition-colors">
                 {cat}
               </a>
               <span className="text-body-sm font-normal text-dim ml-2">{list.length}</span>
             </h2>
             <ul className="space-y-2">
               {list.map((s) => (
-                <li
-                  key={s.slug}
-                  className="flex items-center gap-4 p-3 rounded-card border border-border bg-panel hover:bg-panel-hi"
-                >
-                  <div className="flex-1 min-w-0">
-                    <a href={`/source/${s.slug}/`} className="font-semibold text-text hover:text-brand">
-                      {s.name}
-                    </a>
-                    <div className="text-caption text-dim font-mono">{s.domain}</div>
-                  </div>
-                  <ScoreBadge
-                    value={s.scores.index.value}
-                    grade={s.scores.index.grade}
-                    label="SourceScore Index"
-                    size="sm"
-                  />
+                <li key={s.slug}>
+                  {/* The whole row is the link, so it is easy to tap on a phone. */}
+                  <a
+                    href={`/source/${s.slug}/`}
+                    className="group flex items-center gap-4 p-3 rounded-card border border-border bg-panel hover:bg-panel-hi transition-colors"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-text group-hover:text-brand">{s.name}</div>
+                      <div className="text-caption text-dim font-mono break-all">{s.domain}</div>
+                    </div>
+                    <ScoreBadge
+                      value={s.scores.index.value}
+                      grade={s.scores.index.grade}
+                      label="SourceScore Index"
+                      size="sm"
+                    />
+                  </a>
                 </li>
               ))}
             </ul>

@@ -368,7 +368,7 @@ export default async function SourceDetailPage({ params }: PageProps) {
           <ScoreBadge value={idx.value} grade={idx.grade} label="SourceScore Index" size="lg" />
           <a
             href="/sources/"
-            className="text-body-sm text-brand hover:underline whitespace-nowrap"
+            className="inline-flex items-center min-h-[44px] text-body-sm text-brand hover:underline whitespace-nowrap"
             title="See the full SourceScore leaderboard"
           >
             Rank #{indexRank} of {totalSources} · top {indexPercentile}%
@@ -460,7 +460,7 @@ export default async function SourceDetailPage({ params }: PageProps) {
                 <a
                   key={p.slug}
                   href={`/compare/${p.slug}/`}
-                  className="px-3 py-1.5 rounded-pill border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 text-body-sm text-muted hover:text-text transition-colors"
+                  className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-pill border border-border bg-panel hover:bg-panel-hi hover:border-brand/40 text-body-sm text-muted hover:text-text transition-colors"
                 >
                   vs {partner.name}
                 </a>
@@ -468,7 +468,7 @@ export default async function SourceDetailPage({ params }: PageProps) {
             })}
             <a
               href={`/source/${source.slug}/peers/`}
-              className="px-3 py-1.5 rounded-pill border border-brand/30 bg-surface-brand text-body-sm text-brand hover:underline whitespace-nowrap"
+              className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-pill border border-brand/30 bg-surface-brand text-body-sm text-brand hover:underline whitespace-nowrap"
             >
               Peers at this tier →
             </a>
@@ -586,48 +586,44 @@ export default async function SourceDetailPage({ params }: PageProps) {
             </h2>
             <a
               href={`/source/${source.slug}/comparisons/`}
-              className="text-caption text-brand hover:underline whitespace-nowrap"
+              className="inline-flex items-center min-h-[44px] text-body-sm text-brand hover:underline"
             >
               See all {source.name} comparisons →
             </a>
           </div>
           <p className="text-body-sm text-muted">
-            {source.name} appears in{" "}
-            {compPairs.length === 1
-              ? "one canonical SourceScore comparison"
-              : `${compPairs.length} canonical SourceScore comparisons`}{" "}
-            — each scored on Discipline, Modern Reference, and Velocity with a
-            quote-ready verdict and JSON twin.
+            Each comparison sets {source.name} beside another source on all
+            three scores and shows which one scores higher on each.
           </p>
         </section>
       )}
 
-      {/* Day 29 — Peers hub cross-link (every source has one) */}
-      <section className="mt-6 p-5 rounded-card-lg border border-border bg-panel hover:bg-panel-hi transition-colors">
+      {/* Day 29 — Peers hub cross-link (every source has one). The whole
+          card is the link, so it is easy to tap on a phone. */}
+      <a
+        href={`/source/${source.slug}/peers/`}
+        className="group block mt-6 p-5 rounded-card-lg border border-border bg-panel hover:bg-panel-hi transition-colors"
+      >
         <div className="flex items-baseline justify-between mb-3 gap-3 flex-wrap">
           <h2 className="text-heading-3 font-bold">
-            5 sources at {source.name}'s tier
+            5 sources at {source.name}&apos;s tier
           </h2>
-          <a
-            href={`/source/${source.slug}/peers/`}
-            className="text-caption text-brand hover:underline whitespace-nowrap"
-          >
+          <span className="text-body-sm text-brand group-hover:underline whitespace-nowrap">
             See peer group →
-          </a>
+          </span>
         </div>
         <p className="text-body-sm text-muted">
-          Auto-computed nearest-neighbor sources by composite SourceScore
-          distance — discover at-tier peers across all categories, with
-          inline dim deltas surfacing who beats {source.name} on Discipline,
-          Modern Reference, and Velocity.
+          The five sources with the closest overall score to {source.name},
+          from any category, and where each one scores higher or lower on
+          Discipline, Modern Reference and Velocity.
         </p>
-      </section>
+      </a>
 
       {/* Embed snippet — Layer 5 archetype embeddable_widget × +80 */}
       <section className="mt-10 p-5 rounded-card-lg border border-border bg-panel">
         <div className="flex items-baseline justify-between mb-3 gap-3">
           <h2 className="text-heading-3 font-bold">Embed this score</h2>
-          <a href="/embed/" className="text-caption text-brand hover:underline whitespace-nowrap">
+          <a href="/embed/" className="inline-flex items-center min-h-[44px] text-body-sm text-brand hover:underline whitespace-nowrap">
             All embed options →
           </a>
         </div>
@@ -675,8 +671,8 @@ function SubScoreCard({
         <ScoreBadge value={score.value} grade={score.grade} label={label} size="md" />
       </div>
       <p className="text-body-sm text-muted leading-snug mb-3 line-clamp-3">{score.rationale}</p>
-      <a href={subTool} className="text-caption text-brand hover:underline">
-        About this sub-score →
+      <a href={subTool} className="inline-flex items-center min-h-[44px] text-body-sm text-brand hover:underline">
+        How {label} is scored →
       </a>
     </div>
   );

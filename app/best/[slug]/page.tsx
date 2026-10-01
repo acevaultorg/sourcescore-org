@@ -193,7 +193,7 @@ export default async function BestListPage({ params }: PageProps) {
         {items.map((s, i) => (
           <li
             key={s.slug}
-            className="flex items-start gap-4 p-4 rounded-card-lg border border-border bg-panel hover:bg-panel-hi transition-colors"
+            className="relative flex items-start gap-4 p-4 rounded-card-lg border border-border bg-panel hover:bg-panel-hi transition-colors"
           >
             <div className="text-display-3 font-bold tracking-tight text-brand w-12 flex-shrink-0 leading-none pt-1">
               {i + 1}
@@ -202,7 +202,7 @@ export default async function BestListPage({ params }: PageProps) {
               <div className="flex items-baseline gap-3 flex-wrap mb-1">
                 <a
                   href={`/source/${s.slug}/`}
-                  className="font-bold text-text hover:text-brand text-heading-3"
+                  className="font-bold text-text hover:text-brand text-heading-3 after:absolute after:inset-0 after:content-['']"
                 >
                   {s.name}
                 </a>
@@ -210,7 +210,7 @@ export default async function BestListPage({ params }: PageProps) {
                 <span className="text-caption text-dim">·</span>
                 <a
                   href={`/category/${categorySlug(s.category)}/`}
-                  className="text-caption text-muted hover:text-brand"
+                  className="relative z-10 inline-flex items-center min-h-[44px] -my-3 text-caption text-muted hover:text-brand"
                 >
                   {s.category}
                 </a>
@@ -225,21 +225,21 @@ export default async function BestListPage({ params }: PageProps) {
                 </span>
                 <span className="text-dim">·</span>
                 <span>
-                  <span className="text-dim">Disc </span>
+                  <span className="text-dim">Discipline </span>
                   <strong className={gradeColorClass(s.scores.discipline.grade)}>
                     {s.scores.discipline.value}
                   </strong>
                 </span>
                 <span className="text-dim">·</span>
                 <span>
-                  <span className="text-dim">Mod-Ref </span>
+                  <span className="text-dim">Modern Reference </span>
                   <strong className={gradeColorClass(s.scores.modernReference.grade)}>
                     {s.scores.modernReference.value}
                   </strong>
                 </span>
                 <span className="text-dim">·</span>
                 <span>
-                  <span className="text-dim">Vel </span>
+                  <span className="text-dim">Velocity </span>
                   <strong className={gradeColorClass(s.scores.velocity.grade)}>
                     {s.scores.velocity.value}
                   </strong>
@@ -262,16 +262,16 @@ export default async function BestListPage({ params }: PageProps) {
           Same list, different signal
         </div>
         <p className="text-body-sm text-muted mb-4 leading-relaxed">
-          The composite SourceScore Index averages all three sub-scores. View
-          this list re-sorted by ONE sub-score for a precision lens —
-          different leader, different ranking, different deltas.
+          The SourceScore Index combines all three sub-scores. You can also
+          see this list sorted by just one of them, which can change the
+          order and the source at the top.
         </p>
         <div className="flex flex-wrap gap-2">
           {ALL_DIMENSIONS.map((d) => (
             <a
               key={d}
               href={`/best/${slug}/${DIMENSION_META[d].routeSegment}/`}
-              className="px-3 py-1.5 rounded-btn border border-brand/40 bg-panel text-body-sm text-text hover:text-brand hover:border-brand"
+              className="inline-flex items-center min-h-[44px] px-4 py-2 rounded-btn border border-brand/40 bg-panel text-body-sm text-text hover:text-brand hover:border-brand"
             >
               By {DIMENSION_META[d].short} →
             </a>
@@ -288,8 +288,8 @@ export default async function BestListPage({ params }: PageProps) {
         <p>
           Selection criterion:{" "}
           <strong className="text-text">{list.signalCriterion}</strong>. Every source on this page
-          is hand-scored against the SourceScore methodology v0.1; click any name to see its full
-          breakdown across the four dimensions. The list is regenerated automatically on every
+          is hand-scored against the SourceScore methodology v0.1; tap any source to see its full
+          breakdown across the three sub-scores and the overall Index. The list is regenerated automatically on every
           dataset update — no editorial promotion or reorder beyond the ranking signal above.
         </p>
       </section>
@@ -330,16 +330,16 @@ export default async function BestListPage({ params }: PageProps) {
       </section>
 
       {/* Related */}
-      <nav className="flex flex-wrap gap-3 border-t border-border pt-6 text-body-sm">
-        <a href="/sources/" className="text-muted hover:text-brand">
+      <nav className="flex flex-wrap items-center gap-x-3 border-t border-border pt-4 text-body-sm">
+        <a href="/sources/" className="inline-flex items-center min-h-[44px] text-muted hover:text-brand">
           All 130 sources →
         </a>
         <span className="text-dim">·</span>
-        <a href="/grade/" className="text-muted hover:text-brand">
+        <a href="/grade/" className="inline-flex items-center min-h-[44px] text-muted hover:text-brand">
           Browse by grade →
         </a>
         <span className="text-dim">·</span>
-        <a href="/methodology/sourcescore-index/" className="text-muted hover:text-brand">
+        <a href="/methodology/sourcescore-index/" className="inline-flex items-center min-h-[44px] text-muted hover:text-brand">
           Methodology + worked examples →
         </a>
       </nav>
