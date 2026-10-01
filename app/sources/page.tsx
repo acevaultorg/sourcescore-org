@@ -20,8 +20,31 @@ export default function SourcesIndexPage() {
     allGrades.map((g) => [g, sources.filter((s) => s.scores.index.grade === g).length])
   );
 
+  // ItemList (2026-10-01): the index had no machine-readable list of what it
+  // links to. Ordered by Index score, the same order as each source page's rank.
+  const itemListLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "All sources scored by SourceScore",
+    url: "https://sourcescore.org/sources/",
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    numberOfItems: sources.length,
+    itemListElement: [...sources]
+      .sort((a, b) => b.scores.index.value - a.scores.index.value)
+      .map((s, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `https://sourcescore.org/source/${s.slug}/`,
+        name: s.name,
+      })),
+  };
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+      />
       <h1 className="text-display-2 font-bold tracking-tight mb-3">All sources</h1>
       <p className="text-body-lg text-muted leading-relaxed mb-4 max-w-2xl">
         {sources.length} hand-scored sources across {categories.length} categories.

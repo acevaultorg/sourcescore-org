@@ -7,7 +7,7 @@ import { datasetSchema, breadcrumbListSchema } from "@/lib/methodology-version";
 export const metadata: Metadata = {
   title: { absolute: "Compare sources — SourceScore" },
   description:
-    "Side-by-side SourceScore comparisons. 25 curated pairs across academic, news, government, and tech sources.",
+    `Side-by-side SourceScore comparisons. ${comparisons.length} pairs of sources across academic, news, government, and tech, compared on all three sub-scores.`,
   alternates: { canonical: "https://sourcescore.org/compare/" },
 };
 
@@ -31,11 +31,30 @@ export default function CompareIndexPage() {
     dateModified: "2026-04-29",
   });
 
+  // ItemList (2026-10-01): names every comparison this hub links to.
+  const itemListLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "SourceScore source comparisons",
+    url: "https://sourcescore.org/compare/",
+    numberOfItems: comparisons.length,
+    itemListElement: comparisons.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://sourcescore.org/compare/${comparisonSlug(c.a, c.b)}/`,
+      name: `${getSource(c.a)?.name ?? c.a} vs ${getSource(c.b)?.name ?? c.b}`,
+    })),
+  };
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(dsSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
       />
       <script
         type="application/ld+json"
@@ -53,13 +72,14 @@ export default function CompareIndexPage() {
         <span aria-hidden="true">/</span>
         <span className="text-muted">Compare</span>
       </nav>
-      <div className="text-eyebrow text-brand mb-3">Comparator · {comparisons.length} pairs</div>
+      <div className="text-eyebrow text-brand mb-3">{comparisons.length} comparisons</div>
       <h1 className="text-display-2 font-bold tracking-tight mb-4">
         Compare sources head-to-head
       </h1>
       <p className="text-body-lg text-muted leading-relaxed max-w-2xl mb-10">
-        Side-by-side SourceScore breakdowns across the four sub-scores. Click any pair to see why
-        each side scores what it does on Citation Discipline, Modern Reference, and Citation Velocity.
+        Two sources side by side on the SourceScore Index and its three sub-scores. Open any pair to
+        see why each one scores what it does on Citation Discipline, Modern Reference, and Citation
+        Velocity.
       </p>
 
       {groupKeys.map((cat) => (
@@ -104,13 +124,6 @@ export default function CompareIndexPage() {
         </section>
       ))}
 
-      <section className="border-t border-border pt-8 prose prose-invert max-w-none">
-        <p className="text-muted text-body-sm">
-          Pairs are alphabetically canonicalized — typing <code>/compare/x-vs-y/</code> resolves
-          to the same page as <code>/compare/y-vs-x/</code> via canonical sort. Adding a new pair
-          is one row in <code>data/comparisons.ts</code>; the page generates automatically.
-        </p>
-      </section>
     </article>
   );
 }

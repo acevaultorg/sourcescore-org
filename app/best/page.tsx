@@ -10,8 +10,27 @@ export const metadata: Metadata = {
 };
 
 export default function BestLandingPage() {
+  // ItemList (2026-10-01): names every list this hub links to.
+  const itemListLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "SourceScore best-of lists",
+    url: "https://sourcescore.org/best/",
+    numberOfItems: bestLists.length,
+    itemListElement: bestLists.map((b, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://sourcescore.org/best/${b.slug}/`,
+      name: b.title,
+    })),
+  };
+
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
