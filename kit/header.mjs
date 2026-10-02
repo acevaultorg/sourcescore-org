@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.2.0 (header.mjs sha256 bbe28a3b6137) from VAULT-Fleet/tooling/fleet-kit/header/header.mjs — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.2.3 (header.mjs sha256 bbe28a3b6137) from VAULT-Fleet/tooling/fleet-kit/header/header.mjs — do not edit here; re-run sync.sh.
 // Amili Kit: header bar — search in the header on every width, Shop in the phone header, header back on scroll-up.
 // Paulo 2026-10-02: "amili kit search missing in menu bar! very bad" (mur0dp4bzunyqy), "if user scrolls back on any of
 // our sites, header menu should appear" (mur06p8ukgwx6c), "consider to put shop in the mobile menu bar by default"

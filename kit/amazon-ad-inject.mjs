@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/inject.mjs (sha256 6fe05914469b), Amili Kit v1.2.0 — do not edit here; re-run sync.sh.
+// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/inject.mjs (sha256 46651cb43a50), Amili Kit v1.2.3 — do not edit here; re-run sync.sh.
 // Amili Kit Amazon ad — build-output injector (fleet rollout 2026-09-28, Paulo thought mulitb3a2bhmcs: "at least 20 sites").
 // CANONICAL: VAULT-Fleet/tooling/fleet-kit/amazon-ad/inject.mjs. Sites carry a synced copy at kit/amazon-ad-inject.mjs.
 //
@@ -16,6 +16,7 @@
 // Config (default export): { site, variant, products, disclosure, placementAttrs?, skip? (regex strings on the URL path),
 //   lang?, slotStyle? }. Prints "N/M pages" and exits 1 when it injected nothing (a silent no-op must not deploy).
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { renderAd, renderBillboard, pickProducts, AD_CSS, AD_JS, BILLBOARD_CSS, validatePool, BEACON_I_JS, bbHeadJs, BB_JS } from './amazon-ad.mjs';
@@ -220,9 +221,9 @@ export function injectHtml(html, urlPath, cfg) {
     if (at3 >= 0) h = h.slice(0, at3) + `${mA}<div class="ak-bill-midwrap"${cfg.billboard.midMove ? ' data-ak-move="after-main"' : ''}>${bb.mid}</div>${mB}` + h.slice(at3);
   }
   if (bottom) h = h.replace(/<html\b/i, `<html data-akv="${cfg.variant}"`);
-  h = h.replace(/<\/head>/i, `${cA}<script>${MINT_JS}</script><script>${BEACON_I_JS}</script>${cfg.billboard && cfg.billboard.variant && bb ? `<script>${bbHeadJs(cfg.billboard.variant)}</script>` : ''}<style>${AD_CSS}\n${SLOT_CSS}${cfg.billboard ? '\n' + BILLBOARD_CSS : ''}</style>${cB}</head>`);
+  h = h.replace(/<\/head>/i, `${cA}<script>${MINT_JS}</script><script>${BEACON_I_JS}</script>${cfg.billboard && cfg.billboard.variant && bb ? `<script>${bbHeadJs(cfg.billboard.variant)}</script>` : ''}${cfg._ext ? `<link rel="stylesheet" href="${cfg._ext.css}">` : `<style>${AD_CSS}\n${SLOT_CSS}${cfg.billboard ? '\n' + BILLBOARD_CSS : ''}</style>`}${cB}</head>`);
   const bi = h.toLowerCase().lastIndexOf('</body>');
-  h = h.slice(0, bi) + `${jA}<script>${AD_JS}</script>${cfg.billboard && cfg.billboard.variant && bb ? `<script>${BB_JS}</script>` : ''}${jB}` + h.slice(bi);
+  h = h.slice(0, bi) + (cfg._ext ? `${jA}<script src="${cfg._ext.js}" defer></script>${jB}` : `${jA}<script>${AD_JS}</script>${cfg.billboard && cfg.billboard.variant && bb ? `<script>${BB_JS}</script>` : ''}${jB}`) + h.slice(bi);
   return { html: h, injected: true, top: topAt >= 0, bb: !!(bb && (bb.top || bb.mid)) };
 }
 
@@ -234,12 +235,40 @@ function walk(d, acc = []) {
   return acc;
 }
 
+
+// Stable asset URLs (1.2.2, 2026-10-03): pages reference /kit-*.js without a version query, and _headers gives these files
+// a short cache, so a later kit update re-uploads ONE file instead of every page of the site (a template-wide re-upload
+// took hours per site on a 60 KB/s uplink on 2026-10-02). Idempotent: the block is replaced, never duplicated.
+export function stableHeaders(out, files) {
+  const p = path.join(out, '_headers'); const A = '# ak-kit-assets', B = '# /ak-kit-assets';
+  let h = fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
+  const re = new RegExp(`\\n?${A}[\\s\\S]*?${B}\\n?`, 'g');
+  const prev = (h.match(re) || [''])[0];
+  const have = new Set([...prev.matchAll(/^\/kit-[a-z.-]+$/gm)].map((m) => m[0]));
+  files.forEach((f) => have.add(f));
+  h = h.replace(re, '\n');
+  const block = `${A} (Amili Kit: stable URLs, short cache)\n` + [...have].sort().map((f) => `${f}\n  Cache-Control: public, max-age=600, must-revalidate\n`).join('') + `${B}\n`;
+  fs.writeFileSync(p, (h.trimEnd() ? h.trimEnd() + '\n\n' : '') + block);
+}
+
 export function injectDir(outDir, cfg) {
   const errs = cfg.variant === 'none' ? validatePool(cfg.catalog).filter((e) => e !== 'empty pool') : validatePool(cfg.products);
   if (errs.length) throw new Error(`amazon-ad-inject: ${errs.join('; ')}`);
   if (cfg.variant === 'none' && !(cfg.topCards || []).length && !cfg.billboard) throw new Error('amazon-ad-inject: variant none needs topCards');
   if (!cfg.variant || !cfg.disclosure) throw new Error('amazon-ad-inject: variant and disclosure are required');
   const files = walk(outDir);
+  // 2026-10-02 (holdlens perf budget: ~32 KB of identical ad CSS/JS inlined into EVERY page pushed 6 pages over the
+  // 500 KB source budget): the shared CSS and JS ship once as cached files next to the pages; only the tiny pre-paint
+  // scripts (gesture mint, beacon, billboard variant) stay inline. cfg.inline: true keeps the old inline form.
+  if (!cfg.inline && !cfg._ext) {
+    const css = `${AD_CSS}\n${SLOT_CSS}${cfg.billboard ? '\n' + BILLBOARD_CSS : ''}`;
+    const js = `${AD_JS}\n${cfg.billboard && cfg.billboard.variant ? BB_JS : ''}`;
+    const v = (x) => crypto.createHash('sha256').update(x).digest('hex').slice(0, 10);
+    fs.writeFileSync(path.join(outDir, 'kit-ad.css'), css);
+    fs.writeFileSync(path.join(outDir, 'kit-ad.js'), js);
+    stableHeaders(outDir, ['/kit-ad.css', '/kit-ad.js']);
+    cfg = { ...cfg, _ext: { css: '/kit-ad.css', js: '/kit-ad.js' } };
+  }
   const why = {};
   let n = 0;
   let tops = 0;

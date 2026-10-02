@@ -1,4 +1,4 @@
-// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/amazon-ad.mjs (sha256 e9833a78f682), Amili Kit v1.2.0 — do not edit here; re-run sync.sh.
+// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/amazon-ad.mjs (sha256 4b7f62819509), Amili Kit v1.2.3 — do not edit here; re-run sync.sh.
 // Amili Kit Amazon ad — @fleet/kit component (Paulo 2026-09-28, thoughts mulhnwfs777u4h / mulhp9n4orh4wp /
 // mulhpjvefhn5bn / mulhuj4lgb2vz1: "amili kit amazon affiliate template", 5 variants, carousel, Amazon's product API).
 // CANONICAL: VAULT-Fleet/tooling/fleet-kit/amazon-ad/amazon-ad.mjs. Sites carry a synced copy at kit/amazon-ad.mjs
@@ -273,7 +273,7 @@ html[data-akbb=b] .ak-bb-var .ak-bb-nav,html[data-akbb=c] .ak-bb-var .ak-bb-nav{
 html[data-akbb] .ak-bb-var .ak-bb-nav[disabled]{opacity:0;pointer-events:none}
 html[data-akbb=b] .ak-bb-var .ak-bb-count,html[data-akbb=c] .ak-bb-var .ak-bb-count{display:inline;font-size:12px;font-weight:600;color:var(--ak-ad-fg)}
 html[data-akbb=c] .ak-bb-var .ak-bb-rowh{display:block;margin:0;height:30px;line-height:30px;font:700 17px/30px Georgia,"Times New Roman",serif;color:var(--ak-ad-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-html[data-akbb=c] .ak-bb-var .ak-bb-nav{margin-top:0;top:108px}
+html[data-akbb=c] .ak-bb-var .ak-bb-nav{margin-top:0;top:71px}
 html[data-akbb=c] .ak-bb-var .ak-ad-track{gap:10px}
 html[data-akbb=c] .ak-bb-var .ak-ad-card{flex:0 0 calc((100% - 30px)/4);scroll-snap-align:start}
 html[data-akbb=c] .ak-bb-var .ak-ad-link{display:flex;flex-direction:column;align-items:stretch;gap:4px;height:218px;padding:8px}
@@ -341,8 +341,9 @@ html[data-akbb=c] .ak-bill-top.ak-bb-var .ak-ad-link{height:158px;padding:6px;ga
 html[data-akbb=c] .ak-bill-top.ak-bb-var .ak-ad-img{height:62px}
 html[data-akbb=c] .ak-bill-top.ak-bb-var .ak-bill-line .ak-ad-title{font-size:12px;line-height:15px;height:30px}
 html[data-akbb=c] .ak-bill-top.ak-bb-var .ak-ad-price{font-size:17px;height:20px}
-html[data-akbb=c] .ak-bill-top.ak-bb-var .ak-bb-nav{top:72px}
+html[data-akbb=c] .ak-bill-top.ak-bb-var .ak-bb-nav{top:39px}
 html[data-akbb=c] .ak-bill-mid.ak-bb-var .ak-ad-link{height:300px}
+html[data-akbb=c] .ak-bill-mid.ak-bb-var .ak-bb-nav{top:101px}
 html[data-akbb=c] .ak-bill-mid.ak-bb-var .ak-ad-img{height:170px}
 .ak-bb-prev{left:-6px}.ak-bb-next{right:-6px}
 .ak-ad.ak-on.ak-bill-nophone{display:none}}`;
