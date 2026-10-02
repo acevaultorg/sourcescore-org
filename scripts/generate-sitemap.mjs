@@ -16,7 +16,8 @@ const SITE = "https://sourcescore.org";
 import { execSync } from "node:child_process";
 let TODAY = "";
 try {
-  TODAY = execSync("git log -1 --format=%cs -- . ':(exclude).gitlab-ci.yml' ':(exclude)*.md' ':(exclude).claude'", { encoding: "utf8" }).trim();
+  // kit/ + its configs are injected AFTER the build (outside the page content), so they never re-date the site (2026-10-02).
+  TODAY = execSync("git log -1 --format=%cs -- . ':(exclude).gitlab-ci.yml' ':(exclude)*.md' ':(exclude).claude' ':(exclude)kit' ':(exclude)amazon-ad.config.mjs' ':(exclude)amili-search.config.json' ':(exclude)package.json' ':(exclude)scripts/generate-sitemap.mjs'", { encoding: "utf8" }).trim();
 } catch {}
 if (!/^\d{4}-\d{2}-\d{2}$/.test(TODAY)) TODAY = "";
 const LASTMOD = TODAY ? `<lastmod>${TODAY}</lastmod>` : "";

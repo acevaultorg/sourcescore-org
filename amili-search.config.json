@@ -1,0 +1,9 @@
+{
+  "outDir": "out",
+  "label": "Search SourceScore",
+  "placeholder": "Search sources, claims, AI tools…",
+  "suggest": ["wikipedia", "reuters", "arxiv", "compare", "methodology"],
+  "ga4": true,
+  "clarity": true,
+  "skip": ["/go/", "/api/", "/embed/"]
+}
