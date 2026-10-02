@@ -59,6 +59,8 @@ build:
     - npm run build
     - test -d out
     - test -f out/index.html
+    # Amili Kit (2026-10-02): top ad + in-page ad + kit search/header bar, injected into the built pages
+    - npm run kit
     # Verify postbuild generators produced their artifacts (sitemap, llms, sitemap-ai)
     # Catches 2026-05-12-class root cause: generator silently fails -> sitemap.xml absent in deploy.
     - node scripts/predeploy-guard.mjs
