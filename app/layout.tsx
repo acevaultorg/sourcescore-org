@@ -48,11 +48,14 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large", "max-video-preview": -1 },
   },
   icons: {
+    // favicon.ico + a PNG apple-touch-icon rendered from favicon.svg (2026-10-03): /favicon.ico
+    // 404'd for Bing's favicon fetcher, and iOS ignores SVG touch icons.
     icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
       { url: "/favicon.svg", type: "image/svg+xml" },
     ],
     apple: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
   verification: {
