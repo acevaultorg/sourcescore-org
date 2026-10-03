@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.2.3 (header.mjs sha256 bbe28a3b6137) from VAULT-Fleet/tooling/fleet-kit/header/header.mjs — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.2.4 (header.mjs sha256 fa0ab6e7e8ac) from VAULT-Fleet/tooling/fleet-kit/header/header.mjs — do not edit here; re-run sync.sh.
 // Amili Kit: header bar — search in the header on every width, Shop in the phone header, header back on scroll-up.
 // Paulo 2026-10-02: "amili kit search missing in menu bar! very bad" (mur0dp4bzunyqy), "if user scrolls back on any of
 // our sites, header menu should appear" (mur06p8ukgwx6c), "consider to put shop in the mobile menu bar by default"
@@ -48,7 +48,7 @@ function akHeader(cfg) {
   var hdr = cfg.header ? q(cfg.header) : null;
   if (!hdr) {
     var hs = d.querySelectorAll('header,[role=banner]');
-    for (var i = 0; i < hs.length; i++) { var r0 = hs[i].getBoundingClientRect(); if (vis(hs[i]) && r0.top + scrollY < 450 && r0.width >= innerWidth * 0.6 && !hs[i].closest('main,article,dialog')) { hdr = hs[i]; break; } }
+    for (var i = 0; i < hs.length; i++) { var r0 = hs[i].getBoundingClientRect(); if (vis(hs[i]) && r0.top + scrollY < 1100 && r0.width >= innerWidth * 0.6 && !hs[i].closest('main,article,dialog,aside,.ak-ad')) { hdr = hs[i]; break; } }
   }
   if (!hdr) return null;
   var logo = cfg.logo ? q(cfg.logo, hdr) : null;

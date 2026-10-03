@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.2.3 (search.mjs sha256 0ec874859dab) from VAULT-Fleet/tooling/fleet-kit/search/search.mjs — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.2.4 (search.mjs sha256 0ec874859dab) from VAULT-Fleet/tooling/fleet-kit/search/search.mjs — do not edit here; re-run sync.sh.
 // Amili Kit: Amili Search — @fleet/kit component (Paulo 2026-09-28 mulka4m44yukr1: "amili search must be great").
 // CANONICAL: VAULT-Fleet/tooling/fleet-kit/search/search.mjs. Grown from tooling/amili-search (v1, the fleet's per-site
 // search) and fitmylens/search.js (the typing-session logging contract). Sites vendor a copy with sync.sh.

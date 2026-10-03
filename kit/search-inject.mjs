@@ -59,8 +59,15 @@ export async function run(cfgPath = 'amili-search.config.json', outOverride = nu
   if (cfg.sourceIndex) {
     const src = JSON.parse(fs.readFileSync(path.join(out, cfg.sourceIndex.file), 'utf8'));
     const m = { u: 'u', t: 't', d: 'd', g: 'g', k: 'k', i: 'i', ...(cfg.sourceIndex.map || {}) };
-    rows = (Array.isArray(src) ? src : src.items || []).map((r) => {
-      const o = {}; for (const [kk, from] of Object.entries(m)) if (r[from] != null && r[from] !== '') o[kk] = String(r[from]);
+    const list = Array.isArray(src) ? src : src.items || [];
+    // The site's own host = the most common host among absolute URLs in its index (or cfg.sourceIndex.host).
+    const hc = {}; for (const r of list) { const h = (String(r[(cfg.sourceIndex.map || {}).u || 'u'] || '').match(/^https?:\/\/([^/]+)/i) || [])[1]; if (h) hc[h] = (hc[h] || 0) + 1; }
+    // An index that already uses paths has no business carrying absolute links: those are foreign and dropped.
+    const rel = list.some((r) => /^\/(?!\/)/.test(String(r[(cfg.sourceIndex.map || {}).u || 'u'] || '')));
+    const host = cfg.sourceIndex.host || (rel ? '' : Object.keys(hc).sort((a, b) => hc[b] - hc[a])[0] || '');
+    rows = list.map((r) => {
+      const o = {}; for (const [kk, from] of Object.entries(m)) if (r[from] != null && r[from] !== '') o[kk] = Array.isArray(r[from]) ? r[from].join(' ') : String(r[from]);
+      if (o.u && /^https?:\/\//i.test(o.u)) { const h = (o.u.match(/^https?:\/\/([^/]+)/i) || [])[1]; o.u = h && h === host ? (o.u.replace(/^https?:\/\/[^/]+/i, '') || '/') : ''; } // same-site absolute URLs (amili-index.json) become paths; other hosts are dropped
       return o;
     }).filter((o) => o.t && o.u && /^\//.test(o.u));
     if (!rows.length) throw new Error(`amili search inject: sourceIndex ${cfg.sourceIndex.file} gave 0 rows`);

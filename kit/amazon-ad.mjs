@@ -1,4 +1,4 @@
-// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/amazon-ad.mjs (sha256 4b7f62819509), Amili Kit v1.2.3 — do not edit here; re-run sync.sh.
+// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/amazon-ad.mjs (sha256 6a1527c13b43), Amili Kit v1.2.4 — do not edit here; re-run sync.sh.
 // Amili Kit Amazon ad — @fleet/kit component (Paulo 2026-09-28, thoughts mulhnwfs777u4h / mulhp9n4orh4wp /
 // mulhpjvefhn5bn / mulhuj4lgb2vz1: "amili kit amazon affiliate template", 5 variants, carousel, Amazon's product API).
 // CANONICAL: VAULT-Fleet/tooling/fleet-kit/amazon-ad/amazon-ad.mjs. Sites carry a synced copy at kit/amazon-ad.mjs
@@ -564,6 +564,7 @@ html[data-akv=v2] body{padding-bottom:calc(var(--ak-ad-h2,156px) + env(safe-area
 .ak-p-cur,.ak-p-dec{font-size:.55em;vertical-align:.62em;line-height:0;font-weight:700}
 .ak-p-int{font-weight:700}
 .ak-p-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ak-ad-track{position:relative}
 .ak-ad-v6{margin:12px 0;height:var(--ak-ad-h6,308px)}
 .ak-ad-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;height:44px}
 .ak-ad-h{margin:0;font-size:17px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
