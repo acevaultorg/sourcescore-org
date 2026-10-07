@@ -12,7 +12,7 @@
     "clean": "rm -rf .next out 2>/dev/null; find . -name '.DS_Store' -not -path './node_modules/*' -delete 2>/dev/null; true",
     "kit": "node kit/amazon-ad-inject.mjs out amazon-ad.config.mjs && node kit/search-inject.mjs amili-search.config.json",
     "deploy": "npm run clean && npm run build && npm run kit && node scripts/deploy-cf.mjs && npm run indexnow",
-    "predeploy": "node scripts/predeploy-git-guard.mjs && node scripts/predeploy-guard.mjs"
+    "predeploy": "\"$HOME/.claude/bin/ace-heavy-lock\" --hold-for-pid $PPID sourcescore-org || true; node scripts/predeploy-git-guard.mjs && node scripts/predeploy-guard.mjs"
   },
   "dependencies": {
     "next": "15.1.12",
