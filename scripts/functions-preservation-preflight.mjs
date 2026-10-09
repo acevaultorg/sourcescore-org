@@ -139,11 +139,21 @@ function hasExecutableWorkerSource(contents) {
   // Syntax-check as an ES module without importing or executing the artifact.
   // This only checks packaging: compiler provenance/API handlers require the
   // existing signed build and preview checks, even after this preflight passes.
-  const checked = spawnSync(process.execPath, ["--check", "--input-type=module"], {
-    input: contents, encoding: "utf8", timeout: 10000, maxBuffer: 1024 * 1024,
-  });
-  if (checked.error || checked.status !== 0) return false;
-  return /export\s+default\b|export\s*\{[^}]*\b(?:as\s+default|default)\b/.test(withoutComments);
+  const inspectModule = `
+    import {SourceTextModule} from "node:vm";
+    import {readFileSync} from "node:fs";
+    try {
+      const mod = new SourceTextModule(readFileSync(0, "utf8"));
+      await mod.link(() => { throw new Error("external artifact dependency is unverified"); });
+      // Read export NAMES only. Never evaluate the module or read its values.
+      process.exitCode = Object.getOwnPropertyNames(mod.namespace).includes("default") ? 0 : 1;
+    } catch { process.exitCode = 1; }
+  `;
+  const checked = spawnSync(process.execPath,
+    ["--experimental-vm-modules", "--input-type=module", "-e", inspectModule], {
+      input: contents, encoding: "utf8", timeout: 10000, maxBuffer: 1024 * 1024,
+    });
+  return !checked.error && checked.status === 0;
 }
 
 function patternCovers(pattern, requiredPath) {

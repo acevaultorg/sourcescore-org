@@ -125,6 +125,12 @@ try {
     assertRefused(root, /route coverage missing.*admin\/panel\.js/);
   }
 
+  {
+    const root = fixture({workerContents: 'throw new Error("must never execute artifact"); ' + worker});
+    roots.push(root);
+    assert.equal(run(root).status, 0, "guard parses/links export names without artifact execution");
+  }
+
   // Regression controls observed independently against rejected 668d992:
   // all ten original unsafe fixtures passed before the correction.
   const endpoint = { "api/verify.js": "export function onRequest() {}" };
@@ -132,6 +138,8 @@ try {
   for (const options of [
     { functions: endpoint, routes: {version: 1, include: ["/api/verify/*"]} },
     { functions: {"account/_middleware.js": "export function onRequest() {}"}, routes: {version: 1, include: ["/account/*"]} },
+    { functions: endpoint, workerContents: 'const incidental = "export default marker only";' },
+    { functions: endpoint, workerContents: 'import value from "./unverified.js"; export default value;' },
     { functions: endpoint, workerContents: "this definitely is not valid JavaScript" },
     { functions: endpoint, workerContents: 'const incidental = "not a worker module";' },
     { functions: dynamic, routes: {version: 1, include: ["/api/usage/*"], exclude: ["/api/usage/private/current"]} },
@@ -148,7 +156,7 @@ try {
     assertRefused(root, /refused/i);
   }
 
-  console.log("✓ functions-preservation-preflight: 22 focused offline cases passed");
+  console.log("✓ functions-preservation-preflight: 25 focused offline cases passed");
 } finally {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
 }
