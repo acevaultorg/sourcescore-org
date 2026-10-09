@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -23,7 +23,11 @@ function fixture(options = {}) {
   for (const [relativePath, contents] of Object.entries(functions)) {
     const path = join(functionsRoot, relativePath);
     mkdirSync(dirname(path), { recursive: true });
-    writeFileSync(path, contents);
+    if (contents === "SYMLINK") {
+      const outside = join(root, "fixture-only-source.js");
+      writeFileSync(outside, "export function onRequest() {}\n");
+      symlinkSync(outside, path);
+    } else writeFileSync(path, contents);
   }
   if (workerContents !== undefined) writeFileSync(join(outputRoot, "_worker.js"), workerContents);
   if (routes !== undefined) {
@@ -54,7 +58,7 @@ try {
         "api/v1/verify.js": "export function onRequest() {}\n",
         "api/v1/usage/[api_key]/current.js": "export function onRequest() {}\n",
       },
-      routes: { version: 1, include: ["/*"], exclude: ["/_next/*"] },
+      routes: { version: 1, include: ["/*"], exclude: [] },
     });
     roots.push(root);
     const result = run(root);
@@ -79,7 +83,7 @@ try {
   {
     const root = fixture({ workerContents: "   \n// generated worker placeholder\n" });
     roots.push(root);
-    assertRefused(root, /out\/_worker\.js is empty or contains only a placeholder/);
+    assertRefused(root, /out\/_worker\.js is empty, placeholder/);
   }
 
   {
@@ -121,7 +125,28 @@ try {
     assertRefused(root, /route coverage missing.*admin\/panel\.js/);
   }
 
-  console.log("✓ functions-preservation-preflight: 10 focused offline cases passed");
+  // Regression controls observed independently against rejected 668d992:
+  // all ten unsafe fixtures passed before the correction.
+  const endpoint = { "api/verify.js": "export function onRequest() {}" };
+  const dynamic = { "api/usage/[id]/current.js": "export function onRequest() {}" };
+  for (const options of [
+    { functions: endpoint, workerContents: "this definitely is not valid JavaScript" },
+    { functions: endpoint, workerContents: 'const incidental = "not a worker module";' },
+    { functions: dynamic, routes: {version: 1, include: ["/api/usage/*"], exclude: ["/api/usage/private/current"]} },
+    { functions: dynamic, routes: {version: 1, include: ["/api/usage/*"], exclude: ["/api/usage/private/*"]} },
+    { functions: {"_middleware.js": "export function onRequest() {}"}, routes: {version: 1, include: ["/*"], exclude: ["/protected/*"]} },
+    { functions: {"account/_middleware.js": "export function onRequest() {}"}, routes: {version: 1, include: ["/account/*"], exclude: ["/account/private/*"]} },
+    { functions: endpoint, routes: {version: 1, include: ["/*"], exclude: ["/api/verify/"]} },
+    { functions: endpoint, routes: {version: 1, include: Array(101).fill("/*")} },
+    { functions: endpoint, routes: {version: 1, include: ["/*"], exclude: ["/" + "x".repeat(101)]} },
+    { functions: {"api/verify.js": "SYMLINK"}, workerContents: undefined, routes: undefined },
+  ]) {
+    const root = fixture(options);
+    roots.push(root);
+    assertRefused(root, /refused/i);
+  }
+
+  console.log("✓ functions-preservation-preflight: 20 focused offline cases passed");
 } finally {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
 }

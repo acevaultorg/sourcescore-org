@@ -13,6 +13,7 @@ import {
   readFileSync,
 } from "node:fs";
 import { extname, join, resolve, sep } from "node:path";
+import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const FUNCTION_EXTENSIONS = new Set([".cjs", ".js", ".mjs", ".ts", ".tsx"]);
@@ -27,6 +28,9 @@ function isRegularFile(path) {
 
 function walkFiles(root) {
   if (!existsSync(root)) return [];
+  if (!lstatSync(root).isDirectory() || lstatSync(root).isSymbolicLink()) {
+    throw new Error("Functions directory must be a real directory; symlink/ambiguous source refused");
+  }
 
   const files = [];
   const pending = [root];
@@ -34,6 +38,7 @@ function walkFiles(root) {
     const current = pending.pop();
     for (const entry of readdirSync(current, { withFileTypes: true })) {
       const path = join(current, entry.name);
+      if (entry.isSymbolicLink()) throw new Error("Symlink in Functions source refused: " + path);
       if (entry.isDirectory()) pending.push(path);
       else if (entry.isFile()) files.push(path);
     }
@@ -87,6 +92,7 @@ function routePatternError(pattern, label) {
   if (typeof pattern !== "string" || pattern.length === 0) {
     return `${label} must be a non-empty string`;
   }
+  if (pattern.length > 100) return `${label} exceeds the 100-character route limit`;
   if (!pattern.startsWith("/")) return `${label} must start with /`;
   if (/[\\\0\n\r\t?#]/.test(pattern)) {
     return `${label} contains a control character, query, fragment, or backslash`;
@@ -108,6 +114,10 @@ function routePatternError(pattern, label) {
 
 function patternMatches(pattern, requiredPath) {
   if (typeof pattern !== "string") return false;
+  // Functions file routing accepts both trailing-slash forms. Conservatively
+  // treat either form as overlapping so an exclusion cannot hide one of them.
+  pattern = pattern.length > 1 && pattern.endsWith("/") ? pattern.slice(0, -1) : pattern;
+  requiredPath = requiredPath.length > 1 && requiredPath.endsWith("/") ? requiredPath.slice(0, -1) : requiredPath;
   if (pattern === "/*") return true;
   if (pattern.endsWith("/*")) {
     const base = pattern.slice(0, -2) || "/";
@@ -126,7 +136,20 @@ function hasExecutableWorkerSource(contents) {
   if (/^(?:export\s+default\s*\{\s*\}|module\.exports\s*=\s*\{\s*\};?)$/.test(withoutComments)) {
     return false;
   }
-  return true;
+  // Syntax-check as an ES module without importing or executing the artifact.
+  // This only checks packaging: compiler provenance/API handlers require the
+  // existing signed build and preview checks, even after this preflight passes.
+  const checked = spawnSync(process.execPath, ["--check", "--input-type=module"], {
+    input: contents, encoding: "utf8", timeout: 10000, maxBuffer: 1024 * 1024,
+  });
+  if (checked.error || checked.status !== 0) return false;
+  return /export\s+default\b|export\s*\{[^}]*\b(?:as\s+default|default)\b/.test(withoutComments);
+}
+
+function patternsOverlap(left, right) {
+  // Route requirements conservatively widen dynamic segments to a subtree.
+  // Exclusions inside that subtree must also be rejected, not just its root.
+  return patternMatches(left, right) || patternMatches(right, left);
 }
 
 function loadRoutes(routesPath, errors) {
@@ -165,6 +188,10 @@ function loadRoutes(routesPath, errors) {
     }
   }
 
+  if (Array.isArray(routes.include) && Array.isArray(routes.exclude ?? [])
+      && routes.include.length + (routes.exclude ?? []).length > 100) {
+    errors.push("out/_routes.json exceeds 100 combined invocation rules");
+  }
   return routes;
 }
 
@@ -172,7 +199,11 @@ export function runFunctionsPreservationPreflight(projectRoot, buildDirectory = 
   const root = resolve(projectRoot);
   const functionsDir = join(root, "functions");
   const buildDir = resolve(root, buildDirectory);
-  const files = sourceFunctionFiles(functionsDir);
+  let files;
+  try { files = sourceFunctionFiles(functionsDir); }
+  catch (error) {
+    return {ok: false, staticOnly: false, errors: [error.message], message: "Functions source discovery refused"};
+  }
 
   if (files.length === 0) {
     return {
@@ -189,7 +220,7 @@ export function runFunctionsPreservationPreflight(projectRoot, buildDirectory = 
   } else {
     const worker = readFileSync(workerPath, "utf8");
     if (!hasExecutableWorkerSource(worker)) {
-      errors.push("out/_worker.js is empty or contains only a placeholder");
+      errors.push("out/_worker.js is empty, placeholder, invalid module syntax or lacks a default module export");
     }
   }
 
@@ -209,7 +240,7 @@ export function runFunctionsPreservationPreflight(projectRoot, buildDirectory = 
         continue;
       }
 
-      const excluded = excludes.find((pattern) => patternMatches(pattern, requirement.path));
+      const excluded = excludes.find((pattern) => patternsOverlap(pattern, requirement.path));
       if (excluded) {
         errors.push(
           `route coverage excluded for ${requirement.kind} ${requirement.source}: ${excluded}`,
@@ -231,7 +262,7 @@ export function runFunctionsPreservationPreflight(projectRoot, buildDirectory = 
     ok: true,
     staticOnly: false,
     files: requirements,
-    message: `Functions preservation preflight passed: ${requirements.length} source file(s) covered by compiled worker and routes`,
+    message: `Functions preservation preflight passed: ${requirements.length} source file(s) covered by worker artifact and invocation routes; compiler provenance/runtime handlers still require signed build and preview verification`,
   };
 }
 
