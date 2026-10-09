@@ -264,10 +264,13 @@ export function injectDir(outDir, cfg) {
     const css = `${AD_CSS}\n${SLOT_CSS}${cfg.billboard ? '\n' + BILLBOARD_CSS : ''}`;
     const js = `${AD_JS}\n${cfg.billboard && cfg.billboard.variant ? BB_JS : ''}`;
     const v = (x) => crypto.createHash('sha256').update(x).digest('hex').slice(0, 10);
-    fs.writeFileSync(path.join(outDir, 'kit-ad.css'), css);
-    fs.writeFileSync(path.join(outDir, 'kit-ad.js'), js);
-    stableHeaders(outDir, ['/kit-ad.css', '/kit-ad.js']);
-    cfg = { ...cfg, _ext: { css: '/kit-ad.css', js: '/kit-ad.js' } };
+    // Hashed filenames, as the canonical kit 1.8.3+ (card mus4vs8tvfq48l): the zone's 4h browser cache overrides
+    // max-age, so bare /kit-ad.css|js served old CSS/JS against new HTML after a deploy (site-guard asset-cache).
+    // The stable names stay written for pages still cached with the old tags.
+    const cssName = `/kit-ad.${v(css)}.css`, jsName = `/kit-ad.${v(js)}.js`;
+    for (const [n, x] of [['/kit-ad.css', css], ['/kit-ad.js', js], [cssName, css], [jsName, js]]) fs.writeFileSync(path.join(outDir, n.slice(1)), x);
+    stableHeaders(outDir, ['/kit-ad.css', '/kit-ad.js', cssName, jsName]);
+    cfg = { ...cfg, _ext: { css: cssName, js: jsName } };
   }
   const why = {};
   let n = 0;

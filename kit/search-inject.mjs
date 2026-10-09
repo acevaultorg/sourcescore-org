@@ -78,8 +78,11 @@ export async function run(cfgPath = 'amili-search.config.json', outOverride = nu
   const js = searchScript({ index: '/' + indexFile, ...cfg });
   fs.writeFileSync(path.join(out, 'kit-search.js'), js);
   const v = crypto.createHash('sha256').update(js).digest('hex').slice(0, 10);
-  const tag = '<script src="/kit-search.js" defer></script>';
-  stableHeaders(out, ['/kit-search.js', '/' + indexFile]);
+  // Hashed filename (card mus4vs8tvfq48l; site-guard asset-cache): the zone's 4h browser cache overrides max-age.
+  const hashed = `/kit-search.${v}.js`;
+  fs.writeFileSync(path.join(out, hashed.slice(1)), js);
+  const tag = `<script src="${hashed}" defer></script>`;
+  stableHeaders(out, ['/kit-search.js', hashed, '/' + indexFile]);
   let n = 0, m = 0;
   // Embeds (pages made to sit in someone else's iframe) never get the search: default skipScript ['/embed/'].
   const skipScript = cfg.skipScript || ['/embed/'];
