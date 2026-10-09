@@ -126,10 +126,12 @@ try {
   }
 
   // Regression controls observed independently against rejected 668d992:
-  // all ten unsafe fixtures passed before the correction.
+  // all ten original unsafe fixtures passed before the correction.
   const endpoint = { "api/verify.js": "export function onRequest() {}" };
   const dynamic = { "api/usage/[id]/current.js": "export function onRequest() {}" };
   for (const options of [
+    { functions: endpoint, routes: {version: 1, include: ["/api/verify/*"]} },
+    { functions: {"account/_middleware.js": "export function onRequest() {}"}, routes: {version: 1, include: ["/account/*"]} },
     { functions: endpoint, workerContents: "this definitely is not valid JavaScript" },
     { functions: endpoint, workerContents: 'const incidental = "not a worker module";' },
     { functions: dynamic, routes: {version: 1, include: ["/api/usage/*"], exclude: ["/api/usage/private/current"]} },
@@ -146,7 +148,7 @@ try {
     assertRefused(root, /refused/i);
   }
 
-  console.log("✓ functions-preservation-preflight: 20 focused offline cases passed");
+  console.log("✓ functions-preservation-preflight: 22 focused offline cases passed");
 } finally {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
 }

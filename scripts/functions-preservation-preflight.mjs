@@ -146,6 +146,17 @@ function hasExecutableWorkerSource(contents) {
   return /export\s+default\b|export\s*\{[^}]*\b(?:as\s+default|default)\b/.test(withoutComments);
 }
 
+function patternCovers(pattern, requiredPath) {
+  // Do not assume a wildcard for descendants covers the base endpoint too.
+  // Ambiguous base/trailing-slash coverage must have an explicit exact rule
+  // or a broader parent wildcard; exclusions remain conservative below.
+  if (typeof pattern === "string" && pattern !== "/*" && pattern.endsWith("/*")) {
+    const base = pattern.slice(0, -2);
+    if (requiredPath === base || requiredPath === `${base}/`) return false;
+  }
+  return patternMatches(pattern, requiredPath);
+}
+
 function patternsOverlap(left, right) {
   // Route requirements conservatively widen dynamic segments to a subtree.
   // Exclusions inside that subtree must also be rejected, not just its root.
@@ -232,7 +243,10 @@ export function runFunctionsPreservationPreflight(projectRoot, buildDirectory = 
     const excludes = Array.isArray(routes.exclude) ? routes.exclude : [];
 
     for (const requirement of requirements) {
-      const included = includes.some((pattern) => patternMatches(pattern, requirement.path));
+      let included = includes.some((pattern) => patternCovers(pattern, requirement.path));
+      if (requirement.kind === "middleware" && requirement.path !== "/*") {
+        included = included && includes.some((pattern) => patternCovers(pattern, requirement.path.slice(0, -2)));
+      }
       if (!included) {
         errors.push(
           `route coverage missing for ${requirement.kind} ${requirement.source}: ${requirement.path}`,
