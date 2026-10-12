@@ -33,12 +33,15 @@ Allow: /
 
 # Standard search
 User-agent: Googlebot
+Disallow: /go/
 Allow: /
 
 User-agent: Bingbot
+Disallow: /go/
 Allow: /
 
 User-agent: *
+Disallow: /go/
 Allow: /
 
 Sitemap: https://sourcescore.org/sitemap.xml
