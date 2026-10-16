@@ -10,7 +10,7 @@ export default function PrivacyPage() {
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <h1 className="text-display-2 font-bold tracking-tight mb-4">Privacy Policy</h1>
-      <p className="text-body text-dim mb-8">Last updated: 2026-09-28</p>
+      <p className="text-body text-dim mb-8">Last updated: 2026-10-16</p>
 
       <section className="prose prose-invert max-w-none text-body text-text leading-relaxed space-y-5">
         <p className="text-muted">
@@ -41,8 +41,22 @@ export default function PrivacyPage() {
 
         <h2 className="text-heading-2 font-bold pt-4">Cookies + advertising</h2>
         <p className="text-muted">
-          <strong className="text-text">We run no advertising network on this Site.</strong> There
-          is no Google AdSense, no ad tags, and no advertising cookies set by us.
+          This Site shows ads served by Google AdSense. Third-party vendors, including Google, use
+          cookies to serve ads based on your prior visits to this and other websites. Google&apos;s use
+          of advertising cookies lets it and its partners serve ads to you based on those visits. You
+          can opt out of personalised advertising in{" "}
+          <a href="https://adssettings.google.com" className="text-brand hover:underline" rel="nofollow">
+            Google Ads Settings
+          </a>{" "}
+          or at{" "}
+          <a href="https://www.aboutads.info/choices/" className="text-brand hover:underline" rel="nofollow">
+            aboutads.info
+          </a>
+          . See also{" "}
+          <a href="https://policies.google.com/technologies/partner-sites" className="text-brand hover:underline" rel="nofollow">
+            how Google uses information from sites that use its services
+          </a>
+          .
         </p>
         <p className="text-muted">
           The analytics above may set first-party cookies or use equivalent browser storage to tell
@@ -68,7 +82,8 @@ export default function PrivacyPage() {
         <h2 className="text-heading-2 font-bold pt-4">Third-party services</h2>
         <p className="text-muted">
           We use Cloudflare for hosting and edge delivery, Google Analytics 4 for aggregate traffic
-          measurement, and Microsoft Clarity for anonymised interaction analytics. Each processes
+          measurement, Microsoft Clarity for anonymised interaction analytics, and Google AdSense for
+          advertising. Each processes
           data under its own policy:{" "}
           <a href="https://www.cloudflare.com/privacypolicy/" className="text-brand hover:underline" rel="nofollow">
             Cloudflare

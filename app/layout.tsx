@@ -181,14 +181,16 @@ export default function RootLayout({
             __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500,region:['BE','BG','CZ','DK','DE','EE','IE','EL','GR','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','IS','LI','NO','GB','CH','US-CA']});gtag('consent','default',{ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted',analytics_storage:'granted',functionality_storage:'granted',security_storage:'granted'});gtag('js',new Date());gtag('config','G-WZ82M72J06',{anonymize_ip:true});`,
           }}
         />
-        {/* No Google AdSense on SourceScore — removed 2026-06-26 (autopilot).
-            Binding strategy (board anchors mqkx5yh8q913j0 + mpv4arecshtbzw):
-            SourceScore is a FREE citation/authority asset → NO ads. The
-            shared fleet AdSense pub ID on a 480:1-bot, 1,172-programmatic-page
-            site is a Gate-0 / invalid-traffic cascade risk to the EARNING
-            fleet sites (holdlens / readinglist / readminute / fermentcalc)
-            that share the account. Stale verification snippet from the
-            since-abandoned AdSense application (Gate 0 = DO-NOT-SUBMIT). */}
+        {/* ~~No Google AdSense on SourceScore — removed 2026-06-26 (autopilot).~~
+            (SUPERSEDED 2026-10-16 — Paulo: "hell fucking yess ads on sourcescore".
+            Every site must earn. The 06-26 reason (bot-heavy, programmatic, cascade
+            risk to the shared pub-id) is still a real risk; he chose to take it.
+            ads.txt carries the pub-id again.) */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7449214764048186"
+          crossOrigin="anonymous"
+        />
 
         {/* llms.txt advertise per `rules/bot-harvest.md` Day-1 manifest spec.
             sourcescore is the heaviest bot-traffic site in the fleet
