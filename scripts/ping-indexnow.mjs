@@ -52,13 +52,20 @@ if (!KEY) {
 
 const SITE = "sourcescore.org";
 
+// ONLY CHANGED PAGES (2026-10-17): this used to submit every sitemap URL (~1,178) on every deploy, which is
+// IndexNow batch mode for pages that did not change. scripts/lastmod.mjs writes .lastmod-changed.json (new
+// pages + pages whose <main> text changed); no list, or an empty one, means nothing is submitted.
 let urls = [];
 try {
-  const xml = readFileSync("out/sitemap.xml", "utf8");
-  urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  urls = JSON.parse(readFileSync(".lastmod-changed.json", "utf8"));
+  if (!Array.isArray(urls)) urls = [];
 } catch (e) {
-  console.error("⚠ Could not read out/sitemap.xml — run npm run build first.");
-  process.exit(1);
+  console.log("ℹ No .lastmod-changed.json (scripts/lastmod.mjs did not run) — submitting nothing.");
+  process.exit(0);
+}
+if (!urls.length) {
+  console.log("ℹ No page changed this deploy — nothing to submit to IndexNow.");
+  process.exit(0);
 }
 
 const body = {

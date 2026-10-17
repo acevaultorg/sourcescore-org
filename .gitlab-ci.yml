@@ -61,12 +61,18 @@ build:
     - test -f out/index.html
     # Amili Kit (2026-10-02): top ad + in-page ad + kit search/header bar, injected into the built pages
     - npm run kit
+    # Real per-page <lastmod> (2026-10-17): the day each page's <main> text last changed, from the committed
+    # data/page-lastmod.json. Changed pages get the build day; the updated manifest rides in the artifact and
+    # ci-guarded-deploy commits it back to main after a successful deploy ([skip ci]).
+    - node scripts/lastmod.mjs
     # Verify postbuild generators produced their artifacts (sitemap, llms, sitemap-ai)
     # Catches 2026-05-12-class root cause: generator silently fails -> sitemap.xml absent in deploy.
     - node scripts/predeploy-guard.mjs
   artifacts:
     paths:
       - out/
+      - data/page-lastmod.json
+      - .lastmod-changed.json
     expire_in: 1 day
   only:
     - main
