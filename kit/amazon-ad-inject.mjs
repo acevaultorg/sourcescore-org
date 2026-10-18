@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/inject.mjs (sha256 46651cb43a50), Amili Kit v1.2.4 — do not edit here; re-run sync.sh.
+// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/inject.mjs (sha256 f4b2d643e02f), Amili Kit v1.16.7 — do not edit here; re-run sync.sh.
 // Amili Kit Amazon ad — build-output injector (fleet rollout 2026-09-28, Paulo thought mulitb3a2bhmcs: "at least 20 sites").
 // CANONICAL: VAULT-Fleet/tooling/fleet-kit/amazon-ad/inject.mjs. Sites carry a synced copy at kit/amazon-ad-inject.mjs.
 //
@@ -14,12 +14,12 @@
 //
 // Usage: node kit/amazon-ad-inject.mjs <outDir> [configPath=amazon-ad.config.mjs]
 // Config (default export): { site, variant, products, disclosure, placementAttrs?, skip? (regex strings on the URL path),
-//   lang?, slotStyle? }. Prints "N/M pages" and exits 1 when it injected nothing (a silent no-op must not deploy).
+//   lang?, slotStyle?, slotMove? (defer after-main placement until load for strict React hydration) }. Prints "N/M pages" and exits 1 when it injected nothing (a silent no-op must not deploy).
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { renderAd, renderBillboard, pickProducts, AD_CSS, AD_JS, BILLBOARD_CSS, validatePool, BEACON_I_JS, bbHeadJs, BB_JS } from './amazon-ad.mjs';
+import { renderAd, renderBillboard, pickProducts, eligibleProducts, AD_CSS, AD_JS, BILLBOARD_CSS, validatePool, validateExcluded, BEACON_I_JS, bbHeadJs, BB_JS, LEARN_JS, LEARN_DEFAULT } from './amazon-ad.mjs';
 
 export const GATE = '/go/amzad';
 export const API = '/amz/items';
@@ -56,6 +56,8 @@ export function pagePath(rel) {
 }
 
 function decorate(ad, cfg) {
+  // Theme tokens must live on the ad itself: its default variables shadow inherited wrapper values.
+  if (cfg.adStyle) ad = ad.replace('<aside ', '<aside style="' + String(cfg.adStyle).replace(/&/g, '&amp;').replace(/"/g, '&quot;') + '" ');
   // hrefSuffix: extra query the site's own guards require on every /go/ href (e.g. approvedmodem's "&sub=" beacon key).
   if (cfg.hrefSuffix) ad = ad.replace(/href="(\/go\/amzad\?a=[A-Z0-9]{10})"/g, (m, h) => `href="${h}${cfg.hrefSuffix.replace(/&/g, '&amp;')}"`);
   for (const attr of cfg.placementAttrs || []) {
@@ -105,10 +107,11 @@ export function pageAsins(html, catalog, firstOnly = false, skipHrefs = []) {
 function topCard(html, urlPath, cfg) {
   const rule = (cfg.topCards || []).find((r) => new RegExp(r.match).test(urlPath));
   if (!rule) return null;
-  const asins = pageAsins(html, cfg.catalog, !!rule.firstOnly, rule.skipHrefs || []);
+  const catalog = eligibleProducts(cfg.catalog, cfg.excludeAsins);
+  const asins = pageAsins(html, catalog, !!rule.firstOnly, rule.skipHrefs || []);
   const n = rule.n || 1;
   if (asins.length < n) return null;
-  const byAsin = new Map(cfg.catalog.map((p) => [p.asin, p]));
+  const byAsin = new Map(catalog.map((p) => [p.asin, p]));
   let pick = asins.slice(0, n + (n === 1 ? (rule.spares ?? 2) : 0));
   // orderBy 'h1': a comparison shows its items in the order its headline names them ("A vs B" -> A, B).
   if (rule.orderBy === 'h1') {
@@ -132,28 +135,62 @@ export function headingFor(urlPath, cfg) {
 // Optional: billboard.match (regex on the URL path; default every injected page), billboard.headline / midHeadline
 // templates with {name} and {why} (default: the product's own `headline`, else `why`). Product = the first product the
 // page itself links to (from products + catalog), else today's rotation of the site's products; mid never repeats top.
+// `requireOwnOn` prevents a page-scoped placement from falling back to unrelated products when its own item is
+// not in the site's allow-listed catalog. `catalogOnlyOn` lets a site use its catalog (rather than general products)
+// for those same page types; both are opt-in so existing sites keep their established pools.
+// `ownOnlyOn` (regex): on those pages the box holds ONLY products the page itself links to, never the rotation, so a
+// page about other books never shows an unrelated pick (1.8.7, readstacks books-like/author pages, card mv00dcpvxxyma4).
+// `headlines` ([[pathRegex, headline, midHeadline?, restHeadline?], ...], first match wins): a heading per page type, because one
+// template is false somewhere ("the full book behind the summary" on a page that summarises nothing).
 // When the top billboard is placed, the page's V1 top card is not (the billboard is the richer version of it).
 function billboardFor(html, urlPath, cfg) {
   const b = cfg.billboard;
   if (!b || (b.match && !new RegExp(b.match).test(urlPath))) return null;
   if (b.skipIf && new RegExp(b.skipIf).test(html)) return null; // e.g. a page running its own measured buy-module experiment
-  const pool = [...(cfg.products || []), ...(cfg.catalog || [])].filter((p, i, a) => a.findIndex((q) => q.asin === p.asin) === i);
+  const pageScoped = (pattern) => pattern && new RegExp(pattern).test(urlPath);
+  const catalogOnly = pageScoped(b.catalogOnlyOn);
+  const requireOwn = pageScoped(b.requireOwnOn);
+  const products = eligibleProducts(cfg.products, cfg.excludeAsins);
+  const catalog = eligibleProducts(cfg.catalog, cfg.excludeAsins);
+  const pool = [...(catalogOnly ? [] : products), ...catalog].filter((p, i, a) => a.findIndex((q) => q.asin === p.asin) === i);
   if (!pool.length) return null;
   const byAsin = new Map(pool.map((p) => [p.asin, p]));
   const own = pageAsins(html, pool, false, (cfg.topCards || [])[0]?.skipHrefs || []).map((a) => byAsin.get(a));
+  if (requireOwn && !own.length) return null;
   const rot = pickProducts(pool, { page: urlPath, day: RANK_DAY, n: Infinity });
-  const order = [...own, ...rot].filter((p, i, a) => a.indexOf(p) === i);
+  const order = (pageScoped(b.ownOnlyOn) ? own : [...own, ...rot]).filter((p, i, a) => a.indexOf(p) === i);
+  if (!order.length) return null;
+  const hl = (b.headlines || []).find((r) => new RegExp(r[0]).test(urlPath));
+  const head = hl ? hl[1] : b.headline, midHead = hl ? (hl[2] || hl[1]) : (b.midHeadline || b.headline);
+  // restHeadline: the heading of cards 2+ in a deck/row (default: the box's own heading). A heading that is true of the
+  // page's subject only ("the full book behind the summary") must not be stamped on the other cards.
+  const restHead = (hl && hl[3]) || b.restHeadline;
   const fill = (tpl, p) => String(tpl).replace(/\{name\}/g, p.name).replace(/\{why\}/g, p.why);
   // billboard.variant ('auto'|'a'|'b'|'c'): the box carries up to 6 products, most relevant first, for the A/B/C layouts.
   const V = !!b.variant;
-  const mk = (placement, p, tpl, rest) => decorate(renderBillboard({ placement, product: p, headline: tpl ? fill(tpl, p) : undefined, variants: V, products: V ? rest.map((x) => ({ ...x, bbHead: tpl ? fill(tpl, x) : x.why })) : undefined, disclosure: cfg.disclosure, api: API, gate: GATE, page: urlPath, lang: cfg.lang || 'en', labels: b.labels }), cfg);
-  return { top: b.top ? mk('top', order[0], b.headline, order.slice(1, 6)) : null, mid: b.mid && order[1] ? mk('mid', order[1], b.midHeadline || b.headline, order.slice(2, 7)) : null };
+  const mk = (placement, p, tpl, rest) => decorate(renderBillboard({ placement, product: p, headline: tpl ? fill(tpl, p) : undefined, variants: V, products: V ? rest.map((x) => ({ ...x, bbHead: (restHead || tpl) ? fill(restHead || tpl, x) : x.why })) : undefined, disclosure: cfg.disclosure, api: API, gate: GATE, page: urlPath, lang: cfg.lang || 'en', labels: b.labels }), cfg);
+  return { top: b.top ? mk('top', order[0], head, order.slice(1, 6)) : null, mid: b.mid && order[1] ? mk('mid', order[1], midHead, order.slice(2, 7)) : null };
+}
+
+// Learning billboard (1.7.0): LEARN_JS runs BEFORE AD_JS (AD_JS waits for its order before filling). On for a site
+// with billboard.learn: true, or for every billboard with A/B/C cards once LEARN_DEFAULT flips (after the 10-20 read).
+export const learnOn = (cfg) => !!(cfg.billboard && cfg.billboard.variant && (cfg.billboard.learn ?? LEARN_DEFAULT));
+// 1.8.0 (Paulo muwzl94eayvh9m "doe de beste implementatie op alle relevante sites"): with LEARN_DEFAULT on, a billboard
+// with no variant becomes the 4-up row (layout C, Paulo 10-02 "i like this layout with 4") so the learner has products
+// to order. An explicit variant ('random' = the A/B/C test on secfilingdex + readstacks) or learn: false is kept as is.
+export function learnDefaults(cfg) {
+  const b = cfg && cfg.billboard;
+  if (!b || b.variant || !(b.learn ?? LEARN_DEFAULT)) return cfg;
+  return { ...cfg, billboard: { ...b, variant: 'auto' } };
 }
 
 export function injectHtml(html, urlPath, cfg) {
+  cfg = learnDefaults(cfg);
   const base = stripAd(html);
   const skip = [...DEFAULT_SKIP, ...(cfg.skip || [])].map((s) => new RegExp(s));
   if (skip.some((re) => re.test(urlPath))) return { html: base, injected: false, why: 'skip' };
+  // React-owned slots render in the layout and load the browser asset after hydration.
+  if (cfg.nativeSlot) return { html: base, injected: /data-ak-native/.test(base), why: 'no-native-slot' };
   // anchor 'before-footer' (sites without <main>, e.g. stickyidea): the slot goes right before the page's last <footer>.
   let end = base.lastIndexOf('</main>');
   let endLen = '</main>'.length;
@@ -162,13 +199,13 @@ export function injectHtml(html, urlPath, cfg) {
   if (!/<\/head>/i.test(base) || !/<\/body>/i.test(base) || !/<html\b/i.test(base)) return { html: base, injected: false, why: 'no-head-body' };
   // variant 'none': top cards only (no end-of-content line), for sites that asked for the targeted card alone.
   const bottom = cfg.variant !== 'none';
-  const products = bottom ? pickProducts(cfg.products, { page: urlPath, day: RANK_DAY, n: Infinity }) : [];
-  let ad = bottom ? decorate(renderAd({ variant: cfg.variant, heading: headingFor(urlPath, cfg), products, disclosure: cfg.disclosure, api: API, gate: GATE, page: urlPath, lang: cfg.lang || 'en', n: cfg.n }), cfg) : '';
+  const products = bottom ? pickProducts(eligibleProducts(cfg.products, cfg.excludeAsins), { page: urlPath, day: RANK_DAY, n: Infinity }) : [];
+  let ad = bottom ? decorate(renderAd({ variant: cfg.variant, on: !!cfg.slotMove, heading: headingFor(urlPath, cfg), products, disclosure: cfg.disclosure, api: API, gate: GATE, page: urlPath, lang: cfg.lang || 'en', n: cfg.n }), cfg) : '';
   const [cA, cB] = MARK('css');
   const [sA, sB] = MARK('slot');
   const [jA, jB] = MARK('js');
-  const at = end + endLen;
-  let h = bottom ? base.slice(0, at) + `${sA}<div class="ak-slot"${cfg.slotStyle ? ` style="${cfg.slotStyle}"` : ''}>${ad}</div>${sB}` + base.slice(at) : base;
+  const at = cfg.slotMove ? base.toLowerCase().lastIndexOf('</body>') : end + endLen;
+  let h = bottom ? base.slice(0, at) + `${sA}<div class="ak-slot"${cfg.slotMove ? ' data-ak-move="after-main"' : ''}${cfg.slotStyle ? ` style="${cfg.slotStyle}"` : ''}>${ad}</div>${sB}` + base.slice(at) : base;
   const top = cfg.billboard && cfg.billboard.top && (!cfg.billboard.match || new RegExp(cfg.billboard.match).test(urlPath)) ? null : topCard(base, urlPath, cfg);
   let topAt = -1;
   if (top) {
@@ -189,11 +226,26 @@ export function injectHtml(html, urlPath, cfg) {
   if (bb && bb.top) {
     const [tA, tB] = MARK('bbtop');
     const hi = h.search(/<header\b/i), mi = h.indexOf('<main');
-    const at2 = hi >= 0 && (mi < 0 || hi < mi) ? hi : h.search(/<body\b[^>]*>/i) + h.match(/<body\b[^>]*>/i)[0].length;
+    // 1.9.0 (Paulo 2026-10-11, espressospecdb "looks shit", card muwvj4pmjz2hr2): the top band NEVER sits above the site header.
+    // Inner pages: right after the header's </header>. Homepages of static sites: after the intro paragraph that follows the H1
+    // (billboard.topIntro:false opts out; midMove/React builds keep the header slot, since a node inside <main> breaks hydration).
+    // No header at all: top of <body>, as before.
+    let at2 = -1;
+    const hend = hi >= 0 ? h.indexOf('</header>', hi) : -1;
+    if (hend >= 0 && (mi < 0 || hend < mi)) at2 = hend + '</header>'.length;
+    else at2 = h.search(/<body\b[^>]*>/i) + h.match(/<body\b[^>]*>/i)[0].length;
+    if (/^\/(index\.html)?$/.test(urlPath) && cfg.billboard.topIntro !== false && !cfg.billboard.midMove && mi >= 0) {
+      const me = h.lastIndexOf('</main>'), h1e = h.indexOf('</h1>', mi);
+      const pe = h1e >= 0 ? h.indexOf('</p>', h1e) : -1;
+      if (pe >= 0 && pe < me && !/<h2\b/i.test(h.slice(h1e, pe))) at2 = pe + '</p>'.length;
+    }
     // billboard.phoneTop (regex on the URL path): pages where the top band also shows on phones. Elsewhere it is desktop-
     // only (display:none below 48rem, so nothing shifts): on a page whose own design puts a cover or a buy bar above the
     // H1, a phone band would push the H1 under the fold (measured on readstacks book pages, 2026-09-29).
-    const topHtml = cfg.billboard.phoneTop && !new RegExp(cfg.billboard.phoneTop).test(urlPath) ? bb.top.replace('class="ak-ad ak-on ak-bill ak-bill-top"', 'class="ak-ad ak-on ak-bill ak-bill-top ak-bill-nophone"') : bb.top;
+    const topHtml = cfg.billboard.phoneTop && !new RegExp(cfg.billboard.phoneTop).test(urlPath) ? bb.top.replace(/class="ak-ad ak-on ak-bill ak-bill-top(?=[ "])/, '$& ak-bill-nophone') : bb.top;
+    // 1.8.7: a regex, not the exact class string. The learning billboard's class carries " ak-bb-var" after ak-bill-top,
+    // so the exact-string replace missed and phoneTop did nothing on every learning billboard (readstacks 1.7.0..1.8.6:
+    // the band sat above the header on phones on every page; measured live 2026-10-08, card mv00dcpvxxyma4).
     h = h.slice(0, at2) + `${tA}${topHtml}${tB}` + h.slice(at2);
   }
   if (bb && bb.mid) {
@@ -220,10 +272,10 @@ export function injectHtml(html, urlPath, cfg) {
     }
     if (at3 >= 0) h = h.slice(0, at3) + `${mA}<div class="ak-bill-midwrap"${cfg.billboard.midMove ? ' data-ak-move="after-main"' : ''}>${bb.mid}</div>${mB}` + h.slice(at3);
   }
-  if (bottom) h = h.replace(/<html\b/i, `<html data-akv="${cfg.variant}"`);
+  if (bottom && !cfg.slotMove) h = h.replace(/<html\b/i, `<html data-akv="${cfg.variant}"`);
   h = h.replace(/<\/head>/i, `${cA}<script>${MINT_JS}</script><script>${BEACON_I_JS}</script>${cfg.billboard && cfg.billboard.variant && bb ? `<script>${bbHeadJs(cfg.billboard.variant)}</script>` : ''}${cfg._ext ? `<link rel="stylesheet" href="${cfg._ext.css}">` : `<style>${AD_CSS}\n${SLOT_CSS}${cfg.billboard ? '\n' + BILLBOARD_CSS : ''}</style>`}${cB}</head>`);
   const bi = h.toLowerCase().lastIndexOf('</body>');
-  h = h.slice(0, bi) + (cfg._ext ? `${jA}<script src="${cfg._ext.js}" defer></script>${jB}` : `${jA}<script>${AD_JS}</script>${cfg.billboard && cfg.billboard.variant && bb ? `<script>${BB_JS}</script>` : ''}${jB}`) + h.slice(bi);
+  h = h.slice(0, bi) + (cfg._ext ? `${jA}<script src="${cfg._ext.js}" defer></script>${jB}` : `${jA}${learnOn(cfg) && bb ? `<script>${LEARN_JS}</script>` : ''}<script>${AD_JS}</script>${cfg.billboard && cfg.billboard.variant && bb ? `<script>${BB_JS}</script>` : ''}${jB}`) + h.slice(bi);
   return { html: h, injected: true, top: topAt >= 0, bb: !!(bb && (bb.top || bb.mid)) };
 }
 
@@ -244,15 +296,38 @@ export function stableHeaders(out, files) {
   let h = fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
   const re = new RegExp(`\\n?${A}[\\s\\S]*?${B}\\n?`, 'g');
   const prev = (h.match(re) || [''])[0];
-  const have = new Set([...prev.matchAll(/^\/kit-[a-z.-]+$/gm)].map((m) => m[0]));
+  const have = new Set([...prev.matchAll(/^\/kit-[a-z0-9.-]+$/gm)].map((m) => m[0]).filter((f) => !/^\/kit-ad\.[0-9a-f]{10}\.(css|js)$/.test(f)));
   files.forEach((f) => have.add(f));
   h = h.replace(re, '\n');
   const block = `${A} (Amili Kit: stable URLs, short cache)\n` + [...have].sort().map((f) => `${f}\n  Cache-Control: public, max-age=600, must-revalidate\n`).join('') + `${B}\n`;
   fs.writeFileSync(p, (h.trimEnd() ? h.trimEnd() + '\n\n' : '') + block);
+  servedAllowlist(out, files);
+}
+
+// Advanced-mode Pages sites (1.2.6, 2026-10-03): a site that ships out/_worker.js with an exact served-files list
+// (`const SERVED = new Set([...])`, written by its build.mjs so unknown paths 404 instead of soft-404ing to the
+// homepage) 404s every file the kit adds AFTER that list was written. needwatts.com served /kit-ad.css, /kit-ad.js
+// and /kit-search.js as 404 from 2026-10-03 01:15Z (kit-rollout live verify caught it). Every kit asset is therefore
+// added to that list here. No such worker or no SERVED list = nothing to do. Idempotent.
+export function servedAllowlist(out, files) {
+  const w = path.join(out, '_worker.js');
+  if (!fs.existsSync(w)) return 0;
+  const src = fs.readFileSync(w, 'utf8');
+  const re = /const SERVED = new Set\((\[[^\n]*?\])\);/;
+  const m = src.match(re);
+  if (!m) return 0;
+  const have = new Set(JSON.parse(m[1]));
+  const before = have.size;
+  files.forEach((f) => have.add(f));
+  if (have.size === before) return 0;
+  fs.writeFileSync(w, src.replace(re, () => `const SERVED = new Set(${JSON.stringify([...have].sort())});`));
+  return have.size - before;
 }
 
 export function injectDir(outDir, cfg) {
+  cfg = learnDefaults(cfg);
   const errs = cfg.variant === 'none' ? validatePool(cfg.catalog).filter((e) => e !== 'empty pool') : validatePool(cfg.products);
+  errs.push(...validateExcluded([...(cfg.products || []), ...(cfg.catalog || [])], cfg.excludeAsins));
   if (errs.length) throw new Error(`amazon-ad-inject: ${errs.join('; ')}`);
   if (cfg.variant === 'none' && !(cfg.topCards || []).length && !cfg.billboard) throw new Error('amazon-ad-inject: variant none needs topCards');
   if (!cfg.variant || !cfg.disclosure) throw new Error('amazon-ad-inject: variant and disclosure are required');
@@ -262,14 +337,18 @@ export function injectDir(outDir, cfg) {
   // scripts (gesture mint, beacon, billboard variant) stay inline. cfg.inline: true keeps the old inline form.
   if (!cfg.inline && !cfg._ext) {
     const css = `${AD_CSS}\n${SLOT_CSS}${cfg.billboard ? '\n' + BILLBOARD_CSS : ''}`;
-    const js = `${AD_JS}\n${cfg.billboard && cfg.billboard.variant ? BB_JS : ''}`;
+    const js = `${learnOn(cfg) ? LEARN_JS + '\n' : ''}${AD_JS}\n${cfg.billboard && cfg.billboard.variant ? BB_JS : ''}`;
     const v = (x) => crypto.createHash('sha256').update(x).digest('hex').slice(0, 10);
-    // Hashed filenames, as the canonical kit 1.8.3+ (card mus4vs8tvfq48l): the zone's 4h browser cache overrides
-    // max-age, so bare /kit-ad.css|js served old CSS/JS against new HTML after a deploy (site-guard asset-cache).
-    // The stable names stay written for pages still cached with the old tags.
+    // 1.8.3: the pages link a HASHED FILENAME (kit-ad.<hash>.css). 1.8.2's ?v=<hash> query was not enough: during a
+    // Pages deploy the edge fetched /kit-ad.css?v=<new> from the still-active OLD deployment (static origins ignore the
+    // query), cached the OLD stylesheet under the new key, and audiobookindex rendered unstyled again. An old deployment
+    // answers a new filename with a 404, never with stale CSS. The plain names stay for pages still cached with them.
     const cssName = `/kit-ad.${v(css)}.css`, jsName = `/kit-ad.${v(js)}.js`;
     for (const [n, x] of [['/kit-ad.css', css], ['/kit-ad.js', js], [cssName, css], [jsName, js]]) fs.writeFileSync(path.join(outDir, n.slice(1)), x);
     stableHeaders(outDir, ['/kit-ad.css', '/kit-ad.js', cssName, jsName]);
+    // 1.8.2 (2026-10-07): zones with a 4 h Browser Cache TTL override serve these with max-age=14400, so a stable URL
+    // keeps the OLD stylesheet after a kit change (approvedmodem: full-screen unstyled billboard image, card muxnmnx3ngbg1a).
+    // The hash only changes when the CSS/JS content changes, so a kit update that leaves them alone re-uploads no page.
     cfg = { ...cfg, _ext: { css: cssName, js: jsName } };
   }
   const why = {};

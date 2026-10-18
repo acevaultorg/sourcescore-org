@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.2.4 (header.mjs sha256 fa0ab6e7e8ac) from VAULT-Fleet/tooling/fleet-kit/header/header.mjs — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.16.7 (header.mjs sha256 75303355162b) from VAULT-Fleet/tooling/fleet-kit/header/header.mjs — do not edit here; re-run sync.sh.
 // Amili Kit: header bar — search in the header on every width, Shop in the phone header, header back on scroll-up.
 // Paulo 2026-10-02: "amili kit search missing in menu bar! very bad" (mur0dp4bzunyqy), "if user scrolls back on any of
 // our sites, header menu should appear" (mur06p8ukgwx6c), "consider to put shop in the mobile menu bar by default"
@@ -18,6 +18,10 @@
 //   { header: 'css', logo: 'css', row: 'css', shop: { href: '/shop/', label: 'Shop' } | false, shopDesktop: false,
 //     search: true, reveal: true, phone: 760 (px: phone layout at or below), hide: ['css' ...] (extra boxes to hide on phones),
 //     z: 1000 }
+// Scroll hint (1.16.7, card mvai6u6bokmgpz): a header nav that scrolls sideways ends mid-word at the screen edge and looks
+// broken. While links sit off to the right, a 44px fade + chevron (.ak-hb-more) covers that edge; a tap scrolls the nav on;
+// at the end it goes away. Absolutely placed in the nav's parent (nothing moves), aria-hidden, out of the tab order.
+// cfg.navHint === false switches it off.
 // Shop default: the first header/nav/footer link whose text or path says shop / store / top picks / best / deals / gear.
 // A site with no such page gets no Shop item (never a link to nowhere).
 
@@ -37,7 +41,10 @@ export const HEADER_CSS = `.ak-hb{position:absolute;z-index:3;display:flex;align
 .ak-hb-anim{transition:transform .22s ease}
 .ak-hb-up{transform:translateY(calc(-100% - 12px))}
 @media (prefers-reduced-motion:reduce){.ak-hb-anim{transition:none}}
-@media print{.ak-hb{display:none}}`;
+.ak-hb-more{position:absolute;z-index:2;display:flex;align-items:center;justify-content:flex-end;width:44px;padding:0 2px 0 0;margin:0;border:0;cursor:pointer}
+.ak-hb-more svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5}
+@media print{.ak-hb{display:none}}
+@media print{.ak-hb-more{display:none}}`;
 
 // Self-contained browser code (no closures over module scope, no backticks): shipped verbatim in kit-search.js.
 function akHeader(cfg) {
@@ -81,16 +88,16 @@ function akHeader(cfg) {
   if (wantSearch) { var sl = hdr.querySelectorAll('a[href],button'); for (var o2 = 0; o2 < sl.length; o2++) { var e2 = sl[o2], tx = (e2.textContent || '').replace(/[^a-z]/gi, '').toLowerCase(), hp = ''; try { hp = e2.href ? new URL(e2.href, location.href).pathname : ''; } catch (x) {} if (vis(e2) && (tx === 'search' || /^\/search\/?$/.test(hp))) { e2.setAttribute('data-ak-search-take', ''); bindTake(e2); wantSearch = false; out.took = true; } } }
   if (row && logo && (wantSearch || shop)) {
     var phone = innerWidth <= PH;
-    var g = d.createElement('div'); g.className = 'ak-hb'; g.setAttribute('role', 'group'); g.setAttribute('aria-label', 'Site tools');
+    var g = d.createElement('div'); g.className = 'ak-hb'; g.setAttribute('role', 'group'); var HT = cfg.t || {}; g.setAttribute('aria-label', HT.tools || 'Site tools');
     var shopEl = null;
     if (shop && shop.href && (phone || cfg.shopDesktop)) {
       shopEl = d.createElement('a'); shopEl.href = shop.href; shopEl.className = 'ak-hb-shop'; shopEl.setAttribute('data-event-from', 'kit-header-shop');
       shopEl.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span></span>';
-      shopEl.lastChild.textContent = shop.label || 'Shop'; g.appendChild(shopEl);
+      shopEl.lastChild.textContent = shop.label || HT.shop || 'Shop'; g.appendChild(shopEl);
     }
     if (wantSearch) {
-      var sb = d.createElement('button'); sb.type = 'button'; sb.className = 'ak-hb-search'; sb.setAttribute('data-ak-search-open', ''); sb.setAttribute('aria-label', 'Search this site');
-      sb.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><span class="ak-hb-sl">Search</span><kbd class="ak-hb-sl" aria-hidden="true">/</kbd>';
+      var sb = d.createElement('button'); sb.type = 'button'; sb.className = 'ak-hb-search'; sb.setAttribute('data-ak-search-open', ''); sb.setAttribute('aria-label', HT.label || 'Search this site');
+      sb.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><span class="ak-hb-sl"></span><kbd class="ak-hb-sl" aria-hidden="true">/</kbd>'; sb.querySelector('span.ak-hb-sl').textContent = HT.search || 'Search';
       if (cfg.late) sb.addEventListener('click', function () { openS(''); });
       g.appendChild(sb);
     }
@@ -109,7 +116,7 @@ function akHeader(cfg) {
       for (var pass = 0; pass < 24; pass++) {
         g.style.right = Math.round(rr.right - edge) + 'px';
         var gr = g.getBoundingClientRect(), hit = null, soft = [];
-        if (gr.left < lr.right + 8 || gr.left < rr.left) break;
+        if (gr.left < lr.right + 6 || gr.left < rr.left) break;
         for (var n = 0; n < all.length; n++) {
           var b = all[n]; if (g.contains(b) || b.contains(g) || b === logo || logo.contains(b) || !vis(b)) continue;
           var ia = IA.test(b.tagName) || b.getAttribute('role') === 'button';
@@ -133,6 +140,20 @@ function akHeader(cfg) {
     if (place()) { out.placed = true; var t0 = 0; W.addEventListener('resize', function () { clearTimeout(t0); t0 = setTimeout(function () { if (!place()) g.style.display = 'none'; else g.style.display = ''; }, 120); }); if (d.fonts && d.fonts.ready) d.fonts.ready.then(place); }
     else { row.removeChild(g); row.classList.remove('ak-hb-row'); }
   }
+  // ---- scroll hint on a header nav that scrolls sideways (1.16.7, see the file header) ----
+  if (cfg.navHint !== false) [].forEach.call(hdr.querySelectorAll('*'), function (n) {
+    if (n.__akh || !/^(auto|scroll)$/.test(getComputedStyle(n).overflowX) || n.querySelectorAll('a[href]').length < 2 || !vis(n)) return;
+    n.__akh = 1; var p = n.parentElement, h = d.createElement('button'), bg = '#fff', x;
+    for (x = n; x; x = x.parentElement) if (!/rgba\(0, 0, 0, 0\)|transparent/.test(getComputedStyle(x).backgroundColor)) { bg = getComputedStyle(x).backgroundColor; break; }
+    if (getComputedStyle(p).position === 'static') p.classList.add('ak-hb-row');
+    h.type = 'button'; h.className = 'ak-hb-more'; h.tabIndex = -1; h.setAttribute('aria-hidden', 'true');
+    h.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
+    h.style.cssText = 'background:linear-gradient(to right,transparent,' + bg + ' 55%);color:' + getComputedStyle(n.querySelector('a[href]')).color;
+    h.onclick = function () { n.scrollBy({ left: n.clientWidth * 0.7, behavior: 'smooth' }); };
+    p.appendChild(h);
+    function pos() { var pr = p.getBoundingClientRect(), r = n.getBoundingClientRect(); h.style.display = n.scrollWidth > n.clientWidth + 4 && n.scrollLeft + n.clientWidth < n.scrollWidth - 4 && vis(n) ? '' : 'none'; h.style.top = r.top - pr.top - p.clientTop + 'px'; h.style.height = r.height + 'px'; h.style.right = pr.right - r.right - p.clientLeft + 'px'; }
+    n.addEventListener('scroll', pos, { passive: true }); W.addEventListener('resize', pos); pos(); out.hints = (out.hints || 0) + 1;
+  });
   // ---- reveal on scroll-up ----
   if (cfg.reveal !== false) {
     var cs = getComputedStyle(hdr), pos = cs.position;

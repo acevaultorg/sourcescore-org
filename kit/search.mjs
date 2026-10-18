@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.2.4 (search.mjs sha256 0ec874859dab) from VAULT-Fleet/tooling/fleet-kit/search/search.mjs — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.16.7 (search.mjs sha256 838a5667206a) from VAULT-Fleet/tooling/fleet-kit/search/search.mjs — do not edit here; re-run sync.sh.
 // Amili Kit: Amili Search — @fleet/kit component (Paulo 2026-09-28 mulka4m44yukr1: "amili search must be great").
 // CANONICAL: VAULT-Fleet/tooling/fleet-kit/search/search.mjs. Grown from tooling/amili-search (v1, the fleet's per-site
 // search) and fitmylens/search.js (the typing-session logging contract). Sites vendor a copy with sync.sh.
@@ -24,6 +24,8 @@
 //   hotkey: true,                  // "/" and Ctrl/Cmd+K focus the box
 //   brand: BRAND_DEFAULT,          // tiny "amili" mark in the results corner, links to amili.ai/kit
 //   id: 'site-search',             // unique per page if you place two
+//   lang: 'nl',                    // interface language of the box, results, launcher and header button (STRINGS: en, nl; default en)
+//   strings: { noResults: '…' },   // override single interface strings (keys: see STRINGS.en)
 // }
 // The page also gets a bubbling `ak-search` CustomEvent {q, results} on the form for your own analytics.
 
@@ -167,7 +169,37 @@ function sameTypingSession(a, b) {
   return i >= s.length * 0.6;
 }
 
-export const engine = { norm, within, typos, makeIndex, termHits, query, didYouMean, highlight, cleanQuery, sameTypingSession };
+// Pattern routes (1.5.3): some indexes have a tool that answers a query shape
+// better than a static page can. Keep the matcher deliberately conservative:
+// bare all-letter six-hex words such as "facade" remain ordinary search terms.
+function hexRouteValue(raw) {
+  var t = String(raw || '').trim(), hash = t.charAt(0) === '#', v = t.replace(/^#/, '');
+  if (/^[0-9a-fA-F]{6}$/.test(v) && (hash || /[0-9]/.test(v))) return v.toLowerCase();
+  var m = /#([0-9a-fA-F]{6})\b/.exec(t);
+  if (m) return m[1].toLowerCase();
+  if (hash && /^[0-9a-fA-F]{3}$/.test(v)) return v.replace(/./g, '$&$&').toLowerCase();
+  var r = /rgba?\s*\(?\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})/i.exec(t);
+  if (r && +r[1] < 256 && +r[2] < 256 && +r[3] < 256) return [r[1], r[2], r[3]].map(function (n) { return ('0' + (+n).toString(16)).slice(-2); }).join('');
+  return null;
+}
+function routeHits(routes, q) {
+  var out = [], rs = Array.isArray(routes) ? routes : [];
+  for (var i = 0; i < rs.length; i++) {
+    var route = rs[i], hex = route && String(route.match || '').toLowerCase() === 'hex' ? hexRouteValue(q) : null;
+    if (!hex || !route.href || !route.label) continue;
+    var label = String(route.label).replace(/\{HEX\}/g, hex.toUpperCase()).replace(/\{hex\}/g, hex);
+    var href = String(route.href).replace(/\{hex\}/gi, hex);
+    out.push({ t: label, d: '', u: href, g: route.group ? String(route.group) : '' });
+  }
+  return out;
+}
+function queryWithRoutes(ix, q, max, routes) {
+  var routed = routeHits(routes, q), res = query(ix, q, routed.length < max ? max - routed.length : 1);
+  if (routed.length) { res.hits = routed.concat(res.hits).slice(0, max); res.total = routed.length + (res.total || 0); }
+  return res;
+}
+
+export const engine = { norm, within, typos, makeIndex, termHits, query, didYouMean, highlight, cleanQuery, sameTypingSession, hexRouteValue, routeHits, queryWithRoutes };
 
 // ---------------------------------------------------------------------------------------------------------------
 // Markup (server side). The results box is absolutely positioned, so opening it never moves the page.
@@ -176,27 +208,41 @@ export function brandMark(on) {
   return on ? '<a class="ak-brand" href="https://amili.ai/kit" rel="noopener" aria-label="Made with Amili Kit"><span class="ak-brand-dot" aria-hidden="true"></span>amili</a>' : '';
 }
 
+// Interface strings (1.5.2, Dagpeil card muwvqic23btqpl): a Dutch site showed "No results for" and "Close search".
+// English stays the default and renders byte-identical; lang/strings add a data-t attribute the widget reads.
+export const STRINGS = {
+  en: { label: 'Search this site', placeholder: 'Search', results: 'Results', move: 'move', open: 'open', close: 'close', noResults: 'No results for', dym: 'Did you mean:', tryThese: 'Try:', shorter: 'Try a shorter word.', of: 'of', one: 'result', many: 'results', closest: 'closest matches', none: 'No results', closeSearch: 'Close search', press: 'press /', tools: 'Site tools', search: 'Search', shop: 'Shop' },
+  nl: { label: 'Zoek op deze site', placeholder: 'Zoeken', results: 'Resultaten', move: 'kies', open: 'open', close: 'sluit', noResults: 'Niets gevonden voor', dym: 'Bedoel je:', tryThese: 'Probeer:', shorter: 'Probeer een korter woord.', of: 'van', one: 'resultaat', many: 'resultaten', closest: 'beste overeenkomsten', none: 'Niets gevonden', closeSearch: 'Zoeken sluiten', press: 'druk op /', tools: 'Sitefuncties', search: 'Zoeken', shop: 'Winkel' },
+};
+export function searchStrings(opts = {}) {
+  return { ...STRINGS.en, ...(STRINGS[opts.lang] || {}), ...(opts.strings || {}) };
+}
+const localized = (opts) => !!((opts.lang && opts.lang !== 'en' && STRINGS[opts.lang]) || (opts.strings && Object.keys(opts.strings).length));
+
 export function renderSearch(opts = {}) {
   if (!opts.index) throw new Error('Amili Search: opts.index (URL of the JSON index) is required');
   if (opts.logUrl && !/^(https:\/\/|\/)/.test(opts.logUrl)) throw new Error('Amili Search: logUrl must be https:// or a same-site path');
   const id = esc(opts.id || 'site-search');
   const brand = opts.brand === undefined ? BRAND_DEFAULT : !!opts.brand;
+  const T = searchStrings(opts);
   const data = [
     `data-ak-search`, `data-index="${esc(opts.index)}"`,
     opts.max ? `data-max="${+opts.max}"` : '',
     opts.suggest?.length ? `data-suggest="${esc(opts.suggest.join('|'))}"` : '',
     opts.logUrl ? `data-log="${esc(opts.logUrl)}"` : '', opts.logAll ? 'data-log-all' : '',
     opts.ga4 ? 'data-ga4' : '', opts.clarity ? 'data-clarity' : '', opts.prefillFromPath ? 'data-prefill-path' : '', opts.hotkey === false ? 'data-no-hotkey' : '',
+    localized(opts) ? `data-t="${esc(JSON.stringify(T))}"` : '',
+    opts.routes?.length ? `data-routes="${esc(JSON.stringify(opts.routes))}"` : '',
   ].filter(Boolean).join(' ');
   const action = opts.action ? ` action="${esc(opts.action)}" method="get"` : '';
   return `<form class="ak-search" role="search"${action} ${data}>`
-    + `<label class="ak-s-label" for="${id}">${esc(opts.label || 'Search this site')}</label>`
+    + `<label class="ak-s-label" for="${id}">${esc(opts.label || T.label)}</label>`
     + `<div class="ak-s-box"><svg class="ak-s-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>`
-    + `<input id="${id}" name="q" type="search" placeholder="${esc(opts.placeholder || 'Search')}" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-expanded="false" aria-controls="${id}-list" aria-autocomplete="list" aria-describedby="${id}-status">`
+    + `<input id="${id}" name="q" type="search" placeholder="${esc(opts.placeholder || T.placeholder)}" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-expanded="false" aria-controls="${id}-list" aria-autocomplete="list" aria-describedby="${id}-status">`
     + (opts.hotkey === false ? '' : `<kbd class="ak-s-kbd" aria-hidden="true">/</kbd>`)
     + `</div>`
-    + `<div class="ak-s-pop" hidden><ul class="ak-s-list" id="${id}-list" role="listbox" aria-label="Results"></ul><div class="ak-s-empty" hidden></div>`
-    + `<div class="ak-s-foot"><span class="ak-s-keys" aria-hidden="true"><kbd>&uarr;</kbd><kbd>&darr;</kbd> move <kbd>Enter</kbd> open <kbd>Esc</kbd> close</span>${brandMark(brand)}</div></div>`
+    + `<div class="ak-s-pop" hidden><ul class="ak-s-list" id="${id}-list" role="listbox" aria-label="${esc(T.results)}"></ul><div class="ak-s-empty" hidden></div>`
+    + `<div class="ak-s-foot"><span class="ak-s-keys" aria-hidden="true"><kbd>&uarr;</kbd><kbd>&darr;</kbd> ${esc(T.move)} <kbd>Enter</kbd> ${esc(T.open)} <kbd>Esc</kbd> ${esc(T.close)}</span>${brandMark(brand)}</div></div>`
     + `<p class="ak-s-status" id="${id}-status" role="status" aria-live="polite"></p>`
     + `</form>`;
 }
@@ -242,7 +288,7 @@ ${BRAND_CSS}`;
 // The browser script: the engine above (verbatim) + the widget. Self-initialises every [data-ak-search] form.
 // ---------------------------------------------------------------------------------------------------------------
 function widget() {
-  var E = { norm: norm, makeIndex: makeIndex, query: query, didYouMean: didYouMean, highlight: highlight, cleanQuery: cleanQuery, sameTypingSession: sameTypingSession };
+  var E = { norm: norm, makeIndex: makeIndex, query: query, queryWithRoutes: queryWithRoutes, didYouMean: didYouMean, highlight: highlight, cleanQuery: cleanQuery, sameTypingSession: sameTypingSession };
   var cache = {};
   function loadIndex(url, cb) {
     var c = cache[url] || (cache[url] = { ix: null, q: [], busy: false });
@@ -261,6 +307,9 @@ function widget() {
     var url = form.getAttribute('data-index'), max = +form.getAttribute('data-max') || 8, logUrl = form.getAttribute('data-log'),
       logAll = form.hasAttribute('data-log-all'), ga4 = form.hasAttribute('data-ga4'), cla = form.hasAttribute('data-clarity'),
       sug = (form.getAttribute('data-suggest') || '').split('|').filter(Boolean);
+    var routes = []; try { routes = JSON.parse(form.getAttribute('data-routes') || '[]') || []; } catch (e) { routes = []; }
+    var T = {}; try { T = JSON.parse(form.getAttribute('data-t') || '{}') || {}; } catch (e) { T = {}; }
+    function tt(k, d) { return typeof T[k] === 'string' ? T[k] : d; }
     var hits = [], sel = -1, last = '', timer = 0, frame = 0, logged = '', pid = inp.id || ('ak-s' + n);
     function log(q, count) {
       q = E.cleanQuery(q);
@@ -292,10 +341,10 @@ function widget() {
         var dym = ix ? E.didYouMean(ix, q) : '', b = '';
         if (dym) b += '<button type="button" data-q="' + E.highlight(dym, {}) + '">' + E.highlight(dym, {}) + '</button>';
         for (var j = 0; j < sug.length && j < 5; j++) if (sug[j] !== dym) b += '<button type="button" data-q="' + E.highlight(sug[j], {}) + '">' + E.highlight(sug[j], {}) + '</button>';
-        empty.innerHTML = '<p>No results for <strong>' + E.highlight(q.trim().slice(0, 60), {}) + '</strong>.' + (dym ? ' Did you mean:' : b ? ' Try:' : ' Try a shorter word.') + '</p>' + (b ? '<div class="ak-s-sug">' + b + '</div>' : '');
+        empty.innerHTML = '<p>' + E.highlight(tt('noResults', 'No results for'), {}) + ' <strong>' + E.highlight(q.trim().slice(0, 60), {}) + '</strong>.' + ' ' + E.highlight(dym ? tt('dym', 'Did you mean:') : b ? tt('tryThese', 'Try:') : tt('shorter', 'Try a shorter word.'), {}) + '</p>' + (b ? '<div class="ak-s-sug">' + b + '</div>' : '');
         empty.hidden = false;
       } else empty.hidden = true;
-      status.textContent = hits.length ? hits.length + (res.total > hits.length ? ' of ' + res.total : '') + ((res.total || hits.length) === 1 ? ' result' : ' results') + (res.partial ? ', closest matches' : '') : 'No results';
+      status.textContent = hits.length ? hits.length + (res.total > hits.length ? ' ' + tt('of', 'of') + ' ' + res.total : '') + ' ' + ((res.total || hits.length) === 1 ? tt('one', 'result') : tt('many', 'results')) + (res.partial ? ', ' + tt('closest', 'closest matches') : '') : tt('none', 'No results');
       aria();
       show(true);
     }
@@ -314,7 +363,7 @@ function widget() {
       if (!q.trim()) { hits = []; list.innerHTML = ''; empty.hidden = true; status.textContent = ''; show(false); return; }
       loadIndex(url, function (ix) {
         if (inp.value !== q) return;
-        paint(E.query(ix, q, max), q, ix);
+        paint(E.queryWithRoutes(ix, q, max, routes), q, ix);
         timer = setTimeout(function () { timer = 0; log(q, hits.length); }, 1800);
       });
     }
@@ -377,8 +426,9 @@ function widget() {
 function launcher(cfg) {
   var dlg = document.createElement('dialog');
   dlg.className = 'ak-s-dlg';
-  dlg.setAttribute('aria-label', cfg.label || 'Search this site');
-  dlg.innerHTML = cfg.form + '<button type="button" class="ak-s-x" aria-label="Close search"><span aria-hidden="true">&times;</span></button>';
+  var LT = cfg.t || {};
+  dlg.setAttribute('aria-label', cfg.label || LT.label || 'Search this site');
+  dlg.innerHTML = cfg.form + '<button type="button" class="ak-s-x" aria-label="' + String(LT.closeSearch || 'Close search').replace(/["<>&]/g, '') + '"><span aria-hidden="true">&times;</span></button>';
   document.body.appendChild(dlg);
   var st = document.createElement('style'); st.textContent = cfg.css; document.head.appendChild(st);
   var inp = dlg.querySelector('input');
@@ -409,7 +459,7 @@ function launcher(cfg) {
   if (!take.length && !opens.length && cfg.button !== false) {
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'ak-s-fab ak-s-fab-' + (cfg.position === 'right' ? 'r' : 'l');
-    b.setAttribute('aria-label', (cfg.label || 'Search this site') + ' (press /)');
+    b.setAttribute('aria-label', (cfg.label || LT.label || 'Search this site') + ' (' + (LT.press || 'press /') + ')');
     b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
     b.addEventListener('click', function () { open(); });
     document.body.appendChild(b);
@@ -417,6 +467,33 @@ function launcher(cfg) {
     // last lines of the page, the footer included, and no amount of scrolling uncovers them (1.0.3).
     var sp = document.createElement('div'); sp.className = 'ak-s-sp'; sp.setAttribute('aria-hidden', 'true');
     document.body.appendChild(sp);
+    var inline = [], fields = document.querySelectorAll('input[type="search"]');
+    for (var q = 0; q < fields.length; q++) {
+      if (!dlg.contains(fields[q])) inline.push(fields[q]);
+    }
+    function setInlineHidden(hidden) {
+      b.style.visibility = hidden ? 'hidden' : '';
+      b.style.pointerEvents = hidden ? 'none' : '';
+      if (hidden) b.setAttribute('aria-hidden', 'true'); else b.removeAttribute('aria-hidden');
+    }
+    if (inline.length) {
+      var inView = [];
+      function applyInlineVisibility() {
+        var hidden = false;
+        for (var z = 0; z < inView.length; z++) if (inView[z]) { hidden = true; break; }
+        setInlineHidden(hidden);
+      }
+      if (typeof IntersectionObserver === 'function') {
+        var io = new IntersectionObserver(function (entries) {
+          for (var z = 0; z < entries.length; z++) {
+            var at = inline.indexOf(entries[z].target);
+            if (at >= 0) inView[at] = entries[z].isIntersecting;
+          }
+          applyInlineVisibility();
+        }, { threshold: 0 });
+        for (var z = 0; z < inline.length; z++) io.observe(inline[z]);
+      }
+    }
     var lifting = 0, still = 0;
     function lift() {
       lifting = 0;
@@ -462,14 +539,15 @@ export const LAUNCHER_CSS = `.ak-s-dlg{width:min(40rem,calc(100% - 24px));max-wi
 // opts: { index, label, placeholder, suggest, logUrl, logAll, ga4, clarity, logJs: 'function(q,n){...}', position: 'left'|'right',
 //         takeover: 'css selector', button, max, brand }
 export function searchScript(opts = {}) {
-  const form = renderSearch({ ...opts, id: 'ak-site-search', hotkey: true });
+  const form = renderSearch({ ...opts, id: 'ak-site-search', hotkey: opts.hotkey !== false }); // hotkey: false when the site's own search already owns / and Cmd+K (holdlens GlobalSearch)
   // header (1.2.0): the kit header bar (search button in the header, Shop on phones, header back on scroll-up) runs
   // first, so its button replaces the floating one. opts.header === false switches it off; an object configures it.
-  const hdr = opts.header === false ? null : (opts.header || {});
+  const hdr = opts.header === false ? null : { ...(opts.header || {}) };
   if (hdr && hdr.shop && hdr.shop.href && !/^\/(?!\/)/.test(hdr.shop.href)) throw new Error('Amili Search: header.shop.href must be a same-site path');
   const cfg = { form, css: SEARCH_CSS + '\n' + LAUNCHER_CSS + (hdr ? '\n' + HEADER_CSS : ''), label: opts.label, position: opts.position, takeover: opts.takeover || '', button: opts.button };
+  if (localized(opts)) { cfg.t = searchStrings(opts); if (hdr) hdr.t = cfg.t; }
   return '/*! Amili Search (Amili Kit). https://amili.ai/kit */\n(function(){"use strict";if(window.__akSearch)return;window.__akSearch=1;'
-    + [norm, within, typos, makeIndex, termHits, query, didYouMean, highlight, cleanQuery, sameTypingSession, widget, launcher].map((f) => f.toString()).join('\n')
+    + [norm, within, typos, makeIndex, termHits, query, didYouMean, highlight, cleanQuery, sameTypingSession, hexRouteValue, routeHits, queryWithRoutes, widget, launcher].map((f) => f.toString()).join('\n')
     // logJs: the site's OWN existing search logging, kept as it was (e.g. its Plausible/GA4 event names), as the source of
     // a function (q, results) that runs for every settled search, after the kit's privacy scrub and typing-session dedupe.
     + (opts.logJs ? `\ndocument.addEventListener("ak-search",function(e){try{(${String(opts.logJs).replace(/<\//g, '<\\/')})(e.detail.q,e.detail.results)}catch(x){}});` : '')
@@ -482,7 +560,7 @@ export function searchScript(opts = {}) {
 }
 
 export const SEARCH_JS = '(function(){"use strict";if(window.__akSearch)return;window.__akSearch=1;'
-  + [norm, within, typos, makeIndex, termHits, query, didYouMean, highlight, cleanQuery, sameTypingSession, widget].map((f) => f.toString()).join('\n')
+  + [norm, within, typos, makeIndex, termHits, query, didYouMean, highlight, cleanQuery, sameTypingSession, hexRouteValue, routeHits, queryWithRoutes, widget].map((f) => f.toString()).join('\n')
   + '\nif(document.readyState==="loading")document.addEventListener("DOMContentLoaded",widget);else widget();})();';
 
 // The kit's common shape: every component exports { name, render(opts) -> html, css, js }.

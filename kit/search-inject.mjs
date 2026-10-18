@@ -5,7 +5,7 @@
 // Run after the site's build, before its guards and deploy:  node kit/search-inject.mjs [config=amili-search.config.json] [outDir override, e.g. a staging dir]
 //  1. builds <out>/kit-search-index.json (cfg.indexFile) from the built pages (build-index.mjs rules: no noindex, no /go/, no 404);
 //  2. writes <out>/kit-search.js = searchScript(config): engine + widget + launcher, this site's settings baked in;
-//  3. adds ONE line before </body>: <!--ak-search--><script src="/kit-search.js?v=<hash>" defer></script><!--/ak-search-->
+//  3. adds ONE line before </body>: <!--ak-search--><script src="/kit-search.<hash>.js" defer></script><!--/ak-search-->
 //     It sits after </main>, so lastmod scripts that hash <main> see no change and no page is re-dated; the button and
 //     dialog are created by the script (fixed position), so nothing on the page moves. Idempotent (strips then adds).
 // Config: { outDir: 'out', label, placeholder, suggest: [], takeover: 'css selector of the site's own search box',
@@ -13,6 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { pathToFileURL } from 'node:url';
 import { searchScript } from './search.mjs';
 import { buildIndex } from './search-build-index.mjs';
 
@@ -46,6 +47,27 @@ export function stableHeaders(out, files) {
   h = h.replace(re, '\n');
   const block = `${A} (Amili Kit: stable URLs, short cache)\n` + [...have].sort().map((f) => `${f}\n  Cache-Control: public, max-age=600, must-revalidate\n`).join('') + `${B}\n`;
   fs.writeFileSync(p, (h.trimEnd() ? h.trimEnd() + '\n\n' : '') + block);
+  servedAllowlist(out, files);
+}
+
+// Advanced-mode Pages sites (1.2.6, 2026-10-03): a site that ships out/_worker.js with an exact served-files list
+// (`const SERVED = new Set([...])`, written by its build.mjs so unknown paths 404 instead of soft-404ing to the
+// homepage) 404s every file the kit adds AFTER that list was written. needwatts.com served /kit-ad.css, /kit-ad.js
+// and /kit-search.js as 404 from 2026-10-03 01:15Z (kit-rollout live verify caught it). Every kit asset is therefore
+// added to that list here. No such worker or no SERVED list = nothing to do. Idempotent.
+export function servedAllowlist(out, files) {
+  const w = path.join(out, '_worker.js');
+  if (!fs.existsSync(w)) return 0;
+  const src = fs.readFileSync(w, 'utf8');
+  const re = /const SERVED = new Set\((\[[^\n]*?\])\);/;
+  const m = src.match(re);
+  if (!m) return 0;
+  const have = new Set(JSON.parse(m[1]));
+  const before = have.size;
+  files.forEach((f) => have.add(f));
+  if (have.size === before) return 0;
+  fs.writeFileSync(w, src.replace(re, () => `const SERVED = new Set(${JSON.stringify([...have].sort())});`));
+  return have.size - before;
 }
 
 export async function run(cfgPath = 'amili-search.config.json', outOverride = null) {
@@ -55,11 +77,12 @@ export async function run(cfgPath = 'amili-search.config.json', outOverride = nu
   // sourceIndex (2026-10-02, colorcombinations): a site whose own search index is already tuned (synonyms, hex codes,
   // colour names) keeps that recall: its JSON rows are mapped field-by-field into the kit's row shape instead of
   // crawling the pages. { file: 'search-index.json', map: { u: 's', t: 't', g: 'k', k: 'x', d: 'd', i: 'i' } }
+  // Array rows map by position ('0', '1', ...); urlTemplate '/game/{u}/' turns a slug into a path; label fills g.
   let rows;
   if (cfg.sourceIndex) {
     const src = JSON.parse(fs.readFileSync(path.join(out, cfg.sourceIndex.file), 'utf8'));
     const m = { u: 'u', t: 't', d: 'd', g: 'g', k: 'k', i: 'i', ...(cfg.sourceIndex.map || {}) };
-    const list = Array.isArray(src) ? src : src.items || [];
+    const list = Array.isArray(src) ? src : src[cfg.sourceIndex.list || 'items'] || []; // list: the key holding the rows (fitmylens: 'r')
     // The site's own host = the most common host among absolute URLs in its index (or cfg.sourceIndex.host).
     const hc = {}; for (const r of list) { const h = (String(r[(cfg.sourceIndex.map || {}).u || 'u'] || '').match(/^https?:\/\/([^/]+)/i) || [])[1]; if (h) hc[h] = (hc[h] || 0) + 1; }
     // An index that already uses paths has no business carrying absolute links: those are foreign and dropped.
@@ -67,6 +90,8 @@ export async function run(cfgPath = 'amili-search.config.json', outOverride = nu
     const host = cfg.sourceIndex.host || (rel ? '' : Object.keys(hc).sort((a, b) => hc[b] - hc[a])[0] || '');
     rows = list.map((r) => {
       const o = {}; for (const [kk, from] of Object.entries(m)) if (r[from] != null && r[from] !== '') o[kk] = Array.isArray(r[from]) ? r[from].join(' ') : String(r[from]);
+      if (o.u && cfg.sourceIndex.urlTemplate) o.u = cfg.sourceIndex.urlTemplate.replace('{u}', encodeURIComponent(o.u));
+      if (cfg.sourceIndex.label && !o.g) o.g = cfg.sourceIndex.label;
       if (o.u && /^https?:\/\//i.test(o.u)) { const h = (o.u.match(/^https?:\/\/([^/]+)/i) || [])[1]; o.u = h && h === host ? (o.u.replace(/^https?:\/\/[^/]+/i, '') || '/') : ''; } // same-site absolute URLs (amili-index.json) become paths; other hosts are dropped
       return o;
     }).filter((o) => o.t && o.u && /^\//.test(o.u));
@@ -78,7 +103,9 @@ export async function run(cfgPath = 'amili-search.config.json', outOverride = nu
   const js = searchScript({ index: '/' + indexFile, ...cfg });
   fs.writeFileSync(path.join(out, 'kit-search.js'), js);
   const v = crypto.createHash('sha256').update(js).digest('hex').slice(0, 10);
-  // Hashed filename (card mus4vs8tvfq48l; site-guard asset-cache): the zone's 4h browser cache overrides max-age.
+  // 1.8.4: pages link a HASHED FILENAME, like kit-ad since 1.8.3. The zone's 4 h browser TTL overrides _headers, so a
+  // bare /kit-search.js served old JS against new HTML for up to 4 h and site-guard refused every deploy on asset-cache
+  // (card mus4vs8tvfq48l). The stable /kit-search.js stays written for old cached pages and the header live check.
   const hashed = `/kit-search.${v}.js`;
   fs.writeFileSync(path.join(out, hashed.slice(1)), js);
   const tag = `<script src="${hashed}" defer></script>`;
@@ -98,7 +125,7 @@ export async function run(cfgPath = 'amili-search.config.json', outOverride = nu
   return { indexed: rows.length, injected: n, pages: m, kb: Math.round(JSON.stringify(rows).length / 1024), v };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href) {
   run(process.argv[2], process.argv[3]).then((r) => console.log(`amili search: ${r.indexed} pages indexed (${r.kb} KB), script on ${r.injected}/${r.pages} pages, kit-search.js v=${r.v}`),
     (e) => { console.error(e.message); process.exit(1); });
 }

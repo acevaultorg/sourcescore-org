@@ -10,7 +10,7 @@
     "lint": "next lint",
     "indexnow": "node scripts/ping-indexnow.mjs",
     "clean": "rm -rf .next out 2>/dev/null; find . -name '.DS_Store' -not -path './node_modules/*' -delete 2>/dev/null; true",
-    "kit": "node kit/amazon-ad-inject.mjs out amazon-ad.config.mjs && node kit/search-inject.mjs amili-search.config.json",
+    "kit": "node kit/amazon-ad-inject.mjs out amazon-ad.config.mjs && node kit/search-inject.mjs amili-search.config.json && node kit/consent-inject.mjs out",
     "deploy": "npm run clean && npm run build && npm run kit && node scripts/lastmod.mjs && bash scripts/commit-lastmod.sh && node scripts/deploy-cf.mjs && npm run indexnow",
     "predeploy": "\"$HOME/.claude/bin/ace-heavy-lock\" --hold-for-pid $PPID sourcescore-org || true; node scripts/predeploy-git-guard.mjs && node scripts/predeploy-guard.mjs"
   },
