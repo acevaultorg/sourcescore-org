@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.16.7 (consent.mjs sha256 f0fadb0cbcf8) from VAULT-Fleet/tooling/fleet-kit/consent/consent.mjs — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.17.0 (consent.mjs sha256 0933823d34ad) from VAULT-Fleet/tooling/fleet-kit/consent/consent.mjs — do not edit here; re-run sync.sh.
 // Amili Kit: the cookie bar — @fleet/kit component (rewritten 1.12.0, Paulo mv4b…/mv50b1bpwjkakh: "cookie bar must be amili kit, like all elements, make the best cookie bar").
 // CANONICAL: VAULT-Fleet/tooling/fleet-kit/consent/consent.mjs. Grown from the fleet's Consent Mode default (denied in
 // the EEA/UK/CH/US-CA, granted elsewhere), Dagpeil's bar (refusing exactly as easy and as visible as accepting) and
@@ -20,6 +20,11 @@
 //   - Safe-area aware, compact at 390px, scrolls inside itself on a short screen, adds bottom padding to the page while it is
 //     open so it never hides the end of a page, light and dark by the visitor's setting, WCAG AA (system colours).
 //   - Nothing leaves the browser. No brand mark: this is legal UI.
+//   - Ads sites (opts.ads) and a certified CMP (1.17.0, Paulo 2026-10-22 "double cookie consent pop ups"): AdSense in the EEA/UK
+//     shows Google's own consent message (TCF v2, window.__tcfapi). The bar waits up to 4 s for __tcfapi (then asks, and keeps looking 15 s more: a late CMP still takes over); where GDPR applies,
+//     Google's message is the one choice, the bar never shows, and that choice drives analytics: granted only with TCF purpose 1
+//     (storage) AND 8 or 9 (measurement). Ad consent stays Google's. Where GDPR does not apply, or no CMP loads (ad blocker), the
+//     bar works as before. The footer "Cookie settings" opens Google's message while it is the CMP.
 //
 // renderConsent opts = {
 //   lang: 'en'|'nl'|'de'|'fr'|'es'|'it'|'pt',            // default 'en'; any string field below overrides the table
@@ -62,7 +67,7 @@ export function consentHead({ regions = EEA_UK_CH_CA } = {}) {
   return `<script>window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){dataLayer.push(arguments)};`
     + `gtag('consent','default',{${denied},wait_for_update:500,region:${JSON.stringify(regions).replace(/"/g, "'")}});`
     + `gtag('consent','default',{${granted}});`
-    + `(function(){try{var c=JSON.parse(localStorage.getItem('ak-consent')||'null');if(c&&Date.now()-c.t<${KEEP_MS}){var a=c.a===undefined?c.v==='granted':!!c.a;gtag('consent','update',{analytics_storage:a?'granted':'denied',ad_storage:c.ads&&a?'granted':'denied',ad_user_data:c.ads&&a?'granted':'denied',ad_personalization:c.ads&&a?'granted':'denied'})}}catch(e){}})();</script>`;
+    + `(function(){try{var c=JSON.parse(localStorage.getItem('ak-consent')||'null');if(c&&Date.now()-c.t<${KEEP_MS}){var a=c.a===undefined?c.v==='granted':!!c.a;gtag('consent','update',c.src==='tcf'?{analytics_storage:a?'granted':'denied'}:{analytics_storage:a?'granted':'denied',ad_storage:c.ads&&a?'granted':'denied',ad_user_data:c.ads&&a?'granted':'denied',ad_personalization:c.ads&&a?'granted':'denied'})}}catch(e){}})();</script>`;
 }
 
 export function renderConsent(o = {}) {
@@ -108,7 +113,7 @@ export const CONSENT_JS = `(function(){"use strict";var KEY="ak-consent",MAX=${K
 ZONES=${ASK_ZONES.toString()};
 var bar=document.querySelector(".ak-cc");if(!bar)return;
 var CID=bar.getAttribute("data-clarity")||"",ADS=bar.getAttribute("data-ads")==="1";
-function rec(){try{var c=JSON.parse(localStorage.getItem(KEY)||"null");if(c&&Date.now()-c.t<MAX){var a=c.a===undefined?c.v==="granted":!!c.a;return{v:c.v,a:a,c:c.c===undefined?a:!!c.c}}}catch(e){}return null}
+function rec(){try{var c=JSON.parse(localStorage.getItem(KEY)||"null");if(c&&Date.now()-c.t<MAX){var a=c.a===undefined?c.v==="granted":!!c.a;return{v:c.v,a:a,c:c.c===undefined?a:!!c.c,tcf:c.src==="tcf"}}}catch(e){}return null}
 function stored(){var r=rec();return r?r.v:null}
 function mustAsk(){if(bar.getAttribute("data-ask")==="all")return true;try{var z=Intl.DateTimeFormat().resolvedOptions().timeZone||"";return !z||ZONES.test(z)}catch(e){return true}}
 function pad(on){try{document.body.style.paddingBottom=on?bar.offsetHeight+"px":""}catch(e){}}
@@ -132,10 +137,24 @@ bar.addEventListener("click",function(e){var t=e.target,m=t.closest&&t.closest("
 if(m){var d=bar.querySelector(".ak-cc-d"),o=d.hidden;d.hidden=!o;m.setAttribute("aria-expanded",o?"true":"false");pad(true);return}
 var v=t.closest&&t.closest("[data-ak-cc]");if(v)choose(v.getAttribute("data-ak-cc"))});
 bar.addEventListener("keydown",function(e){if(e.key==="Escape")choose("denied")});
-document.addEventListener("click",function(e){var t=e.target.closest&&e.target.closest('[data-cc="show"]');if(t){e.preventDefault();show()}});
-var r=rec();if(r)apply(r.a,r.c);
-if(!r&&mustAsk())show();
-window.akConsent={show:show,choose:choose,get:stored};})();`;
+var TCF=0;
+function settings(){if(TCF===1&&window.googlefc&&typeof window.googlefc.showRevocationMessage==="function"){try{window.googlefc.showRevocationMessage();return}catch(e){}}show()}
+document.addEventListener("click",function(e){var t=e.target.closest&&e.target.closest('[data-cc="show"]');if(t){e.preventDefault();settings()}});
+function ask(){if(!rec()&&mustAsk())show()}
+function tcfSeen(d){if(!d)return;if(d.gdprApplies===false){if(TCF===0){TCF=-1;ask()}return}
+TCF=1;bar.hidden=true;pad(false);
+if(d.eventStatus!=="tcloaded"&&d.eventStatus!=="useractioncomplete")return;
+var p=d.purpose&&d.purpose.consents||{},a=!!(p[1]&&(p[8]||p[9]));
+try{localStorage.setItem(KEY,JSON.stringify({v:a?"granted":"denied",a:a,c:a,ads:ADS,src:"tcf",t:Date.now()}))}catch(e){}
+if(window.gtag)window.gtag("consent","update",{analytics_storage:a?"granted":"denied"});clarity(a);
+try{window.dispatchEvent(new CustomEvent("ak-consent",{detail:a?"granted":"denied"}))}catch(e){}}
+function tcf(){try{window.__tcfapi("addEventListener",2,function(d,ok){if(ok)tcfSeen(d)})}catch(e){if(TCF===0){TCF=-1;ask()}}}
+var r=rec();if(r){if(r.tcf){if(window.gtag)window.gtag("consent","update",{analytics_storage:r.a?"granted":"denied"});clarity(r.c)}else apply(r.a,r.c)}
+if(ADS){var T=typeof setTimeout==="function"?setTimeout:null,n=0;
+(function wait(){if(typeof window.__tcfapi==="function"){TCF=TCF===-1?0:TCF;tcf();return}
+if(!T)return ask();++n;if(n===41&&TCF===0){TCF=-1;ask()}if(n>70)return;T(wait,n>40?500:100)})()}
+else ask();
+window.akConsent={show:settings,choose:choose,get:stored};})();`;
 
 // The kit's common shape: every component exports { name, render(opts) -> html, css, js } (+ head() for <head>).
 export default { name: 'consent', title: 'Consent bar', render: renderConsent, head: consentHead, css: CONSENT_CSS, js: CONSENT_JS };
