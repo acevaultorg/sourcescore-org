@@ -14,7 +14,7 @@ export default {
   "disclosure": "As an Amazon Associate, SourceScore earns from qualifying purchases at no extra cost to you.",
   "billboard": {
     "variant": "auto",
-    "top": true,
+    "top": false,
     "mid": true,
     "midMove": true,
     "headline": "{why}",
