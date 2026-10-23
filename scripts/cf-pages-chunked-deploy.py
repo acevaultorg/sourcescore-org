@@ -192,20 +192,66 @@ def upsert_hashes(jwt, hashes):
     except Exception as e:
         sys.stderr.write(f"  ⚠ upsert-hashes failed (next deploy re-uploads): {str(e)[:160]}\n")
 
-def upload(jwt, batch, attempts=40):
+# ─────────────────────────────────────────────────────────────────────────────
+# ONE self-refreshing accessor for the upload JWT. It must be the only way the
+# token is obtained, because the token's 30-minute life is SHORTER than this
+# script's own worst-case retry loop.
+#
+# Measured on fermentcalc 2026-10-23 (6,799 files): a batch began timing out
+# (curl --max-time 60, subprocess timeout 75), entered upload()'s 40-attempt
+# retry with its 30s backoff cap, and sat there. 40 attempts × (30s sleep + up
+# to 75s) is ~45 minutes — longer than the token lives. The refresh used to sit
+# at the BATCH BOUNDARY (`if time.time() - jwt_at > 1500`), which a batch already
+# inside its retry loop can never reach, so every remaining attempt carried a
+# dead token. Probed with the deploy's own live token: 403 "Expired JWT" (control:
+# a garbage token returns a DIFFERENT body, code 8000013). Net effect: a TRANSIENT
+# timeout was converted into a permanent failure that burned ~60 minutes, created
+# no deployment, and printed nothing a reader could diagnose. The run had to be
+# killed by hand; CF does not persist assets without a created deployment, so the
+# whole upload was lost.
+#
+# Refresh at 20 min (not 25) so even a batch that starts its retry loop moments
+# before the check still gets a live token on its next attempt.
+_JWT = {"v": None, "at": 0.0}
+
+def jwt_fresh(force=False):
+    if force or _JWT["v"] is None or (time.time() - _JWT["at"]) > 1200:
+        _JWT["v"] = get_jwt(); _JWT["at"] = time.time()
+    return _JWT["v"]
+
+def _err(e):
+    """A readable cause for the retry line.
+
+    `str(subprocess.TimeoutExpired)` is "Command '[...]' timed out after Ns" — it
+    dumps the whole curl argv, which at [:110] truncates to the command and hides
+    the reason entirely. That is exactly what the 2026-10-23 log showed for 26
+    consecutive attempts: the argv, never once the error. http() already raises
+    RuntimeError carrying the response body, so those come through fine; only the
+    timeout case needs rewriting.
+    """
+    import subprocess as _subp
+    if isinstance(e, _subp.TimeoutExpired):
+        return f"curl timed out after {e.timeout}s (no response from the upload edge)"
+    return str(e)
+
+
+def upload(batch, attempts=40):
     body = json.dumps(batch).encode(); last = None
     for a in range(1, attempts+1):
         try:
             r = http("https://api.cloudflare.com/client/v4/pages/assets/upload", method="POST",
-                     headers={"Authorization": f"Bearer {jwt}", "Content-Type": "application/json", "Connection": "close"},
+                     headers={"Authorization": f"Bearer {jwt_fresh()}", "Content-Type": "application/json", "Connection": "close"},
                      data=body, timeout=60)
             if not r.get("success"): raise RuntimeError(f"upload failed: {r}")
             return
         except Exception as e:
-            last = e; s = min(30, 2**(a-1))
-            sys.stderr.write(f"  ⚠ batch {a}/{attempts}: {str(e)[:110]} — retry {s}s\n"); sys.stderr.flush()
+            last = e; s = min(30, 2**(a-1)); msg = _err(e)
+            # An auth-shaped failure means the cached token is dead NOW, whatever its age says (fermentcalc 40ecd55).
+            if "Expired JWT" in msg or "HTTP 401" in msg or "HTTP 403" in msg:
+                _JWT["at"] = 0.0
+            sys.stderr.write(f"  ⚠ batch {a}/{attempts}: {msg[:160]} — retry {s}s\n"); sys.stderr.flush()
             time.sleep(s)
-    raise RuntimeError(f"batch failed after {attempts}: {last}")
+    raise RuntimeError(f"batch failed after {attempts}: {_err(last)}")
 
 # CF Pages treats these four as CONFIGURATION, not static assets. They must be
 # posted as their own multipart FILE parts on create-deployment; anything left in
@@ -327,8 +373,7 @@ def main():
     idx = {}
     for rel, c, sha in entries: idx.setdefault(sha, (c, rel))
     uniq = list(idx.keys())
-    jwt = get_jwt(); jwt_at = time.time()
-    miss = check_missing(jwt, uniq)
+    miss = check_missing(jwt_fresh(), uniq)
     print(f"[+] {len(miss)} need upload ({len(uniq)-len(miss)} cached)")
     if miss:
         miss.sort(key=lambda h: len(idx[h][0]))
@@ -336,16 +381,14 @@ def main():
         for h in miss:
             c, path = idx[h]
             if batch and (len(batch) >= MAX_BATCH_FILES or by + len(c) > MAX_BATCH_BYTES):
-                if time.time() - jwt_at > 1500: jwt = get_jwt(); jwt_at = time.time()  # refresh < 30min
-                upload(jwt, batch); nb += 1; up += len(batch); batch, by = [], 0
+                upload(batch); nb += 1; up += len(batch); batch, by = [], 0
                 if nb % 25 == 0: print(f"[+] {up}/{len(miss)} · {nb} batches · {int(time.time()-t0)}s")
             batch.append({"key": h, "value": base64.b64encode(c).decode("ascii"),
                           "metadata": {"contentType": mime(path)}, "base64": True}); by += len(c)
         if batch:
-            if time.time() - jwt_at > 1500: jwt = get_jwt()
-            upload(jwt, batch); nb += 1; up += len(batch)
+            upload(batch); nb += 1; up += len(batch)
         print(f"[+] uploaded {up} files in {nb} batches · {int(time.time()-t0)}s")
-    upsert_hashes(jwt, uniq)
+    upsert_hashes(jwt_fresh(), uniq)
     print("[+] creating deployment…")
     r = create_deployment(manifest, specials)
     if not r.get("success"):
