@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Amili Kit cookie bar — build-output injector. CANONICAL: VAULT-Fleet/tooling/fleet-kit/consent/inject.mjs
 // (sites carry kit/consent-inject.mjs + kit/consent.mjs). Run after the site's build, before its guards and deploy:
-//   node kit/consent-inject.mjs <outDir> [--privacy /privacy/] [--ads] [--ask all] [--clarity <id>|auto|none] [--lang nl] [--no-host-canon]
+//   node kit/consent-inject.mjs <outDir> [--privacy /privacy/] [--ads] [--ask all] [--clarity <id>|auto|none] [--lang nl] [--no-host-canon] [--site d] [--no-ui-check]
 // On every built page that runs Google Analytics or Clarity it adds (idempotent, inside markers, nothing else touched):
 //  1. HEAD: Consent Mode v2 defaults (denied in the EEA/UK/CH/California, applies a stored choice) — ONLY when the page has none of its own.
 //  2. the bar (hidden markup + /kit-consent.<hash>.css + /kit-consent.<hash>.js, deferred) before </body>, in the page's language,
@@ -15,6 +15,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { renderConsent, consentHead, CONSENT_CSS, CONSENT_JS, settingsLabel, langOf } from './consent.mjs';
 import { hostCanon } from './host-canon.mjs';
+import { countPages } from './consent-one-ui.mjs';
 
 const M = { body: ['<!--ak-cc-->', '<!--/ak-cc-->'], head: ['<!--ak-cch-->', '<!--/ak-cch-->'], link: ['<!--ak-ccl-->', '<!--/ak-ccl-->'] };
 const strip = (h) => Object.values(M).reduce((x, [a, b]) => x.replace(new RegExp(`${a}[\\s\\S]*?${b}`, 'g'), ''), h);
@@ -123,4 +124,18 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   console.log(`amili consent: bar on ${r.bar}/${r.pages} pages (${r.own} already had a kit bar, ${r.none} run no analytics, ${r.other} other), ${r.hj}`);
   console.log(`amili host-canon: ${r.canon.status}${r.canon.origin ? ' -> ' + r.canon.origin : ''}`);
   if (r.missing.length) { console.error(`amili consent: analytics page without </body>: ${r.missing.slice(0, 5).join(', ')}`); process.exit(1); }
+  // 1.17.2 (Paulo mvk45xtzoqe3pk, "Los het deze keer goed op!"): ONE consent UI on a first visit, checked on the built pages
+  // served under the real domain (so Google's AdSense message loads as live). Two or more = the deploy stops here. No browser
+  // on this machine = a warning only: fleet-deploy-guard step 5 is the fail-closed gate. --no-ui-check / CONSENT_UI_SKIP opt out.
+  if (!a.includes('--no-ui-check') && !process.env.CONSENT_UI_SKIP) {
+    let site = o('--site');
+    if (!site) { try { const m = fs.readFileSync(path.join(out, 'index.html'), 'utf8').match(/<link[^>]+rel=["']canonical["'][^>]+href=["']https?:\/\/([^/"']+)/i) || fs.readFileSync(path.join(out, 'index.html'), 'utf8').match(/href=["']https?:\/\/([^/"']+)[^>]*rel=["']canonical/i); site = m && m[1]; } catch {} }
+    if (!site) console.error('amili consent-ui: no --site and no canonical on index.html; check skipped (fleet-deploy-guard still checks)');
+    else {
+      const u = await countPages({ out, site, pages: ['/'] });
+      if (u.ok) console.log(`amili consent-ui: ${u.note}`);
+      else if (u.code === 1) { console.error(`amili consent-ui: FAIL ${u.why}`); process.exit(1); }
+      else console.error(`amili consent-ui: not checked here (${u.why}); fleet-deploy-guard step 5 is the gate`);
+    }
+  }
 }

@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.17.0 (host-canon.mjs sha256 94e8c90c0321) from VAULT-Fleet/tooling/fleet-kit/host-canon/host-canon.mjs — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.17.2 (host-canon.mjs sha256 94e8c90c0321) from VAULT-Fleet/tooling/fleet-kit/host-canon/host-canon.mjs — do not edit here; re-run sync.sh.
 // Amili Kit host-canon (1.16.6, card mu5o5b5qoxm2z8): the bare <project>.pages.dev host answers 301 to the site's own
 // custom domain, path and query kept. Measured 2026-09-17: 55 of 59 fleet Pages projects served the whole site, 200 and
 // indexable, on <project>.pages.dev too; that traffic is outside the zone, so zone analytics (the /go/ 302 counts) cannot see it.
