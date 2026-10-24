@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.17.2 (consent/one-ui.mjs sha256 5a55d037857b) — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.17.10 (consent/one-ui.mjs sha256 abbba5e673f3) — do not edit here; re-run sync.sh.
 // consent/one-ui.mjs — Kit copy of tooling/fleet-deploy/consent-ui.mjs (kept IDENTICAL by guard drift test one-ui.test.mjs).
 // Sites carry it as kit/consent-one-ui.mjs; consent-inject runs it after injecting the bar. Original header follows.
 // consent-ui: ONE consent UI on a first visit (2026-10-22, Paulo mvk45xtzoqe3pk: "Ik heb dit al eerder gemeld. Los het deze
@@ -43,8 +43,15 @@ export const FIXTURES = {
   one: `<!doctype html><html><body><p>page</p>${BAR('ak-cc', 'We use cookies for visit statistics.')}<header style="position:sticky;top:0;height:60px">Menu <a href="/privacy/">Privacy</a></header></body></html>`,
 };
 
+// 2026-10-24 (card mvlb32w58z2q8r): the first playwright-core whose index.mjs can actually be READ. existsSync is not enough:
+// on the iMac the SculptClub copy sits on the WD drive, where the directory exists but open() fails with EPERM.
+function pwCore() {
+  const H = os.homedir();
+  const c = [process.env.AMILI_PW_CORE, path.join(H, 'Local/VAULT-Fleet/tooling/61-site-guard/node_modules/playwright-core'), path.join(H, 'Local/VAULT04-SculptClub/sculptclub/node_modules/playwright-core')].filter(Boolean);
+  return c.find((d) => { try { fs.readFileSync(path.join(d, 'index.mjs')); return true; } catch { return false; } }) || c[c.length - 1];
+}
 function chromiumPaths() {
-  const core = process.env.AMILI_PW_CORE || path.join(os.homedir(), 'Local/VAULT04-SculptClub/sculptclub/node_modules/playwright-core');
+  const core = pwCore();
   const C = path.join(os.homedir(), 'Library/Caches/ms-playwright');
   let exe;
   try { exe = fs.readdirSync(C).filter((d) => d.startsWith('chromium_headless_shell-')).sort((a, b) => +b.split('-').pop() - +a.split('-').pop()).flatMap((d) => ['mac-arm64', 'mac-x64'].map((x) => path.join(C, d, `chrome-headless-shell-${x}/chrome-headless-shell`))).find((f) => fs.existsSync(f)); } catch {}

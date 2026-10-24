@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/inject.mjs (sha256 f4b2d643e02f), Amili Kit v1.16.7 — do not edit here; re-run sync.sh.
+// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/inject.mjs (sha256 f4a58e14c498), Amili Kit v1.17.10 — do not edit here; re-run sync.sh.
 // Amili Kit Amazon ad — build-output injector (fleet rollout 2026-09-28, Paulo thought mulitb3a2bhmcs: "at least 20 sites").
 // CANONICAL: VAULT-Fleet/tooling/fleet-kit/amazon-ad/inject.mjs. Sites carry a synced copy at kit/amazon-ad-inject.mjs.
 //
@@ -140,6 +140,9 @@ export function headingFor(urlPath, cfg) {
 // for those same page types; both are opt-in so existing sites keep their established pools.
 // `ownOnlyOn` (regex): on those pages the box holds ONLY products the page itself links to, never the rotation, so a
 // page about other books never shows an unrelated pick (1.8.7, readstacks books-like/author pages, card mv00dcpvxxyma4).
+// `fillFromProductsOn` (regex): on those pages the page's own products still come first (matched against products +
+// catalog), but the cards that fill the rest of the box come only from the site's general `products`, never from a
+// catalog keyed to other page types (1.17.9, readglobe: algorithm textbooks on bias pages).
 // `headlines` ([[pathRegex, headline, midHeadline?, restHeadline?], ...], first match wins): a heading per page type, because one
 // template is false somewhere ("the full book behind the summary" on a page that summarises nothing).
 // When the top billboard is placed, the page's V1 top card is not (the billboard is the richer version of it).
@@ -157,7 +160,11 @@ function billboardFor(html, urlPath, cfg) {
   const byAsin = new Map(pool.map((p) => [p.asin, p]));
   const own = pageAsins(html, pool, false, (cfg.topCards || [])[0]?.skipHrefs || []).map((a) => byAsin.get(a));
   if (requireOwn && !own.length) return null;
-  const rot = pickProducts(pool, { page: urlPath, day: RANK_DAY, n: Infinity });
+  // fillFromProductsOn (1.17.9): on those pages the cards after the page's own come from the site's general
+  // `products` only. The catalog is per-subject (readglobe keys CS textbooks to its /explained/ articles), so a
+  // rotation over it put "Introduction to Algorithms" on a cognitive-bias page (eyes 2026-10-23 #3).
+  const fillPool = pageScoped(b.fillFromProductsOn) && !catalogOnly ? products : pool;
+  const rot = fillPool.length ? pickProducts(fillPool, { page: urlPath, day: RANK_DAY, n: Infinity }) : [];
   const order = (pageScoped(b.ownOnlyOn) ? own : [...own, ...rot]).filter((p, i, a) => a.indexOf(p) === i);
   if (!order.length) return null;
   const hl = (b.headlines || []).find((r) => new RegExp(r[0]).test(urlPath));
@@ -238,6 +245,14 @@ export function injectHtml(html, urlPath, cfg) {
       const me = h.lastIndexOf('</main>'), h1e = h.indexOf('</h1>', mi);
       const pe = h1e >= 0 ? h.indexOf('</p>', h1e) : -1;
       if (pe >= 0 && pe < me && !/<h2\b/i.test(h.slice(h1e, pe))) at2 = pe + '</p>'.length;
+      // 1.17.5 billboard.topAfter (a regex for the end of the homepage's main tool): tool-first homepages put the band under
+      // the tool, not between the intro and the tool (whenplant: H1, lede, ZIP form; the 242px phone band pushed the ZIP
+      // input under the fold, card mvl5wjrnhftwn1). No match inside <main> falls back to the intro slot above.
+      if (cfg.billboard.topAfter) {
+        const re = new RegExp(cfg.billboard.topAfter, 'g'); re.lastIndex = mi;
+        const m = re.exec(h);
+        if (m && m.index + m[0].length <= me) at2 = m.index + m[0].length;
+      }
     }
     // billboard.phoneTop (regex on the URL path): pages where the top band also shows on phones. Elsewhere it is desktop-
     // only (display:none below 48rem, so nothing shifts): on a page whose own design puts a cover or a buy bar above the

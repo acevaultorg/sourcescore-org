@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.16.7 (header.mjs sha256 75303355162b) from VAULT-Fleet/tooling/fleet-kit/header/header.mjs — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.17.10 (header.mjs sha256 a14efcadc249) from VAULT-Fleet/tooling/fleet-kit/header/header.mjs — do not edit here; re-run sync.sh.
 // Amili Kit: header bar — search in the header on every width, Shop in the phone header, header back on scroll-up.
 // Paulo 2026-10-02: "amili kit search missing in menu bar! very bad" (mur0dp4bzunyqy), "if user scrolls back on any of
 // our sites, header menu should appear" (mur06p8ukgwx6c), "consider to put shop in the mobile menu bar by default"
@@ -22,6 +22,10 @@
 // broken. While links sit off to the right, a 44px fade + chevron (.ak-hb-more) covers that edge; a tap scrolls the nav on;
 // at the end it goes away. Absolutely placed in the nav's parent (nothing moves), aria-hidden, out of the tab order.
 // cfg.navHint === false switches it off.
+// Column edge (1.17.10, eyes 2026-10-18 #10): place() starts at the right edge of the outermost centred ancestor of the
+// logo, not the row's, so a full-width header no longer puts the search on the window edge (bookstatistics 1280: 736px
+// column, search at x 1154-1280). Nothing fits there -> place(true) retries from the row edge (never less than before).
+// Comments inside akHeader ship in kit-search.js (toString), which has a 44 KB budget: keep them out of the function.
 // Shop default: the first header/nav/footer link whose text or path says shop / store / top picks / best / deals / gear.
 // A site with no such page gets no Shop item (never a link to nowhere).
 
@@ -105,11 +109,13 @@ function akHeader(cfg) {
     if (getComputedStyle(row).position === 'static') row.classList.add('ak-hb-row');
     row.appendChild(g);
     var hidden = [];
-    function place() {
+    function place(atRow) {
       for (var h = 0; h < hidden.length; h++) hidden[h].classList.remove('ak-hb-hide');
       hidden = [];
       var rr = row.getBoundingClientRect(), lr = logo.getBoundingClientRect(), cy = lr.top + lr.height / 2, pr = parseFloat(getComputedStyle(row).paddingRight) || 0;
       var edge = rr.right - pr, ph = innerWidth <= PH, IA = /^(A|BUTTON|INPUT|SELECT|TEXTAREA|SUMMARY|DETAILS|LABEL)$/;
+      var colE = 0;
+      if (!atRow && row.contains(logo)) for (var c = logo.parentElement; c !== row; c = c.parentElement) { var cb = c.getBoundingClientRect(), gl = cb.left - rr.left, ce = cb.right - (parseFloat(getComputedStyle(c).paddingRight) || 0); if (gl > 8 && Math.abs(gl - rr.right + cb.right) <= 4 && ce < edge) edge = colE = ce; }
       // never below the row: a second header row (nav links, a search row) starts where the logo row ends
       g.style.top = Math.round(Math.max(0, Math.min(cy - rr.top - 22, rr.height - 44))) + 'px';
       var all = hdr.querySelectorAll('*');
@@ -133,11 +139,12 @@ function akHeader(cfg) {
         }
         edge = hit.left - 8;
       }
+      if (colE) return place(true);
       if (g.classList.contains('ak-hb-wide')) { g.classList.remove('ak-hb-wide'); return place(); }
       if (shopEl && shopEl.parentNode) { g.removeChild(shopEl); shopEl = null; return place(); }
       return false;
     }
-    if (place()) { out.placed = true; var t0 = 0; W.addEventListener('resize', function () { clearTimeout(t0); t0 = setTimeout(function () { if (!place()) g.style.display = 'none'; else g.style.display = ''; }, 120); }); if (d.fonts && d.fonts.ready) d.fonts.ready.then(place); }
+    if (place()) { out.placed = true; var t0 = 0; W.addEventListener('resize', function () { clearTimeout(t0); t0 = setTimeout(function () { if (!place()) g.style.display = 'none'; else g.style.display = ''; }, 120); }); if (d.fonts && d.fonts.ready) d.fonts.ready.then(function () { place(); }); }
     else { row.removeChild(g); row.classList.remove('ak-hb-row'); }
   }
   // ---- scroll hint on a header nav that scrolls sideways (1.16.7, see the file header) ----

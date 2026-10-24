@@ -1,4 +1,4 @@
-// VENDORED Amili Kit v1.17.2 (consent.mjs sha256 7ab5fd86888f) from VAULT-Fleet/tooling/fleet-kit/consent/consent.mjs — do not edit here; re-run sync.sh.
+// VENDORED Amili Kit v1.17.10 (consent.mjs sha256 7ab5fd86888f) from VAULT-Fleet/tooling/fleet-kit/consent/consent.mjs — do not edit here; re-run sync.sh.
 // Amili Kit: the cookie bar — @fleet/kit component (rewritten 1.12.0, Paulo mv4b…/mv50b1bpwjkakh: "cookie bar must be amili kit, like all elements, make the best cookie bar").
 // CANONICAL: VAULT-Fleet/tooling/fleet-kit/consent/consent.mjs. Grown from the fleet's Consent Mode default (denied in
 // the EEA/UK/CH/US-CA, granted elsewhere), Dagpeil's bar (refusing exactly as easy and as visible as accepting) and

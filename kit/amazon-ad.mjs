@@ -1,4 +1,4 @@
-// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/amazon-ad.mjs (sha256 817709ea00ce), Amili Kit v1.16.7 — do not edit here; re-run sync.sh.
+// VENDORED from VAULT-Fleet/tooling/fleet-kit/amazon-ad/amazon-ad.mjs (sha256 865f8ccfa90c), Amili Kit v1.17.10 — do not edit here; re-run sync.sh.
 // Amili Kit Amazon ad — @fleet/kit component (Paulo 2026-09-28, thoughts mulhnwfs777u4h / mulhp9n4orh4wp /
 // mulhpjvefhn5bn / mulhuj4lgb2vz1: "amili kit amazon affiliate template", 5 variants, carousel, Amazon's product API).
 // CANONICAL: VAULT-Fleet/tooling/fleet-kit/amazon-ad/amazon-ad.mjs. Sites carry a synced copy at kit/amazon-ad.mjs
@@ -357,7 +357,9 @@ html[data-akbb=c] .ak-bb-var .ak-ad-price{font-size:19px;height:22px}
 .ak-bill .ak-ad-price{font-size:28px;line-height:1;white-space:nowrap}
 .ak-bill .ak-ad-cta{margin:0;padding:0 24px;min-height:48px;display:inline-flex;align-items:center;border-radius:6px;font-size:16px;font-weight:700}
 .ak-bill .ak-ad-foot{height:30px;justify-content:space-between}
-.ak-bill-lab{font:600 11px/1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#727272}
+/* 1.17.6 (card mvla5o8t0sgcm3): #727272 on the #f2f2f2 band was 4.30:1, under AA 4.5 for 11px text. The top band is always
+   #f2f2f2 and the mid label inherits the host colour (below), so one darker grey is safe: #5f5f5f = 5.70:1 on the band, 6.39:1 on white. */
+.ak-bill-lab{font:600 11px/1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#5f5f5f}
 .ak-bill-top{padding:14px 16px 0;height:300px;border-bottom:1px solid #e2e2e2}
 /* 1.9.2: a top band placed inside main (static homepage, after the intro) breathes: it no longer touches the next paragraph. */
 main .ak-bill-top{margin:18px 0 24px;border-bottom:0;border-radius:6px}
