@@ -31,6 +31,10 @@ const sleep = (s) =>
 const env = { ...process.env };
 delete env.CLOUDFLARE_API_TOKEN;
 delete env.CLOUDFLARE_PAGES_API_TOKEN;
+// ...unless a Pages token is exported: an ssh/launchd session cannot read wrangler OAuth from the macOS
+// keychain (exit 36 stopped the kit rollout on the Pro 2026-10-24).
+const pagesTok = process.env.CLOUDFLARE_PAGES_TOKEN || process.env.CF_PAGES_TOKEN;
+if (pagesTok) { env.CLOUDFLARE_API_TOKEN = pagesTok; env.CLOUDFLARE_ACCOUNT_ID ||= "72bfd26c5f3c935393a25e5c0dea6039"; }
 
 const args = [
   "wrangler", "pages", "deploy", "out",
